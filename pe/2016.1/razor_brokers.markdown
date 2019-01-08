@@ -1,0 +1,72 @@
+---
+layout: default
+title: "Brokers"
+canonical: "/pe/latest/razor_brokers.html"
+
+---
+
+Brokers hand off nodes to configuration management systems like Puppet Enterprise. Brokers consist of two parts: a broker type and information specific to the broker type.
+
+Razor ships with three default broker types:
+
+* `puppet-pe` -- Hands off node management to Puppet Enterprise. This broker specifies the address of the Puppet server, the Puppet Enterprise version, and for Windows, the location of the Windows agent installer.
+* `puppet` -- Hands off management to open source Puppet. This broker specifies the address of the Puppet server, the node certname, and the environment.
+* `noop` -- Doesn't hand off management. A no-op broker can be useful for getting started quickly or doing a basic installation without configuration management.
+
+You can create brokers using the `create-broker` command. You can also update configuration details for the broker and delete brokers.
+
+Writing new broker types is only necessary to use Razor with other configuration management systems.
+
+
+## Create a PE broker
+
+To create a PE broker that enrolls nodes with the Puppet master at `puppet-master.example.com`:
+
+     razor create-broker --name puppet-pe \
+        --configuration server=puppet.example.org \
+        --configuration version=2015.3
+
+## Create a new broker type
+
+To create a broker called `sample`:
+
+1. Create a directory `sample.broker` somewhere on the `broker_path` set in your `config.yaml`. By default, the broker directory in `Razor.root` is located at that path.
+2. [Write the broker install script](#write-the-broker-install-script) and place it in the `install.erb` (*nix) or `install.ps1.erb` (Windows Powershell) template in the `sample.broker` directory.
+3. If the broker type requires configuration data, [write the broker configuration file](#write-the-broker-configuration-file) and save it in the `sample.broker` directory.
+
+### Write the broker install script
+
+The broker install script is generated from the `install.erb` (*nix) or `install.ps1.erb` (Windows) template of your broker. The template returns a valid shell script because tasks generally perform the handoff to the broker by running a command like `curl -s <%= broker_install_url %> | /bin/bash`. The `GET` request to `broker_install_url` (*nix) or `broker_install_url('install.ps1')` (Windows) returns the broker’s install script after interpolating the template.
+
+In the install template, you have access to two objects: `node` and `broker`. The `node` object gives you access to node facts (`node.facts["example"]`), tags (`node.tags`), and metadata (`node.metadata['key']`).
+
+The `broker` object gives you access to the configuration settings. For
+example, if your `configuration.yaml` specifies that a setting `version`
+must be provided when creating a broker from this broker type, you can
+access the value of `version` for the current broker as `broker.version`.
+
+### Write the broker configuration file
+
+The `configuration.yaml` file indicates what parameters can be supplied for any given broker type. For each parameter, you can supply these attributes:
+
+* `description` - Human-readable description of the parameter.
+* `required` - `true` to indicate that the parameter must be supplied. Parameters that aren't required are optional.
+* `default` - Value for the parameter if one isn't supplied.
+
+As an example, here's the configuration.yaml for the PE broker type:
+
+    server:
+        description: "The puppet master to load configurations and installation packages from."
+    version:
+        description: "Override the PE version to install; defaults to `current`."
+    windows_agent_download_url:
+        description: "The download URL for a Windows PE agent installer; defaults to a URL derived from the `version` config."
+
+**Related links**:
+
+* [Create a broker](./razor_using.html#optional-create-a-broker)
+* [Broker client commands](./razor_client_commands.html#broker-commands)
+* [Broker APIs](./razor_reference.html#brokers)
+
+* * *
+

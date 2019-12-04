@@ -1,0 +1,61 @@
+---
+layout: default
+title: "Configuring and tuning your Puppet Enterprise infrastructure"
+canonical: "/pe/latest/config_intro.html"
+---
+
+After you've installed Puppet Enterprise (PE), you'll likely want to configure and tune some settings to get it working optimally for your environment. For example, you might want to add your own certificate to the whitelist, or increase the max-threads setting for `http` and `https` requests, or configure the number of JRuby instances.
+
+The following pages provide information about settings you might want to tune on the PE components:
+
+- [Configuring and tuning Puppet Server](./config_puppetserver.html)
+
+- [Configuring and tuning PuppetDB](./config_puppetdb.html)
+
+- [Configuring and tuning node classifier and the console](./console_config.html)
+
+- [Configuring and tuning orchestration](./config_orchestration.html)
+
+- [Configuring Java arguments for PE](./config_java_args.html)
+
+There are two main methods for configuring PE: using the PE console or adding a key to Hiera (this latter approach is sometimes referred to as a Hiera override).
+
+In general, only profile classes starting with `puppet_enterprise::profile` should be applied and configured via the node classifier (NC) in the console. Classes that aren't `profile` classes should be applied and configured using Hiera.
+
+Please also note that when editing or adding any parameters in PE-managed configuration files, use the PE console. Parameter values set in the PE console will override those you've manually set in the configuration files.
+
+>**Note**: Before you make configuration changes, review the information on [preconfigured node groups](./console_classes_groups_preconfigured_groups.html). You can badly damage your PE installation if you remove some classes, which are detailed on that page.
+
+## Configure settings using the console
+
+Change settings in the console as follows.
+
+1. In the console, click **Nodes** > **Classification**, and select the node group that contains the class you want to work with.
+2. On the **Classes** tab, find the class you want to work with and specify parameters:
+
+   - **Parameter name** -- Select the parameter you want from the list.
+
+   - **Value** -- Add a value for the parameter.
+
+3. Click **Add parameter**, and commit changes.
+
+### Example: Configure settings using the PE console
+
+The following steps demonstrate how to attach your own certificate.
+
+1. In the console, click **Nodes** > **Classification**, and in the **PE Infrastructure** node group, select the **PE Certificate Authority** group.
+2. On the **Classes** tab, locate `puppet_enterprise::profile::certificate_authority`, and specify parameters:
+
+   - **Parameter name** -- Select `client_whitelist`.
+
+   - **Value** -- Enter your certificate, such as `example.puppetlabs.vm`.
+
+3. Click **Add parameter**, and commit changes.
+
+## Configure settings With Hiera
+
+You can also configure settings with Hiera. We recommend that you use this option in cases where the setting you want is not part of the `puppet_enterprise::profile` class.
+
+In your default Hiera .yaml file, add the setting you want to configure. The default location for the Hiera defaults is `/etc/puppetlabs/code/environments/%{environment}/hieradata` (for *nix) and `%CommonAppData%\PuppetLabs\code\environments\%{environment}\hieradata` (for Windows). If you’ve customized your `hierarchy` or `datadir`, you’ll need to access and edit the default `.yaml` file accordingly.
+
+For example, you can use Hiera to [increase or decrease the number of JRuby instances on the Puppet Server](./config_puppetserver.html#tuning-jruby-on-puppet-server), or use it to [tune the number of `max_requests_per_instance` that will accept requests on the Puppet Server](./config_puppetserver.html#tuning-max-requests-per-instance-on-puppet-server).

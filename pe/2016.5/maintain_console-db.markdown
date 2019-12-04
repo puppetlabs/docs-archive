@@ -1,0 +1,145 @@
+---
+layout: default
+title: "Puppet Enterprise database maintenance"
+canonical: "/pe/latest/maintain_console-db.html"
+---
+
+
+If PE's databases become sluggish or begins taking up too much disk space, there are several maintenance tasks that can improve their performance.
+
+Optimizing your databases
+-----
+
+In some cases you may find your databases are slow or need general performance enhancements. The PostgreSQL `vacuum` command can help optimize your databases. 
+
+To vacuum a particular database, use the following command:
+
+~~~
+su - pe-postgres -s /bin/bash -c "vacuumdb -z --verbose <DATABASE NAME>"
+~~~
+
+The available databases are pe-activity, pe-classifier, pe-puppetdb, and pe-rbac.
+
+Database backups
+----------------
+
+Puppet Enterprise uses PostgreSQL as a database backend. We recommend that you use PostgreSQL’s native tools to perform database exports and imports.  At a minimum, we recommend nightly backups to a remote system, or as dictated by your company policy.
+
+The PE PostgreSQL database includes the following databases:
+
+Database      | Description
+------------- | ---------------------------------------------------------------
+pe-activity   | Activity data from the Classifier, including who, what and when
+pe-classifier | Classification data, all Node Group information
+pe-puppetdb   | PuppetDB’s data, including exported resources, catalogs, facts, and reports
+pe-rbac       | RBAC data, including users, permissions, and AD/LDAP info
+pe-orchestrator | orchestrator data, including details about job runs (users, nodes, and run results) 
+
+## Backup and restore procedures for the PE databases
+
+### Complete database backup
+
+**NOTE:** All back up and restore commands must be run as the pe-postgres user.
+
+To back up the entire PE PostgreSQL database, run the following command:
+
+~~~sql
+ sudo -u pe-postgres /opt/puppetlabs/server/apps/postgresql/bin/pg_dumpall -c -f <BACKUP_FILE>.sql
+~~~
+
+>**Note**: The name and location of your <BACKUP_FILE>.sql can be changed as needed.
+
+This command, using `pg_dumpall`, dumps the databases to an SQL file on disk.  The `pe-postgres` user needs write access to the output destination.
+
+**Note**: It isn’t necessary to stop any PE services to perform these steps.
+
+### Restore complete database backup
+
+To restore the entire PE PostgreSQL database backup:
+
+1. Since all databases will be destroyed and re-created in this procedure, you must first stop all PE services except for `pe-postgres`. Run the following commands:
+
+   ~~~
+   puppet resource service puppet ensure=stopped
+   puppet resource service pe-puppetserver ensure=stopped
+   puppet resource service pe-puppetdb ensure=stopped
+   puppet resource service pe-console-services ensure=stopped
+   puppet resource service pe-orchestration-services ensure=stopped
+   puppet resource service pe-nginx ensure=stopped
+   ~~~
+
+2. When restoring the ‘pe-postgres’ user needs read access to the SQL file created when the database was backed up. Run the following command to perform the restore:
+
+   ~~~sql
+   sudo -u pe-postgres /opt/puppetlabs/server/apps/postgresql/bin/psql < <BACKUP_FILE>.sql
+   ~~~
+
+   This command will import the complete PE PostgreSQL database backup you created in the procedure above.
+
+3. Start all PE services. Run the following commands:
+
+   ~~~
+   puppet resource service puppet ensure=running
+   puppet resource service pe-puppetserver ensure=running
+   puppet resource service pe-puppetdb ensure=running
+   puppet resource service pe-console-services ensure=running
+   puppet resource service pe-orchestration-services ensure=running
+   puppet resource service pe-nginx ensure=running
+   ~~~
+
+
+### Individual database backup
+
+
+**NOTE:** All back up and restore commands must be run as the pe-postgres user.
+
+To backup an individual PE PostgreSQL database, run the following command:
+
+~~~sql
+sudo -u pe-postgres /opt/puppetlabs/server/apps/postgresql/bin/pg_dump -Fc <DATABASE_NAME> -f <BACKUP_FILE>.bin
+~~~
+This command creates a binary dump of the database.  The `pe-postgres` user needs write access to the output destination.
+
+### Restore individual database backup
+
+**NOTE:** All back up and restore commands must be run as the pe-postgres user. 
+
+1. To restore an individual PE PostgreSQL database backup, run the following command:
+
+
+   ~~~sql
+   sudo -u pe-postgres /opt/puppetlabs/server/apps/postgresql/bin/pg_restore -Cc -d template1 <BACKUP_FILE>.bin
+   ~~~
+
+   This command will connect to the `template1` database and then drop the database indicated in <BACKUP_FILE>.bin before re-creating that database and connecting to the newly created database to perform the restoration.
+   
+   If you omit the `-d` parameter, `pg_restore` will output the SQL commands needed to restore a database to the console, but **it will not perform the actual restoration**.
+
+2. After restoring that database, you manually fix access privileges for that database. Run the following command:
+
+   ~~~
+   puppet infrastructure configure
+   ~~~
+
+Changing the PuppetDB user/password
+-----
+
+The console uses a database user account to access its PostgreSQL database. If this user's password is compromised, or if it needs to be changed periodically, do the following:
+
+1. Stop the `pe-puppetdb` service with `puppet resource service pe-puppetdb ensure=stopped`.
+2. On the database server (which may or may not be the same as PuppetDB, depending on your deployment's architecture) use the PostgreSQL administration tool of your choice to change the user's password. With the standard `psql` client, you can do this with `ALTER USER console PASSWORD '<new password>';`.
+3. Edit `/etc/puppetlabs/puppetdb/conf.d/database.ini` on the PuppetDB server and change the `password:` line under __common__ (or under __production,__ depending on your configuration) to contain the new password.
+4. Start the `pe-puppetdb` service on the console server with with `puppet resource service pe-puppetdb ensure=running`.
+
+Changing PuppetDB’s parameters
+------------------------------
+
+PuppetDB parameters are set in the `jetty.ini` file, which is contained in the pe-puppetdb module. Jetty.ini is managed by PE, so if you change any PuppetDB parameters directly in the file, those changes will be overwritten on the next Puppet run.
+
+Instead, you should use the console to make changes to the parameters of the `pe-puppetdb` class. For example, the [PuppetDB performance dashboard]({{puppetdb}}/maintain_and_tune.html) requires the `listen_address` parameter to be set to “0.0.0.0”. So, in the console, you would edit the `pe_puppetdb` class so that the value of the `listen_address` parameter is set to “0.0.0.0”.
+
+> **Warning**: This procedure will enable insecure access to the PuppetDB instance on your server.
+
+If you are unfamiliar with editing class parameters in the console, refer to [editing class parameters on nodes](/pe/latest/console_classes_groups_making_changes.html#editing-parameters).
+
+

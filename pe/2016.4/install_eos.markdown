@@ -1,0 +1,76 @@
+---
+layout: default
+title: "Installing Arista EOS agents"
+canonical: "/pe/latest/install_eos.html"
+---
+
+Puppet Enterprise supports Arista EOS as a platform for running Puppet agents on their network switches. This guide provides instructions for installing the Puppet agent on an Arista EOS network switch. These instructions assume you've already [installed Puppet Enterprise](./install_basic.html) and have installed an EOS instance following the Arista documentation.
+
+
+## Install the Puppet agent on the EOS instance
+
+>**Note**: FQDN refers to the fully qualified domain name of a node or instance.
+
+1. On your Puppet master, install the netdev_stdlib_eos module. Run the following command, `puppet module install aristanetworks-netdev_stdlib_eos`. This module contains the types and providers needed to run the Puppet agent on the network switch.
+
+2. Install the Puppet agent on your EOS instance.
+
+   a. Access your EOS instance as an admin user, or as a user with access to Privileged EXEC mode.
+
+   b. Enable Privileged EXEC mode by running the command,`enable`.
+
+   c. On the [EOS download page](http://downloads.puppetlabs.com/eos/4/PC1/i386/), determine the most recent `.swix` package for the agent. For example, `puppet-agent-<VERSION NUMBER>.eos4.i386.swix`.
+   
+   > **Note**: If you're on 2016.4.x, the PE long-term support release (LTS), use a 1.7.x version of the package.
+   
+   d. Run the command, `copy http://downloads.puppetlabs.com/eos/4/PC1/i386/puppet-agent-<VERSION NUMBER>.eos4.i386.swix extension:`.
+
+   > **Note**: If you’re unable to access the outside internet from your EOS instance, you might first need to download the agent package and then transfer it to your instance.
+
+   e. Run the command, `extension puppet-agent-<VERSION NUMBER>-eos-4-i386.swix`. This will install the Puppet agent on the EOS instance.
+   
+   f. Log out as the admin user and log back into the EOS instance as `root`.
+   
+   g. To ensure Puppet is run as the `root` user and group, run the following commands:
+   
+   ~~~
+   /opt/puppetlabs/bin/puppet config --confdir /persist/sys/etc/puppetlabs/puppet set user root
+   /opt/puppetlabs/bin/puppet config --confdir /persist/sys/etc/puppetlabs/puppet set group root 
+   ~~~
+
+   h. Run the command, `puppet config set server <PUPPET MASTER FQDN>`. This will configure the agent to connect to your Puppet master.
+
+   i. Run the command,  `puppet agent --test`. This will connect the agent to the Puppet master and create a certificate signing request (CSR) in the Puppet master's certificate authority (CA) for the new agent.
+
+3. On your Puppet master, sign the cert for your EOS instance. Run the command, `puppet cert sign <EOS INSTANCE FQDN>`.
+
+4. On the EOS instance, run the command, `puppet agent -t`.
+
+   The Puppet agent will retrieve its catalog and will now be fully functional. You'll see a message similar to the following:
+
+       Info: Retrieving pluginfacts
+       Info: Retrieving plugin
+       Info: Loading facts
+       Info: Caching catalog for <EOS INSTANCE FQDN>
+       Info: Applying configuration version '1424214157'
+       Notice: Finished catalog run in 0.46 seconds
+
+## Uninstall the Puppet agent from the EOS instance
+
+Note that if you are uninstalling/reinstalling the Puppet agent for testing purposes, you will need to follow these instructions completely to ensure you don't get SSL collisions when reinstalling.
+
+1. Access your EOS instance as an admin user.
+2. Enable Privileged EXEC mode by running the command, `enable`.
+3. Run the following commands:
+
+        no extension puppet-enterprise-<VERSION NUMBER>-eos-4-i386.swix
+        delete extension:puppet-enterprise-<VERSION NUMBER>-eos-4-i386.swix
+
+4. Delete the SSL keys from the EOS instance. Run the command, `bash sudo rm -rf /persist/sys/etc/puppetlabs/`.
+5. On your Puppet master, revoke the cert for the Puppet agent on the EOS instance. Run the command, `puppet cert clean <EOS INSTANCE FQDN>`.
+
+   This will revoke the agent certificate and delete related files on Puppet master. You'll see a message similar to the following:
+
+       Notice: Revoked certificate with serial 10
+       Notice: Removing file Puppet::SSL::Certificate <EOS INSTANCE FQDN> at '/etc/puppetlabs/puppet/ssl/ca/signed/<EOS INSTANCE FQDN>.pem'
+       Notice: Removing file Puppet::SSL::Certificate <EOS INSTANCE FQDN> at '/etc/puppetlabs/puppet/ssl/certs/<EOS INSTANCE FQDN>.pem'

@@ -8,8 +8,6 @@ Each archived version of docs is organized by component (such as Puppet, Puppet 
 
 Archived docs are in either Markdown or PDF formats, depending on version.
 
-The oldest docs versions are available only in Markdown. You can access these files in the relevant directory here on GitHub. Alternatively, you can clone and download the repo and uncompress the tarball to view the docs in your local browser.
+The oldest docs versions are available only in Markdown. You can access these files in the relevant directory here on GitHub. Alternatively, you can clone and download the repo and view the doc files locally.
 
 Some docs versions contain a combination of PDF and Markdown files.
-
-The Markdown docs in this repo were never meant to be published in this manner, so most links on pages won't work, and there's no sidebar of navigation for pages in the same section you're viewing. We suggest a browser extension such as [Octotree](https://github.com/ovity/octotree) to improve your viewing experience.

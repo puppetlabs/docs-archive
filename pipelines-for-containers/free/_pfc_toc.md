@@ -1,4 +1,4 @@
-# Pipelines for Containers
+# Pipelines for Containers - Free edition
 
 * [Pipelines for Containers user's guide](./index.md)
 * **Getting started with Pipelines for Containers**

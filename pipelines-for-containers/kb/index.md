@@ -1,0 +1,2 @@
+-   [KB 0232 Pipelines for Containers deployment fails before pods start in Kubernetes](360000793273.json.md)
+-   [KB 0248 Deploy using the latest successful build image by tagging Pipelines builds as "latest" in Pipelines for Containers](360002407053.json.md)

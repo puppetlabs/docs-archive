@@ -1,4 +1,4 @@
-# Puppet Container Registry
+# Puppet Container Registry - free edition
 
 * [Self-guided demonstration](./demo.md)
 * [Getting started with Puppet Container Registry](./getting-started.md) 

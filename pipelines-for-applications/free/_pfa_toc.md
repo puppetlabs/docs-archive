@@ -1,4 +1,4 @@
-# Pipelines for Applications
+# Pipelines for Applications - Free edition
 
 * [Release Notes](./pfa-release-notes.md)
 * **Setting up Pipelines for Applications**

@@ -11,13 +11,13 @@ You can complete this guide without prior knowledge of Kubernetes and containers
 * <a href="https://kubernetes.io/docs/tutorials/kubernetes-basics/" target="_blank">Learn Kubernetes Basics</a>
 * <a href="https://docs.docker.com/get-started/" target="_blank">Get started with Docker</a>
 
-To get started with Pipelines for Containers, find out how to [set up a cluster](./gs_cluster_set_up.html). 
+To get started with Pipelines for Containers, find out how to [set up a cluster](./gs_cluster_set_up.md). 
 
-* [Set up a cluster](./gs_cluster_set_up.html)
-* [Create a MySQL container](./gs_create_mysql_container.html)
-* [Create a WordPress container](./gs_create_wordpress_container.html)
-* [Create a project and add containers](./gs_create_project.html)
-* [Build your containers](./gs_build_containers.html)
-* [Create a MySQL service](./gs_create_mysql_service.html)	
-* [Deploy your containers](./gs_deploy_containers.html)
-* [Set up a pipeline](./gs_pipeline_set_up.html)
+* [Set up a cluster](./gs_cluster_set_up.md)
+* [Create a MySQL container](./gs_create_mysql_container.md)
+* [Create a WordPress container](./gs_create_wordpress_container.md)
+* [Create a project and add containers](./gs_create_project.md)
+* [Build your containers](./gs_build_containers.md)
+* [Create a MySQL service](./gs_create_mysql_service.md)	
+* [Deploy your containers](./gs_deploy_containers.md)
+* [Set up a pipeline](./gs_pipeline_set_up.md)

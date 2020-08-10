@@ -1,0 +1,176 @@
+# Configuring Code Manager
+
+To configure Code Manager, enable it in Puppet Enterprise \(PE\), set up authentication, and test the communication between the control repo and Code Manager.
+
+When you finished configuration, you're ready to deploy environments with Code Manager.
+
+You can enable and configure Code Manager either during or after r10k installation.
+
+To enable Code Manager after a new installation or in an existing PE installation, set Code Manager parameters in the console. You can also configure Code Manager during a fresh PE installation, but only during a text-mode installation.
+
+1.  Enable and configure Code Manager, after installation or upgrade, by setting parameters in the master profile class in the PE console. Alternatively, enable during a fresh installation, by setting parameters in `pe.conf`
+2.  Test your control repo.
+
+3.  Set up authentication for Code Manager.
+
+4.  Test Code Manager.
+
+
+## Upgrading from r10k to Code Manager
+
+If you are upgrading from r10k to Code Manager, you must first disable your old r10k installation.
+
+If you are upgrading from r10k to Code Manager, check the following before enabling Code Manager:
+
+-   If you used r10k prior to PE 2015.3, you might have configured r10k in the console using the `pe_r10k` class. If so, you must remove the `pe_r10k` class in the console **before** configuring Code Manager.
+-   If you used any previous versions of r10k, disable any tools that might automatically run it. Most commonly, this is the `zack-r10k` module. Code Manager cannot install or update code properly if other tools are running r10k.
+
+When you start using Code Manager, it runs r10k in the background. You can no longer directly interact with r10k or use the `zack-r10k` module.
+
+## Enable Code Manager
+
+Enabling Code Manager connects your master to your Git repository.
+
+You must have an SSH key that:
+
+-   Does not have a passphrase.
+
+-   Is owned by the `pe-puppet` user.
+-   Is located on the master in a directory that the `pe-puppet` user has permission to view. We recommend `/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa`
+
+1.  In the console, set the following parameters in the `puppet_enterprise::profile::master` class in the PE Master node group.
+
+    -   `code_manager_auto_configure` to true: This enables and configures both Code Manager and file sync.
+    -   `r10k_remote`: This is the location of your control repository, as accessed by SSH. Enter a string that is a valid SSH URL for your Git control repository. For example: "git@<YOUR.GIT.SERVER.COM\>:puppet/control.git".
+
+        **Note:** Some Git providers, such as Bitbucket, might have additional requirements for enabling SSH access. See your provider's documentation for information.
+
+    -   `r10k_private_key`: Enter a string specifying the path to the SSH private key that permits the user to access your Git repositories.
+2.  Run Puppet on your master and all compilers.
+
+    If you run Puppet for your master and all compilers at the same time, such as with **Run Puppet** in the console, you might see errors like this your compilers' logs:
+
+    ```
+    2015-11-20 08:14:38,308 ERROR [clojure-agent-send-off-pool-0]
+    [p.e.s.f.file-sync-client-core] File sync failure: Unable to get
+    latest-commits from server (https://master.example.com:8140/file-sync/v1/latest-commits).
+    java.net.ConnectException: Connection refused
+    
+    ```
+
+    You can ignore these errors. They occur because Puppet Server is restarting while the compilers are trying to poll for new code. These errors generally stop as soon as the Puppet Server on the master has finished restarting.
+
+
+Next, set up authentication.
+
+## Set up authentication for Code Manager
+
+To securely deploy environments, Code Manager needs an authentication token for both authentication and authorization.
+
+If you would like to use PE client tools, configure these now. PE client tools let you access PE services from a workstation that is not necessarily managed by Puppet. They come pre-installed on your master, but you need to configure them by creating a [configuration file](https://github.com/glennsarti/dev-tools/blob/master/config-pe-client-tools.ps1). See [Configuring PE client tools](installing_pe_client_tools.md#) for more information.
+
+To generate a token for Code Manager, first assign a user to the deployment role, and then request an authentication token.
+
+**Related information**  
+
+
+[Configure puppet-access](rbac_token_auth_intro.md#)
+
+### Assign a user to the deployment role
+
+To request an authentication token, you must first assign a user the correct permissions with role-based access control \(RBAC\).
+
+1.  In the console, create a deployment user. We recommend that you create a dedicated deployment user for Code Manager use.
+
+2.  Add the deployment user to the **Code Deployers** role. This role is automatically created on install, with default permissions for code deployment and token lifetime management.
+
+3.  Create a password by clicking **Generate Password**.
+
+
+Next, request the authentication token.
+
+**Related information**  
+
+
+[Add a user to a user role](rbac_user_roles_intro.md#)
+
+[Assign a user group to a user role](rbac_user_roles_user_groups_ex_dir.md#)
+
+### Request an authentication token for deployments
+
+Request an authentication token for the deployment user to enable secure deployment of your code.
+
+By default, authentication tokens have a one-hour lifetime. With the `Override default expiry` permission set, you can change the lifetime of the token to a duration better suited for a long-running, automated process.
+
+Generate the authentication token using the `puppet-access` command.
+
+1.  From the command line on the master, run `puppet-access login --lifetime 180d`. This command both requests the token and sets the token lifetime to 180 days.
+
+    **Tip:** You can add flags to the request specifying additional settings such as the token file's location or the URL for your RBAC API. See [Configuration file settings for puppet-access](rbac_token_auth_intro.md#).
+
+2.  Enter the username and password of the deployment user when prompted.
+
+
+The generated token is stored in a file for later use. The default location for storing the token is `~/.puppetlabs/token`. To view the token, run `puppet-access show`.
+
+Next, test the connection to the control repo.
+
+**Related information**  
+
+
+[Setting a token-specific lifetime](rbac_token_auth_intro.md#)
+
+[Generate a token for use by a service](rbac_token_auth_intro.md#)
+
+## Test the control repo
+
+To make sure that Code Manager can connect to the control repo, test the connection to the repository.
+
+1.  From the command line, run `puppet-code deploy --dry-run`.
+
+
+-   If the control repo is set up properly, this command fetches and displays the number of environments in the control repo.
+
+-   If an environment is not set up properly or causes an error, it does not appear in the returned list. Check the Puppet Server log for details about the errors.
+
+
+## Test Code Manager
+
+To test whether Code Manager deploys your environments correctly, trigger a single environment deployment on the command line.
+
+### Deploy a single environment
+
+Test Code Manager by deploying a single test environment.
+
+This deploys the test environment, and then returns deployment results with the SHA \(a checksum for the content stored\) for the control repo commit.
+
+1.  From the command line, deploy one environment by running `puppet-code deploy my_test_environment --wait`
+
+    Check to make sure the environment was deployed. If so, you've set up Code Manager correctly.
+
+    If the deployment does not work as you expect, check over the configuration steps, or refer to the troubleshooting guide for help.
+
+
+After Code Manager is fully enabled and configured, you can trigger it to deploy your environments.
+
+There are several ways to trigger deployments, depending on your needs.
+
+-   Manually, on the command line.
+-   Automatically, with a webhook.
+-   Automatically, with a custom script that hits the deploys endpoint.
+
+## Code Manager console settings
+
+After Code Manager is configured, you can adjust some settings in the master profile in the console.
+
+These options are required for Code Manager to work, unless otherwise noted.
+
+|Setting|Description|Example|
+|-------|:---------:|:------|
+|`code_manager_auto_configure`|Set to true to auto-configure Code Manager.|`true`|
+|`r10k_remote`|The location of the Git control repository. Enter a string that is a valid URL for your control repository.|`'git@<YOUR.GIT.SERVER.COM>:puppet/control.git'`|
+|`r10k_private_key`|Required when using the SSH protocol; optional in all other cases. Enter a string that is the path to the file containing the private key used to access all Git repositories.|`'/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa'`|
+|`r10k_proxy`|Optional. A proxy setting r10k Code Manager uses when accessing the Forge. If empty, no proxy settings are used.|`'http://proxy.example.com:3128'`|
+
+To further customize your Code Manager configuration with Hiera, see the related topic about customizing your configuration.
+

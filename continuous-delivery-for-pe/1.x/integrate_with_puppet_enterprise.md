@@ -1,0 +1,108 @@
+---
+author: Mindy Moreland <mindy.moreland@puppet.com\>
+---
+
+# Integrate with Puppet Enterprise
+
+To set up an integration between your Puppet Enterprise \(PE\) instance and Continuous Delivery for PE, you must first set up a dedicated PE user with appropriate permissions, then add your PE instance's credentials to Continuous Delivery for PE.
+
+## About this task
+
+## Result:
+
+## Create a Continuous Delivery user and user role in PE
+
+Create a "Continuous Delivery" user and user role in PE. This will allow you to easily view a centralized log of the activities Continuous Delivery for PE performs on your behalf. You'll also use this user account when generating the PE authentication token required by the set-up process.
+
+### About this task
+
+### Procedure
+
+1.  To begin, create a new user. In the PE console, click **Access control** \> **Users**.
+
+2.  Enter a full name \(such as Continuous Delivery User\) and a login name \(such as cdpe\_user\) and click **Add local user**.
+
+3.  Next, create a user role containing the permissions the Continuous Delivery User will need when operating Continuous Delivery for PE. In the PE console, click **Access control** \> **User roles**.
+
+4.  Enter a name and \(optional\) description for new role, such as CDPE User Role, then click **Add role**.
+
+5.  Select the user role you've just created from the list on the User roles page.
+
+6.  Click **Permissions**. Assign the following permissions to the user role:
+
+    |Type|Permission|Object|
+    |----|----------|------|
+    |Job orchestrator|Start, stop, and view jobs|-|
+    |Node groups|Create, edit, and delete child groups|All|
+    |Node groups|View|All|
+    |Node groups|Edit configuration data|All|
+    |Node groups|Set environment|All|
+    |Nodes|View node data from PuppetDB|-|
+    |Puppet agent|Run Puppet on agent nodes|-|
+    |Puppet environment|Deploy code|All|
+
+7.  Click **Add permission**, and commit your changes.
+
+8.  Add your Continuous Delivery user to the user role. Click **Member users**. Select the name of the user you created earlier, and click **Add user**, then commit your change.
+
+9.  Your user is now set up and has been given the permissions needed to operate Continuous Delivery for PE. Before proceeding, create a password for the Continuous Delivery user.
+
+    1.  Return to the **Users** page.
+
+    2.  Find and click the full name of your newly created user, then click **Generate password reset**.
+
+    3.  Follow the link created and create a password for the user.
+
+
+### Result:
+
+## Add your Puppet Enterprise credentials
+
+Establishing an integration with your Puppet Enterprise \(PE\) instance allows Continuous Delivery for PE to work with PE tools such as Code Manager and the orchestrator service to deploy Puppet code changes to your nodes.
+
+### About this task
+
+If necessary, you can add multiple PE instances to your Continuous Delivery for PE installation.
+
+### Procedure
+
+1.  In the Continuous Delivery for PE web UI, click **Settings** ![](settings_icon.png).
+
+2.  Click **Integrations**, then click **Puppet Enterprise**. Click **Add Credentials**.
+
+3.  In the New Puppet Enterprise Credentials pane, enter a unique friendly name for your Puppet Enterprise installation.
+
+    In the event that you need to work with multiple PE installations within Continuous Delivery for PE, these friendly names will help you to differentiate which installation's resources you're managing, so choose them carefully.
+
+4.  Generate a PE access token for your "Continuous Delivery" user using `puppet-access` or the RBAC v1 API, and paste it in the **API Token** field.
+
+    For instructions on generating an access token, see [Token-based authentication](https://puppet.com/docs/pe/latest/rbac/rbac_token_auth_intro.html).
+
+    **Tip:** To avoid unintended service interruptions, create an access token with a multiyear lifespan.
+
+5.  Enter the endpoints for your PuppetDB, Code Manager, orchestrator, and node classifier. You can locate these endpoints with the PE console.
+
+    1.  In the PE console, click **Overview**, then click **Puppet Services status**.
+
+    2.  Copy the endpoints from the Puppet Services status monitor and paste them into the appropriate fields on the New Puppet Enterprise Credentials page, omitting the `https://` prefix for each endpoint, as shown in the sample below.
+
+        | |Puppet Services status|New PE Credentials|
+        |--|----------------------|------------------|
+        |PuppetDB Service|https://sample.host.puppet:8081|sample.host.puppet:8081|
+        |Code Manager Service|https://sample.host.puppet:8140|sample.host.puppet:8170|
+        |Orchestrator Service|https://sample.host.puppet:8143|sample.host.puppet:8143|
+        |Classifier Service|https://sample.host.puppet:4433|sample.host.puppet:4433|
+
+        **Important:** Use port `8170` for Code Manager in Continuous Delivery for PE.
+
+6.  Locate the master SSL certificate generated by PE during installation by running:
+
+    ```
+    curl https://<HOSTNAME>:8140/puppet-ca/v1/certificate/ca --insecure
+    ```
+
+    Copy the certificate in its entirety \(including the header and footer\) and paste it in the **CA Certificate** field.
+
+7.  Click **Add Credentials**.
+
+

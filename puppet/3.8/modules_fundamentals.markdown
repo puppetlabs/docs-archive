@@ -4,12 +4,12 @@ title: "Module Fundamentals"
 canonical: "/puppet/latest/reference/modules_fundamentals.html"
 ---
 
-[modulepath]: ./dirs_modulepath.html
-[installing]: ./modules_installing.html
-[publishing]: ./modules_publishing.html
-[documentation]: ./modules_documentation.html
+[modulepath]: ./dirs_modulepath.markdown
+[installing]: ./modules_installing.markdown
+[publishing]: ./modules_publishing.markdown
+[documentation]: ./modules_documentation.markdown
 
-[plugins]: ./plugins_in_modules.html
+[plugins]: ./plugins_in_modules.markdown
 
 [external facts]: {{facter}}/custom_facts.html#external-facts
 [custom facts]: {{facter}}/custom_facts.html

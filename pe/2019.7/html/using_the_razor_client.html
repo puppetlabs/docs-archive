@@ -1,0 +1,2345 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="There are three ways to communicate with the Razor server."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="using_the_razor_client"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Using the Razor client</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="using_the_razor_client">
+   <h1 class="title topictitle1" id="ariaid-title1">Using the <span class="ph">Razor</span> client</h1>
+   
+   
+   <div class="body conbody"><p class="shortdesc">There are three ways to communicate with the <span class="ph">Razor</span> server.</p>
+      <div class="p">
+         <ul class="ul">
+            <li class="li">
+               <p class="p">API calls in JSON sent directly to the server</p>
+            </li>
+            <li class="li">
+               <p class="p">JSON arguments sent from the <span class="ph">Razor</span> client to the server</p>
+            </li>
+            <li class="li">
+               <p class="p"><span class="ph">Razor</span> client commands</p>
+            </li>
+         </ul>
+      </div>
+      <p class="p">Client commands are the easiest way to interact with the server.</p>
+      <p class="p">Client commands begin with&nbsp;<code class="ph codeph">razor</code>, followed by the name of the action, like&nbsp;<code class="ph codeph">razor create-repo</code>&nbsp;or <code class="ph codeph">razor move-policy</code>. One or more arguments follow the command.</p>
+      <p class="p">You can access help for each command by entering the command with
+            the&nbsp;<code class="ph codeph">--help</code>&nbsp;flag, for
+            example&nbsp;<code class="ph codeph">razor add-policy-tag
+            --help</code>.</p>
+   </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" lang="en-us" id="using_positional_arguments_with_razor_client_commands">
+   <h2 class="title topictitle2" id="ariaid-title2">Using positional arguments with <span class="ph">Razor</span> client commands</h2>
+   
+   
+   <div class="body conbody"><p class="shortdesc">Most <span class="ph">Razor</span> client commands
+      allow positional arguments, which means that you don’t have to explicitly enter the name of
+      the argument, like <code class="ph codeph">--name</code>.&nbsp; Instead, you
+      can provide the values for each argument in a specific order.</p>
+      <div class="p">For example, the&nbsp;<code class="ph codeph">delete-policy</code>&nbsp;command includes only one argument,&nbsp;<code class="ph codeph">--name</code>. To delete a policy named <em class="ph i">sprocket</em>, you can enter the command with the argument name and value, or
+         with a positional argument: <ul class="ul">
+            <li class="li">
+               <p class="p">command with argument name and value — <code class="ph codeph">razor delete-policy --name sprocket</code></p>
+            </li>
+            <li class="li">
+               <p class="p">command with positional argument — <code class="ph codeph">razor delete-policy sprocket</code></p>
+            </li>
+         </ul></div>
+      <p class="p">If a command includes multiple options, you can supply from zero to all
+         available positional arguments. For example, the&nbsp;<code class="ph codeph">add_policy_tag</code>&nbsp;command has three positional arguments: <code class="ph codeph">name</code>, <code class="ph codeph">tag</code>, and <code class="ph codeph">rule</code>. You can
+         provide no positional arguments,&nbsp;<code class="ph codeph">name</code>&nbsp;only,&nbsp;<code class="ph codeph">name</code>&nbsp;and&nbsp;<code class="ph codeph">tag</code>&nbsp;only, or all three arguments.</p>
+      <div class="p">Because not all arguments are available as positional arguments, you
+         might need to use a combination of positional arguments and name-value pairs. For example,
+            the&nbsp;<code class="ph codeph">create-hook</code>&nbsp;command has
+         two positional arguments,&nbsp;<code class="ph codeph">name</code>&nbsp;and&nbsp;<code class="ph codeph">hook-type</code>,
+         which you might use along with a&nbsp;<code class="ph codeph">--configuration</code>&nbsp;value,
+         like:&nbsp;<pre class="pre codeblock"><code>razor create-hook name_of_hook hook_type --configuration someconfig=value</code></pre></div>
+      <div class="p">You can switch between positional and non-positional arguments, but you
+         must maintain the expected order for positional arguments. For
+         example:&nbsp;<pre class="pre codeblock"><code>razor command positional-arg1 --non-positional value positional-arg2 --non-positional2</code></pre></div>
+   </div>
+<article class="topic reference nested2" aria-labelledby="ariaid-title3" id="positional_arguments_for_client_commands">
+   <h3 class="title topictitle3" id="ariaid-title3">Positional arguments for client commands</h3>
+   
+   
+   <div class="body refbody"><p class="shortdesc">These are the <span class="ph">Razor</span> client
+      commands, with available positional arguments listed in accepted order.</p>
+      <section class="section">
+         <div class="p">
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="positional_arguments_for_client_commands__entry__1">Command</th>
+                        <th class="entry" id="positional_arguments_for_client_commands__entry__2">Positional arguments</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">add-policy-tag</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name, tag, rule</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">create-broker</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name, broker-type</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">create-hook</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name, hook-type</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">create-policy</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">create-repo</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">create-tag</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name, rule</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">create-task</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">delete-broker</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">delete-hook</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">delete-node</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">delete-policy</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">delete-repo</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">delete-tag</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">disable-policy</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">enable-policy</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">modify-node-metadata</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">modify-policy-max-count</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name, max_count</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">move-policy</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">reboot-node</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">register-node</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">(none)</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">reinstall-node</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">remove-node-metadata</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">node, key</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">remove-policy-tag</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name, tag</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">run-hook</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">set-node-desired-power-state</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name, to</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">set-node-hw-info</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">node</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">set-node-ipmi-credentials</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">update-broker-configuration</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">broker, key, value</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">update-hook-configuration</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">hook, key, value</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">update-node-metadata</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">node, key, value</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">update-policy-repo</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">policy, repo</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">update-policy-task</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">policy, task</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">update-policy-broker</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">policy, broker</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">update-policy-node-metadata</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">policy, key, value</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">update-repo-task</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">repo, task</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__1">
+                           <code class="ph codeph">update-tag-rule</code>
+                        </td>
+                        <td class="entry" headers="positional_arguments_for_client_commands__entry__2">name, rule</td>
+                     </tr>
+                  </tbody></table>
+         </div>
+      </section>
+   </div>
+</article></article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="razor_client_commands">
+    <h2 class="title topictitle2" id="ariaid-title4"><span class="ph">Razor</span> client commands</h2>
+    <p class="shortdesc">Use client commands to interact with <span class="ph">Razor</span> and provision bare metal nodes.</p>
+    
+<article class="topic reference nested2" aria-labelledby="ariaid-title5" id="configuration_commands">
+   <h3 class="title topictitle3" id="ariaid-title5">Configuration commands</h3>
+   
+   
+   <div class="body refbody"><p class="shortdesc"><span class="ph">Razor</span> configuration is
+      pulled from a configuration file controlled by <span class="ph">Puppet Enterprise</span>. You can
+      change configuration values in the console with class parameters of the&nbsp;<code class="ph codeph">pe_razor</code>&nbsp;module.</p>
+      <section class="section"><div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> In order for configuration changes to take
+               effect, you must restart the <span class="ph">Razor</span> service: <code class="ph codeph">service pe-razor-server restart</code>.</div>
+         </div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">config</code>
+         </h4><p class="p">The&nbsp;<code class="ph codeph">config</code>&nbsp;command displays details about your <span class="ph">Razor</span> configuration.</p><div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> Properties specified in the&nbsp;<code class="ph codeph">api_config_blacklist</code>&nbsp;aren’t returned
+               by the&nbsp;<code class="ph codeph">config</code>&nbsp;command.</div>
+            <strong class="ph b">Sample command </strong>
+         </div><div class="p">To view details about your <span class="ph">Razor</span>
+            configuration:
+            <pre class="pre codeblock"><code>razor config</code></pre></div></section>
+   </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title6" id="node_commands">
+   <h3 class="title topictitle3" id="ariaid-title6">Node commands</h3>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Nodes are created either through the node boot endpoint,
+      when the node initiates its first web request to the <span class="ph">Razor</span>
+      server, or through the&nbsp;<code class="ph codeph">register-node</code>&nbsp;command. </p>
+      <section class="section"><p class="p">Both methods of creating a node create
+            a stub in the <span class="ph">Razor</span> database. When the node boots into
+            the microkernel, it gathers facts and reports them to the node checkin endpoint, linking
+            new facts to the stub. At that point, the node is fully registered in the <span class="ph">Razor</span> system and goes through the binding
+         process.</p></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">register-node</code>
+         </h4><p class="p">The <code class="ph codeph">register-node</code> command enables you to identify a node before it’s
+            discovered. This can be useful to apply metadata before the node boots up, or to
+            indicate to <span class="ph">Razor</span> not to provision – or reprovision – a
+            node that’s already installed.</p><p class="p">
+            <strong class="ph b">Command attributes</strong>
+         </p><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="node_commands__entry__1">Attributes</th>
+                        <th class="entry" id="node_commands__entry__2">Required</th>
+                        <th class="entry" id="node_commands__entry__3">Positional arguments</th>
+                        <th class="entry" id="node_commands__entry__4">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="node_commands__entry__1">
+                           <code class="ph codeph">hw_info</code>
+                        </td>
+                        <td class="entry" headers="node_commands__entry__2">✓</td>
+                        <td class="entry" headers="node_commands__entry__3"></td>
+                        <td class="entry" headers="node_commands__entry__4">Hardware information about the node.<p class="p">You must include enough information that the node
+                              can be identified by hardware information sent by the firmware when
+                              the node boots. This usually includes the MAC addresses of all network
+                              interfaces.</p><div class="p">This attribute can include some
+                              or all of these entries: <ul class="ul">
+                                 <li class="li">
+                                    <p class="p"><code class="ph codeph">netN</code> — The MAC address of each network
+                                       interface. The order of addresses isn't significant. </p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p"><code class="ph codeph">serial</code> — DMI serial number of the node. </p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p"><code class="ph codeph">asset</code> — DMI asset number of the node. </p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p"><code class="ph codeph">uuid</code> — DMI universally unique identifier of the
+                                       node. </p>
+                                 </li>
+                              </ul></div></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_commands__entry__1">
+                           <code class="ph codeph">installed</code>
+                        </td>
+                        <td class="entry" headers="node_commands__entry__2">✓</td>
+                        <td class="entry" headers="node_commands__entry__3"></td>
+                        <td class="entry" headers="node_commands__entry__4"><code class="ph codeph">true</code> to indicate that the node won't be provisioned — or
+                           reprovisioned — by <span class="ph">Razor</span>, or <code class="ph codeph">false</code>.</td>
+                     </tr>
+                  </tbody></table>
+            <strong class="ph b">Sample command</strong>
+         </div><div class="p">To register an installed machine before it’s booted, and prevent
+            reprovisioning:<pre class="pre codeblock"><code>  razor register-node --hw-info net0=78:31:c1:be:c8:00 \
+      --hw-info net1=72:00:01:f2:13:f0 \
+      --hw-info net2=72:00:01:f2:13:f1 \
+      --hw-info serial=xxxxxxxxxxx \
+      --hw-info asset=Asset-1234567890 \
+      --hw-info uuid="Not Settable" \
+      --installed</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">set-node-hw-info</code>
+         </h4><p class="p">The&nbsp;<code class="ph codeph">set-node-hw-info</code>&nbsp;command sets or updates the hardware info for a
+            specified node. This is useful when a node’s hardware changes, such as when you replace
+            a network card.</p><div class="p">
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="node_commands__entry__13">Attributes</th>
+                        <th class="entry" id="node_commands__entry__14">Required</th>
+                        <th class="entry" id="node_commands__entry__15">Positional arguments</th>
+                        <th class="entry" id="node_commands__entry__16">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="node_commands__entry__13">
+                           <code class="ph codeph">node</code>
+                        </td>
+                        <td class="entry" headers="node_commands__entry__14">✓</td>
+                        <td class="entry" headers="node_commands__entry__15">1</td>
+                        <td class="entry" headers="node_commands__entry__16">Name of the node to update.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_commands__entry__13">
+                           <code class="ph codeph">hw_info</code>
+                        </td>
+                        <td class="entry" headers="node_commands__entry__14">✓</td>
+                        <td class="entry" headers="node_commands__entry__15"></td>
+                        <td class="entry" headers="node_commands__entry__16">Hardware information about the node.<p class="p">This attribute can include some or all of these
+                              entries:</p>
+                           <ul class="ul">
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">netN</code> — The MAC address of each network interface.
+                                    The order of addresses isn't significant. </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">serial</code> — DMI serial number of the node. </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">asset</code> — DMI asset number of the node. </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">uuid</code> — DMI universally unique identifier of the
+                                    node. </p>
+                              </li>
+                           </ul></td>
+                     </tr>
+                  </tbody></table>
+            <strong class="ph b">Sample command</strong>
+         </div><div class="p">To update node172 with new hardware
+            information:<pre class="pre codeblock"><code>razor set-node-hw-info --node node172 \
+  --hw-info net0=78:31:c1:be:c8:00 \
+  --hw-info net1=72:00:01:f2:13:f0 \
+  --hw-info net2=72:00:01:f2:13:f1 \
+  --hw-info serial=xxxxxxxxxxx \
+  --hw-info asset=Asset-1234567890 \
+  --hw-info uuid="Not Settable"</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">delete-node</code>
+         </h4><p class="p">The&nbsp;<code class="ph codeph">delete-node</code>&nbsp;command deletes a specified node from the <span class="ph">Razor</span> database. The&nbsp;<code class="ph codeph">delete-node</code>&nbsp;command is similar to&nbsp;<code class="ph codeph">reinstall-node</code>, except that&nbsp;<code class="ph codeph">delete-node</code>&nbsp;doesn’t retain log information or
+            the node number.</p><div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> If the deleted node boots again at some point,
+                  <span class="ph">Razor</span> automatically recreates the node as if it
+               were the first time it contacted the <span class="ph">Razor</span>
+               server.</div>
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="node_commands__entry__25">Attributes</th>
+                        <th class="entry" id="node_commands__entry__26">Required</th>
+                        <th class="entry" id="node_commands__entry__27">Positional arguments</th>
+                        <th class="entry" id="node_commands__entry__28">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="node_commands__entry__25">
+                           <code class="ph codeph">name</code>
+                        </td>
+                        <td class="entry" headers="node_commands__entry__26">✓</td>
+                        <td class="entry" headers="node_commands__entry__27">1</td>
+                        <td class="entry" headers="node_commands__entry__28">Name of the node to delete.</td>
+                     </tr>
+                  </tbody></table>
+            <strong class="ph b">Sample command</strong>
+         </div><div class="p">To delete node17:
+            <pre class="pre codeblock"><code>razor delete-node --name node17</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">reinstall-node</code>
+         </h4><p class="p">The&nbsp;<code class="ph codeph">reinstall-node</code>&nbsp;command clears a node’s&nbsp;<code class="ph codeph">installed</code>&nbsp;flag and – by default – removes its association
+            with policies. You can use the&nbsp;<code class="ph codeph">same-policy</code>&nbsp;attribute to retain the assigned policy.</p><p class="p">After restart, the node boots into the microkernel, goes through discovery and
+            tag matching, and can bind to another policy for reinstallation. This command doesn’t
+            change the node’s metadata or facts.</p><p class="p">
+            <strong class="ph b">Command attributes</strong>
+         </p><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="node_commands__entry__33">Attributes</th>
+                        <th class="entry" id="node_commands__entry__34">Required</th>
+                        <th class="entry" id="node_commands__entry__35">Positional arguments</th>
+                        <th class="entry" id="node_commands__entry__36">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="node_commands__entry__33">
+                           <code class="ph codeph">name</code>
+                        </td>
+                        <td class="entry" headers="node_commands__entry__34">✓</td>
+                        <td class="entry" headers="node_commands__entry__35">1</td>
+                        <td class="entry" headers="node_commands__entry__36">Name of the node to reinstall.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_commands__entry__33">
+                           <code class="ph codeph">same-policy</code>
+                        </td>
+                        <td class="entry" headers="node_commands__entry__34"></td>
+                        <td class="entry" headers="node_commands__entry__35"></td>
+                        <td class="entry" headers="node_commands__entry__36"><code class="ph codeph">true</code> to retain the same policy for reinstallation, or
+                              <code class="ph codeph">false</code>. <p class="p">If omitted, the node can bind to a different policy when
+                              reinstalled.</p></td>
+                     </tr>
+                  </tbody></table>
+            <strong class="ph b">Sample commands</strong>
+         </div><div class="p">To reinstall node17:
+            <pre class="pre codeblock"><code>razor reinstall-node --name node 17</code></pre></div><div class="p">To reinstall node17 and retain its assigned policy:
+            <pre class="pre codeblock"><code>razor reinstall-node --name node17 --same-policy</code></pre></div></section>
+   </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title7" id="ipmi_commands">
+   <h3 class="title topictitle3" id="ariaid-title7">IPMI commands</h3>
+   
+   
+   <div class="body refbody"><p class="shortdesc">IPMI commands are node commands based on the Intelligent
+      Platform Management Interface.</p>
+      <section class="section"><div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> You must install&nbsp;<code class="ph codeph">ipmitool</code>&nbsp;on the <span class="ph">Razor</span>
+               server before using IPMI commands. To install the tool, run&nbsp;<code class="ph codeph">yum install ipmitool -y</code>.</div>
+         </div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">set-node-ipmi-credentials</code>
+         </h4><p class="p">The&nbsp;<code class="ph codeph">set-node-ipmi-credentials</code>&nbsp;sets or updates the host name, user name, or
+            password for connecting with a BMC/LOM/IPMI LAN or LANplus service.</p><p class="p">The command works only with remote IPMI targets, not local targets.</p><p class="p">After IPMI credentials have been set up for a node, you can use
+               the&nbsp;<code class="ph codeph">reboot-node</code>&nbsp;and&nbsp;<code class="ph codeph">set-node-desired-power-state</code> commands.</p><div class="p">
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="ipmi_commands__entry__1">Attributes</th>
+                        <th class="entry" id="ipmi_commands__entry__2">Required</th>
+                        <th class="entry" id="ipmi_commands__entry__3">Positional arguments</th>
+                        <th class="entry" id="ipmi_commands__entry__4">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="ipmi_commands__entry__1">
+                           <code class="ph codeph">name</code>
+                        </td>
+                        <td class="entry" headers="ipmi_commands__entry__2">✓</td>
+                        <td class="entry" headers="ipmi_commands__entry__3">1</td>
+                        <td class="entry" headers="ipmi_commands__entry__4">Name of the node to update.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="ipmi_commands__entry__1">
+                           <code class="ph codeph">ipmi_hostname</code>
+                        </td>
+                        <td class="entry" headers="ipmi_commands__entry__2"></td>
+                        <td class="entry" headers="ipmi_commands__entry__3"></td>
+                        <td class="entry" headers="ipmi_commands__entry__4">IPMI host name or IP address of the BMC of the
+                           host.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="ipmi_commands__entry__1">
+                           <code class="ph codeph">ipmi_username</code>
+                        </td>
+                        <td class="entry" headers="ipmi_commands__entry__2"></td>
+                        <td class="entry" headers="ipmi_commands__entry__3"></td>
+                        <td class="entry" headers="ipmi_commands__entry__4">IPMA LANplus username, if any, for this
+                           BMC.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="ipmi_commands__entry__1">
+                           <code class="ph codeph">ipmi_password</code>
+                        </td>
+                        <td class="entry" headers="ipmi_commands__entry__2"></td>
+                        <td class="entry" headers="ipmi_commands__entry__3"></td>
+                        <td class="entry" headers="ipmi_commands__entry__4">IPMI LANplus password, if any, for this
+                           BMC.</td>
+                     </tr>
+                  </tbody></table>
+            <strong class="ph b">Sample command</strong>
+         </div><div class="p">To set IPMI credentials for
+            node17:<pre class="pre codeblock"><code>razor set-node-ipmi-credentials --name node17 \
+  --ipmi-hostname bmc17.example.com \
+  --ipmi-username null \
+  --ipmi-password sekretskwirrl</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">reboot-node</code>
+         </h4><p class="p">The&nbsp;<code class="ph codeph">reboot-node</code>&nbsp;command triggers a hard power cycle on a specified node
+            using IPMI credentials.</p><div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> You must specify IPMI credentials before using
+               the <code class="ph codeph">reboot-node</code> command.</div>
+         </div><p class="p">If an execution slot isn’t available on the target node,
+               the&nbsp;<code class="ph codeph">reboot-node</code>&nbsp;command is
+            queued and runs as soon as a slot is available. There are no limits on how many commands
+            you can queue up, how frequently a node can be rebooted, or how long a command can stay
+            in the queue. If you restart your <span class="ph">Razor</span> server before
+            queued commands are executed, they remain in the queue and run after the server
+            restarts.</p><p class="p">The&nbsp;<code class="ph codeph">reboot-node</code>&nbsp;command is not integrated with IPMI power state
+            monitoring, so you can’t see power transitions in the record or when polling the node
+            object.</p><p class="p">
+            <strong class="ph b">Command attributes</strong>
+         </p><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="ipmi_commands__entry__21">Attributes</th>
+                        <th class="entry" id="ipmi_commands__entry__22">Required</th>
+                        <th class="entry" id="ipmi_commands__entry__23">Positional arguments</th>
+                        <th class="entry" id="ipmi_commands__entry__24">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="ipmi_commands__entry__21">
+                           <code class="ph codeph">name</code>
+                        </td>
+                        <td class="entry" headers="ipmi_commands__entry__22">✓</td>
+                        <td class="entry" headers="ipmi_commands__entry__23">1</td>
+                        <td class="entry" headers="ipmi_commands__entry__24">Name of the node to reboot.</td>
+                     </tr>
+                  </tbody></table>
+         </div><p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p><div class="p">To queue a node reboot:
+            <pre class="pre codeblock"><code>razor reboot-node --name node1</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">set-node-desired-power-state</code>
+         </h4><div class="p">The&nbsp;<code class="ph codeph">set-node-desired-power-state</code>&nbsp;command specifies whether you want a node
+            to remain powered off or on. By default, <span class="ph">Razor</span> checks
+            node power state every few minutes in the background. If it detects a node in a
+            non-desired state, <span class="ph">Razor</span> issues an IPMI command directing
+            the node to its desired state.<div class="note note note_note"><span class="note__title">Note:</span> You must specify
+               IPMI credentials before using the&nbsp;<code class="ph codeph">set-node-desired-power-state</code>&nbsp;command.</div></div><div class="p">
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="ipmi_commands__entry__29">Attributes</th>
+                        <th class="entry" id="ipmi_commands__entry__30">Required</th>
+                        <th class="entry" id="ipmi_commands__entry__31">Positional arguments</th>
+                        <th class="entry" id="ipmi_commands__entry__32">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="ipmi_commands__entry__29">
+                           <code class="ph codeph">name</code>
+                        </td>
+                        <td class="entry" headers="ipmi_commands__entry__30">✓</td>
+                        <td class="entry" headers="ipmi_commands__entry__31">1</td>
+                        <td class="entry" headers="ipmi_commands__entry__32">Name of the node to power off or on.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="ipmi_commands__entry__29">
+                           <code class="ph codeph">to</code>
+                        </td>
+                        <td class="entry" headers="ipmi_commands__entry__30"></td>
+                        <td class="entry" headers="ipmi_commands__entry__31">2</td>
+                        <td class="entry" headers="ipmi_commands__entry__32">Desired power state: <code class="ph codeph">on</code>, <code class="ph codeph">off</code>, or <code class="ph codeph">null</code>, meaning that <span class="ph">Razor</span>
+                           won't enforce a power state.</td>
+                     </tr>
+                  </tbody></table>
+            <strong class="ph b">Sample command</strong>
+         </div><div class="p">To power on node1234 and keep it on:
+            <pre class="pre codeblock"><code>razor set-node-desired-power-state --name node1234 \
+  --to on</code></pre></div></section>
+   </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title8" id="node_metadata_commands">
+   <h3 class="title topictitle3" id="ariaid-title8">Node metadata commands</h3>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Node metadata commands enable you to update, modify, or
+      remove metadata from nodes.</p>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">update-node-metadata</code>
+         </h4><p class="p">The&nbsp;<code class="ph codeph">update-node-metadata</code>&nbsp;command sets or updates a single metadata
+            key.</p><div class="p">
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="node_metadata_commands__entry__1">Attributes</th>
+                        <th class="entry" id="node_metadata_commands__entry__2">Required</th>
+                        <th class="entry" id="node_metadata_commands__entry__3">Positional arguments</th>
+                        <th class="entry" id="node_metadata_commands__entry__4">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__1">
+                           <code class="ph codeph">node</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__2">✓</td>
+                        <td class="entry" headers="node_metadata_commands__entry__3">1</td>
+                        <td class="entry" headers="node_metadata_commands__entry__4">Name of the node for which to modify
+                           metadata.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__1">
+                           <code class="ph codeph">key</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__2">✓</td>
+                        <td class="entry" headers="node_metadata_commands__entry__3">2</td>
+                        <td class="entry" headers="node_metadata_commands__entry__4">Name of the key to modify.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__1">
+                           <code class="ph codeph">value</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__2">✓</td>
+                        <td class="entry" headers="node_metadata_commands__entry__3">3</td>
+                        <td class="entry" headers="node_metadata_commands__entry__4">New value for the key.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__1">
+                           <code class="ph codeph">no_replace</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__2"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__3"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__4"><code class="ph codeph">true</code> to cancel the update operation if the specified key is
+                           already present, or <code class="ph codeph">false</code>.</td>
+                     </tr>
+                  </tbody></table>
+         </div><p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p><div class="p">To update the <code class="ph codeph">my_key</code> key for a
+            node:<pre class="pre codeblock"><code>razor update-node-metadata --node node1 \
+  --key my_key --value twelve</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">modify-node-metadata</code>
+         </h4><p class="p">The&nbsp;<code class="ph codeph">modify-node-metadata</code>&nbsp;command sets, updates, or clears metadata
+            key-value pairs.</p><p class="p">
+            <strong class="ph b">Command attributes</strong>
+         </p><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="node_metadata_commands__entry__21">Attributes</th>
+                        <th class="entry" id="node_metadata_commands__entry__22">Required</th>
+                        <th class="entry" id="node_metadata_commands__entry__23">Positional arguments</th>
+                        <th class="entry" id="node_metadata_commands__entry__24">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__21">
+                           <code class="ph codeph">node</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__22">✓</td>
+                        <td class="entry" headers="node_metadata_commands__entry__23">1</td>
+                        <td class="entry" headers="node_metadata_commands__entry__24">Name of the node for which to modify
+                           metadata.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__21">
+                           <code class="ph codeph">update</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__22">*</td>
+                        <td class="entry" headers="node_metadata_commands__entry__23"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__24">Key and value pair to update.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__21">
+                           <code class="ph codeph">remove</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__22">*</td>
+                        <td class="entry" headers="node_metadata_commands__entry__23"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__24">Key and value pair to remove.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__21">
+                           <code class="ph codeph">clear</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__22">*</td>
+                        <td class="entry" headers="node_metadata_commands__entry__23"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__24"><code class="ph codeph">true</code> to clear all metadata, or <code class="ph codeph">false</code>.&nbsp;</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__21">
+                           <code class="ph codeph">no_replace</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__22"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__23"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__24"><code class="ph codeph">true</code> to cancel the update operation if the specified key is
+                           already present, or <code class="ph codeph">false</code>.&nbsp;</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__21">
+                           <code class="ph codeph">force</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__22"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__23"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__24"><code class="ph codeph">true</code>&nbsp;to bypass errors in a batch operation
+                              with&nbsp;<code class="ph codeph">no_replace</code>,
+                           or <code class="ph codeph">false</code>.&nbsp; Existing
+                           keys aren't modified. </td>
+                     </tr>
+                  </tbody></table>
+         </div><p class="p">* You must specify one of three attributes:&nbsp;<code class="ph codeph">update</code>,&nbsp;<code class="ph codeph">remove</code>, or&nbsp;<code class="ph codeph">clear</code>.</p><p class="p">
+            <strong class="ph b">Sample commands</strong>
+         </p><div class="p">To add values for key1 and key2 to a node, but not if they are
+            already set, and to remove key3 and
+            key4:<pre class="pre codeblock"><code>razor modify-node-metadata --node node1 --update key1=value1 \
+      --update key2='[ "val1", "val2", "val3" ]' --remove key3 --remove key4
+      --noreplace</code></pre></div><div class="p">To remove all node metadata:
+            <pre class="pre codeblock"><code>razor modify-node-metadata --node node1 --clear</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">remove-node-metadata</code>
+         </h4><p class="p">The&nbsp;<code class="ph codeph">remove-node-metadata</code>&nbsp;command removes either a single metadata entry or
+            all metadata entries on a node.</p><p class="p">
+            <strong class="ph b">Command attributes</strong>
+         </p><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="node_metadata_commands__entry__49">Attributes</th>
+                        <th class="entry" id="node_metadata_commands__entry__50">Required</th>
+                        <th class="entry" id="node_metadata_commands__entry__51">Positional arguments</th>
+                        <th class="entry" id="node_metadata_commands__entry__52">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__49">
+                           <code class="ph codeph">node</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__50">✓</td>
+                        <td class="entry" headers="node_metadata_commands__entry__51">1</td>
+                        <td class="entry" headers="node_metadata_commands__entry__52">Name of the node for which to modify
+                           metadata.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__49">
+                           <code class="ph codeph">key</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__50">*</td>
+                        <td class="entry" headers="node_metadata_commands__entry__51">2</td>
+                        <td class="entry" headers="node_metadata_commands__entry__52">Name of the key to remove.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="node_metadata_commands__entry__49">
+                           <code class="ph codeph">all</code>
+                        </td>
+                        <td class="entry" headers="node_metadata_commands__entry__50">*</td>
+                        <td class="entry" headers="node_metadata_commands__entry__51"></td>
+                        <td class="entry" headers="node_metadata_commands__entry__52"><code class="ph codeph">true</code> to remove all metadata about the node.</td>
+                     </tr>
+                  </tbody></table>
+         </div><p class="p"> * You must specify one of two attributes:&nbsp;<code class="ph codeph">key</code>&nbsp;or&nbsp;<code class="ph codeph">all</code>.</p><p class="p">
+            <strong class="ph b">Sample commands</strong>
+         </p><div class="p">To remove a single key from a node:
+            <pre class="pre codeblock"><code>razor remove-node-metadata --node node1 --key my_key</code></pre></div><div class="p">To remove all keys from a node:
+            <pre class="pre codeblock"><code>razor remove-node-metadata --node node1 --all</code></pre></div></section>
+   </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title9" id="repository-commands">
+    <h3 class="title topictitle3" id="ariaid-title9">Repository commands</h3>
+    
+    
+    <div class="body refbody"><p class="shortdesc">Repository commands enable you to create and delete
+        specified repositories from the <span class="ph">Razor</span> database and specify
+        the task that installs the contents of a repository.</p>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">create-repo</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">create-repo</code>
+                command creates a new repository. The repository can contain the content to install
+                a node, or it can point to an existing online repository.</p>
+            <div class="p">You can create three types of repositories: <ul class="ul">
+                    <li class="li">Those that reference content available on another
+                        server, for example, on a mirror you maintain (<code class="ph codeph">url</code>). </li>
+                    <li class="li">Those where <span class="ph">Razor</span> unpacks
+                        ISOs for you and serves their contents (<code class="ph codeph">iso_url</code>). </li>
+                    <li class="li">Those where <span class="ph">Razor</span> creates
+                        a stub directory that you can manually fill with content (<code class="ph codeph">no_content</code>). </li>
+                </ul>
+            </div>
+            <p class="p"><strong class="ph b">Command attributes</strong>
+            </p>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="repository-commands__entry__1">Attributes</th>
+                            <th class="entry" id="repository-commands__entry__2">Required</th>
+                            <th class="entry" id="repository-commands__entry__3">Positional arguments</th>
+                            <th class="entry" id="repository-commands__entry__4">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="repository-commands__entry__1">
+                                <code class="ph codeph">name</code>
+                            </td>
+                            <td class="entry" headers="repository-commands__entry__2">✓</td>
+                            <td class="entry" headers="repository-commands__entry__3">1</td>
+                            <td class="entry" headers="repository-commands__entry__4">Name for the new repository.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="repository-commands__entry__1">
+                                <code class="ph codeph">url</code>
+                            </td>
+                            <td class="entry" headers="repository-commands__entry__2">*</td>
+                            <td class="entry" headers="repository-commands__entry__3"></td>
+                            <td class="entry" headers="repository-commands__entry__4">URL of a remote repository.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="repository-commands__entry__1">
+                                <code class="ph codeph">iso_url</code>
+                            </td>
+                            <td class="entry" headers="repository-commands__entry__2">*</td>
+                            <td class="entry" headers="repository-commands__entry__3"></td>
+                            <td class="entry" headers="repository-commands__entry__4">
+                                <p class="p">URL of an ISO image to download and unpack in
+                                    a new, local repository.</p>
+                                <p class="p">You can use an HTTP or HTTPS URL, or a file
+                                    URL. If you're using a file URL, manually place the ISO image on
+                                    the server before you call the command.</p>
+                                <p class="p">If you supply the <code class="ph codeph">iso_url</code> attribute to create a
+                                    repository, you can delete it from the server later using the
+                                        <code class="ph codeph">delete-repo</code>
+                                    command.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="repository-commands__entry__1">
+                                <code class="ph codeph">no_content</code>
+                            </td>
+                            <td class="entry" headers="repository-commands__entry__2">*</td>
+                            <td class="entry" headers="repository-commands__entry__3"></td>
+                            <td class="entry" headers="repository-commands__entry__4">
+                                <p class="p">Creates a stub directory in the repo store
+                                    where you can manually extract an image.</p>
+                                <p class="p">After this command finishes, you can log into
+                                    your server and fill the repository directory with the content,
+                                    for example by loopback-mounting the install media and copying
+                                    it into the directory. The repository directory is specified by
+                                    the <code class="ph codeph">repo_store_root</code> class parameter of the <code class="ph codeph">pe_razor </code>module. By
+                                    default, the directory is <code class="ph codeph">/opt/puppetlabs/server/data/razor-server/repo</code>.</p>
+                                <p class="p">This attribute is usually necessary for <span class="ph">Windows</span> install media, because
+                                    the library that <span class="ph">Razor</span> uses to
+                                    unpack ISO images doesn't support <span class="ph">Windows</span> ISO images.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="repository-commands__entry__1">
+                                <code class="ph codeph">task</code>
+                            </td>
+                            <td class="entry" headers="repository-commands__entry__2">✓</td>
+                            <td class="entry" headers="repository-commands__entry__3"></td>
+                            <td class="entry" headers="repository-commands__entry__4">
+                                <p class="p">Name of the default task that installs nodes
+                                    from this repository.</p>
+                                <p class="p">We recommend that the task match the operating
+                                    system specified by the <code class="ph codeph">url</code> or <code class="ph codeph">iso_url</code>.</p>
+                                <p class="p">You can override this paramater at the policy
+                                    level.</p>
+                                <div class="p">
+                                    <div class="note tip note_tip"><span class="note__title">Tip:</span> You can use <code class="ph codeph">razor tasks</code> to
+                                        see which tasks are available on your server.</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">* You must specify one of the attributes <code class="ph codeph">url</code>, <code class="ph codeph">iso_url</code>, or <code class="ph codeph">no_content</code>.</p>
+            <p class="p">
+                <strong class="ph b">Sample commands</strong>
+            </p>
+            <div class="p">To create a repository from an ISO image, which is downloaded and
+                unpacked by the server in the background:
+                <pre class="pre codeblock"><code>  razor create-repo --name fedora21 \
+      --iso-url http://example.com/Fedora-21-x86_64-DVD.iso \
+      --task fedora</code></pre>
+            </div>
+            <div class="p">To unpack an ISO image from a file on a server without uploading
+                the file from the client:
+                <pre class="pre codeblock"><code>  razor create-repo --name fedora21 \
+      --iso-url file:///tmp/Fedora-21-x86_64-DVD.iso \
+      --task fedora</code></pre>
+            </div>
+            <div class="p">To point to a resource without downloading content to the server:
+                <pre class="pre codeblock"><code>  razor create-repo --name fedora21 --url \
+      http://mirrors.n-ix.net/fedora/linux/releases/21/Server/x86_64/os/ \
+      --task fedora</code></pre>
+            </div>
+            <div class="p">To create a stub directory that you can manually fill with
+                content:
+                <pre class="pre codeblock"><code>  razor create-repo --name fedora21 --no-content --task Fedora</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">update-repo-task</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">update-repo-task</code> command specifies the task that installs the contents
+                of the repository.</p>
+            <p class="p">If a node is currently provisioning against the repository when
+                you run this command, provisioning might fail.</p>
+            <div class="p">
+                <strong class="ph b">Command attributes</strong>
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="repository-commands__entry__25">Attributes </th>
+                                <th class="entry align-center" id="repository-commands__entry__26">Required </th>
+                                <th class="entry align-center" id="repository-commands__entry__27">Positional arguments </th>
+                                <th class="entry" id="repository-commands__entry__28">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="repository-commands__entry__25">
+                                    <code class="ph codeph">repo</code>
+                                </td>
+                                <td class="entry align-center" headers="repository-commands__entry__26">✓ </td>
+                                <td class="entry align-center" headers="repository-commands__entry__27">1 </td>
+                                <td class="entry" headers="repository-commands__entry__28">Name of an existing
+                                    repository to update.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="repository-commands__entry__25">
+                                    <code class="ph codeph">task</code>
+                                </td>
+                                <td class="entry align-center" headers="repository-commands__entry__26">✓ </td>
+                                <td class="entry align-center" headers="repository-commands__entry__27">2 </td>
+                                <td class="entry" headers="repository-commands__entry__28">Name of the task to be
+                                    used by the repository.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">
+                <strong class="ph b">Sample command</strong>
+            </p>
+            <div class="p">To update the <code class="ph codeph">my_repo</code> repository to the task <code class="ph codeph">other_task</code>:
+                <pre class="pre codeblock"><code>razor update-repo-task --repo my_repo --task other_task</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">delete-repo</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">delete-repo</code>
+                command deletes a specified repository from the <span class="ph">Razor</span>
+                database.</p>
+            <p class="p">Before deleting a repository, remove any references to it in
+                existing policies. This command fails if the repository is in use by an existing
+                policy.</p>
+            <p class="p">If you supplied the <code class="ph codeph">iso_url</code> property when you created the repository, the folder is also
+                deleted from the server. If you didn't supply the <code class="ph codeph">iso_url</code> property, content remains in the repository
+                directory.</p>
+            <div class="p">
+                <strong class="ph b">Command attributes</strong>
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="repository-commands__entry__37">Attributes </th>
+                                <th class="entry align-center" id="repository-commands__entry__38">Required </th>
+                                <th class="entry align-center" id="repository-commands__entry__39">Positional arguments </th>
+                                <th class="entry" id="repository-commands__entry__40">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="repository-commands__entry__37">
+                                    <code class="ph codeph">name</code>
+                                </td>
+                                <td class="entry align-center" headers="repository-commands__entry__38">✓ </td>
+                                <td class="entry align-center" headers="repository-commands__entry__39">1 </td>
+                                <td class="entry" headers="repository-commands__entry__40">Name of the repository
+                                    to delete.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">
+                <strong class="ph b">Sample command</strong>
+            </p>
+            <div class="p">To delete an obsolete repository:
+                <pre class="pre codeblock"><code>razor delete-repo --name my_obsolete_repo</code></pre>
+            </div>
+        </section>
+    </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title10" id="task-commands">
+    <h3 class="title topictitle3" id="ariaid-title10">Task commands</h3>
+    
+    
+    <div class="body refbody"><p class="shortdesc">Use task commands to create tasks in the <span class="ph">Razor</span> database.</p>
+        <section class="section">
+            <div class="note important note_important"><span class="note__title">Important:</span> 
+                    <span class="ph">Razor</span> tasks differ from <span class="ph">Puppet</span> tasks, which let you run arbitrary scripts
+                    and commands using <span class="ph">Puppet</span>. See the orchestrator
+                    documentation for information about <span class="ph">Puppet</span>
+                    tasks.</div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">create-task</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">create-task</code>
+                command creates a task in the <span class="ph">Razor</span> database. This
+                command is an alternative to manually placing task files in the <code class="ph codeph">task_path</code>. If you anticipate needing to make
+                changes to tasks, we recommend the disk-backed task approach.</p>
+            <p class="p">
+                <span class="ph">Razor</span> has a set of tasks for installing on supported
+                operating systems. See the <a class="xref" href="https://github.com/puppetlabs/razor-server/tree/master/tasks" target="_blank">razor-server Github page</a> for more information. </p>
+            <p class="p"><strong class="ph b">Command attributes</strong>
+            </p>
+            <table class="table" id="task-commands__table_sch_dj4_phb"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="task-commands__table_sch_dj4_phb__entry__1">Attributes</th>
+                            <th class="entry" id="task-commands__table_sch_dj4_phb__entry__2">Required</th>
+                            <th class="entry" id="task-commands__table_sch_dj4_phb__entry__3">Positional arguments</th>
+                            <th class="entry" id="task-commands__table_sch_dj4_phb__entry__4">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__1">
+                                <code class="ph codeph">name</code>
+                            </td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__2">✓</td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__3">1</td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__4">Name for the new task.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__1">
+                                <code class="ph codeph">os</code>
+                            </td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__2">✓</td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__3"></td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__4">Name of the operating system installed by
+                                the task.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__1">
+                                <code class="ph codeph">templates</code>
+                            </td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__2">✓</td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__3"></td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__4">Named templates used for task
+                                stages.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__1">
+                                <code class="ph codeph">boot_seq</code>
+                            </td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__2"></td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__3"></td>
+                            <td class="entry" headers="task-commands__table_sch_dj4_phb__entry__4">
+                                <p class="p">List of key-value pairs that describe
+                                    templates in the order they're installed.</p>
+                                <p class="p">Use the optional&nbsp;<code class="ph codeph">default</code>&nbsp;hash key to
+                                    specify the default template to use when no other template
+                                    applies.</p>
+                            </td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">
+                <strong class="ph b">Sample command</strong>
+            </p>
+            <div class="p">To define the RedHat task included with <span class="ph">Razor</span>:
+                <pre class="pre codeblock"><code>razor create-task --name redhat-new --os "Red Hat Enterprise Linux" \
+  --description "A basic installer for RHEL6" \
+  --boot-seq 1=boot_install --boot_seq default=boot_local \
+  --templates "boot_install=#!ipxe\necho Razor &lt;%= task.label %&gt; task boot_call\necho Installation node: &lt;%= node_url  %&gt;\necho Installation repo: &lt;%= repo_url %&gt;\n\nsleep 3\nkernel &lt;%= repo_url("/isolinux/vmlinuz") %&gt; &lt;%= render_template("kernel_args").strip %&gt; || goto error\ninitrd &lt;%= repo_url("/isolinux/initrd.img") %&gt; || goto error\nboot\n:error\nprompt --key s --timeout 60 ERROR, hit 's' for the iPXE shell; reboot in 60 seconds &amp;&amp; shell || reboot\n" \
+  --templates kernel_args="ks=&lt;%= file_url("kickstart") %&gt; network ksdevice=bootif BOOTIF=01-${netX/mac}" \
+  --templates kickstart="#!/bin/bash\n# Kickstart for RHEL/CentOS 6\n# see: http://docs.redhat.com/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Installation_Guide/s1-kickstart2-options.html\n\ninstall\nurl --url=&lt;%= repo_url %&gt;\ncmdline\nlang en_US.UTF-8\nkeyboard us\nrootpw &lt;%= node.root_password %&gt;\nnetwork --hostname &lt;%= node.hostname %&gt;\nfirewall --enabled --ssh\nauthconfig --enableshadow --passalgo=sha512 --enablefingerprint\ntimezone --utc America/Los_Angeles\n# Avoid having 'rhgb quiet' on the boot line\nbootloader --location=mbr --append="crashkernel=auto"\n# The following is the partition information you requested\n# Note that any partitions you deleted are not expressed\n# here so unless you clear all partitions first, this is\n# not guaranteed to work\nzerombr\nclearpart --all --initlabel\nautopart\n# reboot automatically\nreboot\n\n# following is MINIMAL https://partner-bugzilla.redhat.com/show_bug.cgi?id=593309\n%packages --nobase\n@core\n\n%end\n\n%post --log=/var/log/razor.log\necho Kickstart post\ncurl -s -o /root/razor_postinstall.sh &lt;%= file_url("post_install") %&gt;\n\n# Run razor_postinstall.sh on next boot via rc.local\nif [ ! -f /etc/rc.d/rc.local ]; then\n  # On systems using systemd /etc/rc.d/rc.local does not exist at all\n  # though systemd is set up to run the file if it exists\n  touch /etc/rc.d/rc.local\n  chmod a+x /etc/rc.d/rc.local\nfi\necho bash /root/razor_postinstall.sh &gt;&gt; /etc/rc.d/rc.local\nchmod +x /root/razor_postinstall.sh\n\ncurl -s &lt;%= stage_done_url("kickstart") %&gt;\n%end\n############\n" \
+  --templates post_install="#!/bin/bash\n\nexec &gt;&gt; /var/log/razor.log 2&gt;&amp;1\n\necho "Starting post_install"\n\n# Wait for network to come up when using NetworkManager.\nif service NetworkManager status &gt;/dev/null 2&gt;&amp;1 &amp;&amp; type -P nm-online; then\n    nm-online -q --timeout=10 || nm-online -q -x --timeout=30\n    [ "$?" -eq 0 ] || exit 1\nfi\n\n&lt;%= render_template("set_hostname") %&gt;\n\n&lt;%= render_template("store_ip") %&gt;\n\n&lt;%= render_template("os_complete") %&gt;\n\n# We are done\ncurl -s &lt;%= stage_done_url("finished") %&gt;\n"</code></pre>
+            </div>
+        </section>
+    </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title11" id="tag_commands">
+   <h3 class="title topictitle3" id="ariaid-title11">Tag commands</h3>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Tag commands enable you to create new tags, set the rules
+      used to apply the tag to nodes, change the rule of a specified tag, or delete a specified
+      tag.</p>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">create-tag</code>
+         </h4><p class="p">The <code class="ph codeph">create-tag</code> command creates a new tag and sets the rules used to apply the
+            tag to nodes. </p>
+         <p class="p"><strong class="ph b">Command attributes</strong>
+         </p>
+         <table class="table" id="tag_commands__table_yrb_v34_phb"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="tag_commands__table_yrb_v34_phb__entry__1">Attributes</th>
+                     <th class="entry" id="tag_commands__table_yrb_v34_phb__entry__2">Required</th>
+                     <th class="entry" id="tag_commands__table_yrb_v34_phb__entry__3">Positional arguments</th>
+                     <th class="entry" id="tag_commands__table_yrb_v34_phb__entry__4">Description</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="tag_commands__table_yrb_v34_phb__entry__1">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="tag_commands__table_yrb_v34_phb__entry__2">✓</td>
+                     <td class="entry" headers="tag_commands__table_yrb_v34_phb__entry__3">1</td>
+                     <td class="entry" headers="tag_commands__table_yrb_v34_phb__entry__4">Name for the new tag.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="tag_commands__table_yrb_v34_phb__entry__1">
+                        <code class="ph codeph">rule</code>
+                     </td>
+                     <td class="entry" headers="tag_commands__table_yrb_v34_phb__entry__2">✓</td>
+                     <td class="entry" headers="tag_commands__table_yrb_v34_phb__entry__3">2</td>
+                     <td class="entry" headers="tag_commands__table_yrb_v34_phb__entry__4">
+                        <p class="p">Case-sensitive match expression that applies the tag
+                           to a node if the expression evaluates as true.</p>
+                     </td>
+                  </tr>
+               </tbody></table>
+         <p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p><div class="p">To create a tag that's applied to nodes with two processors:
+            <pre class="pre codeblock"><code>razor create-tag --name small --rule '["=", ["fact", "processorcount"], "2"]'</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">update-tag-rule </code>
+         </h4><p class="p">The <code class="ph codeph">update-tag-rule</code> changes the rule of a specified tag.</p><p class="p">After updating a tag, <span class="ph">Razor</span> reevaluates the tag against
+            all nodes. With the <code class="ph codeph">--force</code> flag, the
+            tag is reevaluated even if it's used by policies.</p>
+         <p class="p"><strong class="ph b">Command attributes</strong>
+         </p>
+         <table class="table" id="tag_commands__table_tsy_x34_phb"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="tag_commands__table_tsy_x34_phb__entry__1">Attributes</th>
+                     <th class="entry" id="tag_commands__table_tsy_x34_phb__entry__2">Required</th>
+                     <th class="entry" id="tag_commands__table_tsy_x34_phb__entry__3">Positional arguments</th>
+                     <th class="entry" id="tag_commands__table_tsy_x34_phb__entry__4">Description</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__1">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__2">✓</td>
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__3">1</td>
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__4">Name of an existing tag to update.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__1">
+                        <code class="ph codeph">rule</code>
+                     </td>
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__2">✓</td>
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__3">2</td>
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__4">Case-sensitive match expression that applies the
+                        tag to a node if the expression evaluates as true.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__1">
+                        <code class="ph codeph">force</code>
+                     </td>
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__2"></td>
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__3"></td>
+                     <td class="entry" headers="tag_commands__table_tsy_x34_phb__entry__4">Reevaluates tags used by an existing
+                        policy.</td>
+                  </tr>
+               </tbody></table>
+         <p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p><div class="p">To update a tag rule and reevaluate nodes with the tag, even if
+            the tag is used by a
+            policy:<pre class="pre codeblock"><code>razor update-tag-rule --name small --force \
+      --rule '["&lt;=", ["fact", "processorcount"], "2"]'</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">delete-tag</code>
+         </h4><p class="p">The <code class="ph codeph">delete-tag</code> command deletes a specified tag.</p><p class="p">With
+            the <code class="ph codeph">--force</code> flag, the tag is deleted
+            and removed from any policies that use it.</p><div class="p">
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="tag_commands__entry__29">Attributes </th>
+                        <th class="entry align-center" id="tag_commands__entry__30">Required </th>
+                        <th class="entry align-center" id="tag_commands__entry__31">Positional
+                           arguments </th>
+                        <th class="entry" id="tag_commands__entry__32">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="tag_commands__entry__29">
+                           <code class="ph codeph">name</code>
+                        </td>
+                        <td class="entry align-center" headers="tag_commands__entry__30">✓ </td>
+                        <td class="entry align-center" headers="tag_commands__entry__31">1 </td>
+                        <td class="entry" headers="tag_commands__entry__32">Name of an existing tag to
+                           delete.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tag_commands__entry__29">
+                           <code class="ph codeph">force</code>
+                        </td>
+                        <td class="entry align-center" headers="tag_commands__entry__30"></td>
+                        <td class="entry align-center" headers="tag_commands__entry__31"></td>
+                        <td class="entry" headers="tag_commands__entry__32">Deletes tags used by an
+                           existing policy.</td>
+                     </tr>
+                  </tbody></table>
+         </div><p class="p">
+            <strong class="ph b">Sample commands</strong>
+         </p><div class="p">To delete an unused tag:
+            <pre class="pre codeblock"><code>razor delete-tag --name my_obsolete_tag</code></pre></div><div class="p">To delete a tag whether or not it is used:
+            <pre class="pre codeblock"><code>razor delete-tag --name my_obsolete_tag --force</code></pre></div></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="tags.html" title="A tag consists of a unique name and a rule. Tags match a node if evaluating the node against the tag's facts results in true. Tag matching is case sensitive.">Tags</a></li><li class="linklist"><a class="link" href="api_reference.html#tags_api" title="These commands enable you to create a tag, delete a tag, or change the rule for a tag.">Tags API</a></li></ul></div></nav></article><article class="topic reference nested2" aria-labelledby="ariaid-title12" id="policy-commands">
+    <h3 class="title topictitle3" id="ariaid-title12">Policy commands</h3>
+    
+    
+    <div class="body refbody"><p class="shortdesc">Policies govern how nodes are provisioned. </p>
+        <section class="section">
+            <p class="p"><span class="ph">Razor</span> maintains an ordered table of
+                policies. When a node boots, <span class="ph">Razor</span> traverses the
+                table to find the first eligible policy for that node. A policy might be ineligible
+                for binding to a node if the node doesn't contain all of the tags on the policy, if
+                the policy is disabled, or if the policy has reached its maximum for the number of
+                allowed nodes.</p>
+            <p class="p">When you list the <code class="ph codeph">policies</code> collection, the list is in the order that <span class="ph">Razor</span> checks policies against nodes.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">create-policy</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">create-policy</code>
+                command creates a new policy that determines how nodes are provisioned. <span class="ph">Razor</span> maintains an ordered table of policies, and
+                applies the first policy that matches a node.</p>
+            <div class="p">
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> You can create policies in a JSON file to
+                    make saving and modifying them easier. To apply a policy with a JSON file, use
+                        <code class="ph codeph">razor create-policy --json
+                        &lt;FILENAME&gt;.json</code>.</div>
+            </div>
+            <p class="p"><strong class="ph b">Command attributes</strong>
+            </p>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="policy-commands__entry__1">Attributes</th>
+                            <th class="entry" id="policy-commands__entry__2">Required</th>
+                            <th class="entry" id="policy-commands__entry__3">Positional arguments</th>
+                            <th class="entry" id="policy-commands__entry__4">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">name</code></td>
+                            <td class="entry" headers="policy-commands__entry__2">✓</td>
+                            <td class="entry" headers="policy-commands__entry__3">1</td>
+                            <td class="entry" headers="policy-commands__entry__4">Name for the new policy.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">hostname</code></td>
+                            <td class="entry" headers="policy-commands__entry__2">✓</td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p">Pattern for host names of nodes bound to this
+                                    policy.</p>
+                                <p class="p">The <code class="ph codeph">${id}</code> references each node's internal ID
+                                    number.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">root_password</code></td>
+                            <td class="entry" headers="policy-commands__entry__2">✓</td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p">Root password for the new system.</p>
+                                <p class="p">Valid values depend on how the task renders
+                                    passwords.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">enabled</code></td>
+                            <td class="entry" headers="policy-commands__entry__2"></td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p"><code class="ph codeph">true</code> if the policy is enabled upon creation, or
+                                        <code class="ph codeph">false</code>.</p>
+                                <p class="p">If omitted, the policy is enabled.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">max_count</code></td>
+                            <td class="entry" headers="policy-commands__entry__2"></td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p">Number indicating how many nodes can bind to
+                                    the policy.</p>
+                                <p class="p">If omitted, the policy can bind to an
+                                    unlimited number of nodes.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">before</code></td>
+                            <td class="entry" headers="policy-commands__entry__2"></td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p">Name of the policy that this policy is placed
+                                    before in the policy list.</p>
+                                <p class="p">This attribute can't be used with <code class="ph codeph">after</code>.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">after</code></td>
+                            <td class="entry" headers="policy-commands__entry__2"></td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p">Name of the policy that this policy is placed
+                                    after in the policy list.</p>
+                                <p class="p">This attribute can't be used with <code class="ph codeph">before</code>.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">tags</code></td>
+                            <td class="entry" headers="policy-commands__entry__2"></td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p">Names of tags that a node must match to
+                                    qualify for the policy.</p>
+                                <p class="p">A node must have all tags specified for the
+                                    policy to apply.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">repo</code></td>
+                            <td class="entry" headers="policy-commands__entry__2">✓</td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">Name of the repository that contains the
+                                operating system installed by this policy.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">broker</code></td>
+                            <td class="entry" headers="policy-commands__entry__2">✓</td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p">Name of the broker to use after provisioning
+                                    to hand off the node to a management system.</p>
+                                <p class="p">If you don't want to hand off management, use
+                                        <code class="ph codeph">noop</code>.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">task</code></td>
+                            <td class="entry" headers="policy-commands__entry__2"></td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p">Name of the task to install nodes that bind to
+                                    this policy.</p>
+                                <p class="p">If omitted, the <code class="ph codeph">task</code> property of the policy's repo is
+                                    used.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__1"><code class="ph codeph">node_metadata</code></td>
+                            <td class="entry" headers="policy-commands__entry__2"></td>
+                            <td class="entry" headers="policy-commands__entry__3"></td>
+                            <td class="entry" headers="policy-commands__entry__4">
+                                <p class="p">Metadata to apply to the node when this policy
+                                    is bound.</p>
+                                <p class="p">Existing metadata is not overwritten.</p>
+                                <p class="p">To install <span class="ph">Windows</span> on non-English systems,
+                                    specify the <code class="ph codeph">win_language</code> using the culture code for the
+                                    appropriate <a class="xref" href="https://technet.microsoft.com/en-us/library/cc722435%28v=ws.10%29.aspx" target="_blank">Microsoft language pack</a>. For
+                                    example, <code class="ph codeph">--node-metadata
+                                        win_language=es-ES</code>
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">
+                <strong class="ph b">Sample command</strong>
+            </p>
+            <div class="p">To create a policy that installs <span class="ph">CentOS</span> 6.4:
+                <pre class="pre codeblock"><code>  razor create-policy --name centos-for-small \
+--repo centos-6.4 --task centos --broker noop \
+--enabled --hostname "host${id}.example.com" \
+--root-password secret --max-count 20 \
+--before "other policy" --tag small --node-metadata key=value</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">move-policy</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">move-policy</code>
+                command lets you change the order in which <span class="ph">Razor</span>
+                considers policies for matching against nodes.</p>
+            <p class="p"><strong class="ph b">Command attributes</strong>
+            </p>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="policy-commands__entry__53">Attributes</th>
+                            <th class="entry" id="policy-commands__entry__54">Required</th>
+                            <th class="entry" id="policy-commands__entry__55">Positional arguments</th>
+                            <th class="entry" id="policy-commands__entry__56">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__53"><code class="ph codeph">name</code></td>
+                            <td class="entry" headers="policy-commands__entry__54">✓</td>
+                            <td class="entry" headers="policy-commands__entry__55">1</td>
+                            <td class="entry" headers="policy-commands__entry__56">Name of the policy to move.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__53"><code class="ph codeph">before</code></td>
+                            <td class="entry" headers="policy-commands__entry__54">*</td>
+                            <td class="entry" headers="policy-commands__entry__55"></td>
+                            <td class="entry" headers="policy-commands__entry__56">Name of the policy that this policy is
+                                placed before in the policy list.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__53"><code class="ph codeph">after</code></td>
+                            <td class="entry" headers="policy-commands__entry__54">*</td>
+                            <td class="entry" headers="policy-commands__entry__55"></td>
+                            <td class="entry" headers="policy-commands__entry__56">Name of the policy that this policy is
+                                placed after in the policy list.</td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">* You must specify one of the two ordering attributes, <code class="ph codeph">before</code> or <code class="ph codeph">after</code>.</p>
+            <p class="p">
+                <strong class="ph b">Sample commands</strong>
+            </p>
+            <div class="p">To move a policy before another policy:
+                <pre class="pre codeblock"><code> razor move-policy --name policy --before succeedingpolicy</code></pre>
+            </div>
+            <div class="p">To move a policy after another policy:
+                <pre class="pre codeblock"><code>razor move-policy --name policy --after precedingpolicy</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><code class="ph codeph">enable-policy</code> and <code class="ph codeph">disable-policy</code></h4>
+            
+            <p class="p">The <code class="ph codeph">disable-policy</code> command prevents the specified policy from binding to
+                any nodes. This can be useful if you want to temporarily inactivate a policy without
+                deleting it. For example, you can use <code class="ph codeph">disable-policy</code> to prevent nodes from installing a certain OS for a
+                short period.</p>
+            <p class="p">The <code class="ph codeph">enable-policy</code>
+                command reactivates a disabled policy.</p>
+            <p class="p"><strong class="ph b">Command attributes</strong>
+            </p>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="policy-commands__entry__69">Attributes </th>
+                            <th class="entry align-center" id="policy-commands__entry__70">Required </th>
+                            <th class="entry align-center" id="policy-commands__entry__71">Positional
+                                arguments </th>
+                            <th class="entry" id="policy-commands__entry__72">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="policy-commands__entry__69"><code class="ph codeph">name</code>
+                            </td>
+                            <td class="entry align-center" headers="policy-commands__entry__70">✓ </td>
+                            <td class="entry align-center" headers="policy-commands__entry__71">1 </td>
+                            <td class="entry" headers="policy-commands__entry__72">Name of the policy to
+                                disable or enable.</td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">
+                <strong class="ph b">Sample commands</strong>
+            </p>
+            <div class="p">To disable a policy:
+                <pre class="pre codeblock"><code>razor disable-policy --name my_policy</code></pre>
+            </div>
+            <div class="p">To enable a policy:
+                <pre class="pre codeblock"><code>razor enable-policy --name my_policy</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">modify-policy-max-count</code>
+            </h4>
+            
+            <div class="p">The <code class="ph codeph">modify-policy-max-count</code> command sets or removes the limit on the
+                maximum number of nodes that can bind to a policy. <div class="note note note_note"><span class="note__title">Note:</span> To reduce the number of nodes a policy can bind to, you must use the
+                        <code class="ph codeph">reinstall-node</code> command to
+                    mark nodes as uninstalled.</div>
+            </div>
+            <p class="p"><strong class="ph b">Command attributes</strong>
+            </p>
+            <div class="p">
+                <table class="table" id="policy-commands__table_tql_mt4_phb"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="policy-commands__table_tql_mt4_phb__entry__1">Attributes</th>
+                                <th class="entry" id="policy-commands__table_tql_mt4_phb__entry__2">Required</th>
+                                <th class="entry" id="policy-commands__table_tql_mt4_phb__entry__3">Positional arguments</th>
+                                <th class="entry" id="policy-commands__table_tql_mt4_phb__entry__4">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__1"><code class="ph codeph">name</code></td>
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__2">✓</td>
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__3">1</td>
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__4">Name of the policy to modify.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__1"><code class="ph codeph">max_count</code></td>
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__2">*</td>
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__3">2</td>
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__4">Maximum number of nodes the policy can
+                                    bind to.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__1"><code class="ph codeph">no_max_count</code></td>
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__2">*</td>
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__3"></td>
+                                <td class="entry" headers="policy-commands__table_tql_mt4_phb__entry__4">Removes any limits on the number of
+                                    nodes that can bind to the policy.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">*You must specify one of the two count attributes, <code class="ph codeph">max_count</code> or <code class="ph codeph">no_max_count</code>.</p>
+            <p class="p">
+                <strong class="ph b">Sample commands</strong>
+            </p>
+            <div class="p">To allow a policy to match an unlimited number of nodes:
+                <pre class="pre codeblock"><code>razor --name example --no-max-count</code></pre>
+            </div>
+            <div class="p">To set a policy to match a maximum of 15 nodes:
+                <pre class="pre codeblock"><code>razor --name example --max-count 15</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">add-policy-tag</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">add-policy-tag</code> command adds a new or existing tag to a policy. Because
+                binding to policies happens only when unbound nodes check in, adding a policy tag
+                doesn't affect nodes that are already bound to a policy.</p>
+            <div class="p">
+                <strong class="ph b">Command attributes</strong>
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="policy-commands__entry__93">Attributes</th>
+                                <th class="entry" id="policy-commands__entry__94">Required</th>
+                                <th class="entry" id="policy-commands__entry__95">Positional arguments</th>
+                                <th class="entry" id="policy-commands__entry__96">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__93"><code class="ph codeph">name</code></td>
+                                <td class="entry" headers="policy-commands__entry__94">✓</td>
+                                <td class="entry" headers="policy-commands__entry__95">1</td>
+                                <td class="entry" headers="policy-commands__entry__96">Name of the policy to modify.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__93"><code class="ph codeph">tag</code></td>
+                                <td class="entry" headers="policy-commands__entry__94">✓</td>
+                                <td class="entry" headers="policy-commands__entry__95">2</td>
+                                <td class="entry" headers="policy-commands__entry__96">Name of the tag to add to the
+                                    policy.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__93"><code class="ph codeph">rule</code></td>
+                                <td class="entry" headers="policy-commands__entry__94"></td>
+                                <td class="entry" headers="policy-commands__entry__95">3</td>
+                                <td class="entry" headers="policy-commands__entry__96">
+                                    <p class="p">Creates a new tag using a case-sensitive
+                                        match expression that applies the tag to a node if the
+                                        expression evaluates as true.</p>
+                                    <p class="p">If tag creation fails, the policy isn't
+                                        modified.</p>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">
+                <strong class="ph b">Sample commands</strong>
+            </p>
+            <div class="p">To add the existing tag <code class="ph codeph">virtual</code> to the policy <code class="ph codeph">example</code>:
+                <pre class="pre codeblock"><code>razor add-policy-tag --name example --tag virtual</code></pre>
+            </div>
+            <div class="p">To add a new tag <code class="ph codeph">virtual</code> to the policy <code class="ph codeph">example</code>:
+                <pre class="pre codeblock"><code>razor add-policy-tag --name example --tag virtual \
+      --rule '["=", ["fact", "virtual", "false"], "true"]'</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">remove-policy-tag</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">remove-policy-tag</code> command removes a tag from a policy. Because binding
+                to policies happens only when unbound nodes check in, adding a policy tag doesn't
+                affect nodes that are already bound to a policy.</p>
+            <div class="p">
+                <strong class="ph b">Command attributes</strong>
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="policy-commands__entry__109">Attributes </th>
+                                <th class="entry align-center" id="policy-commands__entry__110">Required </th>
+                                <th class="entry align-center" id="policy-commands__entry__111">Positional arguments </th>
+                                <th class="entry" id="policy-commands__entry__112">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__109"><code class="ph codeph">name</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__110">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__111">1 </td>
+                                <td class="entry" headers="policy-commands__entry__112">Name of the policy to
+                                    modify.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__109"><code class="ph codeph">tag</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__110">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__111">2 </td>
+                                <td class="entry" headers="policy-commands__entry__112">Name of the tag to
+                                    remove from the policy.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">
+                <strong class="ph b">Sample command</strong>
+            </p>
+            <div class="p">To remove the tag <code class="ph codeph">virtual</code> from the policy <code class="ph codeph">example</code>:
+                <pre class="pre codeblock"><code>razor remove-policy-tag --name example --tag virtual</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">update-policy-repo</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">update-policy-repo</code> command modifies the repository associated with a
+                policy.</p>
+            <div class="p">
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> Before using this command, use
+                        <code class="ph codeph">razor policies &lt;POLICYNAME&gt;
+                        nodes</code> to verify that no nodes are currently provisioning against
+                    the policy. If a node is provisioning against the policy when you run this
+                    command, provisioning might fail.</div>
+            </div>
+            <div class="p">
+                <strong class="ph b">Command attributes</strong>
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="policy-commands__entry__121">Attributes </th>
+                                <th class="entry align-center" id="policy-commands__entry__122">Required </th>
+                                <th class="entry align-center" id="policy-commands__entry__123">Positional arguments </th>
+                                <th class="entry" id="policy-commands__entry__124">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__121"><code class="ph codeph">policy</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__122">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__123">1 </td>
+                                <td class="entry" headers="policy-commands__entry__124">Name of the policy to
+                                    modify.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__121"><code class="ph codeph">repo</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__122">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__123">2 </td>
+                                <td class="entry" headers="policy-commands__entry__124">Name of the new
+                                    repository associated with the policy.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">
+                <strong class="ph b">Sample command</strong>
+            </p>
+            <div class="p">To update a policy's repository to a repository named <code class="ph codeph">fedora21</code>:
+                <pre class="pre codeblock"><code>razor update-policy-repo --policy my_policy --repo fedora21</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">update-policy-task</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">update-policy-task</code> command adds or removes a task from a policy.</p>
+            <div class="p">
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> Before using this command, use
+                        <code class="ph codeph">razor policies &lt;POLICYNAME&gt;
+                        nodes</code> to verify that no nodes are currently provisioning against
+                    the policy. If a node is provisioning against the policy when you run this
+                    command, provisioning might fail.</div>
+            </div>
+            <div class="p">
+                <strong class="ph b">Command attributes</strong>
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="policy-commands__entry__133">Attributes </th>
+                                <th class="entry align-center" id="policy-commands__entry__134">Required </th>
+                                <th class="entry align-center" id="policy-commands__entry__135">Positional arguments </th>
+                                <th class="entry" id="policy-commands__entry__136">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__133"><code class="ph codeph">policy</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__134">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__135">1 </td>
+                                <td class="entry" headers="policy-commands__entry__136">Name of the policy to
+                                    modify.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__133"><code class="ph codeph">task</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__134"></td>
+                                <td class="entry align-center" headers="policy-commands__entry__135">2 </td>
+                                <td class="entry" headers="policy-commands__entry__136">Name of the task to add
+                                    to the policy.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__133"><code class="ph codeph">no_task</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__134"></td>
+                                <td class="entry align-center" headers="policy-commands__entry__135"></td>
+                                <td class="entry" headers="policy-commands__entry__136"><code class="ph codeph">true</code> if the policy uses the
+                                    task in the repository, or <code class="ph codeph">false</code>.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">
+                <strong class="ph b">Sample commands</strong>
+            </p>
+            <div class="p">To update a policy's task to a task named <code class="ph codeph">other_task</code>:
+                <pre class="pre codeblock"><code>razor update-policy-task --policy my_policy --task other_task</code></pre>
+            </div>
+            <div class="p">To use the task specified by the policy's repository:
+                <pre class="pre codeblock"><code>razor update-policy-task --policy my_policy --no-task</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">update-policy-broker</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">update-policy-broker</code> command modifies the broker associated with a
+                policy.</p>
+            <div class="p">
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> Before using this command, use
+                        <code class="ph codeph">razor policies &lt;POLICYNAME&gt;
+                        nodes</code> to verify that no nodes are currently provisioning against
+                    the policy. If a node is provisioning against the policy when you run this
+                    command, provisioning might fail.</div>
+            </div>
+            <div class="p">
+                <strong class="ph b">Command attributes</strong>
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="policy-commands__entry__149">Attributes </th>
+                                <th class="entry align-center" id="policy-commands__entry__150">Required </th>
+                                <th class="entry align-center" id="policy-commands__entry__151">Positional arguments </th>
+                                <th class="entry" id="policy-commands__entry__152">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__149"><code class="ph codeph">policy</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__150">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__151">1 </td>
+                                <td class="entry" headers="policy-commands__entry__152">Name of the policy to
+                                    modify.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__149"><code class="ph codeph">broker</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__150">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__151">2 </td>
+                                <td class="entry" headers="policy-commands__entry__152">Name of the new broker
+                                    associated with the policy.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">
+                <strong class="ph b">Sample command</strong>
+            </p>
+            <div class="p">To update a policy's broker to a broker named <code class="ph codeph">legacy-puppet</code>:
+                <pre class="pre codeblock"><code>razor update-policy-broker --policy my_policy --broker legacy-puppet</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">update-policy-node-metadata</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">update-policy-node-metadata</code> command modifies the node metadata
+                associated with a policy.</p>
+            <div class="p">
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> Before using this command, use
+                        <code class="ph codeph">razor policies &lt;POLICYNAME&gt;
+                        nodes</code> to verify that no nodes are currently provisioning against
+                    the policy. If a node is provisioning against the policy when you run this
+                    command, provisioning might fail.</div>
+            </div>
+            <div class="p">
+                <strong class="ph b">Command attributes</strong>
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="policy-commands__entry__161">Attributes </th>
+                                <th class="entry align-center" id="policy-commands__entry__162">Required </th>
+                                <th class="entry align-center" id="policy-commands__entry__163">Positional arguments </th>
+                                <th class="entry" id="policy-commands__entry__164">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__161"><code class="ph codeph">policy</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__162">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__163">1 </td>
+                                <td class="entry" headers="policy-commands__entry__164">Name of the policy to
+                                    modify.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__161"><code class="ph codeph">key</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__162">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__163">2 </td>
+                                <td class="entry" headers="policy-commands__entry__164">Name of the key to
+                                    modify.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__161"><code class="ph codeph">value</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__162">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__163">3 </td>
+                                <td class="entry" headers="policy-commands__entry__164">New value for the
+                                    key.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__161"><code class="ph codeph">no_replace</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__162"></td>
+                                <td class="entry align-center" headers="policy-commands__entry__163"></td>
+                                <td class="entry" headers="policy-commands__entry__164"><code class="ph codeph">true</code> to cancel the update
+                                    operation if the specified key is already present, or <code class="ph codeph">false</code>.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">
+                <strong class="ph b">Sample command</strong>
+            </p>
+            <div class="p">To update a policy's node metadata for the <code class="ph codeph">my_key</code> value:
+                <pre class="pre codeblock"><code>razor update-policy-node-metadata --policy policy1 --key my_key --value my_value</code></pre>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">
+                <code class="ph codeph">delete-policy</code>
+            </h4>
+            
+            <p class="p">The <code class="ph codeph">delete-policy</code>
+                command deletes a policy from the <span class="ph">Razor</span> database.
+                Nodes bound to the policy aren't re-provisioned.</p>
+            <div class="p">
+                <strong class="ph b">Command attributes</strong>
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="policy-commands__entry__181">Attributes </th>
+                                <th class="entry align-center" id="policy-commands__entry__182">Required </th>
+                                <th class="entry align-center" id="policy-commands__entry__183">Positional arguments </th>
+                                <th class="entry" id="policy-commands__entry__184">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="policy-commands__entry__181"><code class="ph codeph">name</code>
+                                </td>
+                                <td class="entry align-center" headers="policy-commands__entry__182">✓ </td>
+                                <td class="entry align-center" headers="policy-commands__entry__183">1 </td>
+                                <td class="entry" headers="policy-commands__entry__184">Name of the policy to
+                                    delete.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">
+                <strong class="ph b">Sample command</strong>
+            </p>
+            <div class="p">To delete an obsolete policy:
+                <pre class="pre codeblock"><code> razor delete-policy --name my_obsolete_policy</code></pre>
+            </div>
+        </section>
+    </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title13" id="broker_commands">
+   <h3 class="title topictitle3" id="ariaid-title13">Broker commands</h3>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Broker commands enable you to create a new broker
+      configuration, set or clear a specified key value for a broker, and delete a specified
+      broker.</p>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">create-broker</code>
+         </h4>
+         
+         <p class="p">The <code class="ph codeph">create-broker</code>
+            command creates a new broker configuration used to hand off management of nodes.</p>
+         <p class="p">If you're using <span class="ph">Puppet Enterprise</span> for node
+            management, use the <code class="ph codeph">puppet-pe</code> broker
+            type. </p>
+         <div class="p">
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="broker_commands__entry__1">Attributes</th>
+                        <th class="entry" id="broker_commands__entry__2">Required</th>
+                        <th class="entry" id="broker_commands__entry__3">Positional arguments</th>
+                        <th class="entry" id="broker_commands__entry__4">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="broker_commands__entry__1">
+                           <code class="ph codeph">name</code>
+                        </td>
+                        <td class="entry" headers="broker_commands__entry__2">✓</td>
+                        <td class="entry" headers="broker_commands__entry__3">1</td>
+                        <td class="entry" headers="broker_commands__entry__4">Name for the new broker.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="broker_commands__entry__1">
+                           <code class="ph codeph">broker-type</code>
+                        </td>
+                        <td class="entry" headers="broker_commands__entry__2">✓</td>
+                        <td class="entry" headers="broker_commands__entry__3">2</td>
+                        <td class="entry" headers="broker_commands__entry__4">Usually <code class="ph codeph">puppet-pe</code>. Other valid values are <code class="ph codeph">puppet</code>, to transfer control to an open source
+                           Puppet master, and <code class="ph codeph">noop</code>,
+                           to leave the node unmanaged.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="broker_commands__entry__1">
+                           <code class="ph codeph">configuration</code>
+                        </td>
+                        <td class="entry" headers="broker_commands__entry__2"></td>
+                        <td class="entry" headers="broker_commands__entry__3"></td>
+                        <td class="entry" headers="broker_commands__entry__4">Configuration details specific to the <code class="ph codeph">broker_type</code>. For <code class="ph codeph">puppet_pe</code> brokers, properties
+                           include: <ul class="ul">
+                              <li class="li"><code class="ph codeph">server</code> — Host name of the Puppet master. </li>
+                              <li class="li"><code class="ph codeph">version</code> — The agent version to install. The default
+                                 value is <code class="ph codeph">current</code>. </li>
+                              <li class="li"><code class="ph codeph">ntpdate_server</code> — URL for an NTP server, such as
+                                 us.pool.ntp.org, used to synchronize the date and time before
+                                 installing the Puppet agent. </li>
+                           </ul></td>
+                     </tr>
+                  </tbody></table>
+         </div>
+         <p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p>
+         <div class="p">To create a simple <code class="ph codeph">puppet-pe</code>
+            broker:<pre class="pre codeblock"><code>razor create-broker --name puppet-pe -c server=puppet.example.org \
+  -c version=2015.3</code></pre></div>
+      </section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">update-broker-configuration</code>
+         </h4>
+         
+         <p class="p">The <code class="ph codeph">update-broker-configuration</code> command sets or clears a specified key value
+            for a broker.</p>
+         <div class="p">
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="broker_commands__entry__17">Attributes</th>
+                        <th class="entry" id="broker_commands__entry__18">Required</th>
+                        <th class="entry" id="broker_commands__entry__19">Positional arguments</th>
+                        <th class="entry" id="broker_commands__entry__20">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="broker_commands__entry__17">
+                           <code class="ph codeph">broker</code>
+                        </td>
+                        <td class="entry" headers="broker_commands__entry__18">✓</td>
+                        <td class="entry" headers="broker_commands__entry__19">1</td>
+                        <td class="entry" headers="broker_commands__entry__20">Name of the broker to update.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="broker_commands__entry__17">
+                           <code class="ph codeph">key</code>
+                        </td>
+                        <td class="entry" headers="broker_commands__entry__18">✓</td>
+                        <td class="entry" headers="broker_commands__entry__19">2</td>
+                        <td class="entry" headers="broker_commands__entry__20">
+                           <p class="p">Name of the key to modify in the broker's
+                              configuration file.</p>
+                           <p class="p">For&nbsp;<code class="ph codeph">puppet-pe</code>&nbsp;brokers, this is usually&nbsp;<code class="ph codeph">server&nbsp;</code>or&nbsp;<code class="ph codeph">version</code>.</p>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="broker_commands__entry__17">
+                           <code class="ph codeph">value</code>
+                        </td>
+                        <td class="entry" headers="broker_commands__entry__18"></td>
+                        <td class="entry" headers="broker_commands__entry__19">3</td>
+                        <td class="entry" headers="broker_commands__entry__20">
+                           <p class="p">New value to use for the key.</p>
+                           <p class="p">This attribute can't be used with&nbsp;<code class="ph codeph">clear</code>.</p>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="broker_commands__entry__17">
+                           <code class="ph codeph">clear</code>
+                        </td>
+                        <td class="entry" headers="broker_commands__entry__18"></td>
+                        <td class="entry" headers="broker_commands__entry__19"></td>
+                        <td class="entry" headers="broker_commands__entry__20">
+                           <p class="p"><code class="ph codeph">true</code>&nbsp;to clear the value of the specified key, or
+                                 <code class="ph codeph">false</code>.</p>
+                           <p class="p">This attribute can't be used with&nbsp;<code class="ph codeph">value</code>.</p>
+                        </td>
+                     </tr>
+                  </tbody></table>
+         </div>
+         <p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p>
+         <div class="p">To change the key: <code class="ph codeph">some_key</code> to <code class="ph codeph">new_value</code>:
+            <pre class="pre codeblock"><code>razor update-broker-configuration --broker mybroker --key some_key --value new_value</code></pre></div>
+      </section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">delete-broker</code>
+         </h4>
+         
+         <p class="p">The <code class="ph codeph">delete-broker</code>
+            command deletes a specified broker from the <span class="ph">Razor</span>
+            database.</p>
+         <div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> Before deleting a broker, remove any references
+               to it in policies. This command fails if a policy is using the broker.</div>
+         </div>
+         <div class="p">
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="broker_commands__entry__37">Attributes </th>
+                        <th class="entry align-center" id="broker_commands__entry__38">Required </th>
+                        <th class="entry align-center" id="broker_commands__entry__39">Positional
+                           arguments </th>
+                        <th class="entry" id="broker_commands__entry__40">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="broker_commands__entry__37">
+                           <code class="ph codeph">name</code>
+                        </td>
+                        <td class="entry align-center" headers="broker_commands__entry__38">✓ </td>
+                        <td class="entry align-center" headers="broker_commands__entry__39">1 </td>
+                        <td class="entry" headers="broker_commands__entry__40">Name of the broker to
+                           delete.</td>
+                     </tr>
+                  </tbody></table>
+         </div>
+         <p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p>
+         <div class="p">To delete an obsolete broker:
+            <pre class="pre codeblock"><code>razor delete-broker --name my_obsolete_broker</code></pre></div>
+      </section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="brokers.html#create_a_new_broker_type" title="To create a broker called sample:">Create a new broker type</a></li></ul></div></nav></article><article class="topic reference nested2" aria-labelledby="ariaid-title14" id="hook_commands">
+   <h3 class="title topictitle3" id="ariaid-title14">Hook commands</h3>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Hooks are custom, executable scripts that are triggered to
+      run when a node hits certain phases in its lifecycle. A hook script receives several
+      properties as input, and can make changes in the node's metadata or the hook's internal
+      configuration.</p>
+      <section class="section"><p class="p">Hooks can be useful for:</p><ul class="ul">
+            <li class="li">Notifying an external system about the stage of a node's
+               installation.</li>
+            <li class="li">Querying external systems for information that modifies how a
+               node gets installed.</li>
+            <li class="li">Calculating complex values for use in a node's installation
+               configuration.</li>
+         </ul></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">create-hook</code>
+         </h4>
+         
+         <p class="p">The <code class="ph codeph">create-hook</code>
+            command enables a hook to run when specified events occur.</p>
+         <p class="p"><strong class="ph b">Command attributes</strong></p>
+         <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="hook_commands__entry__1">Attributes</th>
+                     <th class="entry" id="hook_commands__entry__2">Required</th>
+                     <th class="entry" id="hook_commands__entry__3">Positional arguments</th>
+                     <th class="entry" id="hook_commands__entry__4">Description</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__1">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__2">✓</td>
+                     <td class="entry" headers="hook_commands__entry__3">1</td>
+                     <td class="entry" headers="hook_commands__entry__4">Name of the new hook.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__1">
+                        <code class="ph codeph">hook_type</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__2">✓</td>
+                     <td class="entry" headers="hook_commands__entry__3">2</td>
+                     <td class="entry" headers="hook_commands__entry__4">Type of hook that the new hook is based on. For
+                        available hook types on your server, run&nbsp;<code class="ph codeph">razor create-hook --help</code>.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__1"><code class="ph codeph">configuration</code></td>
+                     <td class="entry" headers="hook_commands__entry__2"></td>
+                     <td class="entry" headers="hook_commands__entry__3"></td>
+                     <td class="entry" headers="hook_commands__entry__4">
+                        <p class="p">Configuration settings as required by the&nbsp;<code class="ph codeph">hook_type.</code></p>
+                        <p class="p">This argument sets the initial configuration values
+                           for a hook. Configuration values can change as the hook is executed based
+                           on events or the&nbsp;<code class="ph codeph">update-hook-configuration</code> command.</p>
+                        <p class="p">This attribute can be abbreviated as&nbsp;<code class="ph codeph">-c</code>.</p>
+                     </td>
+                  </tr>
+               </tbody></table>
+         <p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p><div class="p">To create a simple hook:
+            <pre class="pre codeblock"><code>razor create-hook --name myhook --hook-type some_hook --configuration foo=7</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">run-hook</code>
+         </h4>
+         <p class="p">The <code class="ph codeph">run-hook</code> command
+            executes a hook with parameters you specify. This command is useful to test a hook
+            you're writing, or to re-run a hook that failed.</p>
+         <p class="p">
+            <strong class="ph b">Command attributes</strong>
+         </p>
+         <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="hook_commands__entry__17">Attributes</th>
+                     <th class="entry" id="hook_commands__entry__18">Required</th>
+                     <th class="entry" id="hook_commands__entry__19">Positional arguments</th>
+                     <th class="entry" id="hook_commands__entry__20">Description</th>
+                  </tr>
+               </thead><tbody class="tbody">
+
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__17">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__18">✓</td>
+                     <td class="entry" headers="hook_commands__entry__19">1</td>
+                     <td class="entry" headers="hook_commands__entry__20">Name of the hook to run.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__17">
+                        <code class="ph codeph">event</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__18">✓</td>
+                     <td class="entry" headers="hook_commands__entry__19"></td>
+                     <td class="entry" headers="hook_commands__entry__20">
+                        <p class="p">Name of the event to trigger the hook.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__17">
+                        <code class="ph codeph">node</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__18">✓</td>
+                     <td class="entry" headers="hook_commands__entry__19"></td>
+                     <td class="entry" headers="hook_commands__entry__20">Name of the node you want to run the hook
+                        on.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__17">
+                        <code class="ph codeph">policy</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__18"></td>
+                     <td class="entry" headers="hook_commands__entry__19"></td>
+                     <td class="entry" headers="hook_commands__entry__20">
+                        <p class="p">Name of the policy you want to use as input to the
+                           hook script when the hook runs.</p>
+                        <p class="p">This attribute applies only to events that affect
+                           policies, for example&nbsp;<code class="ph codeph">node-bound-to-policy</code>&nbsp;and&nbsp;<code class="ph codeph">node-unbound-from-policy</code>.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__17">
+                        <code class="ph codeph">debug</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__18"></td>
+                     <td class="entry" headers="hook_commands__entry__19"></td>
+                     <td class="entry" headers="hook_commands__entry__20">
+                        <p class="p"><code class="ph codeph">true</code>&nbsp;to include debug information in the event log, or
+                              <code class="ph codeph">false</code>.</p>
+                        <p class="p">If omitted, debug information is not logged.</p>
+                     </td>
+                  </tr>
+               </tbody></table>
+         <p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p><div class="p">To run a hook called <code class="ph codeph">counter</code> when a node boots:
+            <pre class="pre codeblock"><code>razor run-hook --name counter --event node-booted --node node1</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">update-hook-configuration</code>
+         </h4><p class="p">The <code class="ph codeph">update-hook-configuration</code> command sets or clears a specified key value for
+            a hook. This can be useful to iteratively test a hook you're writing. For example, you
+            can write the hook, test it with <code class="ph codeph">run-hook</code>, then modify the hook as needed with <code class="ph codeph">update-hook-configuration</code>.</p>
+         <p class="p">
+            <strong class="ph b">Command attributes</strong>
+         </p>
+         <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="hook_commands__entry__41">Attributes</th>
+                     <th class="entry" id="hook_commands__entry__42">Required</th>
+                     <th class="entry" id="hook_commands__entry__43">Positional arguments</th>
+                     <th class="entry" id="hook_commands__entry__44">Description</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__41">
+                        <code class="ph codeph">hook</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__42">✓</td>
+                     <td class="entry" headers="hook_commands__entry__43">1</td>
+                     <td class="entry" headers="hook_commands__entry__44">Name of the hook to update.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__41">
+                        <code class="ph codeph">key</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__42">✓</td>
+                     <td class="entry" headers="hook_commands__entry__43">2</td>
+                     <td class="entry" headers="hook_commands__entry__44">Name of the key to modify in the hook's
+                        configuration file.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__41">
+                        <code class="ph codeph">value</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__42">*</td>
+                     <td class="entry" headers="hook_commands__entry__43">3</td>
+                     <td class="entry" headers="hook_commands__entry__44">Value to change the key to.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="hook_commands__entry__41">
+                        <code class="ph codeph">clear</code>
+                     </td>
+                     <td class="entry" headers="hook_commands__entry__42">*</td>
+                     <td class="entry" headers="hook_commands__entry__43"></td>
+                     <td class="entry" headers="hook_commands__entry__44"><code class="ph codeph">true</code> to clear the value of the specified key, or <code class="ph codeph">false</code>.</td>
+                  </tr>
+               </tbody></table>
+         <p class="p">* You must specify <code class="ph codeph">value</code> or <code class="ph codeph">clear</code>.</p><p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p><div class="p">To change the key <code class="ph codeph">some_key</code> to <code class="ph codeph">new_value</code>:
+            <pre class="pre codeblock"><code>razor update-hook-configuration --hook hook1 \
+  --key my_key --value new_value</code></pre></div></section>
+      <section class="section"><h4 class="title sectiontitle">
+            <code class="ph codeph">delete-hook</code>
+         </h4><p class="p">The <code class="ph codeph">delete-hook</code> command deletes a specified hook from the <span class="ph">Razor</span> database.</p><div class="p">
+            <strong class="ph b">Command attributes</strong>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="hook_commands__entry__61">Attributes </th>
+                        <th class="entry align-center" id="hook_commands__entry__62">Required </th>
+                        <th class="entry align-center" id="hook_commands__entry__63">Positional
+                           arguments </th>
+                        <th class="entry" id="hook_commands__entry__64">Description</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="hook_commands__entry__61">
+                           <code class="ph codeph">name</code>
+                        </td>
+                        <td class="entry align-center" headers="hook_commands__entry__62">✓ </td>
+                        <td class="entry align-center" headers="hook_commands__entry__63">1 </td>
+                        <td class="entry" headers="hook_commands__entry__64">Name of the hook to
+                           delete.</td>
+                     </tr>
+                  </tbody></table>
+         </div><p class="p">
+            <strong class="ph b">Sample command</strong>
+         </p><div class="p">To delete an obsolete hook:
+            <pre class="pre codeblock"><code>razor delete-hook --name my_obsolete_hook</code></pre></div></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="available_events.html" title="These are the events for which hook scripts can be provided:">Available events</a></li></ul></div></nav></article></article></article></article></main></body></html>

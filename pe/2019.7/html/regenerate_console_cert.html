@@ -1,0 +1,23 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="The console certificate expires every 824 days. Regenerate the console certificate when it's nearing or past expiration, or if the certificate is corrupted and you're unable to access the console."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="regenerate_console_cert"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Regenerate the console certificate</title></head><body id="regenerate_console_cert"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Regenerate the console certificate</h1>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">The console certificate expires every 824 days. Regenerate the console certificate
+        when it's nearing or past expiration, or if the certificate is corrupted and you're unable
+        to access the console. </p>
+        <section class="section context">After you delete the existing console certificate and its artifacts, a new
+            certificate is generated automatically on the next <span class="ph">Puppet</span>
+            run.</section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On your master, run: </span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>rm /etc/puppetlabs/puppet/ssl/ca/signed/console-cert.pem /etc/puppetlabs/puppet/ssl/certs/console-cert.pem /etc/puppetlabs/puppet/ssl/private_keys/console-cert.pem /etc/puppetlabs/puppet/ssl/public_keys/console-cert.pem</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run <span class="ph">Puppet</span>, <code class="ph codeph">puppet agent -t</code>, or
+                    wait for the next <span class="ph">Puppet</span> run.</span>
+            </li></ol></section>
+    </div>
+</article></main></body></html>

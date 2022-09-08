@@ -1,0 +1,86 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Code Manager uses r10k and the file sync service to stage, commit, and sync your code, automatically managing your environments and modules."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="how_code_manager_works"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>How Code Manager works</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="how_code_manager_works">
+    <h1 class="title topictitle1" id="ariaid-title1">How <span class="ph">Code Manager</span> works </h1>
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">Code Manager</span> uses <span class="ph">r10k</span> and the file
+        sync service to stage, commit, and sync your code, automatically managing your environments
+        and modules. </p>
+        <p class="p">First, create a control repository with branches for each environment
+            that you want to create (such as production, development, or testing). Create a <span class="ph">Puppetfile</span> for each of your environments, specifying
+            exactly which modules to install in each environment. This allows <span class="ph">Code Manager</span> to create directory environments, based on the
+            branches you've set up. When you push code to your control repo, you trigger <span class="ph">Code Manager</span> to pull that new code into a staging code
+            directory (<code class="ph codeph">/etc/puppetlabs/code-staging</code>). File sync then picks up those changes, pauses
+                <span class="ph">Puppet Server</span> to avoid conflicts, and then syncs the new
+            code to the live code directories on your masters.</p>
+        <p class="p">For more information about using environments in <span class="ph">Puppet</span>, see <a class="xref" href="https://puppet.com/docs/puppet/6.10/environments_about.html" target="_blank">About Environments</a>.</p>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="understanding_file_sync_and_the_staging_directory">
+   <h2 class="title topictitle2" id="ariaid-title2">Understanding file sync and the staging directory </h2>
+   
+   <div class="body conbody"><p class="shortdesc">To sync your code across multiple masters and to make sure
+      that code stays consistent, <span class="ph">Code Manager</span> relies on file sync and two
+      different code directories: the staging directory and the live code directory.</p>
+      <p class="p">Without <span class="ph">Code Manager</span> or file sync, <span class="ph">Puppet</span> code lives in the codedir, or live code directory, at
+            <code class="ph codeph">/etc/puppetlabs/code</code>. But the file sync
+         service looks for code in a code staging directory (<code class="ph codeph">/etc/puppetlabs/code-staging</code>), and then syncs that to the live codedir. </p>
+      <p class="p"><span class="ph">Code Manager</span> moves new code from source
+         control into the staging directory, and then file sync moves it into the live code
+         directory. This means you no longer write code to the codedir; if you do, the next time <span class="ph">Code Manager</span> deploys code from source control, it overwrites your
+         changes.</p>
+      <p class="p">For more detailed information about how file sync works, see the related
+         topic about file sync.</p>
+      <div class="p">
+         <div class="note caution note_caution"><span class="note__title">CAUTION:</span> 
+            <p class="p">Don't directly modify code in the staging directory. <span class="ph">Code Manager</span> overwrites it with updates from the control
+               repo. Similarly, don't modify code in the live code directory, because file sync
+               overwrites that with code from the staging directory.</p>
+         </div>
+      </div>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="filesync_about.html#about_file_sync" title="File sync helps Code Manager keep your Puppet code synchronized across multiple masters.">About file sync</a></li></ul></div></nav></article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="environment_isolation_metadata_and_code_manager">
+    <h2 class="title topictitle2" id="ariaid-title3">Environment isolation metadata and <span class="ph">Code Manager</span></h2>
+    
+    <div class="body conbody"><p class="shortdesc">Both your live and staging code directories contain
+        metadata files that are generated by file sync to provide environment isolation for your
+        resource types. </p>
+        <p class="p">These files, which have a <code class="ph codeph">.pp</code> extension, ensure that each environment uses the correct version of
+            the resource type. Do not delete or modify these files. Do not use expressions from
+            these files in regular manifests.</p>
+        <p class="p">These files are generated as <span class="ph">Code Manager</span>
+            deploys new code in your environments. If you are new to <span class="ph">Code Manager</span>, these files are generated when you first deploy
+            your environments. If you already use <span class="ph">Code Manager</span>, the files
+            are generated as you make and deploy changes to your existing environments.</p>
+        <p class="p">For more details about these files and how they isolate resource types
+            in multiple environments, see environment isolation.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="moving_from_r10k_to_code_manager">
+    <h2 class="title topictitle2" id="ariaid-title4">Moving from <span class="ph">r10k</span> to <span class="ph">Code Manager</span>
+    </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Switching from <span class="ph">r10k</span> to <span class="ph">Code Manager</span> can improve automation of your code management and
+        deployments, but some <span class="ph">r10k</span> users might not be ready to switch
+        yet.</p>
+        <p class="p"><span class="ph">Code Manager</span> uses <span class="ph">r10k</span> in the background to improve automation of your code
+            management and deployment. However, switching to <span class="ph">Code Manager</span>
+            means you can no longer use <span class="ph">r10k</span> manually. Because of
+            this, some <span class="ph">r10k</span> users might not want to move to <span class="ph">Code Manager</span> yet. Specifically, be aware of the following
+            restrictions:</p>
+        <ul class="ul">
+            <li class="li">If you use <span class="ph">Code Manager</span>, you <strong class="ph b">cannot</strong> deploy code manually with <span class="ph">r10k</span>. If you depend on the ability to deploy modules
+                directly from <span class="ph">r10k</span>, using the <code class="ph codeph">r10k deploy module</code> command, continue to use your
+                current <span class="ph">r10k</span> workflow.</li>
+            <li class="li"><span class="ph">Code Manager</span> must deploy all control
+                repos to the same directory. If you are using <span class="ph">r10k</span> to
+                deploy control repos to different directories, continue to use your current <span class="ph">r10k</span> workflow.</li>
+            <li class="li"><span class="ph">Code Manager</span> does not support system
+                .SSH configuration or other shellgit options.</li>
+            <li class="li"><span class="ph">Code Manager</span> does not support
+                post-deploy scripts.</li>
+        </ul>
+        <p class="p">If you rely on any of the above configurations, or any other <span class="ph">r10k</span> configuration that <span class="ph">Code Manager</span> doesn't yet support, continue to use your current
+                <span class="ph">r10k</span> workflow. If you are using a custom script to
+            deploy code, carefully assess whether <span class="ph">Code Manager</span> meets your needs.</p>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="r10k.html" title="r10k is a code management tool that allows you to manage your environment configurations (such as production, testing, and development) in a source control repository.">Managing code with r10k</a></li></ul></div></nav></article></article></article></main></body></html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="You don’t explicitly add remote users to PE. Instead, after the external directory service has been successfully connected, remote users must log into PE, which creates their user record."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="working_with_user_groups_from_an_external_directory_service"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Working with user groups from an external directory service</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="working_with_user_groups_from_an_external_directory_service">
+   <h1 class="title topictitle1" id="ariaid-title1">Working with user groups from an external directory service </h1>
+   
+   <div class="body conbody"><p class="shortdesc">You don’t explicitly add remote users to <span class="ph">PE</span>. Instead, after the external directory service has been
+      successfully connected, remote users must log into <span class="ph">PE</span>, which
+      creates their user record. </p>
+      <p class="p">If the user belongs to an external directory group that has been
+         imported into <span class="ph">PE</span> and then assigned to a role, the user is
+         assigned to that role and gains the privileges of the role. Roles are additive: You can
+         assign users to more than one role, and they gain the privileges of all the roles to which
+         they are assigned.</p>
+   </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="import_a_user_group_from_an_external_directory_service">
+   <h2 class="title topictitle2" id="ariaid-title2">Import a user group from an external directory service </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">You import existing external directory groups to <span class="ph">PE</span> explicitly, which means you add the group by name. </p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">User groups</span>. </span>
+                <div class="itemgroup info"><p class="p"><span class="keyword wintitle">User groups</span> is available only
+                        if you have established a connection with an external directory.</p></div>
+            </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Login</span> field, enter the name of a group from your external directory.
+            </span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Add group</span>.</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note remember note_remember"><span class="note__title">Remember:</span> No user roles are listed until you add
+                     this group to a role. No users are listed until a user who belongs to this
+                     group logs into <span class="ph">PE</span>.</div>
+               </div>
+            </div>
+         </li></ol></section>
+   </div>
+<article class="topic concept nested2" aria-labelledby="ariaid-title3" id="troubleshooting_a_pe_user_and_user_group_have_the_same_name">
+    <h3 class="title topictitle3" id="ariaid-title3">Troubleshooting: A PE user and user group have the same name </h3>
+    
+    <div class="body conbody"><p class="shortdesc">If you have both a PE user and an external directory user
+        group with the exact same name, PE throws an error when you try to log on as that user or
+        import the user group. </p>
+        <p class="p">To work around this problem, you can change your settings to use
+            different RDNs for users and groups. This works as long as all of your users are
+            contained under one RDN that is unique from the RDN that contains all of your groups.
+                </p>
+    </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="assign_a_user_group_to_a_user_role">
+    <h2 class="title topictitle2" id="ariaid-title4">Assign a user group to a user role </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">After you’ve imported a group, you can assign it a user
+        role, which gives each group member the permissions associated with that role. You can add
+        user groups to existing roles, or you can create a new role, and then add the group to the
+        new role. </p>
+        <section class="section context"><p class="p"></p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">User roles.</span></span>
+            </li><li class="li step">
+                <span class="ph cmd">Click the role you want to add the user group
+                    to.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Member groups</span>. In the <span class="ph uicontrol">Group name</span> field, select the user group you
+                    want to add to the user role.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add group</span>, and commit changes. </span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="delete_a_user_group">
+    <h2 class="title topictitle2" id="ariaid-title5">Delete a user group </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">You can delete a user group in the console. Users who were
+        part of the deleted group lose the permissions associated with roles assigned to the group. </p>
+        <section class="section context"><div class="p"><div class="note remember note_remember"><span class="note__title">Remember:</span> This action removes the group only from Puppet
+                    Enterprise, not from the associated external directory service.
+            </div></div></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">User groups</span>. </span>
+                <div class="itemgroup info"><p class="p"><span class="keyword wintitle">User groups</span> is available only
+                        if you have established a connection with an external directory.</p></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Locate the group that you wish to delete. </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Remove</span>.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="removing_a_remote_user_s_access_to_pe">
+   <h2 class="title topictitle2" id="ariaid-title6">Removing a remote user’s access to PE </h2>
+   
+   <div class="body conbody"><p class="shortdesc">In order to fully revoke the remote user's access to <span class="ph">Puppet Enterprise</span>, you must also remove the user from the external
+      directory groups accessed by <span class="ph">PE</span>. </p>
+      <p class="p">Deleting a remote user's <span class="ph">PE</span> account does
+         not automatically prevent that user from accessing <span class="ph">PE</span> in the
+         future. So long as the remote user is still a member of a group in an external directory
+         that <span class="ph">PE</span> is configured to access, the user retains the
+         ability to log into <span class="ph">PE</span>. </p>
+      <p class="p">If you delete a user from your external directory service but not from
+            <span class="ph">PE</span>, the user can no longer log in, but any generated
+         tokens or existing console sessions continue to be valid until they expire. To invalidate
+         the user's tokens or sessions, revoke the user's <span class="ph">PE</span> account,
+         which also automatically revokes all tokens for the user. You must manually delete the user
+         for their account record to disappear.</p>
+   </div>
+</article></article></article></main></body></html>

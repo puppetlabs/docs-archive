@@ -1,0 +1,320 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Disaster recovery creates a replica of your master."><meta name="DC.relation" scheme="URI" content="dr_overview.html#dr-failovers"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="dr-overview"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Disaster recovery</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="dr-overview">
+   <h1 class="title topictitle1" id="ariaid-title1">Disaster recovery</h1>
+   
+   <div class="body conbody"><p class="shortdesc">Disaster recovery creates a replica of your master. </p>
+      <p class="p">You can have only one replica at a time, and you can add disaster recovery to an
+         installation with or without compilers. Disaster recovery isn't supported with standalone
+         PE-PostgreSQL or FIPS-compliant installations.</p>
+      <p class="p">There are two main advantages to enabling disaster recovery:</p>
+      <ul class="ul">
+         <li class="li">
+            <p class="p">If your master fails, the replica takes over, continuing to
+               perform critical operations. </p>
+         </li>
+         <li class="li">
+            <p class="p">If your master can’t be repaired, you can promote the replica to
+               master. Promotion establishes the replica as the new, permanent master.</p>
+         </li>
+      </ul>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="dr_overview.html#dr-failovers" title="Failover occurs when the replica takes over services usually performed by the master.">What happens during failovers</a></li></ul></div></nav><article class="topic concept nested1" aria-labelledby="ariaid-title2" id="dr-architecture">
+   <h2 class="title topictitle2" id="ariaid-title2">Disaster recovery architecture </h2>
+   
+   <div class="body conbody"><p class="shortdesc">The replica is not an exact copy of the master. Rather, the
+      replica duplicates specific infrastructure components and services. <span class="ph">Hiera</span> data and other custom configurations are not
+      replicated.</p>
+      <p class="p">Replication can be <dfn class="term">read-write</dfn>,
+         meaning that data can be written to the service or component on either the master or the
+         replica, and the data is synced to both nodes. Alternatively, replication can be <dfn class="term">read-only</dfn>, where data is written only to the master and
+         synced to the replica. Some components and services, like <span class="ph">Puppet Server</span> and the console service UI, are not replicated
+         because they contain no native data.</p>
+      <p class="p">Some components and services are activated immediately when you enable a
+         replica; others aren't active until you promote a replica. After you provision and enable a
+         replica, it serves as a compiler, redirecting <span class="ph">PuppetDB</span> and
+         cert requests to the master.</p>
+      <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+               <tr class="row">
+                  <th class="entry" id="dr-architecture__entry__1">Component or service </th>
+                  <th class="entry" id="dr-architecture__entry__2">Type of replication </th>
+                  <th class="entry" id="dr-architecture__entry__3">Activated when replica is...</th>
+               </tr>
+            </thead><tbody class="tbody">
+               <tr class="row">
+                  <td class="entry" headers="dr-architecture__entry__1">
+                     <span class="ph">Puppet Server</span>
+                  </td>
+                  <td class="entry" headers="dr-architecture__entry__2">none </td>
+                  <td class="entry" headers="dr-architecture__entry__3">enabled</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="dr-architecture__entry__1">File sync client </td>
+                  <td class="entry" headers="dr-architecture__entry__2">read-only </td>
+                  <td class="entry" headers="dr-architecture__entry__3">enabled</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="dr-architecture__entry__1">
+                     <span class="ph">PuppetDB</span>
+                  </td>
+                  <td class="entry" headers="dr-architecture__entry__2">read-write </td>
+                  <td class="entry" headers="dr-architecture__entry__3">enabled</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="dr-architecture__entry__1">Certificate authority </td>
+                  <td class="entry" headers="dr-architecture__entry__2">read-only </td>
+                  <td class="entry" headers="dr-architecture__entry__3">promoted</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="dr-architecture__entry__1">RBAC service </td>
+                  <td class="entry" headers="dr-architecture__entry__2">read-only </td>
+                  <td class="entry" headers="dr-architecture__entry__3">enabled</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="dr-architecture__entry__1">Node classifier service </td>
+                  <td class="entry" headers="dr-architecture__entry__2">read-only </td>
+                  <td class="entry" headers="dr-architecture__entry__3">enabled</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="dr-architecture__entry__1">Activity service </td>
+                  <td class="entry" headers="dr-architecture__entry__2">read-only </td>
+                  <td class="entry" headers="dr-architecture__entry__3">enabled</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="dr-architecture__entry__1">Orchestration service </td>
+                  <td class="entry" headers="dr-architecture__entry__2">read-only </td>
+                  <td class="entry" headers="dr-architecture__entry__3">promoted</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="dr-architecture__entry__1">Console service UI </td>
+                  <td class="entry" headers="dr-architecture__entry__2">none </td>
+                  <td class="entry" headers="dr-architecture__entry__3">promoted</td>
+               </tr>
+            </tbody></table>
+      <div class="p">
+         <div class="note important note_important"><span class="note__title">Important:</span> When you enable disaster recovery, you
+                must use <span class="ph">Hiera</span> or <code class="ph codeph">pe.conf</code> only — not the console — to specify configuration parameters.
+                Using <code class="ph codeph">pe.conf</code> or <span class="ph">Hiera</span> ensures that configuration is applied to both your master and replica. </div>
+      </div>
+      <p class="p"> In a standard installation, when a <span class="ph">Puppet</span> run fails over, agents communicate with the replica instead of the master. In a large or
+         extra-large installation with compilers, agents communicate with load balancers or
+         compilers, which communicate with the master or replica.</p>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#configure_settings_with_hiera" title="Hiera is a hierarchy-based method of configuration management that relies on a “defaults, with overrides” system. When you add a parameter or setting to your Hiera data, Hiera searches through the data in the order it was written to find the value you want to change. Once found, it overrides the default value with the new parameter or setting. You can use Hiera to manage your PE configuration settings.">Configure settings with Hiera</a></li></ul></div></nav></article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="dr-failovers">
+         <h2 class="title topictitle2" id="ariaid-title3">What happens during failovers </h2>
+         
+         <div class="body conbody"><p class="shortdesc"> Failover occurs when the replica takes over services
+                  usually performed by the master.</p>
+                  <p class="p">Failover is automatic — you don’t have to take action to
+                           activate the replica. With disaster recovery enabled, <span class="ph">Puppet</span> runs are directed first to the
+                           master. If the master is either fully or partially unreachable, runs are
+                           directed to the replica.</p>
+                  <p class="p">In partial failovers, <span class="ph">Puppet</span>
+                           runs can use the server, node classifier, or <span class="ph">PuppetDB</span> on the replica if those
+                           services aren’t reachable on the master. For example, if the master’s
+                           node classifier fails, but its <span class="ph">Puppet Server</span> is
+                           still running, agent runs use the <span class="ph">Puppet Server</span>
+                           on the master but fail over to the replica’s node classifier.</p>
+                  <p class="p">What works during failovers:</p>
+                  <ul class="ul">
+                           <li class="li">Scheduled <span class="ph">Puppet</span>
+                                    runs</li>
+                           <li class="li">Catalog compilation</li>
+                           <li class="li">Viewing classification data using the node
+                                    classifier API</li>
+                           <li class="li">Reporting and queries based on <span class="ph">PuppetDB</span> data</li>
+                  </ul>
+                  <p class="p">What doesn’t work during failovers:</p>
+                  <ul class="ul">
+                           <li class="li">Deploying new <span class="ph">Puppet</span> code</li>
+                           <li class="li">Editing node classifier data</li>
+                           <li class="li">Using the console</li>
+                           <li class="li">Certificate functionality, including provisioning
+                                    new agents, revoking certificates, or running the <code class="ph codeph">puppet
+                                             certificate</code> command</li>
+                           <li class="li">Most CLI tools</li>
+                           <li class="li">Application orchestration</li>
+                  </ul>
+         </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="dr-requirements">
+    <h2 class="title topictitle2" id="ariaid-title4">System and software requirements for disaster recovery</h2>
+    
+    <div class="body refbody"><p class="shortdesc">Your <span class="ph">Puppet</span> infrastructure
+        must meet specific requirements in order to configure disaster recovery.</p>
+        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="dr-requirements__entry__1">Component</th>
+                        <th class="entry" id="dr-requirements__entry__2">Requirement</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="dr-requirements__entry__1">Operating system</td>
+                        <td class="entry" headers="dr-requirements__entry__2">All supported <span class="ph">PE</span> master platforms.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="dr-requirements__entry__1">Software</td>
+                        <td class="entry" headers="dr-requirements__entry__2"><ul class="ul">
+                                <li class="li">You must use&nbsp;<span class="ph">Code Manager</span>&nbsp;so that code is
+                                    deployed to both the master and the replica after you enable a
+                                    replica.</li>
+                                <li class="li"><p class="p">You must use the
+                                        default <span class="ph">PE</span> node classifier so
+                                        that disaster recovery classification can be applied to
+                                        nodes.</p></li>
+                                <li class="li">Orchestrator&nbsp;must be enabled so that
+                                    agents are updated when you provision or enable a replica.
+                                    Orchestrator is enabled by default.</li>
+                            </ul></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="dr-requirements__entry__1">Replica</td>
+                        <td class="entry" headers="dr-requirements__entry__2"><ul class="ul">
+                                <li class="li">Must be an agent node that doesn’t have a
+                                    specific function already. You can decommission a node,
+                                    uninstall all puppet packages, and re-commission the node to be
+                                    a replica. However, a compiler cannot perform two functions, for
+                                    example, as a compiler and a replica.</li>
+                                <li class="li">Must have the same hardware specifications
+                                    and capabilities as your master node.</li>
+                            </ul></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="dr-requirements__entry__1">Firewall</td>
+                        <td class="entry" headers="dr-requirements__entry__2">Both the master and the replica must comply
+                            with these port requirements: <ul class="ul">
+                                <li class="li">Firewall configuration for installations
+                                    with compilers. These requirements apply whether your disaster recovery
+                                    environment uses a single master or compilers.</li>
+                                <li class="li">Port 5432 must be open to facilitate
+                                    database replication by console services.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="dr-requirements__entry__1">Node names</td>
+                        <td class="entry" headers="dr-requirements__entry__2"><ul class="ul">
+                                <li class="li">You must use resolvable domain names when
+                                    specifying node names for the master and replica.</li>
+                            </ul></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="dr-requirements__entry__1">RBAC tokens</td>
+                        <td class="entry" headers="dr-requirements__entry__2"><ul class="ul">
+                                <li class="li">You must have an admin RBAC token when
+                                        running&nbsp;<code class="ph codeph">puppet
+                                        infrastructure</code> commands, including&nbsp;<code class="ph codeph">provision</code>,&nbsp;<code class="ph codeph">enable</code>, and&nbsp;<code class="ph codeph">forget</code>. You
+                                    can&nbsp;generate a token using the&nbsp;<code class="ph codeph">puppet-access</code>&nbsp;command.<div class="note note note_note"><span class="note__title">Note:</span> You don’t need an RBAC token to
+                                        promote a replica.</div>
+                                </li>
+                            </ul></td>
+                    </tr>
+                </tbody></table>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="managing_puppet_code.html" title="Puppet Enterprise (PE) includes built-in tools for managing and deploying your Puppet infrastructure. Code Manager and r10k are code management tools that automatically install modules, create and maintain environments, and deploy new code to your masters, all based on version control of your Puppet code and data.">Managing and deploying Puppet code</a></li><li class="linklist"><a class="link" href="config_orchestration.html#configure_the_orchestrator_and_pe_orchestration_services" title="There are several optional parameters you can add to configure the behavior of the orchestrator and pe-orchestration-services. Because they are profile classes, you can change these in the console in the PE Orchestrator group.">Configure the orchestrator and pe-orchestration-services</a></li><li class="linklist"><a class="link" href="system_configuration.html#firewall_large" title="These are the port requirements for large installations with compilers.">Firewall configuration for large installations with compilers</a></li><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#generate_a_token_using_puppet_access" title="Use puppet-access to generate an authentication tokens from the command line of any workstation (Puppet-managed or not), without the need to SSH into the Puppet master.">Generate a token using puppet-access</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="dr-classification-changes">
+  <h2 class="title topictitle2" id="ariaid-title5">Classification changes in disaster recovery installations </h2>
+  
+  <div class="body refbody"><p class="shortdesc">When you provision and enable a replica, the system makes a
+    number of classification changes in order to manage disaster recovery without affecting existing
+    configuration.</p>
+    <section class="section"><p class="p">These preconfigured node groups are
+        added in disaster recovery installations:</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="dr-classification-changes__entry__1">Node group </th>
+              <th class="entry" id="dr-classification-changes__entry__2">Matching nodes </th>
+              <th class="entry" id="dr-classification-changes__entry__3">Inherits from</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="dr-classification-changes__entry__1"><span class="ph uicontrol">PE HA Master </span></td>
+              <td class="entry" headers="dr-classification-changes__entry__2"> master </td>
+              <td class="entry" headers="dr-classification-changes__entry__3"><span class="ph uicontrol">PE Master</span> node group</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="dr-classification-changes__entry__1"><span class="ph uicontrol">PE HA Replica </span></td>
+              <td class="entry" headers="dr-classification-changes__entry__2"> master replicas </td>
+              <td class="entry" headers="dr-classification-changes__entry__3"><span class="ph uicontrol">PE Infrastructure</span> node group</td>
+            </tr>
+          </tbody></table><div class="p">These parameters are used to configure disaster recovery
+        installations: <table class="table"><caption></caption><colgroup><col><col><col><col><col></colgroup><thead class="thead">
+              <tr class="row">
+                <th class="entry" id="dr-classification-changes__entry__10">Parameter</th>
+                <th class="entry" id="dr-classification-changes__entry__11">Purpose</th>
+                <th class="entry" id="dr-classification-changes__entry__12">Node group</th>
+                <th class="entry" id="dr-classification-changes__entry__13">Classes</th>
+                <th class="entry" id="dr-classification-changes__entry__14">Notes</th>
+              </tr>
+            </thead><tbody class="tbody">
+              <tr class="row">
+                <td class="entry" headers="dr-classification-changes__entry__10"><code class="ph codeph">agent-server-urls</code></td>
+                <td class="entry" headers="dr-classification-changes__entry__11">Specifies the list of servers that agents contact, in
+                  order.</td>
+                <td class="entry" headers="dr-classification-changes__entry__12">
+                  <p class="p"><span class="ph uicontrol">PE
+                      Agent</span></p>
+                  <p class="p"><span class="ph uicontrol">PE
+                      Infrastructure Agent</span></p>
+                </td>
+                <td class="entry" headers="dr-classification-changes__entry__13"><code class="ph codeph">puppet_enterprise:: profile::agent</code></td>
+                <td class="entry" headers="dr-classification-changes__entry__14">
+                  <div class="p">In large installations with compilers, agents must be
+                    configured to communicate with the load balancers or compilers. <div class="note important note_important"><span class="note__title">Important:</span> Setting agents to communicate directly with the
+                      replica in order to use the replica as a compiler is not a supported
+                      configuration.</div>
+                  </div>
+                </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="dr-classification-changes__entry__10"><code class="ph codeph">replication_mode</code></td>
+                <td class="entry" headers="dr-classification-changes__entry__11">Sets replication type and direction on masters and
+                  replicas.</td>
+                <td class="entry" headers="dr-classification-changes__entry__12">
+                  <p class="p"><span class="ph uicontrol">PE
+                      Master</span> (<code class="ph codeph">none</code>) </p>
+                  <p class="p"><span class="ph uicontrol">HA
+                      Master</span> (<code class="ph codeph">source</code>) </p>
+                  <p class="p"><span class="ph uicontrol">HA Replica
+                      </span>(<code class="ph codeph">replica</code>) </p>
+                </td>
+                <td class="entry" headers="dr-classification-changes__entry__13"><code class="ph codeph">puppet_enterprise:: profile::master </code><code class="ph codeph">puppet_enterprise:: profile::database</code>
+                  <code class="ph codeph">puppet_enterprise::
+                    profile::console</code></td>
+                <td class="entry" headers="dr-classification-changes__entry__14">System parameter. Don’t modify.</td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="dr-classification-changes__entry__10"><code class="ph codeph">ha_enabled_replicas</code></td>
+                <td class="entry" headers="dr-classification-changes__entry__11">Tracks replica nodes that are failover ready.</td>
+                <td class="entry" headers="dr-classification-changes__entry__12"><span class="ph uicontrol">PE
+                    Infrastructure</span></td>
+                <td class="entry" headers="dr-classification-changes__entry__13"><code class="ph codeph">puppet_enterprise</code></td>
+                <td class="entry" headers="dr-classification-changes__entry__14">
+                  <p class="p">System parameter. Don't modify.</p>
+                  <p class="p">Updated when you enable a replica.</p>
+                </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="dr-classification-changes__entry__10"><code class="ph codeph">pcp_broker_list</code></td>
+                <td class="entry" headers="dr-classification-changes__entry__11">Specifies the list of <span class="ph">Puppet Communications
+                                                  Protocol</span> brokers that <span class="ph">Puppet Execution Protocol</span> agents contact, in order.</td>
+                <td class="entry" headers="dr-classification-changes__entry__12">
+                  <p class="p"><span class="ph uicontrol">PE
+                      Agent</span></p>
+                  <p class="p"><span class="ph uicontrol">PE
+                      Infrastructure Agent</span></p>
+                </td>
+                <td class="entry" headers="dr-classification-changes__entry__13"><code class="ph codeph">puppet_enterprise:: profile::agent</code></td>
+                <td class="entry" headers="dr-classification-changes__entry__14"></td>
+              </tr>
+            </tbody></table></div></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="dr-load-balancer-timeout">
+    <h2 class="title topictitle2" id="ariaid-title6">Load balancer timeout in disaster recovery installations </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Disaster recovery configuration uses timeouts to determine
+        when to fail over to the replica. If the load balancer timeout is shorter than the server
+        and agent timeout, connections from agents might be terminated during failover.</p>
+        <p class="p">To avoid timeouts, set the timeout option for load balancers to four
+            minutes or longer. This duration allows compilers enough time for required queries to
+                <span class="ph">PuppetDB</span> and the node classifier service. You can set
+            the load balancer timeout option using parameters in the haproxy or f5 modules.</p>
+    </div>
+</article></article></article></main></body></html>

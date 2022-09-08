@@ -1,0 +1,245 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The orchestrator—used alongside other PE tools, such as Code Manager—allows you to control when and how infrastructure changes are made before they reach your production environment."><meta name="DC.relation" scheme="URI" content="configuring_puppet_orchestrator.html#enable_cached_catalogs_for_use_with_the_orchestrator"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="direct_puppet_a_workflow_for_controlling_change"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Direct Puppet: a workflow for controlling change</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="direct_puppet_a_workflow_for_controlling_change">
+    <h1 class="title topictitle1" id="ariaid-title1">Direct <span class="ph">Puppet</span>: a workflow
+        for controlling change </h1>
+    
+    <div class="body conbody"><p class="shortdesc">The orchestrator—used alongside other <span class="ph">PE</span> tools, such as <span class="ph">Code Manager</span>—allows you to control when and how infrastructure changes are made
+        before they reach your production environment.</p>
+        <p class="p">The Direct <span class="ph">Puppet</span> workflow
+            gives you precise control over rolling out changes, from updating data and classifying
+            nodes, to deploying new <span class="ph">Puppet</span> code. In this
+            workflow, you configure your agents to use cached catalogs during scheduled runs, and
+            you send new catalogs only when you're ready, via orchestrator jobs. Scheduled runs
+            continue to enforce the desired state of the last orchestration job until you send
+            another new catalog.</p>
+        
+        
+        
+        
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="configuring_puppet_orchestrator.html#enable_cached_catalogs_for_use_with_the_orchestrator" title="Enabling cached catalogs on your agents ensures Puppet does not enforce any catalog changes on your agents until you run an orchestrator job to enforce changes.">Enable cached catalogs for use with the orchestrator (optional)</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="direct_puppet_workflow">
+   <h2 class="title topictitle2" id="ariaid-title2">Direct Puppet workflow</h2>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">In this workflow, you set a up a node group for testing and
+      validating code on a feature branch before you merge and promote it into your production
+      environment.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <ul class="ul">
+            <li class="li"> To use this workflow, you must enable cached catalogs for use
+               with the orchestrator so that they enforce cached catalogs by default and compile new
+               catalogs only when instructed to by orchestrator jobs. </li>
+            <li class="li"> This workflow also assumes you’re familiar with Code Manager.
+               It involves making changes to your control repo—adding or updating modules, editing
+               manifests, or changing your <span class="ph">Hiera</span> data. You’ll also
+               run deploy actions from the <span class="ph">Code Manager</span> command line tool
+               and the orchestrator, so ensure you have access to a host with PE client tools
+               installed. </li>
+         </ul>
+      </section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="installing_pe_client_tools.html#installing_pe_client_tools" title="PE client tools are a set of command line tools that let you access Puppet Enterprise services from a workstation that might or might not be managed by Puppet.">Installing PE client tools</a></li></ul></div></nav><article class="topic task nested2" aria-labelledby="ariaid-title3" id="set_up_a_node_group_for_testing_new_features">
+    <h3 class="title topictitle3" id="ariaid-title3">Set up node groups for testing new features </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">The first step in the Direct <span class="ph">Puppet</span> workflow is to set up node groups for testing your new
+        feature or code. </p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">If they don't already exist, create environment
+                    node groups for branch testing, for example, you might create <kbd class="ph userinput">Development environment</kbd> and
+                        <kbd class="ph userinput">Test environment</kbd>
+                    node groups.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Within each of these environment node groups,
+                    create a child node group to enable on-demand testing of changes deployed in <span class="ph">Git</span> feature branch <span class="ph">Puppet</span> environments.</span>
+                <div class="itemgroup stepresult">You now have at three levels
+                    of environment node groups: 1) the top-level parent environment node group, 2)
+                    node groups that represent your actual environments, and 3) node groups specific
+                    to feature testing.</div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">In the <span class="ph uicontrol">Rules</span> tab of the child node groups you created in the previous
+                    step, add this rule:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                    <tr class="row">
+                                        <th class="entry" id="set_up_a_node_group_for_testing_new_features__entry__1">Option </th>
+                                        <th class="entry" id="set_up_a_node_group_for_testing_new_features__entry__2">Value</th>
+                                    </tr>
+                                </thead><tbody class="tbody">
+                                    <tr class="row">
+                                        <td class="entry" headers="set_up_a_node_group_for_testing_new_features__entry__1">Fact </td>
+                                        <td class="entry" headers="set_up_a_node_group_for_testing_new_features__entry__2">
+                                            <code class="ph codeph">agent_specified_environment</code>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="entry" headers="set_up_a_node_group_for_testing_new_features__entry__1">Operator </td>
+                                        <td class="entry" headers="set_up_a_node_group_for_testing_new_features__entry__2">
+                                            <code class="ph codeph">~</code>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="entry" headers="set_up_a_node_group_for_testing_new_features__entry__1">Value </td>
+                                        <td class="entry" headers="set_up_a_node_group_for_testing_new_features__entry__2">
+                                            <code class="ph codeph">^.+</code>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                    </div>
+                    <p class="p">This rule matches any nodes from the parent group that
+                        have the&nbsp;<span class="ph uicontrol">agent_specified_environment</span>&nbsp;fact set. By matching
+                        nodes to this group, you give the nodes permission to override the
+                        server-specified environment and use their agent-specified environment
+                        instead.</p>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="grouping_and_classifying_nodes.html#create_environment_node_groups" title="Create custom environment node groups so that you can target deployment of Puppet code.">Create environment node groups</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title4" id="create_a_feature_branch">
+   <h3 class="title topictitle3" id="ariaid-title4">Create a feature branch </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">After you've set up a node group, create a new branch of
+      your control repository on which you can make changes to your feature code.</p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Branch your control repository, and name the new
+               branch, for example, <code class="ph codeph">my_feature_branch</code>.</span>
+            <div class="itemgroup stepxmp">
+               <div class="p">
+                  <br><img class="image" src="direct_puppet_create_branch.png" alt="Diagram showing a production branch with an offshoot branch called my_feature_branch."><br>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Make changes to the code on your feature branch.
+               Commit and push the changes to the <code class="ph codeph">my_feature_branch</code>.</span>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="deploy_code_to_the_puppet_master_and_test_it">
+   <h3 class="title topictitle3" id="ariaid-title5">Deploy code to the Puppet master and test it </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">Now that you've made some changes to the code on your
+      feature branch, you're ready to use <span class="ph">Code Manager</span> to push those to
+      the <span class="ph">Puppet</span> master.</p>
+      <section class="section context">
+         <p class="p"></p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">To deploy the feature branch to the master, run the
+               following <span class="ph">Code Manager</span> command: <code class="ph codeph"> puppet code deploy --wait my_feature_branch </code></span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <br><img class="image" src="direct_puppet_deploy_feature.png" alt="Diagram showing a production branch with an offshot branch called my_feature_branch, each containing code for a Puppet&nbsp;master."><br>
+               </div>
+            </div>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note note note_note"><span class="note__title">Note:</span> After this code deployment, there is a
+                     short delay while Puppet Server loads the new code.</div>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">To test your changes, run <span class="ph">Puppet</span> on a few agent-specified development nodes in
+               the <span class="ph uicontrol">my_feature_branch</span>
+               environment, run the following orchestrator command: </span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code>puppet job run --nodes my-dev-node1,my-dev-node2 --environment my_feature_branch</code></pre>
+               </div>
+            </div>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note tip note_tip"><span class="note__title">Tip:</span> You can also use the console to create a
+                     job targeted at a list of nodes in the <code class="ph codeph">
+                        <span class="ph uicontrol">my_feature_branch</span>
+                     </code> environment. </div>
+               </div>
+            </div>
+            <div class="itemgroup info">
+               <div class="p">
+                  <br><img class="image" src="direct_puppet_test_changes.png" alt="Diagram showing a production branch with an offshot branch called my_feature_branch, each containing code for a Puppet&nbsp;master. The production code is deployed to all production nodes as well as agent-specified nodes, while the feature branch code is deployed to a select group of agent-specified nodes, which are highlighted in the diagram."><br>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Validate your testing changes. Open the links in the
+               orchestrator command output, or use the Job ID linked on the Job list page, to review
+               the node run reports in the console. Ensure the changes have the effect you
+               intend.</span>
+         </li></ol></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="running_puppet_on_demand_in_the_console.html#run_a_job_on_a_node_list" title="Create a node list target for a job when you need to run Puppet on a specific set of nodes that isn't easily defined by a PQL query.">Run Puppet on a node list</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="merge_and_promote_your_code">
+   <h3 class="title topictitle3" id="ariaid-title6">Merge and promote your code </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">If everything works as expected on the development nodes,
+      and you're ready to promote your changes into production.</p>
+      <section class="section context">
+         <p class="p"></p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Merge <code class="ph codeph">my_feature_branch</code> into the <code class="ph codeph">production</code> branch in your control repo.</span>
+            <div class="itemgroup info">
+               <br><img class="image" src="direct_puppet_promote.png" alt="Diagram showing a production branch with an offshoot branch called my_feature_branch, which is then merged back into the production branch."><br>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">To deploy your updated <code class="ph codeph">production</code> branch to the Puppet master, run the following
+                  <span class="ph">Code Manager</span> command: <code class="ph codeph">puppet code deploy --wait production</code></span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p"></p>
+      </section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title7" id="preview_the_job">
+    <h3 class="title topictitle3" id="ariaid-title7">Preview the job </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">Before running <span class="ph">Puppet</span>
+        across the <code class="ph codeph">production</code> environment, preview
+        the job with the <code class="ph codeph">puppet job plan</code> command. </p>
+        <section class="section context"><p class="p"></p></section>
+        <section><div class="li step p">
+                <span class="ph cmd">To ensure the job captures all the nodes in
+                        the&nbsp;<code class="ph codeph">production</code>&nbsp;environment, as well as the agent-specified
+                    development nodes that just ran with the&nbsp;<code class="ph codeph">my_feature_branch</code>&nbsp;environment, use the following
+                    query as the job target:</span>
+                <div class="itemgroup info"><pre class="pre codeblock"><code>puppet job plan --query 'inventory {environment in ["production", "my_feature_branch"]}</code></pre></div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title8" id="run_the_job_on_the_production_environment">
+   <h3 class="title topictitle3" id="ariaid-title8">Run the job on the production environment </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">If you're satisfied with the changes in the preview, you're
+      ready to enforce changes to the <code class="ph codeph">production</code>
+      environment. </p>
+      <section class="section context">
+         <p class="p"></p>
+      </section>
+      <section><div class="li step p">
+            <span class="ph cmd">Run the orchestrator job.</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code>  puppet job run --query 'inventory {environment in ["production", "my_feature_branch"]}</code></pre>
+               </div>
+            </div>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note tip note_tip"><span class="note__title">Tip:</span> You can also use the console to create a
+                     job targeted at this PQL query.</div>
+               </div>
+            </div>
+            <div class="itemgroup info">
+               <div class="p">
+                  <br><img class="image" src="direct_puppet_run_production.png" alt="Diagram showing a production branch with an offshoot branch called my_feature_branch, which is then merged back into the production branch. From there, code is deployed to a Puppet master in the production environment, and then to production nodes.&nbsp;"><br>
+               </div>
+            </div>
+         </div></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="running_puppet_on_demand_in_the_console.html#run_a_job_on_a_pql_query_console" title="For some jobs, you might want to target nodes that meet specific conditions. For such jobs, create a PQL query.">Run Puppet on a PQL query</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title9" id="validate_your_production_changes">
+    <h3 class="title topictitle3" id="ariaid-title9">Validate your production changes </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">Finally, you're ready to validate your production
+        changes.</p>
+        <section class="section context"><p class="p">Check the node run
+                reports in the console to confirm that the changes were applied as intended. If so,
+                you're done!</p><p class="p">Repeat this process as you develop and promote
+                your code.</p></section>
+    </div>
+</article></article></article></article></main></body></html>

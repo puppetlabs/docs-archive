@@ -1,0 +1,70 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The activity service plaintext endpoints are designed for load balancers that don't support any kind of JSON parsing or parameter setting. They return simple string bodies (either the state of the service in question or a simple error message) and a status code relevant to the status result."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="activity_service_plaintext_endpoints"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Activity service plaintext endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="activity_service_plaintext_endpoints">
+    <h1 class="title topictitle1" id="ariaid-title1">Activity service plaintext endpoints </h1>
+    <p class="shortdesc">The activity service plaintext endpoints are designed for
+        load balancers that don't support any kind of JSON parsing or parameter setting. They return
+        simple string bodies (either the state of the service in question or a simple error message)
+        and a status code relevant to the status result.</p>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_status_v1_simple">
+    <h2 class="title topictitle2" id="ariaid-title2">GET /status/v1/simple </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">/status/v1/simple</code> returns a status that reflects all services the status
+        service knows about.</p>
+        <section class="section"><p class="p">The content type for this endpoint
+                is <code class="ph codeph">text/plain; charset=utf-8</code>.
+            </p></section>
+        <section class="section" id="get_status_v1_simple__query_parameters"><h3 class="title sectiontitle">Query
+                parameters </h3><p class="p">No parameters are supported. Defaults to using the&nbsp;<code class="ph codeph">critical</code>&nbsp;status level.</p></section>
+        <section class="section" id="get_status_v1_simple__response_codes"><h3 class="title sectiontitle">Response
+                codes </h3><div class="p">The server uses the following response codes:<ul class="ul">
+                    <li class="li">200 if and only if all services
+                        report a status of&nbsp;<code class="ph codeph">running</code></li>
+                    <li class="li">503 if any service’s status
+                            is&nbsp;<code class="ph codeph">unknown</code>&nbsp;or&nbsp;<code class="ph codeph">error</code></li>
+                </ul></div></section>
+        <section class="section"><h3 class="title sectiontitle">Possible responses</h3><div class="p" id="get_status_v1_simple__d189e78">The endpoint
+                returns a status that reflects all services it knows about. It decides on what
+                status to report using the following logic:<ul class="ul">
+                    <li class="li"><p class="p"><code class="ph codeph">running</code> if and only if all services are
+                            running</p></li>
+                    <li class="li"><p class="p"><code class="ph codeph">error</code> if any service reports an
+                        error</p></li>
+                    <li class="li"><p class="p"><code class="ph codeph">unknown</code> if any service reports an unknown and
+                            no services report an error</p></li>
+                </ul></div></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_status_v1_simple_lt_service_name_gt">
+    <h2 class="title topictitle2" id="ariaid-title3">GET /status/v1/simple/&lt;SERVICE NAME&gt;</h2>
+    
+    <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">/status/v1/simple/&lt;SERVICE NAME&gt;</code> endpoint returns the plaintext status
+        of the specified service, such as <code class="ph codeph">rbac-service</code> or <code class="ph codeph">classifier-service</code>.</p>
+        <section class="section"><p class="p">The content type for this endpoints
+                is <code class="ph codeph">text/plain;
+            charset=utf-8</code>.</p></section>
+        <section class="section" id="get_status_v1_simple_lt_service_name_gt__query_parameters"><h3 class="title sectiontitle">Query
+                parameters </h3><p class="p">No parameters are supported. Defaults to using the&nbsp;<code class="ph codeph">critical</code>&nbsp;status level.</p></section>
+        <section class="section" id="get_status_v1_simple_lt_service_name_gt__response_codes"><h3 class="title sectiontitle">Response
+                codes </h3><div class="p">The server uses the following response codes:<ul class="ul">
+                    <li class="li">200 if and only if all services
+                        report a status of&nbsp;<code class="ph codeph">running</code></li>
+                    <li class="li">503 if any service’s status
+                            is&nbsp;<code class="ph codeph">unknown</code>&nbsp;or&nbsp;<code class="ph codeph">error</code></li>
+                    <li class="li"><p class="p">404 if no service named
+                            &lt;SERVICE NAME&gt; is found</p></li>
+                </ul></div></section>
+        <section class="section" id="get_status_v1_simple_lt_service_name_gt__possible_responses"><h3 class="title sectiontitle">Possible responses </h3><div class="p">The endpoint
+                returns a status that reflects all services it knows about. It decides on what
+                status to report using the following logic:<ul class="ul">
+                    <li class="li"><p class="p"><code class="ph codeph">running</code> if and only if all services are
+                            running</p></li>
+                    <li class="li"><p class="p"><code class="ph codeph">error</code> if any service reports an
+                        error</p></li>
+                    <li class="li"><p class="p"><code class="ph codeph">unknown</code> if any service reports an unknown and
+                            no services report an error</p></li>
+                </ul></div><ul class="ul">
+                <li class="li"><code class="ph codeph">not found:
+                        &lt;SERVICENAME&gt;</code> if any service can't be found</li>
+            </ul></section>
+    </div>
+</article></article></article></main></body></html>

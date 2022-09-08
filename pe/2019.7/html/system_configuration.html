@@ -1,0 +1,592 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Before installing Puppet Enterprise, make sure that your nodes and network are properly configured."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="system_configuration"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>System configuration</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="system_configuration">
+    <h1 class="title topictitle1" id="ariaid-title1">System configuration </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Before installing <span class="ph">Puppet Enterprise</span>,
+        make sure that your nodes and network are properly configured.</p>
+        <div class="note note note_note"><span class="note__title">Note:</span> Port numbers are Transmission Control Protocols (TCP), unless noted otherwise.</div>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="timekeeping_and_name_resolution">
+    <h2 class="title topictitle2" id="ariaid-title2">Timekeeping and name resolution </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Before installing , there are network requirements you need to consider and prepare
+        for. The most important requirements include syncing time and creating a plan for name
+        resolution. 
+    </p>
+        <section class="section" id="timekeeping_and_name_resolution__timekeeping"><h3 class="title sectiontitle">Timekeeping </h3><p class="p">Use NTP or an equivalent service to
+                ensure that time is in sync between your master, which acts as the certificate
+                authority, and any agent nodes. If time drifts out of sync in your infrastructure,
+                you might encounter issues such as agents recieving outdated certificates. A service
+                like NTP (available as a supported module) ensures accurate timekeeping.
+            </p></section>
+        <section class="section" id="timekeeping_and_name_resolution__name_resolution"><h3 class="title sectiontitle">Name resolution </h3><p class="p">Decide on a preferred name
+                or set of names that agent nodes can use to contact the master. Ensure that the
+                master can be reached by domain name lookup by all future agent nodes.</p><p class="p">You can
+                simplify configuration of agent nodes by using a CNAME record to make the master
+                reachable at the hostname <code class="ph codeph">puppet</code>, which is the default master
+                hostname that is suggested when installing an agent node.</p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="web_urls_used_for_deployment_and_management">
+    <h2 class="title topictitle2" id="ariaid-title3">Web URLs used for deployment and management</h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc"><span class="ph">PE</span> uses some external web
+        URLs for certain deployment and management tasks. You might want to ensure these URLs are
+        reachable from your network prior to installation, and be aware that they might be called at
+        various stages of configuration.</p>
+        <section class="section">
+            <div class="p">
+                <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="web_urls_used_for_deployment_and_management__entry__1">URL</th>
+                                <th class="entry" id="web_urls_used_for_deployment_and_management__entry__2">Enables</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__1">
+                                    <a class="xref" href="http://forgeapi.puppet.com/" target="_blank">forgeapi.puppet.com</a>
+                                </td>
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__2"><span class="ph">Puppet</span>
+                                    module downloads.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__1">
+                                    <a class="xref" href="http://pm.puppetlabs.com/" target="_blank">pm.puppetlabs.com</a>
+                                </td>
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__2">Agent module package
+                                    downloads.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__1">
+                                    <a class="xref" href="http://s3.amazonaws.com/" target="_blank">s3.amazonaws.com</a>
+                                </td>
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__2">Agent module package downloads
+                                    (redirected from pm.pupptlabs.com).</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__1">
+                                    <a class="xref" href="http://rubygems.org/" target="_blank">rubygems.org</a>
+                                </td>
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__2"><span class="ph">Puppet</span>
+                                    and <span class="ph">Puppet Server</span> gem
+                                    downloads.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__1">
+                                    <a class="xref" href="http://github.com/" target="_blank">github.com</a>
+                                </td>
+                                <td class="entry" headers="web_urls_used_for_deployment_and_management__entry__2">Third-party module downloads not
+                                    served by the <span class="ph">Forge</span> and access to
+                                    control repositories.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+        </section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="firewall_standard">
+    <h2 class="title topictitle2" id="ariaid-title4">Firewall configuration for standard installations </h2>
+    
+    <div class="body refbody"><p class="shortdesc">These are the port requirements for standard
+        installations.</p>
+        <section class="section">
+            <div class="p">
+                <br><img class="image" src="firewall_standard.png" alt="Graphic showing communication between components in a standard installation. End users interact with the master on port 443. Agents interact with the master on ports 8142, 8140, and 61613."><br>
+                <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="firewall_standard__entry__1">Port</th>
+                                <th class="entry" id="firewall_standard__entry__2">Use</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="firewall_standard__entry__1">8140</td>
+                                <td class="entry" headers="firewall_standard__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">The master uses this port to accept inbound
+                            traffic/requests from agents.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">The console sends requests to the master on this
+                            port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Certificate requests are passed over this port unless
+                                <code class="ph codeph">ca_port</code> is set
+                            differently.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">
+                            <span class="ph">Puppet Server</span> status checks are sent over this
+                            port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Master</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_standard__entry__1">443</td>
+                                <td class="entry" headers="firewall_standard__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">This port provides host access to the console</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">The console accepts HTTPS traffic from end users on
+                            this port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Console</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_standard__entry__1">4433</td>
+                                <td class="entry" headers="firewall_standard__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">This port is used as a classifier / console services
+                            API endpoint.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">The master communicates with the console over this
+                            port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Console</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_standard__entry__1">8081</td>
+                                <td class="entry" headers="firewall_standard__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">
+                            <span class="ph">PuppetDB</span> accepts traffic/requests on this
+                            port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">The master and console send traffic to <span class="ph">PuppetDB</span> on this port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">
+                            <span class="ph">PuppetDB</span> status checks are sent over this
+                            port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE PuppetDB</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_standard__entry__1">8142</td>
+                                <td class="entry" headers="firewall_standard__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">Orchestrator and the <span class="ph uicontrol">Run Puppet</span> button use this port on the
+                            master to accept inbound traffic/responses from agents via the <span class="ph">Puppet Execution Protocol</span> agent.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Orchestrator</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_standard__entry__1">8170</td>
+                                <td class="entry" headers="firewall_standard__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p"><span class="ph">Code Manager</span> uses this port
+                            to deploy environments, run webhooks, and make API calls.</p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_standard__entry__1">5432</td>
+                                <td class="entry" headers="firewall_standard__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">This port is used to replicate&nbsp;<span class="ph">PostgreSQL</span>&nbsp;data between the master
+                            and replica.</p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_standard__entry__1">8150 and 8151</td>
+                                <td class="entry" headers="firewall_standard__entry__2"><ul class="ul">
+                                        <li class="li">
+                        <p class="p"><span class="ph">Razor</span>&nbsp;uses port
+                            8150 for HTTP and 8151 for HTTPS. Any node classified as a&nbsp;<span class="ph">Razor</span>&nbsp;server must be able to use
+                            these ports.</p>
+                    </li>
+                                    </ul></td>
+                            </tr>
+                        </tbody></table>
+            </div>
+        </section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="firewall_large">
+    <h2 class="title topictitle2" id="ariaid-title5">Firewall configuration for large installations with compilers </h2>
+    
+    <div class="body refbody"><p class="shortdesc">These are the port requirements for large installations
+        with compilers.</p>
+        <section class="section"><div class="p">
+                <br><img class="image" src="firewall_large.png" alt="Graphic showing communication between components in a large installation with compilers and a load balancer. End users interact with the master on port 443. Agents interact with the load balancer and compiler on ports 8140 and 8142. Compilers interact with the master and an optional master replica on ports 61613, 8081, 4433, 8140, 8142, and 8143."><br>
+                <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="firewall_large__entry__1">Port</th>
+                                <th class="entry" id="firewall_large__entry__2">Use</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="firewall_large__entry__1">8140</td>
+                                <td class="entry" headers="firewall_large__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">The master uses this port to accept inbound
+                            traffic/requests from agents.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">The console sends requests to the master on this
+                            port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Certificate requests are passed over this port unless
+                                <code class="ph codeph">ca_port</code> is set
+                            differently.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">
+                            <span class="ph">Puppet Server</span> status checks are sent over this
+                            port.</p>
+                    </li>
+                                        <li class="li"><p class="p">The master
+                                                uses this port to send status checks to compilers.
+                                                (Not required to run <span class="ph">PE</span>.)</p></li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Master</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_large__entry__1">443</td>
+                                <td class="entry" headers="firewall_large__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">This port provides host access to the console</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">The console accepts HTTPS traffic from end users on
+                            this port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Console</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_large__entry__1">4433</td>
+                                <td class="entry" headers="firewall_large__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">This port is used as a classifier / console services
+                            API endpoint.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">The master communicates with the console over this
+                            port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Console</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_large__entry__1">8081</td>
+                                <td class="entry" headers="firewall_large__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">
+                            <span class="ph">PuppetDB</span> accepts traffic/requests on this
+                            port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">The master and console send traffic to <span class="ph">PuppetDB</span> on this port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">
+                            <span class="ph">PuppetDB</span> status checks are sent over this
+                            port.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE PuppetDB</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_large__entry__1">8142</td>
+                                <td class="entry" headers="firewall_large__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">Orchestrator and the <span class="ph uicontrol">Run Puppet</span> button use this port on the
+                            master to accept inbound traffic/responses from agents via the <span class="ph">Puppet Execution Protocol</span> agent.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Orchestrator</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_large__entry__1">8143</td>
+                                <td class="entry" headers="firewall_large__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">Orchestrator uses this port to accept connections from
+                                <span class="ph">Puppet Communications
+                                                  Protocol</span> brokers to relay
+                            communications. The orchestrator client also uses this port to
+                            communicate with the orchestration services running on the master. If
+                            you install the client on a workstation, this port must be available on
+                            the workstation.</p>
+                    </li>
+                                        <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Orchestrator</span></p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_large__entry__1">8170</td>
+                                <td class="entry" headers="firewall_large__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p"><span class="ph">Code Manager</span> uses this port
+                            to deploy environments, run webhooks, and make API calls.</p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_large__entry__1">5432</td>
+                                <td class="entry" headers="firewall_large__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p">This port is used to replicate&nbsp;<span class="ph">PostgreSQL</span>&nbsp;data between the master
+                            and replica.</p>
+                    </li><li class="li">
+                        <p class="p">This port is used by the <span class="ph">PuppetDB</span> service
+                            running on compilers to communicate with PE-PostgreSQL.</p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="firewall_large__entry__1">8150 and 8151</td>
+                                <td class="entry" headers="firewall_large__entry__2">
+                                    <ul class="ul">
+                                        <li class="li">
+                        <p class="p"><span class="ph">Razor</span>&nbsp;uses port
+                            8150 for HTTP and 8151 for HTTPS. Any node classified as a&nbsp;<span class="ph">Razor</span>&nbsp;server must be able to use
+                            these ports.</p>
+                    </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="firewall_xl">
+                <h2 class="title topictitle2" id="ariaid-title6">Firewall configuration for extra-large installations
+                                with compilers and standalone PE-PostgreSQL</h2>
+                
+                <div class="body refbody"><p class="shortdesc">These are the port requirements for
+                                extra-large installations with compilers and standalone
+                                PE-PostgreSQL</p>
+                                <section class="section"><div class="p">
+                                                  <br><img class="image" src="firewall_xl.png" alt="Graphic showing communication between components in an extra-large installation with compilers and a standalone PE-PostgreSQL node. End users interact with the master on port 443. Agents interact with the load balancer and compiler on ports 8140 and 8142. Compilers interact with the master and the standalone PE-PostgreSQL node on ports 61613, 8081, 4433, 8140, 8142, and 8143."><br>
+                                                </div><div class="p">
+                                                  <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                                  <tr class="row">
+                                                  <th class="entry" id="firewall_xl__entry__1">Port</th>
+                                                  <th class="entry" id="firewall_xl__entry__2">Use</th>
+                                                  </tr>
+                                                  </thead><tbody class="tbody">
+                                                  <tr class="row">
+                                                  <td class="entry" headers="firewall_xl__entry__1">8140</td>
+                                                  <td class="entry" headers="firewall_xl__entry__2">
+                                                  <ul class="ul">
+                                                  <li class="li">
+                        <p class="p">The master uses this port to accept inbound
+                            traffic/requests from agents.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">The console sends requests to the master on this
+                            port.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">Certificate requests are passed over this port unless
+                                <code class="ph codeph">ca_port</code> is set
+                            differently.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">
+                            <span class="ph">Puppet Server</span> status checks are sent over this
+                            port.</p>
+                    </li>
+                                                  <li class="li">
+                                                  <p class="p">The master uses this port to
+                                                  send status checks to compilers. (Not required to
+                                                  run <span class="ph">PE</span>.)</p>
+                                                  </li>
+                                                  <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Master</span></p>
+                    </li>
+                                                  </ul>
+                                                  </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="firewall_xl__entry__1">443</td>
+                                                  <td class="entry" headers="firewall_xl__entry__2">
+                                                  <ul class="ul">
+                                                  <li class="li">
+                        <p class="p">This port provides host access to the console</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">The console accepts HTTPS traffic from end users on
+                            this port.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Console</span></p>
+                    </li>
+                                                  </ul>
+                                                  </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="firewall_xl__entry__1">4433</td>
+                                                  <td class="entry" headers="firewall_xl__entry__2">
+                                                  <ul class="ul">
+                                                  <li class="li">
+                        <p class="p">This port is used as a classifier / console services
+                            API endpoint.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">The master communicates with the console over this
+                            port.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Console</span></p>
+                    </li>
+                                                  </ul>
+                                                  </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="firewall_xl__entry__1">8081</td>
+                                                  <td class="entry" headers="firewall_xl__entry__2">
+                                                  <ul class="ul">
+                                                  <li class="li">
+                        <p class="p">
+                            <span class="ph">PuppetDB</span> accepts traffic/requests on this
+                            port.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">The master and console send traffic to <span class="ph">PuppetDB</span> on this port.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">
+                            <span class="ph">PuppetDB</span> status checks are sent over this
+                            port.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE PuppetDB</span></p>
+                    </li>
+                                                  </ul>
+                                                  </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="firewall_xl__entry__1">8142</td>
+                                                  <td class="entry" headers="firewall_xl__entry__2">
+                                                  <ul class="ul">
+                                                  <li class="li">
+                        <p class="p">Orchestrator and the <span class="ph uicontrol">Run Puppet</span> button use this port on the
+                            master to accept inbound traffic/responses from agents via the <span class="ph">Puppet Execution Protocol</span> agent.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Orchestrator</span></p>
+                    </li>
+                                                  </ul>
+                                                  </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="firewall_xl__entry__1">8143</td>
+                                                  <td class="entry" headers="firewall_xl__entry__2">
+                                                  <ul class="ul">
+                                                  <li class="li">
+                        <p class="p">Orchestrator uses this port to accept connections from
+                                <span class="ph">Puppet Communications
+                                                  Protocol</span> brokers to relay
+                            communications. The orchestrator client also uses this port to
+                            communicate with the orchestration services running on the master. If
+                            you install the client on a workstation, this port must be available on
+                            the workstation.</p>
+                    </li>
+                                                  <li class="li">
+                        <p class="p">Classifier group: <span class="ph uicontrol">PE Orchestrator</span></p>
+                    </li>
+                                                  </ul>
+                                                  </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="firewall_xl__entry__1">8170</td>
+                                                  <td class="entry" headers="firewall_xl__entry__2">
+                                                  <ul class="ul">
+                                                  <li class="li">
+                        <p class="p"><span class="ph">Code Manager</span> uses this port
+                            to deploy environments, run webhooks, and make API calls.</p>
+                    </li>
+                                                  </ul>
+                                                  </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="firewall_xl__entry__1">5432</td>
+                                                  <td class="entry" headers="firewall_xl__entry__2">
+                                                  <ul class="ul">
+                                                  <li class="li">The standalone
+                                                  PE-PostgreSQL node uses this port to accept
+                                                  inbound traffic/requests from the master.</li><li class="li">
+                        <p class="p">This port is used by the <span class="ph">PuppetDB</span> service
+                            running on compilers to communicate with PE-PostgreSQL.</p>
+                    </li>
+                                                  </ul>
+                                                  </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="firewall_xl__entry__1">8150 and
+                                                  8151</td>
+                                                  <td class="entry" headers="firewall_xl__entry__2">
+                                                  <ul class="ul">
+                                                  <li class="li">
+                        <p class="p"><span class="ph">Razor</span>&nbsp;uses port
+                            8150 for HTTP and 8151 for HTTPS. Any node classified as a&nbsp;<span class="ph">Razor</span>&nbsp;server must be able to use
+                            these ports.</p>
+                    </li>
+                                                  </ul>
+                                                  </td>
+                                                  </tr>
+                                                  </tbody></table>
+                                                </div></section>
+                </div>
+</article></article></article></main></body></html>

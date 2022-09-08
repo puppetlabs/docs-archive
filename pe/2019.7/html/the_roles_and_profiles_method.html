@@ -1,0 +1,171 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The roles and profiles method is the most reliable way to build reusable, configurable, and refactorable system configurations."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="the_roles_and_profiles_method"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>The roles and profiles method</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="the_roles_and_profiles_method">
+    <h1 class="title topictitle1" id="ariaid-title1">The roles and profiles method </h1>
+    
+    <div class="body conbody"><p class="shortdesc">The <em class="ph i">roles and profiles</em>
+        method is the most reliable way to build reusable, configurable, and refactorable system
+        configurations. </p>
+        <p class="p">It's not a straightforward recipe: you must think hard about the
+            nature of your infrastructure and your team. It's also not a final state: expect to
+            refine your configurations over time. Instead, it's an approach to <em class="ph i">designing your infrastructure's interface</em> — sealing away incidental
+            complexity, surfacing the significant complexity, and making sure your data behaves
+            predictably.</p>
+        <section class="section" id="the_roles_and_profiles_method__building_configurations_without_roles_and_profiles"><h2 class="title sectiontitle">Building configurations without roles and profiles
+                </h2><p class="p">Without roles and profiles, people typically build
+                system configurations in their node classifier or main manifest, using <span class="ph">Hiera</span> to handle tricky inheritance problems. A
+                standard approach is to create a group of similar nodes and assign classes to it,
+                then create child groups with extra classes for nodes that have additional needs.
+                Another common pattern is to put everything in <span class="ph">Hiera</span>,
+                using a very large hierarchy that reflects every variation in the
+                infrastructure.</p><p class="p">If this works for you, then it works! You
+                might not need roles and profiles. But most people find direct building gets
+                difficult to understand and maintain over time.</p></section>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="configuring_roles_and_profiles">
+  <h2 class="title topictitle2" id="ariaid-title2">Configuring roles and profiles </h2>
+  
+  <div class="body conbody"><p class="shortdesc">Roles and profiles are <em class="ph i">two
+      extra layers of indirection</em> between your node classifier and your component modules. </p>
+    <p class="p">The roles and profiles method separates your code into three levels:</p>
+    <ul class="ul">
+      <li class="li">Component modules — Normal modules that manage one particular technology, for example
+        puppetlabs/apache.</li>
+      <li class="li">Profiles — Wrapper classes that use multiple component modules to configure a layered
+        technology stack.</li>
+      <li class="li">Roles — Wrapper classes that use multiple profiles to build a complete system
+        configuration.</li>
+    </ul>
+    <p class="p">These extra layers of indirection might seem like they add complexity, but they give you a
+      space to build practical, business-specific interfaces to the configuration you care most
+      about. A better interface makes hierarchical data easier to use, makes system configurations
+      easier to read, and makes refactoring easier.</p>
+    <br><img class="image" src="roles_and_profiles_overview.png"><br>
+    <p class="p">In short, from top to bottom:</p>
+    <ul class="ul">
+      <li class="li">Your node classifier assigns one <dfn class="term">role</dfn> class to a group of nodes. The role
+        manages a whole system configuration, so no other classes are needed. The node classifier
+        does not configure the role in any way.</li>
+      <li class="li">That role class declares some <dfn class="term">profile</dfn> classes with <code class="ph codeph">include</code>,
+        and does nothing else. For example:
+        <pre class="pre codeblock"><code>  class role::jenkins::master {
+    include profile::base
+    include profile::server
+    include profile::jenkins::master
+  }           </code></pre>
+      </li>
+    </ul>
+    <ul class="ul">
+      <li class="li">Each profile configures a layered technology stack, using multiple component modules and
+        the built-in resource types. (In the diagram, <code class="ph codeph">profile::jenkins::master</code> uses
+        puppet/jenkins, puppetlabs/apt, a home-built backup module, and some
+          <code class="ph codeph">package</code> and <code class="ph codeph">file</code> resources.)</li>
+      <li class="li">Profiles can take configuration data from the console, <span class="ph">Hiera</span>, or <span class="ph">Puppet</span> lookup. (In the diagram, three different
+        hierarchy levels contribute data.)</li>
+      <li class="li">Classes from component modules are always declared via a profile, and never assigned
+        directly to a node. <ul class="ul">
+          <li class="li">If a component class has parameters, you specify them in the profile<em class="ph i">;</em> never use
+              <span class="ph">Hiera</span> or <span class="ph">Puppet</span> lookup
+            to override component class params. </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="rules_for_profile_classes">
+               <h2 class="title topictitle2" id="ariaid-title3">Rules for profile classes </h2>
+               
+               <div class="body refbody"><p class="shortdesc">There are rules for writing profile
+                              classes.</p>
+                              <section class="section"><ul class="ul">
+                                                  <li class="li">Make sure you can safely
+                                                  <code class="ph codeph">include</code> any profile multiple times —
+                                                  don't use resource-like declarations on them.</li>
+                                                  <li class="li">Profiles can <code class="ph codeph">include</code>
+                                                  other profiles.</li>
+                                                  <li class="li">Profiles own all the class
+                                                  parameters for their component classes. If the
+                                                  profile omits one, that means you definitely want
+                                                  the default value; the component class shouldn't
+                                                  use a value from <span class="ph">Hiera</span> data. If you need
+                                                  to set a class parameter that was omitted
+                                                  previously, refactor the profile.</li>
+                                                  <li class="li">There are three ways a
+                                                  profile can get the information it needs to
+                                                  configure component classes: <ul class="ul">
+                                                  <li class="li">If your business always
+                                                  uses the same value for a given parameter,
+                                                  hardcode it.</li>
+                                                  <li class="li">If you can't hardcode it,
+                                                  try to compute it based on information you already
+                                                  have.</li>
+                                                  <li class="li">Finally, if you can't
+                                                  compute it, look it up in your data. To reduce
+                                                  lookups, identify cases where multiple parameters
+                                                  can be derived from the answer to a single
+                                                  question.</li>
+                                                  </ul><p class="p">This is a game of
+                                                  trade-offs. Hardcoded parameters are the easiest
+                                                  to read, and also the least flexible. Putting
+                                                  values in your <span class="ph">Hiera</span> data is very flexible, but can be very
+                                                  difficult to read: you might have to look through
+                                                  a lot of files (or run a lot of lookup commands)
+                                                  to see what the profile is actually doing. Using
+                                                  conditional logic to derive a value is a
+                                                  middle-ground. Aim for the most readable option
+                                                  you can get away with.</p></li>
+                                             </ul></section>
+               </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="rules_for_role_classes">
+    <h2 class="title topictitle2" id="ariaid-title4">Rules for role classes </h2>
+    
+    <div class="body refbody"><p class="shortdesc">There are rules for writing role classes.</p>
+        <section class="section"><ul class="ul">
+                <li class="li">The only thing roles should do is declare profile classes
+                    with <code class="ph codeph">include</code>. Don't declare any
+                    component classes or normal resources in a role.<p class="p">Optionally, roles can use conditional logic to decide which profiles to
+                        use. </p>
+                </li>
+                <li class="li">Roles should not have any class parameters of their
+                    own.</li>
+                <li class="li">Roles should not set class parameters for any profiles.
+                    (Those are all handled by data lookup.)</li>
+                <li class="li">The name of a role should be based on your business's <em class="ph i">conversational name</em> for the type of node it
+                        manages.<p class="p">This means that if you regularly call a
+                        machine a "Jenkins master," it makes sense to write a role named <code class="ph codeph">role::jenkins::master</code>. But if
+                        you call it a "web server," you shouldn't use a name like <code class="ph codeph">role::nginx</code> — go with something like
+                            <code class="ph codeph">role::web</code> instead.</p>
+                </li>
+            </ul></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="methods_for_data_lookup">
+    <h2 class="title topictitle2" id="ariaid-title5">Methods for data lookup </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Profiles usually require some amount of configuration, and
+        they must use data lookup to get it.</p>
+        <p class="p">This profile uses the automatic class parameter lookup to request
+            data. </p>
+        <pre class="pre codeblock"><code># Example Hiera data
+profile::jenkins::jenkins_port: 8000
+profile::jenkins::java_dist: jre
+profile::jenkins::java_version: '8'
+ 
+# Example manifest
+class profile::jenkins (
+  Integer $jenkins_port,
+  String  $java_dist,
+  String  $java_version
+) {
+# ...</code></pre>
+        <div class="p">This profile omits the parameters and uses the <code class="ph codeph">lookup</code>
+            function:<pre class="pre codeblock"><code>class profile::jenkins {
+  $jenkins_port = lookup('profile::jenkins::jenkins_port', {value_type =&gt; String, default_value =&gt; '9091'})
+  $java_dist    = lookup('profile::jenkins::java_dist',    {value_type =&gt; String, default_value =&gt; 'jdk'})
+  $java_version = lookup('profile::jenkins::java_version', {value_type =&gt; String, default_value =&gt; 'latest'})
+  # ...</code></pre></div>
+        <p class="p">In general, class parameters are preferable to lookups. They integrate
+            better with tools like <span class="ph">Puppet</span> strings, and they're a
+            reliable and well-known place to look for configuration. But using <code class="ph codeph">lookup</code> is a fine approach if you aren't comfortable
+            with automatic parameter lookup. Some people prefer the full lookup key to be written in
+            the profile, so they can globally grep for it.</p>
+    </div>
+</article></article></article></main></body></html>

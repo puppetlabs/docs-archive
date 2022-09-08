@@ -1,0 +1,240 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="Regenerating certificates and security credentials—both private and public keys—created by the built-in PE certificate authority can help ensure the security of your installation in certain cases."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="regenerate_certificates"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Regenerate infrastructure certificates</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="regenerate_certificates">
+    <h1 class="title topictitle1" id="ariaid-title1">Regenerate infrastructure certificates</h1>
+    
+    <div class="body taskbody"><p class="shortdesc">Regenerating certificates and security credentials—both private and public
+        keys—created by the built-in <span class="ph">PE</span> certificate authority can
+        help ensure the security of your installation in certain cases.</p>
+        <section class="section context"><div class="p">The process for
+                regenerating certificates varies depending on your goal. <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="regenerate_certificates__entry__1">If your goal is
+                                    to...</th>
+                                <th class="entry" id="regenerate_certificates__entry__2">Do this...</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="regenerate_certificates__entry__1">Upgrade to the intermediate certificate
+                                    architecture introduced in <span class="ph">Puppet</span>
+                                    6.0. </td>
+                                <td class="entry" headers="regenerate_certificates__entry__2" rowspan="2"><div class="p">Complete these tasks in order: <ol class="ol">
+                                            <li class="li"><p class="p"><a class="xref" href="regenerate_certificates.html#delete_and_recreate_ca" title="Recreate the certificate authority only if you're upgrading to the new certificate architecture introduced in Puppet 6.0, or if your certificate authority was compromised or damaged beyond repair.">Delete and recreate the certificate authority</a></p></li>
+                                            <li class="li"><p class="p"><a class="xref" href="regenerate_certificates.html#regenerate_compiler_certificates" title="Regenerate compiler certificates to fix a compromised certificate or troubleshoot SSL errors on compilers, or if you recreated your certificate authority.">Regenerate compiler certificates</a>, if
+                                                  applicable</p></li>
+                                            <li class="li"><p class="p"><a class="xref" href="regenerate_certificates.html#regenerate_agent_certs" title="Regenerate *nix or Windows agent certificates to fix a compromised certificate or troubleshoot SSL errors on agents, or if you recreated your certificate authority.">Regenerate agent certificates</a></p></li>
+                                            <li class="li"><a class="xref" href="regenerate_certificates.html#regenerate_replica_certificates" title="Regenerate master replica certificates for your high availability installation to specify a new DNS alt name or other trusted data, or if you recreated your certificate authority.">Regenerate replica certificates</a></li>
+                                        </ol></div></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="regenerate_certificates__entry__1">Fix a compromised or
+                                    damaged certificate authority. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="regenerate_certificates__entry__1">Fix a compromised
+                                    compiler certificate or troubleshoot SSL errors on
+                                    compilers.</td>
+                                <td class="entry" headers="regenerate_certificates__entry__2"><a class="xref" href="regenerate_certificates.html#regenerate_compiler_certificates" title="Regenerate compiler certificates to fix a compromised certificate or troubleshoot SSL errors on compilers, or if you recreated your certificate authority.">Regenerate compiler certificates</a></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="regenerate_certificates__entry__1">Fix a compromised agent
+                                    certificate or troubleshoot SSL errors on agent nodes.</td>
+                                <td class="entry" headers="regenerate_certificates__entry__2"><a class="xref" href="regenerate_certificates.html#regenerate_agent_certs" title="Regenerate *nix or Windows agent certificates to fix a compromised certificate or troubleshoot SSL errors on agents, or if you recreated your certificate authority.">Regenerate agent certificates</a> or <a class="xref" href="regenerate_windows_agent_certificates.html" title="Regenerate Windows agent certificates to fix a compromised certificate or troubleshoot SSL errors on agents, or if you recreated your certificate authority.">Regenerate
+                                        Windows agent certificates</a></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="regenerate_certificates__entry__1">Specify a new DNS alt
+                                    name or other trusted data.</td>
+                                <td class="entry" headers="regenerate_certificates__entry__2"><a class="xref" href="regenerate_certificates.html#regenerate_the_puppet_master_certificates" title="Regenerate master certificates to specify a new DNS alt name or other trusted data. This process regenerates the certificates for all primary infrastructure nodes, including external PE-PostgreSQL in extra-large installations.">Regenerate master certificates</a></td>
+                            </tr>
+                        </tbody></table></div>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> To support recovery, backups of your certificates are saved and the location
+                    of the backup directory is output to the console. If the command fails after
+                    deleting the certificates, you can restore your certificates with the contents
+                    of this backup directory.</div>
+            </div></section>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="delete_and_recreate_ca">
+    <h2 class="title topictitle2" id="ariaid-title2">Delete and recreate the certificate authority</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Recreate the certificate authority only if you're
+        upgrading to the new certificate architecture introduced in <span class="ph">Puppet</span> 6.0, or if your certificate authority was compromised
+        or damaged beyond repair. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">The
+                    <code class="ph codeph">puppet infrastructure run</code>
+                command leverages built-in <span class="ph">Bolt</span> plans to automate
+                certain management tasks. To use this command, you must be able to connect using SSH
+                from your master to any nodes that the command modifies. You can establish an SSH
+                connection using key forwarding, a local key file, or by specifying keys in <code class="ph codeph">.ssh/config</code> on your master. For more
+                information, see <a class="xref" href="https://puppet.com/docs/bolt/latest/bolt_configuration_options.html#openssh-configuration-options" target="_blank">
+                    <span class="ph">Bolt</span> OpenSSH configuration options</a>.</p>
+        </section>
+        <section class="section context">
+            <div class="p">
+                <div class="note caution note_caution"><span class="note__title">CAUTION:</span> Replacing your certificate authority
+                    invalidates all existing certificates in your environment. Complete this task
+                    only if and when you're prepared to regenerate certificates for both your
+                    infrastructure nodes (including external <span class="ph">PE</span>-<span class="ph">PostgreSQL</span> in extra-large installations) and your
+                    entire agent fleet.</div>
+            </div>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">On your master logged in as root, run:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet infrastructure run rebuild_certificate_authority</code></pre>
+                </div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>The SSL and cert directories on your CA server are backed up with "_bak" appended to
+            the end, CA files are removed and certificates are rebuilt, and a <span class="ph">Puppet</span> run completes. </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="regenerate_compiler_certificates">
+   <h2 class="title topictitle2" id="ariaid-title3">Regenerate compiler certificates</h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Regenerate compiler certificates to fix a compromised
+      certificate or troubleshoot SSL errors on compilers, or if you recreated your certificate
+      authority. </p>
+      <section class="section context"></section>
+      <section><div class="li step p">
+            <span class="ph cmd">On your master logged in as root, run the following command, specifying any
+               additional parameters required for your environment and use case:</span>
+            <div class="itemgroup info">
+               <pre class="pre codeblock"><code>puppet infrastructure run regenerate_compiler_certificate target=&lt;COMPILER_HOSTNAME&gt;</code></pre>
+            </div>
+            <div class="itemgroup info">
+               <div class="p">
+                  <ul class="ul">
+                     <li class="li"><strong class="ph b">If you use DNS alternative names</strong>, specify
+                           <code class="ph codeph">dns_alt_names</code> as a comma-separated list of names to add
+                        to agent certificates. <div class="note important note_important"><span class="note__title">Important:</span> To ensure naming consistency,
+                           if your <code class="ph codeph">puppet.conf</code> file includes a
+                              <code class="ph codeph">dns_alt_names</code> entry, you must include
+                           the <code class="ph codeph">dns_alt_names</code> parameter and pass in
+                           all alternative names included in the entry when regenerating your agent
+                           certificates. </div></li>
+                     <li class="li"><strong class="ph b">If you recreated your certificate authority</strong>, or are otherwise unable
+                        to connect to the compiler with the orchestrator, specify
+                           <code class="ph codeph">clean_crl=true</code> and <code class="ph codeph">--use-ssh</code>, as well
+                        as any additional parameters needed to connect over SSH. </li>
+                  </ul>
+               </div>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>The compiler's SSL directory is backed up to
+            <code class="ph codeph">/etc/puppetlabs/puppet/ssl_bak</code>, its certificate is regenerated and
+         signed, a <span class="ph">Puppet</span> run completes, and the compiler resumes its
+         role in your deployment. </section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="regenerate_agent_certs">
+    <h2 class="title topictitle2" id="ariaid-title4">Regenerate agent certificates</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Regenerate <span class="ph">*nix</span> or <span class="ph">Windows</span> agent certificates to fix a compromised certificate or troubleshoot SSL errors on agents,
+        or if you recreated your certificate authority. </p>
+        <section class="section context"></section>
+        <section><div class="li step p">
+                <span class="ph cmd">On your master logged in as root, run the following command, specifying any
+                    additional parameters required for your environment and use case:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet infrastructure run regenerate_agent_certificate agent=&lt;AGENT_HOSTNAME_1&gt;,&lt;AGENT_HOSTNAME_2&gt;</code></pre>
+                </div>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <ul class="ul">
+                            <li class="li"><strong class="ph b">If you use DNS alternative names</strong>, specify
+                                    <code class="ph codeph">dns_alt_names</code> as a comma-separated list of
+                                names to add to agent certificates. <div class="note important note_important"><span class="note__title">Important:</span> To ensure
+                                    naming consistency, if your <code class="ph codeph">puppet.conf</code> file includes a <code class="ph codeph">dns_alt_names</code> entry, you must include the <code class="ph codeph">dns_alt_names</code> parameter and pass in
+                                    all alternative names included in the entry when regenerating
+                                    your agent certificates. </div></li>
+                            <li class="li"><strong class="ph b">If you recreated your certificate authority</strong>, or are otherwise
+                                unable to connect to nodes with the orchestrator, specify
+                                    <code class="ph codeph">clean_crl=true</code> and <code class="ph codeph">--use-ssh</code>,
+                                as well as any additional parameters needed to connect over SSH. </li>
+                        </ul>
+                    </div>
+                </div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>Agent SSL directories are backed up to
+                <code class="ph codeph">/etc/puppetlabs/puppet/ssl_bak</code> (<span class="ph">*nix</span>)
+            or <code class="ph codeph">C:/ProgramData/PuppetLabs/puppet/etc/ssl_bak</code> (<span class="ph">Windows</span>), their certificates are regenerated and signed,
+            a <span class="ph">Puppet</span> run completes, and the agents resume their role
+            in your deployment. </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="regenerate_replica_certificates">
+    <h2 class="title topictitle2" id="ariaid-title5">Regenerate replica certificates</h2>
+    
+    
+
+    <div class="body taskbody"><p class="shortdesc">Regenerate master replica certificates for your high availability installation to
+        specify a new DNS alt name or other trusted data, or if you recreated your certificate
+        authority. </p>
+        <section class="section context"></section>
+        <section><div class="li step p">
+                <span class="ph cmd">On your master logged in as root, run the following command, specifying any
+                    additional parameters required for your environment and use case:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet infrastructure run regenerate_replica_certificate target=&lt;REPLICA_HOSTNAME&gt;</code></pre>
+                </div>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <ul class="ul">
+                            <li class="li"><strong class="ph b">If you use DNS alternative names</strong>, specify
+                                    <code class="ph codeph">dns_alt_names</code> as a comma-separated list of
+                                names to add to agent certificates. <div class="note important note_important"><span class="note__title">Important:</span> To ensure
+                                    naming consistency, if your <code class="ph codeph">puppet.conf</code> file includes a <code class="ph codeph">dns_alt_names</code> entry, you must include the <code class="ph codeph">dns_alt_names</code> parameter and pass in
+                                    all alternative names included in the entry when regenerating
+                                    your agent certificates. </div></li>
+                            <li class="li"><strong class="ph b">If you recreated your certificate authority</strong>, or are otherwise
+                                unable to connect to the replica with the orchestrator, specify
+                                    <code class="ph codeph">clean_crl=true</code> and <code class="ph codeph">--use-ssh</code>,
+                                as well as any additional parameters needed to connect over SSH. </li>
+                        </ul>
+                    </div>
+                </div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>The replica's SSL directory is backed up to
+                <code class="ph codeph">/etc/puppetlabs/puppet/ssl_bak</code>, its certificate is regenerated and
+            signed, a <span class="ph">Puppet</span> run completes, and the replica resumes
+            its role in your deployment. </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="regenerate_the_puppet_master_certificates">
+    <h2 class="title topictitle2" id="ariaid-title6">Regenerate master certificates </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Regenerate master certificates to specify a new DNS alt
+        name or other trusted data. This process regenerates the certificates for all primary
+        infrastructure nodes, including external <span class="ph">PE</span>-<span class="ph">PostgreSQL</span> in extra-large installations. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">The
+                    <code class="ph codeph">puppet infrastructure run</code>
+                command leverages built-in <span class="ph">Bolt</span> plans to automate
+                certain management tasks. To use this command, you must be able to connect using SSH
+                from your master to any nodes that the command modifies. You can establish an SSH
+                connection using key forwarding, a local key file, or by specifying keys in <code class="ph codeph">.ssh/config</code> on your master. For more
+                information, see <a class="xref" href="https://puppet.com/docs/bolt/latest/bolt_configuration_options.html#openssh-configuration-options" target="_blank">
+                    <span class="ph">Bolt</span> OpenSSH configuration options</a>.</p></section>
+        <section class="section context">
+            <p class="p">To view all available parameters, use the <code class="ph codeph">--help</code> flag. The logs for all
+                    <code class="ph codeph">puppet infrastructure run</code>
+                <span class="ph">Bolt</span> plans are located at <code class="ph codeph">/var/log/puppetlabs/installer/bolt_info.log</code>.</p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">On your master logged in as root, run:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet infrastructure run regenerate_master_certificate</code></pre>
+                </div>
+                <div class="itemgroup info">You can specify these optional
+                        parameters:<ul class="ul">
+                        <li class="li"><code class="ph codeph">dns_alt_names</code> – Comma-separated list of alternate DNS
+                            names to be added to the certificates generated for your master. <div class="note important note_important"><span class="note__title">Important:</span> To ensure naming consistency, if your <code class="ph codeph">puppet.conf</code> file includes a <code class="ph codeph">dns_alt_names</code> entry, you must include
+                                the <code class="ph codeph">dns_alt_names</code> parameter and pass
+                                in all alternative names included in the entry when regenerating
+                                your master certificate. </div></li>
+                        <li class="li"><code class="ph codeph">tmpdir</code> — Path to a directory to use for
+                            uploading and executing temporary files.</li>
+                    </ul></div>
+                <div class="itemgroup info">
+                    <p class="p"> </p>
+                </div>
+            </div></section>
+    </div>
+</article></article></article></main></body></html>

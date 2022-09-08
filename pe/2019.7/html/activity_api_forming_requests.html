@@ -1,0 +1,36 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Token-based authentication is required to access the activity service API. You can authenticate requests with user authentication tokens or whitelisted certificates."><meta name="DC.relation" scheme="URI" content="rbac_token_auth_intro.html#token_based_authentication"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="forming_requests_to_the_activity_service_api"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Forming activity service API requests</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="forming_requests_to_the_activity_service_api">
+	<h1 class="title topictitle1" id="ariaid-title1">Forming activity service API requests</h1>
+	
+	<div class="body conbody"><p class="shortdesc">Token-based authentication is required to access the
+		activity service API. You can authenticate requests with user authentication tokens or
+		whitelisted certificates. </p>
+		<p class="p">By default, the activity service listens on port 4433. All endpoints
+			are relative to the <code class="ph codeph">/activity-api/</code>
+			path. So, for example, the full URL for the <code class="ph codeph">/v1/events</code> endpoint on localhost is <code class="ph codeph">https://localhost:4433/activity-api/v1/events</code>.</p>
+		<section class="section" id="forming_requests_to_the_activity_service_api__authentication_using_tokens"><h2 class="title sectiontitle">Authentication using tokens </h2><p class="p">Insert a
+				user authentication token variable in an activity service API request.</p><ol class="ol">
+				<li class="li">Generate a token: <code class="ph codeph">puppet-access login</code></li>
+				<li class="li">
+					<p class="p">Print the token and copy it: <code class="ph codeph">puppet-access show</code></p>
+				</li>
+				<li class="li">Save the token as an environment variable: <code class="ph codeph">export TOKEN=&lt;PASTE THE TOKEN
+					HERE&gt;</code></li>
+				<li class="li">Include the token variable in your API request:</li>
+			</ol><pre class="pre codeblock"><code>curl -k -X GET https://&lt;HOSTNAME&gt;:&lt;PORT&gt;/activity-api/v1/events?service_id=classifier -H "X-Authentication:$TOKEN"</code></pre></section>
+		<section class="section" id="forming_requests_to_the_activity_service_api__authentication_using_whitelisted_certificate"><h2 class="title sectiontitle">Authentication using whitelisted certificate </h2><p class="p">You can also authenticate requests using a certificate listed in
+				RBAC's certificate whitelist, located at <code class="ph codeph">/etc/puppetlabs/console-services/rbac-certificate-whitelist</code>. Note that
+				if you edit this file, you must reload the <code class="ph codeph">pe-console-services</code> service (run <code class="ph codeph">sudo service pe-console-services reload</code>) for your changes to take
+				effect. </p><p class="p">Attach the certificate using the command line, as
+				demonstrated in the example curl query below. You must have the whitelisted
+				certificate name (which must match a name in the <code class="ph codeph">/etc/puppetlabs/console-services/rbac-certificate-whitelist</code> file) and
+				the private key to run the
+				script.</p><pre class="pre codeblock"><code>curl -X GET https://&lt;HOSTNAME&gt;:&lt;PORT&gt;/activity-api/v1/events?service_id=classifier \
+		--cert /etc/puppetlabs/puppet/ssl/certs/&lt;WHITELISTED CERTNAME&gt;.pem \
+		--key /etc/puppetlabs/puppet/ssl/private_keys/&lt;WHITELISTED CERTNAME&gt;.pem \
+		--cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem</code></pre><p class="p">You do not need to use an agent certificate for authentication.
+				You can use <code class="ph codeph">puppet cert generate</code> to
+				create a new certificate specifically for use with the API.</p></section>
+	</div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#token_based_authentication" title="Authentication tokens allow a user to enter their credentials once, then receive an alphanumeric &#34;token&#34; to use to access different services or parts of the system infrastructure. Authentication tokens are tied to the permissions granted to the user through RBAC, and provide the user with the appropriate access to HTTP requests.">Token-based authentication</a></li></ul></div></nav></article></article></main></body></html>

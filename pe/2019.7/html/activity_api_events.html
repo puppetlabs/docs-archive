@@ -1,0 +1,114 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the events endpoints to retrieve activity service events."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Mindy Moreland <mindy.moreland@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="activity_api_events"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Events endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="activity_api_events">
+    <h1 class="title topictitle1" id="ariaid-title1">Events endpoints</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">events</code> endpoints to retrieve activity service events. </p>
+        <p class="p"></p>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_v1_events">
+    <h2 class="title topictitle2" id="ariaid-title2">GET /v1/events </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Fetches activity service events. Web session
+        authentication is required.</p>
+        <section class="section" id="get_v1_events__request_format"><h3 class="title sectiontitle">Request format </h3>
+            
+            <p class="p">The <code class="ph codeph">/v1/events</code>
+                endpoint supports filtering through query parameters.</p>
+            <dl class="dl">
+                
+                    <dt class="dt dlterm"><code class="ph codeph">service_id</code></dt>
+                    <dd class="dd"><em class="ph i">required</em> The ID of the
+                        service: <code class="ph codeph">classifier</code>, <code class="ph codeph">code-manager</code>, <code class="ph codeph">pe-console</code>, or <code class="ph codeph">rbac</code>.</dd>
+                
+                
+                    <dt class="dt dlterm"><code class="ph codeph">subject_type</code></dt>
+                    <dd class="dd">The subject who performed the activity: <code class="ph codeph">users</code>.</dd>
+                
+                
+                    <dt class="dt dlterm"><code class="ph codeph">subject_id</code></dt>
+                    <dd class="dd">Comma-separated list of IDs associated with the defined
+                        subject type.</dd>
+                
+                
+                    <dt class="dt dlterm"><code class="ph codeph">object_type</code></dt>
+                    <dd class="dd">The object affected by the activity: <code class="ph codeph">node</code>, <code class="ph codeph">node_groups</code>, <code class="ph codeph">users</code>, <code class="ph codeph">user_groups</code>, <code class="ph codeph">roles</code>, <code class="ph codeph">environment</code>, or <code class="ph codeph">directory_server_settings</code>.</dd>
+                
+                
+                    <dt class="dt dlterm"><code class="ph codeph">object_id</code></dt>
+                    <dd class="dd">Comma-separated list of IDs associated with the defined
+                        object type.</dd>
+                
+                
+                    <dt class="dt dlterm"><code class="ph codeph">offset</code></dt>
+                    <dd class="dd">Number of commits to skip before returning events.</dd>
+                
+                
+                    <dt class="dt dlterm"><code class="ph codeph">limit</code></dt>
+                    <dd class="dd">Maximum number of events to return. Default is 1000
+                        events.</dd>
+                
+            </dl>
+        </section>
+        <section class="section" id="get_v1_events__section_s5h_vgw_phb"><h3 class="title sectiontitle">Examples</h3>
+            
+            <pre class="pre codeblock"><code>curl -k -X GET "https://web5.mydomain.edu:4433/activity-api/v1/events?service_id=classifier&amp;subject_type=users&amp;subject_id=6868e4af-2996-46c6-8e42-1ae873f8a0ba" -H "X-Authentication:$TOKEN"</code></pre>
+            <pre class="pre codeblock"><code>curl -k -X GET "https://web5.mydomain.edu:4433/activity-api/v1/events?service_id=pe-console&amp;object_type=node&amp;object_id=emerald-1.platform9.mydomain.edu" -H "X-Authentication:$TOKEN"</code></pre>
+        </section>
+        <section class="section" id="get_v1_events__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">Responses are returned in a
+                structured JSON format. Example return:</p>
+            <pre class="pre codeblock"><code>{
+    "commits":[ {
+        "object": {
+            "id": "b55c209d-e68f-4096-9a2c-5ae52dd2500c", "name": "web_servers"
+        },
+        "subject": {
+            "id": "6868e4af-2996-46c6-8e42-1ae873f8a0ba", "name": "kai.evens"
+        },
+        "timestamp": "2019-03-05T18:52:27Z", "events":[ {
+            "message": "Deleted the \"web_servers\" group with id b55c209d-e68f-4096-9a2c-5ae52dd2500c"
+        }]
+    }], "offset": 0, "limit": 1, "total-rows": 5
+}</code></pre>
+            <pre class="pre codeblock"><code>{
+    "commits":[ {
+        "object": {
+            "id": "emerald-1.platform9.mydomain.edu", "name": "emerald-1.platform9.mydomain.edu"
+        },
+        "subject": {
+            "id": "d1f4919a-cf65-4c26-8832-8c4b5302b58b", "name": "steve"
+        },
+        "timestamp": "2019-05-02T22:50:16Z", "events":[ {
+            "message": "Scheduled job 3 request for facter_task task on emerald-1.platform9.mydomain.edu run via orchestrator job 7,759"
+        }]
+    }], "offset": 0, "limit": 1, "total-rows": 2915
+}</code></pre></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_v1_events_csv">
+    <h2 class="title topictitle2" id="ariaid-title3">GET /v1/events.csv </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Fetches activity service events and returns in a flat CSV
+        format. Token-based authentication is required.</p>
+        <section class="section" id="get_v1_events_csv__request_format"><h3 class="title sectiontitle">Request format </h3>
+            
+            <p class="p">The <code class="ph codeph">/v1/events.csv</code> endpoint supports the same parameters as <code class="ph codeph">/v1/events</code></p>
+        </section>
+        <section class="section" id="get_v1_events_csv__section_s5h_vgw_phb"><h3 class="title sectiontitle">Examples</h3>
+            
+            <pre class="pre codeblock"><code>curl -k -X GET "https://web5.mydomain.edu:4433/activity-api/v1/events.csv?service_id=classifier&amp;subject_type=users&amp;subject_id=6868e4af-2996-46c6-8e42-1ae873f8a0ba" -H "X-Authentication:$TOKEN"</code></pre>
+        </section>
+        <section class="section" id="get_v1_events_csv__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">Responses are returned in a flat CSV
+                format. Example
+            return:</p><pre class="pre codeblock no-highlight"><code>Submit Time,Subject Type,Subject Id,Subject Name,Object Type,Object Id,Object Name,Type,What,Description,Message
+YYYY-MM-DD 18:52:27.76,users,6868e4af-2996-46c6-8e42-1ae873f8a0ba,kai.evens,node_groups,b55c209d-e68f-4096-9a2c-5ae52dd2500c,web_servers,delete,node_group,delete_node_group,"Deleted the ""web_servers"" group with id b55c209d-e68f-4096-9a2c-5ae52dd2500c"
+YYYY-MM-DD 18:52:02.391,users,6868e4af-2996-46c6-8e42-1ae873f8a0ba,kai.evens,node_groups,b55c209d-e68f-4096-9a2c-5ae52dd2500c,web_servers,create,node_group,create_node_group,"Created the ""web_servers"" group with id b55c209d-e68f-4096-9a2c-5ae52dd2500c"
+YYYY-MM-DD 18:52:02.391,users,6868e4af-2996-46c6-8e42-1ae873f8a0ba,kai.evens,node_groups,b55c209d-e68f-4096-9a2c-5ae52dd2500c,web_servers,edit,node_group_description,edit_node_group_description,"Changed the description to """""
+YYYY-MM-DD 18:52:02.391,users,6868e4af-2996-46c6-8e42-1ae873f8a0ba,kai.evens,node_groups,b55c209d-e68f-4096-9a2c-5ae52dd2500c,web_servers,edit,node_group_environment,edit_node_group_environment,"Changed the environment to ""production"""
+YYYY-MM-DD 18:52:02.391,users,6868e4af-2996-46c6-8e42-1ae873f8a0ba,kai.evens,node_groups,b55c209d-e68f-4096-9a2c-5ae52dd2500c,web_servers,edit,node_group_environment_override,edit_node_group_environment_override,Changed the environment override setting to false
+YYYY-MM-DD 18:52:02.391,users,6868e4af-2996-46c6-8e42-1ae873f8a0ba,kai.evens,node_groups,b55c209d-e68f-4096-9a2c-5ae52dd2500c,web_servers,edit,node_group_parent,edit_node_group_parent,Changed the parent to ec519937-8681-43d3-8b74-380d65736dba
+YYYY-MM-DD 00:41:18.944,users,6868e4af-2996-46c6-8e42-1ae873f8a0ba,kai.evens,node_groups,ec519937-8681-43d3-8b74-380d65736dba,PE Orchestrator,edit,node_group_class_parameter,delete_node_group_class_parameter_puppet_enterprise::profile::orchestrator_use_application_services,"Removed the ""use_application_services"" parameter from the ""puppet_enterprise::profile::orchestrator"" class"
+YYYY-MM-DD 00:41:10.631,users,6868e4af-2996-46c6-8e42-1ae873f8a0ba,kai.evens,node_groups,ec519937-8681-43d3-8b74-380d65736dba,PE Orchestrator,edit,node_group_class_parameter,add_node_group_class_parameter_puppet_enterprise::profile::orchestrator_use_application_services,"Added the ""use_application_services"" parameter to the ""puppet_enterprise::profile::orchestrator"" class"
+YYYY-MM-DD 20:41:30.223,users,6868e4af-2996-46c6-8e42-1ae873f8a0ba,kai.evens,node_groups,46e34005-28e4-4009-bc48-4813221e9ffb,PE Agent,schedule_deploy,node_group,schedule_puppet_agent_on_node_group,Schedule puppet agent run on nodes in this group to be run at 2019-01-16T08:00:00Z</code></pre></section>
+    </div>
+</article></article></article></main></body></html>

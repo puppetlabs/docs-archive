@@ -1,0 +1,226 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="By default, Puppet Enterprise includes its own database backend, PE-PostgreSQL, which is installed alongside PuppetDB. If the load on your PuppetDB node is larger than it can effectively scale to (greater than 20,000 nodes), you can install a&nbsp;standalone&nbsp;instance of PE-PostgreSQL.&nbsp;"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="installing_external_postgres"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Installing external PostgreSQL</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="installing_external_postgres">
+    <h1 class="title topictitle1" id="ariaid-title1">Installing external <span class="ph">PostgreSQL</span>
+    </h1>
+    
+    <div class="body conbody"><p class="shortdesc">By default, <span class="ph">Puppet Enterprise</span>
+        includes its own database backend, PE-PostgreSQL, which is installed alongside <span class="ph">PuppetDB</span>. If the load on your <span class="ph">PuppetDB</span> node is larger than it can effectively scale to
+        (greater than 20,000 nodes), you can install a&nbsp;standalone&nbsp;instance of
+        PE-PostgreSQL.&nbsp;</p>
+        <p class="p">In certain limited circumstances, you might choose to configure a <span class="ph">PostgreSQL</span> instance that's not managed by <span class="ph">PE</span>. Using unmanaged <span class="ph">PostgreSQL</span> increases complexity for maintenance and
+            upgrades, so we recommend this configuration only for customers who can't use
+            PE-PostgreSQL.</p>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="install_standalone_pe-postgresql">
+    <h2 class="title topictitle2" id="ariaid-title2">Install standalone PE-PostgreSQL</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">If the load on your <span class="ph">PuppetDB</span> node is larger than it can effectively scale to (greater than 20,000 nodes), you can
+        install a&nbsp;standalone&nbsp;instance of PE-PostgreSQL.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p"> You must have root
+                access to the node on which you plan to install PE-PostgreSQL, as well as the
+                ability to SSH and copy files to the node.</p></section>
+        <section class="section context"><p class="p"></p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Prepare your <code class="ph codeph">pe.conf</code> file by specifying parameters required for
+                        <span class="ph">PostgreSQL</span>.&nbsp;</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>"puppet_enterprise::puppet_master_host": "&lt;MASTER HOSTNAME&gt;"
+"puppet_enterprise::database_host": "&lt;PE-POSTGRESQL NODE HOSTNAME&gt;"</code></pre></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Install <span class="ph">PE</span> using the <code class="ph codeph">-c</code> flag to
+                    specify the path to your customized <code class="ph codeph">pe.conf</code> file:
+                        <code class="ph codeph">./puppet-enterprise-installer -c &lt;PATH_TO_pe.conf&gt;</code></span>
+                <div class="itemgroup stepresult">
+                    <p class="p">The installer hangs halfway through, because it can't contact the database.
+                        Leave the process running and proceed to the next step. </p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Copy the <code class="ph codeph">pe.conf</code> file you created to the PE-PostgreSQL node
+                    and SSH into that node.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run the installer again with the <code class="ph codeph">-c</code> flag, using
+                    the same <code class="ph codeph">pe.conf</code> file:
+                        <code class="ph codeph">./puppet-enterprise-installer -c &lt;PATH_TO_pe.conf&gt;</code></span>
+                <div class="itemgroup stepresult">When the installation process finishes on the PE-PostgreSQL node, the
+                    installer automatically resumes installation on the master. <div class="note tip note_tip"><span class="note__title">Tip:</span> If
+                        installation fails to resume on the master automatically, connect with SSH
+                        to the master and run <code class="ph codeph">puppet infrastructure
+                        configure</code>.</div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">SSH into the master and run Puppet: <code class="ph codeph">puppet agent -t</code></span>
+                <div class="itemgroup stepresult">
+                    <p class="p">The master is configured to use the standalone PE-PostgreSQL installation on
+                        the PE-PostgreSQL node.</p>
+                </div>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="install_unmanaged_postgres">
+    <h2 class="title topictitle2" id="ariaid-title3">Install unmanaged <span class="ph">PostgreSQL</span>
+    </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">If you use <span class="ph">Amazon</span> RDS, or
+        if your business requirements dictate that databases must be managed outside of <span class="ph">Puppet</span>, you can configure a <span class="ph">PostgreSQL</span> database that's not managed by <span class="ph">PE</span>. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>You must have: <ul class="ul">
+                <li class="li">
+                    <p class="p">
+                        <span class="ph">PostgreSQL</span> 9.6 or later.</p>
+                </li>
+                <li class="li">
+                    <p class="p">The complete certificate authority certificate chain for
+                        the external party CA, in PEM format.</p>
+                </li>
+                <li class="li">
+                    <p class="p">The DNS-addressable name, username, and password for the
+                        external <span class="ph">PostgreSQL</span> database.</p>
+                </li>
+            </ul>
+        </section>
+        <section class="section context">
+            <div class="p">
+                <div class="note important note_important"><span class="note__title">Important:</span> Using unmanaged <span class="ph">PostgreSQL</span> increases complexity for maintenance
+                    and upgrades, so we recommend it only for customers who can't use
+                    PE-PostgreSQL.</div>
+            </div>
+        </section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title4" id="create_the_external_postgresql_instance">
+    <h3 class="title topictitle3" id="ariaid-title4">Create the unmanaged <span class="ph">PostgreSQL</span>
+        instance </h3>
+    <div class="body taskbody">
+        <section><div class="li step p">
+                <span class="ph cmd">Create the unmanaged <span class="ph">PostgreSQL</span> instance, and, if you haven't already,
+                    retrieve the necessary certificate chain and credentials from your database
+                    administrator.</span>
+                <div class="itemgroup stepxmp"><p class="p">For example,
+                        for RDS, the root certificate is available <a class="xref" href="https://s3.amazonaws.com/rds-downloads/rds-ca-2015-root.pem" target="_blank">here</a>.</p></div>
+            </div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="create_pe_databases_on_the_postgresql_instance">
+    <h3 class="title topictitle3" id="ariaid-title5">Create <span class="ph">PE</span> databases on the
+        unmanaged <span class="ph">PostgreSQL</span> instance </h3>
+    <div class="body taskbody">
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Log in to the unmanaged <span class="ph">PostgreSQL</span> instance with the client of your
+                    choice.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Create databases for the orchestrator, RBAC,
+                    activity service, and the node classifier.</span>
+                <div class="itemgroup stepxmp"><div class="p"><pre class="pre codeblock"><code>CREATE USER "pe-inventory" PASSWORD '&lt;PASSWORD&gt;';
+GRANT "pe-inventory" TO &lt;ADMIN USER&gt;;
+CREATE DATABASE "pe-inventory" OWNER "pe-inventory"
+ENCODING 'utf8' LC_CTYPE 'en_US.utf8' LC_COLLATE 'en_US.utf8' template template0;
+
+CREATE USER "pe-puppetdb" PASSWORD '&lt;PASSWORD&gt;';
+GRANT "pe-puppetdb" TO &lt;ADMIN USER&gt;;
+CREATE DATABASE "pe-puppetdb" OWNER "pe-puppetdb"
+ENCODING 'utf8' LC_CTYPE 'en_US.utf8' LC_COLLATE 'en_US.utf8' template template0;
+
+CREATE USER "pe-orchestrator" PASSWORD '&lt;PASSWORD&gt;';
+GRANT "pe-orchestrator" TO &lt;ADMIN USER&gt;;
+CREATE DATABASE "pe-orchestrator" OWNER "pe-orchestrator"
+ENCODING 'utf8' LC_CTYPE 'en_US.utf8' LC_COLLATE 'en_US.utf8' template template0;
+
+CREATE USER "pe-activity" PASSWORD '&lt;PASSWORD&gt;';
+GRANT "pe-activity" TO &lt;ADMIN USER&gt;;
+CREATE DATABASE "pe-activity" OWNER "pe-activity"
+ENCODING 'utf8' LC_CTYPE 'en_US.utf8' LC_COLLATE 'en_US.utf8' template template0;
+
+CREATE USER "pe-classifier" PASSWORD '&lt;PASSWORD&gt;';
+GRANT "pe-classifier" TO &lt;ADMIN USER&gt;;
+CREATE DATABASE "pe-classifier" OWNER "pe-classifier"
+ENCODING 'utf8' LC_CTYPE 'en_US.utf8' LC_COLLATE 'en_US.utf8' template template0;
+
+CREATE USER "pe-rbac" PASSWORD '&lt;PASSWORD&gt;';
+GRANT "pe-rbac" TO &lt;ADMIN USER&gt;;
+CREATE DATABASE "pe-rbac" OWNER "pe-rbac"
+ENCODING 'utf8' LC_CTYPE 'en_US.utf8' LC_COLLATE 'en_US.utf8' template template0;
+
+\c "pe-rbac"
+CREATE EXTENSION citext;
+CREATE EXTENSION pg_trgm;
+CREATE EXTENSION plpgsql;
+CREATE EXTENSION pgcrypto;
+
+\c "pe-orchestrator"
+CREATE EXTENSION citext;
+CREATE EXTENSION pg_trgm;
+CREATE EXTENSION plpgsql;
+
+\c "pe-puppetdb"
+CREATE EXTENSION citext;
+CREATE EXTENSION pg_trgm;
+CREATE EXTENSION plpgsql;
+CREATE EXTENSION pgcrypto;
+
+\c "pe-classifier"
+CREATE EXTENSION citext;
+CREATE EXTENSION pg_trgm;
+CREATE EXTENSION plpgsql;
+
+\c "pe-activity"
+CREATE EXTENSION citext;
+CREATE EXTENSION pg_trgm;
+CREATE EXTENSION plpgsql;
+
+\c "pe-inventory"
+CREATE EXTENSION citext;
+CREATE EXTENSION pg_trgm;
+CREATE EXTENSION plpgsql;
+CREATE EXTENSION pgcrypto;</code></pre></div></div>
+            </li></ol></section>
+        <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div><p class="p">Next, install <span class="ph">PE</span> using the <code class="ph codeph">-c</code> flag to specify the
+                path to a customized <code class="ph codeph">pe.conf</code> file with required <a class="xref" href="installing_pe.html#external_postgresql_parameters" title="These parameters are required to install an external PostgreSQL instance. Password parameters can be added to standard installations if needed."><span class="ph">PostgreSQL</span> parameters</a>:
+                    <code class="ph codeph">./puppet-enterprise-installer -c &lt;PATH_TO_pe.conf&gt;</code>. </p></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="establish_ssl_between_pe_and_the_external_postgresql_instance">
+    <h3 class="title topictitle3" id="ariaid-title6">Establish SSL between <span class="ph">PE</span> and the
+        unmanaged <span class="ph">PostgreSQL</span> instance </h3>
+    <div class="body taskbody">
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>Install <span class="ph">PE</span> using the <code class="ph codeph">-c</code> flag to
+            specify the path to a customized <code class="ph codeph">pe.conf</code> file with required <a class="xref" href="installing_pe.html#external_postgresql_parameters" title="These parameters are required to install an external PostgreSQL instance. Password parameters can be added to standard installations if needed."><span class="ph">PostgreSQL</span>
+                parameters</a>: <code class="ph codeph">./puppet-enterprise-installer -c
+                &lt;PATH_TO_pe.conf&gt;</code>. </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Log in to the master and stop the agent
+                    service:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>/opt/puppetlabs/puppet/bin/puppet resource service puppet ensure=stopped</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master, create a location to store the CA cert from the external <span class="ph">PostgreSQL</span> instance, for example
+                        <code class="ph codeph">/etc/puppetlabs/puppet/ssl/</code></span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Transfer the CA cert from the unmanaged <span class="ph">PostgreSQL</span> instance to the directories that you
+                    created.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Specify ownership and permissions for the
+                    certificate and directories.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>chown -R pe-puppet:pe-puppet &lt;PATH TO DIRECTORY&gt;
+chmod 664 &lt;PATH TO DIRECTORY&gt;/&lt;CERT NAME&gt;</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Modify your <code class="ph codeph">pe.conf</code> file to specify database properties.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>"puppet_enterprise::profile::console::database_properties": "?ssl=true&amp;sslfactory=org.postgresql.ssl.jdbc4.LibPQFactory&amp;sslmode=verify-full&amp;sslrootcert=&lt;PATH TO EXTERNAL POSTGRESQL CA CERT&gt;"
+"puppet_enterprise::profile::puppetdb::database_properties": "?ssl=true&amp;sslfactory=org.postgresql.ssl.jdbc4.LibPQFactory&amp;sslmode=verify-full&amp;sslrootcert=&lt;PATH TO EXTERNAL POSTGRESQL CA CERT&gt;"
+"puppet_enterprise::profile::orchestrator::database_properties": "?ssl=true&amp;sslfactory=org.postgresql.ssl.jdbc4.LibPQFactory&amp;sslmode=verify-full&amp;sslrootcert=&lt;PATH TO EXTERNAL POSTGRESQL CA CERT&gt;"
+"puppet_enterprise::database_ssl": true
+"puppet_enterprise::database_cert_auth": false</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master, run <span class="ph">Puppet</span>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master, start the agent service: <code class="ph codeph">puppet resource service puppet
+                        ensure=running</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article></article></article></article></main></body></html>

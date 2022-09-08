@@ -1,0 +1,158 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="By assigning roles to users, you can manage them in sets that are granted access permissions to various PE objects. This makes tracking user access more organized and easier to manage. The roles endpoints enable you to get lists of roles and create new roles."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="user_role_endpoints_api_v1"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>User roles endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="user_role_endpoints_api_v1">
+    <h1 class="title topictitle1" id="ariaid-title1">User roles endpoints</h1>
+    
+    <div class="body conbody"><p class="shortdesc">By assigning roles to users, you can manage them in sets
+        that are granted access permissions to various PE objects. This makes tracking user access
+        more organized and easier to manage. The <code class="ph codeph">roles</code> endpoints enable you to get lists of roles and create new
+        roles.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="user_role_keys">
+    <h2 class="title topictitle2" id="ariaid-title2">User role keys </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The following keys are used with the RBAC v1 API’s roles
+        endpoints. </p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="user_role_keys__entry__1">Key </th>
+                        <th class="entry" id="user_role_keys__entry__2">Explanation </th>
+                        <th class="entry" id="user_role_keys__entry__3">Example </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">id</code>
+                        </td>
+                        <td class="entry" headers="user_role_keys__entry__2">An integer identifying the
+                            role. </td>
+                        <td class="entry" headers="user_role_keys__entry__3"><code class="ph codeph">18</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">display_name</code></td>
+                        <td class="entry" headers="user_role_keys__entry__2">The role's name as a string. </td>
+                        <td class="entry" headers="user_role_keys__entry__3"><code class="ph codeph">"Viewers"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">description</code>
+                        </td>
+                        <td class="entry" headers="user_role_keys__entry__2">A string describing the role's
+                            function. </td>
+                        <td class="entry" headers="user_role_keys__entry__3"><code class="ph codeph">"View-only permissions"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">permissions</code>
+                        </td>
+                        <td class="entry" headers="user_role_keys__entry__2">An array containing permission
+                            objects that indicate what permissions a role grants. An empty array is
+                            valid. See Permission keys for more information. </td>
+                        <td class="entry" headers="user_role_keys__entry__3"><code class="ph codeph">[]</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><p class="p"><code class="ph codeph">user_ids</code></p><p class="p"><code class="ph codeph">group_ids</code></p></td>
+                        <td class="entry" headers="user_role_keys__entry__2">An array of UUIDs indicating
+                            which users and groups are directly assigned to the role. An empty array
+                            is valid. </td>
+                        <td class="entry" headers="user_role_keys__entry__3"><code class="ph codeph">["fc115750-555a-11e4-916c-0800200c9a66"]</code>
+                        </td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_roles">
+  <h2 class="title topictitle2" id="ariaid-title3">GET /roles </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Fetches all roles with user and group ID lists and
+    permission lists. Authentication is required.</p>
+    <section class="section" id="get_roles__response_format"><h3 class="title sectiontitle">Response
+        format </h3><p class="p">Returns a JSON object containing all roles with user
+        and group ID lists and permission lists. </p><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>[{"id": 123,
+  "permissions": [{"object_type":"node_groups",
+                   "action":"edit_rules",
+                   "instance":"*"}, ...],
+  "user_ids": ["1cadd0e0-5887-11e4-8ed6-0800200c9a66","5c1ab4b0-588b-11e4-8ed6-0800200c9a66"],
+  "group_ids": ["2ca57e30-5887-11e4-8ed6-0800200c9a66"],
+  "display_name": "A role",
+  "description": "Edit node group rules"},
+...]</code></pre></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="get_roles_lt_rid_gt">
+ <h2 class="title topictitle2" id="ariaid-title4">GET /roles/&lt;rid&gt;</h2>
+ 
+ <div class="body refbody"><p class="shortdesc">Fetches a single role by its ID (rid). Authentication is
+  required.</p>
+  <section class="section" id="get_roles_lt_rid_gt__response_format"><h3 class="title sectiontitle">Response
+    format </h3><p class="p">Returns a 200 OK response with the role object with a full
+    list of permissions and user and group IDs.</p><p class="p">For
+   example:</p><pre class="pre codeblock json"><code>{"id": 123,
+ "permissions": [{"object_type":"node_groups",
+                  "action":"edit_rules",
+                  "instance":"*"}, ...],
+ "user_ids": ["1cadd0e0-5887-11e4-8ed6-0800200c9a66","5c1ab4b0-588b-11e4-8ed6-0800200c9a66"],
+ "group_ids": ["2ca57e30-5887-11e4-8ed6-0800200c9a66"],
+ "display_name": "A role",
+ "description": "Edit node group rules"}</code></pre></section>
+ </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="post_roles">
+                 <h2 class="title topictitle2" id="ariaid-title5">POST /roles </h2>
+                 
+                 <div class="body refbody"><p class="shortdesc">Creates a role, and attaches to it the
+                                  specified permissions and the specified users and groups.
+                                  Authentication is required.</p>
+                                  <section class="section" id="post_roles__request_format"><h3 class="title sectiontitle">Request format </h3><p class="p">Accepts a new role object. Any
+                                                  of the arrays can be empty and "description" can
+                                                  be null.</p><p class="p">For example:
+                                                  </p><pre class="pre codeblock json"><code>{"permissions": [{"object_type":"node_groups",
+                  "action":"edit_rules",
+                  "instance":"*"}, ...],
+ "user_ids": ["1cadd0e0-5887-11e4-8ed6-0800200c9a66","5c1ab4b0-588b-11e4-8ed6-0800200c9a66"],
+ "group_ids": ["2ca57e30-5887-11e4-8ed6-0800200c9a66"],
+ "display_name": "A role",
+ "description": "Edit node group rules"}</code></pre></section>
+                                  <section class="section" id="post_roles__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">Returns a 201 Created response
+                                                  with a location header pointing to the new
+                                                  resource.</p></section>
+                                  <section class="section" id="post_roles__error_responses"><h3 class="title sectiontitle">Error responses </h3><p class="p">Returns a 409 Conflict response
+                                                  if the role has a name that collides with an
+                                                  existing role.</p></section>
+                 </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="put_roles_lt_rid_gt">
+ <h2 class="title topictitle2" id="ariaid-title6">PUT /roles/&lt;rid&gt; </h2>
+ 
+ <div class="body refbody"><p class="shortdesc">Replaces a role at the specified ID (rid) with a new role
+  object. Authentication is required.</p>
+  <section class="section" id="put_roles_lt_rid_gt__request_format"><h3 class="title sectiontitle">Request format
+    </h3><p class="p">Accepts the modified role object.</p><p class="p">For
+    example:</p><pre class="pre codeblock json"><code>{"id": 123,
+ "permissions": [{"object_type":"node_groups",
+                  "action":"edit_rules",
+                  "instance":"*"}, ...],
+ "user_ids": ["1cadd0e0-5887-11e4-8ed6-0800200c9a66","5c1ab4b0-588b-11e4-8ed6-0800200c9a66"],
+ "group_ids": ["2ca57e30-5887-11e4-8ed6-0800200c9a66"],
+ "display_name": "A role",
+ "description": "Edit node group rules"}</code></pre></section>
+  <section class="section" id="put_roles_lt_rid_gt__response_format"><h3 class="title sectiontitle">Response
+    format </h3><p class="p">Returns a 200 OK response with the modified role
+    object.</p></section>
+  <section class="section" id="put_roles_lt_rid_gt__error_responses"><h3 class="title sectiontitle">Error
+    responses </h3><p class="p">Returns a 409 Conflict response if the new role has a
+    name that collides with an existing role.</p></section>
+ </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="delete_roles_lt_rid_gt">
+    <h2 class="title topictitle2" id="ariaid-title7">DELETE /roles/&lt;rid&gt;</h2>
+    
+    <div class="body refbody"><p class="shortdesc">Deletes the role identified by the role ID (rid). Users
+        with this role immediately lose the role and all permissions granted by it, but their
+        session is otherwise unaffected. Access to the next request that the user makes is
+        determined by the new set of permissions the user has without this role.</p>
+        <section class="section" id="delete_roles_lt_rid_gt__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">Returns a 200 OK response if the role
+                identified by <code class="ph codeph">&lt;rid&gt;</code> has been
+                deleted.</p></section>
+        <section class="section" id="delete_roles_lt_rid_gt__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">Returns a 404 Not Found response if no role
+                exists for <code class="ph codeph">&lt;rid&gt;</code>.</p><p class="p">Returns a 403 Forbidden response if the current user lacks
+                permission to delete the role identified by <code class="ph codeph">&lt;rid&gt;</code>.</p></section>
+    </div>
+</article></article></article></main></body></html>

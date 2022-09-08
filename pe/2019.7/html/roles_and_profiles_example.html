@@ -1,0 +1,236 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="This example demonstrates a complete roles and profiles workflow. Use it to understand the roles and profiles method as a whole. Additional examples show how to design advanced configurations by refactoring this example code to a higher level of complexity."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="roles_and_profiles_example"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Roles and profiles example</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="roles_and_profiles_example">
+    <h1 class="title topictitle1" id="ariaid-title1">Roles and profiles example </h1>
+    <p class="shortdesc">This example demonstrates a complete roles and profiles
+        workflow. Use it to understand the roles and profiles method as a whole. Additional examples
+        show how to design advanced configurations by refactoring this example code to a higher
+        level of complexity.</p>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="configure_jenkins_master_servers_with_roles_and_profiles">
+    <h2 class="title topictitle2" id="ariaid-title2">Configure Jenkins master servers with roles and profiles </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Jenkins is a continuous integration (CI) application that
+        runs on the JVM. The Jenkins master server provides a web front-end, and also runs CI tasks
+        at scheduled times or in reaction to events. </p>
+        <section class="section context"><p class="p">In this example, we manage the configuration of Jenkins master servers.</p></section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title3" id="set_up_your_prerequisites">
+   <h3 class="title topictitle3" id="ariaid-title3">Set up your prerequisites </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">If you're new to using roles and profiles, do some additional setup before writing any
+      new code.</p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Create two modules: one named <code class="ph codeph">role</code>, and one named <code class="ph codeph">profile</code>.</span>
+            <div class="itemgroup info">
+               <div class="p">If you deploy your code with <span class="ph">Code Manager</span> or <span class="ph">r10k</span>, put
+                  these two modules in your control repository instead of declaring them in your
+                  Puppetfile, because <span class="ph">Code Manager</span> and <span class="ph">r10k</span> reserve the <code class="ph codeph">modules</code> directory for their own use. <ol class="ol" type="a">
+                     <li class="li">Make a new directory in the repo named <code class="ph codeph">site</code>. </li>
+                     <li class="li">Edit the <code class="ph codeph">environment.conf</code> file to add
+                           <code class="ph codeph">site</code> to the <code class="ph codeph">modulepath</code>. (For example:
+                           <code class="ph codeph">modulepath = site:modules:$basemodulepath</code>). </li>
+                     <li class="li">Put the <code class="ph codeph">role</code> and <code class="ph codeph">profile</code> modules in the
+                           <code class="ph codeph">site</code> directory. </li>
+                  </ol></div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Make sure <span class="ph">Hiera</span> or <span class="ph">Puppet</span> lookup is set up and working, with a hierarchy
+               that works well for you.</span>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title4" id="choose_component_modules">
+            <h3 class="title topictitle3" id="ariaid-title4">Choose component modules </h3>
+            
+            <div class="body taskbody"><p class="shortdesc">For our example, we want to manage Jenkins itself using the
+      <code class="ph codeph">puppet/jenkins</code> module.</p>
+                        <section class="section context"><p class="p">Jenkins requires Java, and the <code class="ph codeph">puppet/jenkins</code> module can manage it
+        automatically. But we want finer control over Java, so we're going to disable that. So, we
+        need a Java module, and <code class="ph codeph">puppetlabs/java</code> is a good choice.</p><p class="p">That's enough to start with. We
+                                                can refactor and expand when we have those
+                                                working.</p></section>
+                        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">To learn more about these modules, see , <a class="xref" href="https://forge.puppet.com/puppet/jenkins" target="_blank">puppet/jenkins</a> and <a class="xref" href="https://forge.puppet.com/puppetlabs/java?_ga=2.126344074.623882382.1502209414-2028041969.1502209414" target="_blank">puppetlabs/java</a>. </p></section>
+            </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="write_a_profile">
+  <h3 class="title topictitle3" id="ariaid-title5">Write a profile </h3>
+  
+  <div class="body taskbody"><p class="shortdesc">From a <span class="ph">Puppet</span> perspective, a
+    profile is just a normal class stored in the <code class="ph codeph">profile</code> module.</p>
+    <section><div class="li step p">
+        <span class="ph cmd">Make a new class called <code class="ph codeph">profile::jenkins::master</code>, located at ...<code class="ph codeph">/profile/manifests/jenkins/master.pp</code>, and fill it with <span class="ph">Puppet</span> code.</span>
+        <div class="itemgroup stepxmp"><div class="p"><pre class="pre codeblock"><code># /etc/puppetlabs/code/environments/production/site/profile/manifests/jenkins/master.pp
+class profile::jenkins::master (
+  String $jenkins_port = '9091',
+  String $java_dist    = 'jdk',
+  String $java_version = 'latest',
+) {
+
+  class { 'jenkins':
+    configure_firewall =&gt; true,
+    install_java       =&gt; false,
+    port               =&gt; $jenkins_port,
+    config_hash        =&gt; {
+      'HTTP_PORT'    =&gt; { 'value' =&gt; $jenkins_port },
+      'JENKINS_PORT' =&gt; { 'value' =&gt; $jenkins_port },
+    },
+  }
+
+  class { 'java':
+    distribution =&gt; $java_dist,
+    version      =&gt; $java_version,
+    before       =&gt; Class['jenkins'],
+  }
+}</code></pre>This
+            is pretty simple, but is already benefiting us: our interface for configuring Jenkins
+            has gone from 30 or so parameters on the Jenkins class (and many more on the Java class)
+            down to three. Notice that we’ve hardcoded the <code class="ph codeph">configure_firewall</code> and <code class="ph codeph">install_java</code> parameters, and have reused the value of <code class="ph codeph">$jenkins_port</code> in three places.</div></div>
+      </div></section>
+    <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="the_roles_and_profiles_method.html#rules_for_profile_classes" title="There are rules for writing profile classes.">Rules for profile classes</a></li><li class="linklist"><a class="link" href="the_roles_and_profiles_method.html#methods_for_data_lookup" title="Profiles usually require some amount of configuration, and they must use data lookup to get it.">Methods for data lookup</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="set-data-for-profile">
+    <h3 class="title topictitle3" id="ariaid-title6">Set data for the profile</h3>
+    
+    <div class="body taskbody"><p class="shortdesc"></p>
+        <section class="section context">
+            <div class="p">Let’s assume the following: <ul class="ul">
+                    <li class="li">
+                        <p class="p">We use some custom facts: </p>
+                        <ul class="ul">
+                            <li class="li">
+                                <p class="p"><code class="ph codeph">group</code>: The group this node belongs
+                                    to. (This is usually either a department of our business, or a
+                                    large-scale function shared by many nodes.)</p>
+                            </li>
+                            <li class="li">
+                                <p class="p"><code class="ph codeph">stage</code>: The deployment stage of this
+                                    node (dev, test, or prod).</p>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="li">
+                        <p class="p">We have a five-layer hierarchy: </p>
+                        <ul class="ul">
+                            <li class="li">
+                                <p class="p">console_data for data defined in the
+                                    console.</p>
+                            </li>
+                            <li class="li">
+                                <p class="p"><code class="ph codeph">nodes/%{trusted.certname}</code> for
+                                    per-node overrides.</p>
+                            </li>
+                            <li class="li">
+                                <p class="p"><code class="ph codeph">groups/%{facts.group}/%{facts.stage}</code>
+                                    for setting stage-specific data within a group.</p>
+                            </li>
+                            <li class="li">
+                                <p class="p"><code class="ph codeph">groups/%{facts.group}</code> for setting
+                                    group-specific data.</p>
+                            </li>
+                            <li class="li">
+                                <p class="p"><code class="ph codeph">common</code> for global fallback data.</p>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="li">
+                        <p class="p">We have a few one-off Jenkins masters, but most of
+                            them belong to the <code class="ph codeph">ci</code> group.</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">Our quality engineering department wants masters in
+                            the <code class="ph codeph">ci</code>
+                            group to use the Oracle JDK, but one-off machines can just use the
+                            platform’s default Java.</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">QE also wants their prod masters to listen on port
+                            80.</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">Set appropriate values in the data, using either
+                        <span class="ph">Hiera</span> or configuration data in the
+                    console.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <div class="note tip note_tip"><span class="note__title">Tip:</span> In most cases, setting
+               configuration data in <span class="ph">Hiera</span> is the more scalable and
+               consistent method, but there are some cases where the console is preferable. Use the
+               console to set configuration data if: <ul class="ul">
+                  <li class="li">You want to override <span class="ph">Hiera</span>
+                     data. Data set in the console overrides <span class="ph">Hiera</span>
+                     data when configured as recommended. </li>
+                  <li class="li">You want to give someone access to set or change data and
+                     they don’t have the skill set to do it in <span class="ph">Hiera</span>. </li>
+                  <li class="li">
+                     <p class="p">You simply prefer the console user interface.</p>
+                  </li>
+               </ul></div>
+                    </div>
+                </div>
+                <div class="itemgroup stepxmp">
+                    <div class="p">
+                        <pre class="pre codeblock"><code># /etc/puppetlabs/code/environments/production/data/nodes/ci-master01.example.com.yaml
+ # --Nothing. We don't need any per-node values right now.
+
+ # /etc/puppetlabs/code/environments/production/data/groups/ci/prod.yaml
+ profile::jenkins::master::jenkins_port: '80'
+
+ # /etc/puppetlabs/code/environments/production/data/groups/ci.yaml
+ profile::jenkins::master::java_dist: 'oracle-jdk8'
+ profile::jenkins::master::java_version: '8u92'
+
+ # /etc/puppetlabs/code/environments/production/data/common.yaml
+ # --Nothing. Just use the default parameter values.</code></pre>
+                    </div>
+                </div>
+            </div></section>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title7" id="write_a_role">
+ <h3 class="title topictitle3" id="ariaid-title7">Write a role</h3>
+ 
+ <div class="body conbody"><p class="shortdesc">To write roles, we consider the machines we’ll be managing
+  and decide what else they need in addition to that Jenkins profile.</p>
+  <div class="p">Our Jenkins masters don’t serve any other purpose. But we have some profiles
+   (code not shown) that we expect every machine in our fleet to have: <ul class="ul">
+    <li class="li"><p class="p"><code class="ph codeph">profile::base</code> must be assigned to every machine, including
+      workstations. It manages basic policies, and uses some conditional logic to include
+      OS-specific profiles as needed.</p></li>
+    <li class="li"><p class="p"><code class="ph codeph">profile::server</code> must be assigned to every machine that provides a
+      service over the network. It makes sure ops can log into the machine, and configures things
+      like timekeeping, firewalls, logging, and monitoring.</p></li>
+   </ul></div>
+  <p class="p">So a role to manage one of our Jenkins masters should include those classes
+   as well.</p>
+  <div class="p"><pre class="pre codeblock"><code>class role::jenkins::master {
+  include profile::base
+  include profile::server
+  include profile::jenkins::master
+}</code></pre></div>
+ </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="the_roles_and_profiles_method.html#rules_for_role_classes" title="There are rules for writing role classes.">Rules for role classes</a></li></ul></div></nav></article><article class="topic concept nested2" aria-labelledby="ariaid-title8" id="assigning_the_role_to_nodes">
+                        <h3 class="title topictitle3" id="ariaid-title8">Assign the role to nodes</h3>
+                        
+                        <div class="body conbody"><p class="shortdesc">Finally, we assign <code class="ph codeph">role::jenkins::master</code> to every node that
+                                                acts as a Jenkins master. </p>
+                                                <div class="p"><span class="ph">Puppet</span> has several ways
+                                                  to assign classes to nodes, so use whichever tool
+                                                  you feel best fits your team. Your main choices
+                                                  are: <ul class="ul">
+                                                  <li class="li"><p class="p">The
+                                                  console node classifier, which lets you group
+                                                  nodes based on their facts and assign classes to
+                                                  those groups.</p></li>
+                                                  <li class="li"><p class="p">The
+                                                  main manifest which can use node statements or
+                                                  conditional logic to assign classes.</p></li>
+                                                  <li class="li"><div class="p"><a class="xref" href="https://puppet.com/docs/puppet/6.10/hiera.html" target="_blank"><span class="ph">Hiera</span></a> or <span class="ph">Puppet</span> lookup — Use
+                                                  <a class="xref" href="https://puppet.com/docs/puppet/6.10/hiera_automatic.html#puppet-lookup" target="_blank">the <code class="ph codeph">lookup</code>
+                                                  function</a> to do a unique array merge on a
+                                                  special <code class="ph codeph">classes</code> key, and pass the
+                                                  resulting array to the <code class="ph codeph">include</code>
+                                                  function.<pre class="pre codeblock"><code># /etc/puppetlabs/code/environments/production/manifests/site.pp
+lookup('classes', {merge =&gt; unique}).include</code></pre></div></li>
+                                                  </ul></div>
+                        </div>
+</article></article></article></article></main></body></html>

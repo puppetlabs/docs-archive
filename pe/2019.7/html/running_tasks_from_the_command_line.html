@@ -1,0 +1,414 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="Use the puppet task run command to run tasks on agent nodes."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Isaac Eldridge <isaac.eldridge@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="running-tasks-cli"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Running tasks from the command line</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="running-tasks-cli">
+    <h1 class="title topictitle1" id="ariaid-title1">Running tasks from the command line</h1>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Use the <code class="ph codeph">puppet
+            task run</code> command to run tasks on agent nodes. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div> The first time you run
+         a command, you need to authenticate. See the <a class="xref" href="configuring_puppet_orchestrator.html#setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator" title="Before you run any orchestrator jobs, you need to set the appropriate permissions in PE role-based access control (RBAC) and establish token-based authentication.">orchestrator installation instructions</a> for information about setting RBAC
+         permissions and token authorization. <p class="p"> If you're running this command
+            from a managed or non-managed <span class="ph">Windows</span> workstation, you
+            must specify the full path to the command. For example, <code class="ph codeph">c:\Program Files\Puppet Labs\Client\bin\puppet-task run</code>.</p><p class="p" id="running-tasks-cli__d83e39">Install the tasks you want to use.</p><p class="p" id="running-tasks-cli__d83e41">Make sure you have permission to run the tasks
+            on all nodes.</p><p class="p" id="running-tasks-cli__d83e43">Make sure you have
+            permission to run the tasks.</p><p class="p" id="running-tasks-cli__d83e45">Make sure you
+            have access to the nodes you want to target. </p>
+         <div class="note tip note_tip" id="running-tasks-cli__d83e48"><span class="note__title">Tip:</span> You can add network devices to
+            a node list when you have installed modules for device transports in your production
+            environment. You can find such modules in <a class="xref" href="https://forge.puppet.com/" target="_blank">Puppet Forge</a>.</div>
+         <p class="p" id="running-tasks-cli__d83e55">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p><p class="p" id="running-tasks-cli__d83e59">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p></section>
+        <section class="section context">
+            <p class="p">Use the <code class="ph codeph">puppet
+                    task</code> tool and the relevant module to make changes arbitrarily, rather
+                than through a <span class="ph">Puppet</span> configuration change. For
+                example, to inspect a package or quickly stop a particular service.</p>
+            <p class="p">You can run tasks on a single node, on nodes identified in a
+                static list, on nodes retrieved by a <span class="ph">PQL</span> query, or on
+                nodes in a node group.</p>
+            <p class="p"> Use the orchestrator command <code class="ph codeph">puppet task</code> to trigger task runs. </p>
+        </section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p"></p>
+        </section>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="run-task-pql-query">
+    <h2 class="title topictitle2" id="ariaid-title2">Run a task on a <span class="ph">PQL</span> query</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Create a <span class="ph">PQL</span> query to run
+        tasks on nodes that meet specific conditions.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+            <p class="p">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p>
+        </section>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">Log into your master or client tools workstation
+                    and run one of the following commands:</span>
+                <ul class="ul choices">
+                    <li class="li choice">To specify the query on the command
+                        line: <code class="ph codeph">puppet task run &lt;TASK
+                            NAME&gt; &lt;PARAMETER&gt;=&lt;VALUE&gt;,
+                            &lt;PARAMETER&gt;=&lt;VALUE&gt; --query '&lt;QUERY&gt;'
+                            &lt;OPTIONS&gt;</code></li>
+                    <li class="li choice"> To pass the query in a text file:
+                            <code class="ph codeph">puppet task run &lt;TASK
+                            NAME&gt; &lt;PARAMETER&gt;=&lt;VALUE&gt;,
+                            &lt;PARAMETER&gt;=&lt;VALUE&gt; --query @/path/to/file.txt</code>
+                    </li>
+                </ul>
+                <div class="itemgroup info"><div class="p">For example, to run
+                        the service task with two required parameters, on nodes with "web" in their
+                        certname:
+                        <pre class="pre codeblock"><code>puppet task run service action=status service=nginx --query 'nodes { certname ~ "web" }'</code></pre>
+                    </div>
+                    <div class="note tip note_tip"><span class="note__title">Tip:</span> Use <code class="ph codeph">puppet task show &lt;TASK NAME&gt;</code> to see a list of available
+                        parameters for a task. Not all tasks require parameters. <p class="p">Refer to the <code class="ph codeph">puppet task</code> command options to see how to pass parameters
+                            with the <code class="ph codeph">--params</code>
+                            flag.</p>
+                    </div>
+                </div>
+                <div class="itemgroup info">
+               <p class="p">The following table shows some example targets and the
+                  associated <span class="ph">PQL</span> queries you could run with the
+                  orchestrator.</p>
+               <p class="p">Be sure to wrap the entire query in single quotes and use
+                  double quotes inside the query.</p>
+               <table class="table" id="run-task-pql-query__d765e398"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                           <th class="entry" id="run-task-pql-query__d765e398__entry__1">Target </th>
+                           <th class="entry" id="run-task-pql-query__d765e398__entry__2">PQL query </th>
+                        </tr>
+                     </thead><tbody class="tbody">
+                        <tr class="row">
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__1">Single node by certname </td>
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'nodes { certname =
+                                 "mynode" }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__1">All nodes with "web" in
+                              certname </td>
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'nodes { certname ~
+                                 "web" }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__1">All <span class="ph">CentOS</span> nodes </td>
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'inventory {
+                                 facts.os.name = "CentOS" }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__1">All <span class="ph">CentOS</span> nodes with httpd managed </td>
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'inventory {
+                                 facts.operatingsystem = "CentOS" and resources { type = "Service"
+                                 and title = "httpd" } }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__1">All nodes with failed
+                              reports </td>
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'reports {
+                                 latest_report? = true and status = "failed" }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__1">All nodes matching the
+                              environment for the last received catalog </td>
+                           <td class="entry" headers="run-task-pql-query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'nodes {
+                                 catalog_environment = "production" }'</code>
+                           </td>
+                        </tr>
+                     </tbody></table>
+            </div>
+                <div class="itemgroup info">
+                    <div class="note tip note_tip"><span class="note__title">Tip:</span> You can use <code class="ph codeph">-q</code> in place of <code class="ph codeph">--query</code>.</div>
+                </div>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="run-task-on-list-or-single-node">
+    <h2 class="title topictitle2" id="ariaid-title3">Run a task on a list of nodes or a single node</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Use a node list target when you need to run a job on a set
+        of nodes that doesn't easily resolve to a <span class="ph">PQL</span> query. Use a
+        single node or a comma-separated list of nodes.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+            <p class="p">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">Log into your master or client tools workstation
+                    and run one of the following commands:</span>
+                <ul class="ul choices">
+                    <li class="li choice">To run a task job on a single node:
+                            <code class="ph codeph"> puppet task run &lt;TASK
+                            NAME&gt; &lt;PARAMETER&gt;=&lt;VALUE&gt;,
+                            &lt;PARAMETER&gt;=&lt;VALUE&gt; --nodes &lt;NODE NAME&gt;
+                            &lt;OPTIONS&gt;</code></li>
+                    <li class="li choice">To run a task job on a list of nodes,
+                        use a comma-separated list of node names: <code class="ph codeph">puppet task run &lt;TASK NAME&gt;
+                            &lt;PARAMETER&gt;=&lt;VALUE&gt;, &lt;PARAMETER&gt;=&lt;VALUE&gt; --nodes
+                            &lt;NODE NAME&gt;,&lt;NODE NAME&gt;,&lt;NODE NAME&gt;,&lt;NODE NAME&gt;
+                            &lt;OPTIONS&gt;</code>
+                        <div class="note note note_note"><span class="note__title">Note:</span> Do not add spaces in the list of nodes.</div>
+                    </li>
+                    <li class="li choice">To run a task job on a node list from a
+                        text file: <code class="ph codeph">puppet task run &lt;TASK
+                            NAME&gt; &lt;PARAMETER&gt;=&lt;VALUE&gt;,
+                            &lt;PARAMETER&gt;=&lt;VALUE&gt; --nodes @/path/to/file.txt</code>
+                        <div class="note note note_note"><span class="note__title">Note:</span> In the text file, put each node on a separate
+                            line.</div>
+                    </li>
+                </ul>
+                <div class="itemgroup info"> For example, to run the service task
+                    with two required parameters, on three specific hosts: <pre class="pre codeblock"><code>puppet task run service action=status service=nginx --nodes host1,host2,host3</code></pre>
+                    <div class="note tip note_tip"><span class="note__title">Tip:</span>  Use <code class="ph codeph">puppet task show &lt;TASK NAME&gt;</code> to see a list
+                        of available parameters for a task. Not all tasks require parameters. <p class="p">Refer to the <code class="ph codeph">puppet task</code> command options to see how to
+                            pass parameters with the <code class="ph codeph">--params</code> flag.</p>
+                    </div>
+                </div>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="run-task-node-group">
+    <h2 class="title topictitle2" id="ariaid-title4">Run a task on a node group</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Similar to running a task on a list of nodes, you can run
+        a task on a node group.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p"></p>
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+        </section>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Log into your master or client tools workstation.
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run the command: <code class="ph codeph">puppet task run &lt;TASK NAME&gt; --node-group
+                        &lt;node-group-id&gt; </code></span>
+                <div class="itemgroup info">
+                    <div class="note tip note_tip"><span class="note__title">Tip:</span>  Use the<code class="ph codeph">&nbsp;/v1/groups</code>&nbsp;endpoint to
+                        retrieve a list node groups and their IDs. </div>
+                </div>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="groups_endpoint.html#get_v1_groups" title="Use the /v1/groups endpoint to retrieve a list of all node groups in the node classifier.">GET /v1/groups</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="puppet-task-run-options">
+    <h2 class="title topictitle2" id="ariaid-title5"><code class="ph codeph">puppet task
+            run</code> command options</h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc">The following are common options you can use with the
+            <code class="ph codeph">task</code> action. For a complete list of
+        global options run <code class="ph codeph">puppet task
+        --help</code>.</p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="puppet-task-run-options__entry__1">Option</th>
+                        <th class="entry" id="puppet-task-run-options__entry__2">Value</th>
+                        <th class="entry" id="puppet-task-run-options__entry__3">Description</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="puppet-task-run-options__entry__1">
+                            <code class="ph codeph"> --noop </code>
+                        </td>
+                        <td class="entry" headers="puppet-task-run-options__entry__2">Flag, default false</td>
+                        <td class="entry" headers="puppet-task-run-options__entry__3">Run a task to simulate changes without
+                            actually enforcing the changes. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet-task-run-options__entry__1">
+                            <code class="ph codeph">--params</code>
+                        </td>
+                        <td class="entry" headers="puppet-task-run-options__entry__2">String</td>
+                        <td class="entry" headers="puppet-task-run-options__entry__3">Specify a JSON object that includes the
+                            parameters, or specify the path to a JSON file containing the
+                            parameters, prefaced with <code class="ph codeph">@</code>, for example, <code class="ph codeph">@/path/to/file.json</code>. Do not
+                            use this flag if specifying parameter-value pairs inline; see more
+                            information below.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet-task-run-options__entry__1">
+                            <code class="ph codeph">--environment</code>, <code class="ph codeph">-e</code>
+                        </td>
+                        <td class="entry" headers="puppet-task-run-options__entry__2">Environment name</td>
+                        <td class="entry" headers="puppet-task-run-options__entry__3">Use tasks installed in the specified
+                            environment.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet-task-run-options__entry__1">
+                            <code class="ph codeph">
+                                --description</code>
+                        </td>
+                        <td class="entry" headers="puppet-task-run-options__entry__2">Flag, defaults to empty</td>
+                        <td class="entry" headers="puppet-task-run-options__entry__3">Provide a description for the job, to be shown
+                            on the job list and job details pages, and returned with the <code class="ph codeph">puppet job show</code>
+                            command.</td>
+                    </tr>
+                </tbody></table>
+        <section class="section">
+            <div class="p">You can pass parameters into the task one of two ways: <ul class="ul">
+                    <li class="li">
+                        <div class="p">Inline, using the <code class="ph codeph">&lt;PARAMETER&gt;=&lt;VALUE&gt;</code> syntax:
+                            <pre class="pre codeblock"><code>puppet task run &lt;TASK NAME&gt; &lt;PARAMETER&gt;=&lt;VALUE&gt;, &lt;PARAMETER&gt;=&lt;VALUE&gt; --nodes &lt;LIST OF NODES&gt;
+puppet task run my_task action=status service=my_service timeout=8 --nodes host1,host2,host3</code></pre>
+                        </div>
+                    </li>
+                    <li class="li">
+                        <div class="p">With the <code class="ph codeph">--params</code> option, as a JSON object or reference to a JSON
+                            file:
+                            <pre class="pre codeblock"><code>puppet task run &lt;TASK NAME&gt; --params '&lt;JSON OBJECT&gt;' --nodes &lt;LIST OF NODES&gt;
+puppet task run my_task --params '{ "action":"status", "service":"my_service", "timeout":8 }' --nodes host1,host2,host3
+puppet task run my_task --params @/path/to/file.json  --nodes host1,host2,host3</code></pre>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <p class="p">You can't combine these two ways of passing in parameters; choose
+                either inline or <code class="ph codeph"> --params</code>. If you
+                use the inline way, parameter types other than string, integer, double, and Boolean
+                will be interpreted as strings. Use the <code class="ph codeph">--params</code> method if you want them read as their original type.</p>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="reviewing_task_job_output">
+  <h2 class="title topictitle2" id="ariaid-title6">Reviewing task job output</h2>
+  
+  
+  <div class="body conbody"><p class="shortdesc">The output the orchestrator returns depends on the type of
+    task you run. Output is either standard output (STDOUT) or structured output. At minimum, the
+    orchestrator prints a new job ID and the number of nodes in the task. </p>
+    <p class="p">The following example shows a task to check the status of the Puppet
+      service running on a list of nodes derived from a PQL query. </p>
+    <pre class="pre codeblock"><code>[example@orch-master ~]$ puppet task run service service=puppet action=status -q 'nodes {certname ~ "br"}' --environment=production
+Starting job ...
+New job ID: 2029
+Nodes: 8
+
+Started on bronze-11 ...
+Started on bronze-8 ...
+Started on bronze-3 ...
+Started on bronze-6 ...
+Started on bronze-2 ...
+Started on bronze-5 ...
+Started on bronze-7 ...
+Started on bronze-10 ...
+Finished on node bronze-11
+  status : running
+  enabled : true
+Finished on node bronze-3
+  status : running
+  enabled : true
+Finished on node bronze-8
+  status : running
+  enabled : true
+Finished on node bronze-7
+  status : running
+  enabled : true
+Finished on node bronze-2
+  status : running
+  enabled : true
+Finished on node bronze-6
+  status : running
+  enabled : true
+Finished on node bronze-5
+  status : running
+  enabled : true
+Finished on node bronze-10
+  status : running
+  enabled : true
+
+Job completed. 8/8 nodes succeeded.
+Duration: 1 sec
+	 </code></pre>
+    <div class="note tip note_tip"><span class="note__title">Tip:</span> To view the status of all running, completed, and failed
+      jobs run the <code class="ph codeph">puppet job show</code>
+      command, or view them from the <span class="keyword wintitle">Job
+        details</span> page in the console.</div>
+  </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="inspect-tasks">
+    <h2 class="title topictitle2" id="ariaid-title7">Inspect tasks</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">View the tasks that you have installed and have permission
+        to run, as well as the documentation for those tasks.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div> The first time you run
+         a command, you need to authenticate. See the <a class="xref" href="configuring_puppet_orchestrator.html#setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator" title="Before you run any orchestrator jobs, you need to set the appropriate permissions in PE role-based access control (RBAC) and establish token-based authentication.">orchestrator installation instructions</a> for information about setting RBAC
+         permissions and token authorization. <p class="p"> If you're running this command
+            from a managed or non-managed <span class="ph">Windows</span> workstation, you
+            must specify the full path to the command. For example, <code class="ph codeph">c:\Program Files\Puppet Labs\Client\bin\puppet-task run</code>.</p><p class="p" id="inspect-tasks__d83e39">Install the tasks you want to use.</p><p class="p" id="inspect-tasks__d83e41">Make sure you have permission to run the tasks
+            on all nodes.</p><p class="p" id="inspect-tasks__d83e43">Make sure you have
+            permission to run the tasks.</p><p class="p" id="inspect-tasks__d83e45">Make sure you
+            have access to the nodes you want to target. </p>
+         <div class="note tip note_tip" id="inspect-tasks__d83e48"><span class="note__title">Tip:</span> You can add network devices to
+            a node list when you have installed modules for device transports in your production
+            environment. You can find such modules in <a class="xref" href="https://forge.puppet.com/" target="_blank">Puppet Forge</a>.</div>
+         <p class="p" id="inspect-tasks__d83e55">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p><p class="p" id="inspect-tasks__d83e59">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p></section>
+        <section class="section context">
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">Log into your master or client tools workstation
+                    and run one of the following commands:</span>
+                <ul class="ul choices">
+                    <li class="li choice">To check the documentation for a
+                        specific task: <code class="ph codeph">puppet task show
+                            &lt;TASK&gt;</code>. The command returns the following: <ul class="ul">
+                            <li class="li">The command format for running the task</li>
+                            <li class="li">Any parameters available to use with the
+                                task</li>
+                        </ul>
+                    </li>
+                    <li class="li choice">To view a list of your permitted tasks:
+                            <code class="ph codeph">puppet task
+                        show</code></li>
+                    <li class="li choice"> To view a list of all installed tasks
+                        pass the&nbsp;<code class="ph codeph">--all</code>&nbsp;flag:&nbsp;<code class="ph codeph">puppet task show --all</code>
+                    </li>
+                </ul>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="stop_a_job">
+                <h2 class="title topictitle2" id="ariaid-title8">Stop a job in progress</h2>
+                
+                <div class="body taskbody"><p class="shortdesc">You can stop a job if, for example, you
+                                realize you need to reconfigure a class or push a configuration
+                                change that the job needs.</p>
+                                <section class="section context"><p class="p">When you stop an on-demand <span class="ph">Puppet</span> run, runs that are underway
+        finish, and runs that have not started are canceled.</p></section>
+                                <section><div class="li step p">
+                                                  <span class="ph cmd">To stop a
+                                                  job:</span>
+                                                  <ul class="ul choices">
+                                                  <li class="li choice">In the console, go to the
+              <span class="ph uicontrol">Jobs</span> page and select the <span class="ph uicontrol">Puppet run</span> tab.
+            From the list of jobs, find the one you want and click <span class="ph uicontrol">Stop</span>. </li>
+                                                  <li class="li choice">On the
+                                                  command line, press <span class="ph uicontrol">CTRL + C</span>.</li>
+                                                  </ul>
+                                                </div></section>
+                </div>
+</article></article></article></main></body></html>

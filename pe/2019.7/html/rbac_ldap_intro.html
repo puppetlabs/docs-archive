@@ -1,0 +1,441 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise connects to external Lightweight Directory Access Protocol (LDAP) directory services through its role-based access control (RBAC) service. Because PE integrates with cloud LDAP service providers such as Okta, you can use existing users and user groups that have been set up in your external directory service."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="connecting_puppet_enterprise_with_external_directory_services"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Connecting external directory services to PE</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="connecting_puppet_enterprise_with_external_directory_services">
+    <h1 class="title topictitle1" id="ariaid-title1">Connecting external directory services to PE</h1>
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">Puppet Enterprise</span> connects to external Lightweight Directory Access
+        Protocol (LDAP) directory services through its role-based access control (RBAC) service.
+        Because <span class="ph">PE</span> integrates with cloud LDAP service providers such
+        as Okta, you can use existing users and user groups that have been set up in your external
+        directory service. </p>
+        <p class="p">Specifically, you can:</p>
+        <ul class="ul">
+            <li class="li">Authenticate external directory users.</li>
+            <li class="li">Authorize access of external directory users based on RBAC
+                permissions.</li>
+            <li class="li">Store and retrieve the groups and group membership information
+                that has been set up in your external directory.<div class="note note note_note"><span class="note__title">Note:</span> Puppet
+                stores local accounts and directory service integration credentials securely. Local
+                account passwords are hashed using SHA-256 multiple times along with a 32-bit salt.
+                Directory service lookup credentials configured for directory lookup purposes are
+                encrypted using AES-128. Puppet does not store the directory credentials used for
+                authenticating to Puppet. These are different from the directory service lookup
+                credentials.</div>
+            </li>
+        </ul>
+        <p class="p">
+            <span class="ph">PE</span> supports OpenLDAP and Active Directory. If you have
+            predefined groups in your Active Directory or OpenLDAP directory, you can import these
+            groups into the console and assign user roles to them. Users in an imported group
+            inherit the permissions specified in assigned user roles. If new users are added to the
+            group in the external directory, they also inherit the permissions of the role to which
+            that group belongs.</p>
+        <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> The connection to your
+                external LDAP directory is read-only. If you want to make changes to remote users or
+                user groups, you need to edit the information directly in the external
+                directory.</div></div>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="connect_to_an_external_directory_service">
+   <h2 class="title topictitle2" id="ariaid-title2">Connect to an external directory service </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">
+      <span class="ph">PE</span> connects to the external directory service when a user logs
+      in or when groups are imported. The supported directory services are OpenLDAP and Active
+      Directory.</p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">External directory</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Fill in the directory information. </span>
+            <div class="itemgroup info">
+               <p class="p">All fields are required, except for <span class="ph uicontrol">Login help</span>, <span class="ph uicontrol">Lookup user</span>, <span class="ph uicontrol">Lookup password</span>, <span class="ph uicontrol">User relative distinguished name</span>, and <span class="ph uicontrol">Group relative distinguished
+                     name</span>. </p>
+               <p class="p">If you do not enter <span class="ph uicontrol">User relative distinguished name</span> or <span class="ph uicontrol">Group relative distinguished name</span>, RBAC searches
+                  the entire base DN for the user or group. </p>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Test connection</span> to ensure that the connection has been
+               established. Save your settings after you have successfully tested them.</span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> This only tests the connection to the LDAP server. It does not test or validate
+                  LDAP queries. </div>
+            </div>
+         </li></ol></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="external_directory_settings">
+   <h2 class="title topictitle2" id="ariaid-title3">External directory settings </h2>
+   
+   <div class="body refbody"><p class="shortdesc">The table below provides examples of the settings used to
+      connect to an Active Directory service and an OpenLDAP service to <span class="ph">PE</span>. Each setting is explained in more detail below the
+      table.</p>
+      <section class="section"><div class="p">
+            <div class="note important note_important"><span class="note__title">Important:</span> The settings shown in the table are
+               examples. You need to substitute these example settings with the settings used in
+               your directory service.</div>
+         </div></section>
+      <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+               <tr class="row">
+                  <th class="entry" id="external_directory_settings__entry__1">Name </th>
+                  <th class="entry" id="external_directory_settings__entry__2">Example Active Directory settings </th>
+                  <th class="entry" id="external_directory_settings__entry__3">Example OpenLDAP settings </th>
+               </tr>
+            </thead><tbody class="tbody">
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Directory name</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">My Active Directory </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">My Open LDAP Directory </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Login help (optional)</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">https://myweb.com/ldaploginhelp</td>
+                  <td class="entry" headers="external_directory_settings__entry__3">https://myweb.com/ldaploginhelp</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Hostname</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">myhost.delivery.exampleservice.net </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">myhost.delivery.exampleservice.net
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Port</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">389 (636 for LDAPS) </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">389 (636 for LDAPS) </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Lookup user (optional)</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">cn=queryuser,cn=Users,dc=puppetlabs,dc=com </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">cn=admin,dc=delivery,dc=puppetlabs,dc=net </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Lookup password (optional)</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">The lookup user's password. </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">The lookup user's password.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Connection timeout (seconds)</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">10 </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">10 </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Connect using: </strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">
+                     <p class="p">SSL </p>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">
+                     <p class="p">StartTLS</p>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Validate the hostname?</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">Default is yes. </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">Default is yes. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Allow wildcards in SSL certificate?</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">Default is no. </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">Default is no. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Base distinguished name</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">dc=puppetlabs,dc=com </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">dc=puppetlabs,dc=com </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">User login attribute</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">sAMAccountName </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">cn </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">User email address</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">mail </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">mail </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">User full name</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">displayName </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">displayName </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">User relative distinguished name (optional)</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">cn=users </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">ou=users </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Group object class</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">group </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">groupOfUniqueNames </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Group membership field</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">member </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">uniqueMember </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Group name attribute</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">name </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">displayName </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Group lookup attribute</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">cn </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">cn </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Group relative distinguished name (optional)</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">cn=groups </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">ou=groups </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Turn off LDAP_MATCHING_RULE_IN_CHAIN?</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">Default is no. </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">Default is no. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="external_directory_settings__entry__1">
+                     <strong class="ph b">Search nested groups?</strong>
+                  </td>
+                  <td class="entry" headers="external_directory_settings__entry__2">Default is no. </td>
+                  <td class="entry" headers="external_directory_settings__entry__3">Default is no. </td>
+               </tr>
+            </tbody></table>
+      <section class="section" id="external_directory_settings__explanation_of_external_directory_settings"><h3 class="title sectiontitle">Explanation of external directory settings </h3><p class="p"><strong class="ph b">Directory name</strong> The name that you provide
+            here is used to refer to the external directory service anywhere it is used in the <span class="ph">PE</span> console. For example, when you view a remote user in
+            the console, the name that you provide in this field is listed in the console as the
+            source for that user. Set any name of your choice. </p><p class="p"><strong class="ph b">Login help (optional)</strong> If you supply a URL here, a "Need help
+            logging in?" link is displayed on the login screen. The href attribute of this link is
+            set to the URL that you provide. </p><p class="p"><strong class="ph b">Hostname</strong> The FQDN of the directory service to which you are connecting. </p><p class="p"><strong class="ph b">Port</strong> The port that <span class="ph">PE</span> uses to access the directory service. The port is
+            generally 389, unless you choose to connect using SSL, in which case it is generally
+            636. </p><p class="p"><strong class="ph b">Lookup user (optional)</strong>
+            The distinguished name (DN) of the directory service user account that <span class="ph">PE</span> uses to query information about users and groups in the
+            directory server. If a username is supplied, this user must have read access for all
+            directory entries that are to be used in the console. We recommend that this user is
+            restricted to read-only access to the directory service. </p><p class="p">If
+            your LDAP server is configured to allow anonymous binding, you do not need to provide a
+            lookup user. In this case, the RBAC service binds anonymously to your LDAP server.</p><p class="p"><strong class="ph b">Lookup password (optional)</strong> The
+            lookup user's password. </p><p class="p">If your LDAP server is configured to
+            allow anonymous binding, you do not need to provide a lookup password. In this case, the
+            RBAC service binds anonymously to your LDAP server.</p><p class="p"><strong class="ph b">Connection timeout (seconds)</strong> The number of seconds that <span class="ph">PE</span> attempts to connect to the directory server before
+            timing out. Ten seconds is fine in the majority of cases. If you are experiencing
+            timeout errors, make sure the directory service is up and reachable, and then increase
+            the timeout if necessary. </p><p class="p"><strong class="ph b">Connect using: </strong>Select the security protocol you want to use to connect to the
+            external directory: <span class="ph uicontrol">SSL</span> and
+               <span class="ph uicontrol">StartTLS</span> encrypt the data
+            transmitted. <span class="ph uicontrol">Plain text</span> is not
+            a secure connection. In addition, to ensure that the directory service is properly
+            identified, configure the <code class="ph codeph">ds-trust-chain</code> to point to a copy of the public key for the directory
+            service. For more information, see <a class="xref" href="rbac_ldap_intro.html#verify_directory_server_certificates" title="To ensure that RBAC isn't being subjected to a Man-in-the Middle (MITM) attack, verify the directory server's certificate.">Verify directory server certificates</a>. </p><p class="p"><strong class="ph b">Validate the hostname?</strong> Select <span class="ph uicontrol">Yes</span> to verify that the Directory Services
+            hostname used to connect to the LDAP server matches the hostname on the SSL certificate.
+            This option is not available when you choose to connect to the external directory using
+            plain text. </p><p class="p"><strong class="ph b">Allow wildcards in
+               SLL certificate?</strong> Select <span class="ph uicontrol">Yes</span> to allow a connection to a Directory Services server with a SSL
+            certificates that use a wildcard (*) specification. This option is not available when
+            you choose to connect to the external directory using plain text. </p><p class="p"><strong class="ph b">Base distinguished name</strong> When <span class="ph">PE</span> constructs queries to your external directory (for
+            example to look up user groups or users), the queries consist of the relative
+            distinguished name (RDN) (optional) + the base distinguished name (DN), and are then
+            filtered by lookup/login attributes. For example, if <span class="ph">PE</span>
+            wants to authenticate a user named Bob who has the RDN <code class="ph codeph">ou=bob,ou=users</code>, it sends a query in which the RDN is
+            concatenated with the DN specified in this field (for example, <code class="ph codeph">dc=puppetlabs,dc=com</code>). This gives a search base of <code class="ph codeph">ou=bob,ou=users,dc=puppetlabs,dc=com</code>. </p><p class="p">The base DN that you provide in this field specifies where in the
+            directory service tree to search for groups and users. It is the part of the DN that all
+            users and groups that you want to use have in common. It is commonly the root DN
+            (example <code class="ph codeph">dc=example,dc=com</code>) but in the
+            following example of a directory service entry, you could set the base DN to <code class="ph codeph">ou=Puppet,dc=example,dc=com</code> because both the
+            group and the user are also under the organizational unit <code class="ph codeph">ou=Puppet</code>. </p><p class="p">
+            <strong class="ph b">Example directory service entry</strong>
+         </p><pre class="pre codeblock"><code># A user named Harold
+dn: cn=harold,ou=Users,ou=Puppet,dc=example,dc=com
+objectClass: organizationalPerson
+cn: harold
+displayName: Harold J.
+mail: harold@example.com
+memberOf: inspectors
+sAMAccountName: harold11
+
+# A group Harold is in
+dn: cn=inspectors,ou=Groups,ou=Puppet,dc=example,dc=com
+objectClass: group
+cn: inspectors
+displayName: The Inspectors
+member: harold</code></pre><p class="p"><strong class="ph b">User login attribute</strong> This is the
+            directory attribute that the user uses to log in to <span class="ph">PE</span>.
+            For example, if you specify <code class="ph codeph">sAMAccountName</code> as the user login attribute, Harold logs in with the
+            username "harold11" because <code class="ph codeph">sAMAccountName=harold11</code> in the example directory service entry provided
+            above. </p><p class="p">The value provided by the user login attribute must be
+            unique among all entries under the User RDN + Base DN search base you’ve set up. </p><p class="p">For example, say you’ve selected the following
+            settings:</p><pre class="pre codeblock"><code>base DN = dc=example,dc=com
+user RDN = null
+user login attribute = cn</code></pre><p class="p">When Harold tries to log in, the console searches the external
+            directory for any entries under <code class="ph codeph">dc=example,dc=com</code> that have the attribute/value pair <code class="ph codeph">cn=harold</code>. (This attribute/value pair does not need
+            to be contained within the DN). However, if there is another user named Harold who has
+            the DN <code class="ph codeph">cn=harold,ou=OtherUsers,dc=example,dc=com</code>, two results are returned and the
+            login does not succeed because the console does not know which entry to use. Resolve
+            this issue by either narrowing your search base such that only one of the entries can be
+            found, or using a value for login attribute that you know to be unique. This makes
+               <code class="ph codeph">sAMAccountName</code> a good choice if
+            you’re using Active Directory, as it must be unique across the entire directory. </p><p class="p"><strong class="ph b">User email address</strong> The directory
+            attribute to use when displaying the user's email address in <span class="ph">PE</span>. </p><p class="p"><strong class="ph b">User full name</strong> The directory attribute to use when displaying the user's full
+            name in <span class="ph">PE</span>. </p><p class="p"><strong class="ph b">User relative distinguished name (optional)</strong> The user RDN that
+            you set here is concatenated with the base DN to form the search base when looking up a
+            user. For example, if you specify <code class="ph codeph">ou=users</code> for the user RDN, and your base DN setting is <code class="ph codeph">ou=Puppet,dc=example,dc=com</code>, <span class="ph">PE</span> finds users that have <code class="ph codeph">ou=users,ou=Puppet,dc=example,dc=com</code> in their DN. </p><p class="p">This setting is optional. If you choose not to set it, <span class="ph">PE</span> searches for the user in the base DN (example: <code class="ph codeph">ou=Puppet,dc=example,dc=com</code>). Setting a user
+            RDN is helpful in the following situations: </p><ul class="ul">
+            <li class="li">When you experience long wait times for operations that contact
+               the directory service (either when logging in or importing a group for the first
+               time). Specifying a user RDN reduces the number of entries that are searched.</li>
+            <li class="li">When you have more than one entry under your base DN with the
+               same login value.</li>
+         </ul><div class="p">
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> It is not currently possible to specify multiple
+               user RDNs. If you want to filter RDNs when constructing your query, we suggest
+               creating a new lookup user who only has read access for the users and groups you want
+               to use in <span class="ph">PE</span>. </div>
+         </div><p class="p"><strong class="ph b">Group object class</strong> The name of
+            an object class that all groups have. </p><p class="p"><strong class="ph b">Group membership field</strong> Tells <span class="ph">PE</span> how to
+            find which users belong to which groups. This is the name of the attribute in the
+            external directory groups that indicates who the group members are. </p><p class="p"><strong class="ph b">Group name attribute</strong> The attribute that
+            stores the display name for groups. This is used for display purposes only. </p><p class="p"><strong class="ph b">Group lookup attribute</strong> The value
+            used to import groups into <span class="ph">PE</span>. Given the example
+            directory service entry provided above, the group lookup attribute would be <code class="ph codeph">cn</code>. When specifying the Inspectors group in
+            the console to import it, provide the name <code class="ph codeph">inspectors</code>. </p><p class="p">The value for this attribute must be
+            unique under your search base. If you have users with the same login as the lookup of a
+            group that you want to use, you can narrow the search base, use a value for the lookup
+            attribute that you know to be unique, or specify the <strong class="ph b">Group
+               object class</strong> that all of your groups have in common but your users do not. </p><div class="p">
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> If you have a large number of nested groups in
+               your group hierarchy, or you experience slowness when logging in with RBAC, we
+               recommend disabling nested group search unless you need it for your authorization
+               schema to work. </div>
+         </div><p class="p"><strong class="ph b">Group relative distinguished name
+               (optional)</strong> The group RDN that you set here is concatenated with the base DN to
+            form the search base when looking up a group. For example, if you specify <code class="ph codeph">ou=groups</code> for the group RDN, and your base
+            DN setting is <code class="ph codeph">ou=Puppet,dc=example,dc=com</code>, <span class="ph">PE</span> finds groups
+            that have <code class="ph codeph">ou=groups,ou=Puppet,dc=example,dc=com</code> in their DN. </p><p class="p">This setting is optional. If you choose not to set it, <span class="ph">PE</span> searches for the group in the base DN (example: <code class="ph codeph">ou=Puppet,dc=example,dc=com</code>). Setting a group RDN is helpful in the
+            following situations: </p><ul class="ul">
+            <li class="li">When you experience long wait times for operations that contact
+               the directory service (either when logging in or importing a group for the first
+               time). Specifying a group RDN reduces the number of entries that are searched.</li>
+            <li class="li">When you have more than one entry under your base DN with the
+               same lookup value.</li>
+         </ul><div class="p">
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> It is not currently possible to specify multiple
+               group RDNs. If you want to filter RDNs when constructing your query, create a new
+               lookup user who only has read access for the users and groups you plan to use in <span class="ph">PE</span>. </div>
+            <div class="note note note_note"><span class="note__title">Note:</span> At present, <span class="ph">PE</span>
+               supports only a single Base DN. Use of multiple user RDNs or group RDNs is not
+               supported. </div>
+         </div><p class="p">
+            <strong class="ph b">Turn off LDAP_MATCHING_RULE_IN_CHAIN?</strong> Select
+               <span class="ph uicontrol">Yes</span> to turn off the LDAP
+            matching rule that looks up the chain of ancestry for an object until it finds a match.
+            For organizations with a large number of group memberships, matching rule in chain can
+            slow performance.</p><p class="p"><strong class="ph b">Search nested
+               groups?</strong> Select <span class="ph uicontrol">Yes</span> to
+            search for groups that are members of an external directory group. For organizations
+            with a large number of nested group memberships, searching nested groups can slow
+            performance.</p></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_api_v1_directory.html#put_ds" title="Replaces current directory service connection settings. Authentication is required.">PUT /ds</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="verify_directory_server_certificates">
+    <h2 class="title topictitle2" id="ariaid-title4">Verify directory server certificates </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To ensure that RBAC isn't being subjected to a Man-in-the
+        Middle (MITM) attack, verify the directory server's certificate.</p>
+        <section class="section context"><p class="p">When you select SSL or
+                StartTLS as the security protocol to use for communications between PE and your
+                directory server, the connection to the directory is encrypted. To ensure that the
+                directory service is properly identified, configure the&nbsp;<code class="ph codeph">ds-trust-chain</code>&nbsp;to point to a
+                copy of the public key for the directory service.</p><p class="p">The RBAC
+                service verifies directory server certificates using a trust store file, in Java Key
+                Store (JKS), PEM, or PKCS12 format, that contains the chain of trust for the
+                directory server's certificate. This file needs to exist on disk in a location that
+                is readable by the user running the RBAC service.</p><p class="p">To turn
+                on verification:</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Classification</span>. </span>
+            </li><li class="li step">
+                <span class="ph cmd">Open the <span class="ph uicontrol">PE Infrastructure</span> node group and select the
+                        <span class="ph uicontrol">PE Console</span> node
+                    group. </span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Configuration</span>. Locate the <span class="ph uicontrol">puppet_enterprise::profile::console</span> class.
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Parameter</span> field, select <span class="ph uicontrol">rbac_ds_trust_chain</span>. </span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Value</span> field, set the absolute path to the trust store file.
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add parameter</span>, and commit changes. </span>
+            </li><li class="li step">
+                <span class="ph cmd">To make the change take effect, run Puppet.
+                    Running Puppet restarts pe-console-services.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">After this value is set,
+                the directory server's certificate is verified whenever RBAC is configured to
+                connect to the directory server using SSL or StartTLS.</p></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="rbac_ldap_revoke_admin_custom_password_policies">
+    <h2 class="title topictitle2" id="ariaid-title5">Enable custom password policies through LDAP</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Password policies are not configurable in <span class="ph">PE</span>. However,
+        if your organization requires more complex password policies than the default, you can allow
+        LDAP to manage custom password policies by delegating administrative privileges to LDAP and
+        then revoking the admin user in the console. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>Enable LDAP by <a class="xref" href="rbac_ldap_intro.html#connecting_puppet_enterprise_with_external_directory_services" title="Puppet Enterprise connects to external Lightweight Directory Access Protocol (LDAP) directory services through its role-based access control (RBAC) service. Because PE integrates with cloud LDAP service providers such as Okta, you can use existing users and user groups that have been set up in your external directory service.">Connecting external directory services to PE</a>. Make sure you are logged into
+            LDAP as the administrative user and have given LDAP administrative privileges.</section>
+        <section class="section context">
+            <p class="p">Revoke the admin user:</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, under <span class="ph uicontrol">Access Control</span>, select
+                        <span class="ph uicontrol">Users</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Select <span class="ph uicontrol">Administrator</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">User details</span> page, select <span class="ph uicontrol">Revoke user
+                        access</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>You have revoked the admin user in the console, which allows LDAP to manage password
+            policies. To enable the admin again, select <span class="ph uicontrol">Reinstate user access</span>
+            on the admin's <span class="ph uicontrol">User details</span> page. </section>
+    </div>
+</article></article></article></main></body></html>

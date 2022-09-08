@@ -1,0 +1,503 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="YAML plans run a list of steps in order, which allows you to define simple workflows. Steps can contain embedded Puppet code expressions to add logic where necessary."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="writing_plans_in_yaml_pe"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Writing plans in YAML</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="writing_plans_in_yaml_pe">
+ <h1 class="title topictitle1" id="ariaid-title1">Writing plans in YAML</h1>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">YAML plans run a list of steps in order, which allows you to
+  define simple workflows. Steps can contain embedded <span class="ph">Puppet</span> code
+  expressions to add logic where necessary. </p>
+  <div class="p">
+   <div class="note note note_note"><span class="note__title">Note:</span> YAML plans are an experimental feature and might experience breaking
+    changes in future minor releases.</div>
+  </div>
+ </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="naming_plans_pe">
+ <h2 class="title topictitle2" id="ariaid-title2">Naming plans</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">It is important to name plans correctly according to the
+  module name, file name, and path to ensure easy code readability.</p>
+  <div class="p">Place plan files in your module's <code class="ph codeph">./plans</code> directory, using these file extensions:<ul class="ul">
+    <li class="li">
+     <p class="p"><span class="ph">Puppet</span> plans — <code class="ph codeph">.pp</code>
+     </p>
+    </li>
+    <li class="li">
+     <p class="p">YAML plans — <code class="ph codeph">.yaml</code>, not
+       <code class="ph codeph">.yml</code></p>
+    </li>
+   </ul></div>
+  <p class="p">Plan names are composed of two or more name segments, indicating:</p>
+  <div class="p">
+   <ul class="ul">
+    <li class="li">
+     <p class="p">The name of the module the plan is located in.</p>
+    </li>
+    <li class="li">
+     <p class="p">The name of the plan file, without the extension.</p>
+    </li>
+    <li class="li">
+     <p class="p">The path within the module, if the plan is in a subdirectory of <code class="ph codeph">./plans</code>. </p>
+    </li>
+   </ul>
+  </div>
+  <p class="p">For example, given a module called <code class="ph codeph">mymodule</code> with a plan defined in <code class="ph codeph">./mymodule/plans/myplan.pp</code>, the plan name is <code class="ph codeph">mymodule::myplan</code>. </p>
+  <p class="p">A plan defined in <code class="ph codeph">./mymodule/plans/service/myplan.pp </code>would be <code class="ph codeph">mymodule::service::myplan</code>. This name is how you refer to the plan when
+   you run commands.</p>
+  <p class="p">The plan filename <code class="ph codeph">init</code> is special: the plan it defines is referenced using the module name only. For
+   example, in a module called <code class="ph codeph">mymodule</code>, the plan defined in <code class="ph codeph">init.pp</code> is the <code class="ph codeph">mymodule</code> plan. </p>
+  <p class="p"> Avoid giving plans the same names as constructs in the <span class="ph">Puppet</span> language. Although plans do not share their namespace with
+   other language constructs, giving plans these names makes your code difficult to read. </p>
+  <p class="p">Each plan name segment must begin with a lowercase letter and:</p>
+  <ul class="ul">
+   <li class="li">
+    <p class="p">May include lowercase letters.</p>
+   </li>
+   <li class="li">
+    <p class="p">May include digits.</p>
+   </li>
+   <li class="li">
+    <p class="p jean@puppet.com">May include underscores.</p>
+   </li>
+   <li class="li">
+    <p class="p">Must not be a <a class="xref" href="https://docs.puppet.com/puppet/5.3/lang_reserved.html" target="_blank">reserved
+      word</a>.</p>
+   </li>
+   <li class="li">
+    <p class="p">Must not have the same name as any <span class="ph">Puppet</span>
+     data types.</p>
+   </li>
+   <li class="li">
+    <p class="p">Namespace segments must match the following regular expression <code class="ph codeph">\A[a-z][a-z0-9_]*\Z</code></p>
+   </li>
+  </ul>
+ </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="rbac_writing_plans">
+  <h2 class="title topictitle2" id="ariaid-title3">RBAC considerations for writing plans</h2>
+  
+  
+  <div class="body conbody"><p class="shortdesc">Take user permissions into consideration when writing plans
+    by understanding how RBAC for plans works.</p>
+    <p class="p">RBAC for plans is separate from RBAC for individual tasks. This means that
+      a user can be excluded from running a certain task, but still have permission to run a plan
+      that contains that task. Setting one permission does not affect the other. </p>
+    <p class="p">This structure allows you to write plans with more robust, custom control
+      over task permissions. Instead of allowing a user free rein to run a task that can potentially
+      damage your infrastructure under the right conditions, you can wrap a task in a plan and only
+      allow them to run it under circumstances you can control. </p>
+    <p class="p">For example, say you are configuring permissions for a new user and allow
+      them to run the plan <code class="ph codeph">plan
+      infra::upgrade_git</code>:</p>
+    <div class="p">
+      <pre class="pre codeblock"><code>plan infra::upgrade_git (
+  TargetSpec $nodes,
+  Integer $version,
+) {
+  run_task(‘package’, $nodes, name =&gt; ’git’, action =&gt; ‘upgrade’, version =&gt; $version)
+}</code></pre>
+    </div>
+    <p class="p">Within this plan, they can run the <code class="ph codeph">package</code> task, but can only interact with the <code class="ph codeph">git</code> package. The plan does not allow them to use any other parameters for the
+        <code class="ph codeph">package</code> task. </p>
+    <p class="p">Even though they can run this plan, they do not have access to
+      individually run the <code class="ph codeph">package</code> task outside of
+      this plan unless you grant them permission to do so. In that case, they would have the option
+      to add any parameters they want to the task.</p>
+    <section class="section"><h3 class="title sectiontitle">Use parameter types to fine-tune access</h3>
+      
+      <p class="p">Writing parameter types into plan code provides even more control. In
+        the <code class="ph codeph">upgrade_git</code> example above, the plan
+        only provides access to the <code class="ph codeph">git</code> package,
+        but the user can choose whatever version of <code class="ph codeph">git</code> they want. </p>
+      <p class="p">Let's say there are known vulnerabilities in some versions of the
+          <code class="ph codeph">git</code> package and you are concerned with
+        your new user having the ability to use the versions you deem unsafe. You can use parameter
+        types like Enum to restrict the version parameter to versions that are safe enough for
+        deployment.</p>
+      <div class="p">In this example, the Enum restricts the <code class="ph codeph">$version</code> parameter to versions 1:2.17.0-1ubuntu1 and
+        1:2.17.1-1ubuntu0.4 only:
+        <pre class="pre codeblock"><code>plan infra::upgrade_git (
+  TargetSpec $nodes,
+  Enum['1:2.17.0-1ubuntu1', '1:2.17.1-1ubuntu0.4'] $version,
+) {
+  run_task(‘package’, $nodes, name =&gt; ‘git’, action =&gt; ‘upgrade’, version =&gt; $version)
+}</code></pre></div>
+      <p class="p">Any user attempting to run this plan must choose one of these versions
+        for the plan to run.</p>
+      <div class="p">You can also use <span class="ph">PuppetDB</span> queries to
+        select parameter types. Using the same example, let's say you need to restrict the nodes
+        that <code class="ph codeph">infra::upgrade_git</code> can run on. Use a
+          <span class="ph">PuppetDB</span> query to identify which nodes get selected for the
+        git upgrade. It should look something like
+        this:<pre class="pre codeblock"><code>plan infra::upgrade_git (
+   Enum['1:2.17.0-1ubuntu1', '1:2.17.1-1ubuntu0.4'] $version,
+) {
+  # Use puppetdb to find the nodes from the “other” team's web cluster
+  $query = [from, nodes, ['=', [fact, cluster], "other_team"]]
+  $selected_nodes = puppetdb_query($query).map() |$target| {
+    $target[certname]
+  }
+  run_task(‘package’, $selected_nodes, name =&gt; ‘git’, action =&gt; ‘upgrade’, version =&gt; $version)
+}</code></pre></div>
+      <p class="p">Using these ideas, you can write powerful plans that give users exactly
+        what they need without giving them the keys to the kingdom.</p>
+    </section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="using_variables_and_simple_expressions_pe">
+  <h2 class="title topictitle2" id="ariaid-title4">Using variables and simple expressions</h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc"></p>
+    <p class="p">The simplest way to use a variable is to reference it directly by name.
+      For example, this plan takes a parameter called <code class="ph codeph">nodes</code> and passes it as the target list to a step:</p>
+    <div class="p">
+      <pre class="pre codeblock"><code>parameters:
+  nodes:
+    type: TargetSpec
+
+steps:
+  - command: hostname -f
+    target: $nodes</code></pre>
+    </div>
+    <div class="p">Variables can also be interpolated into string values. The string must be
+      double-quoted to allow interpolation. For example:
+      <pre class="pre codeblock"><code>parameters:
+  username:
+    type: String
+
+steps:
+  - task: echo
+    message: "hello ${username}"
+           target: $nodes</code></pre></div>
+    <p class="p">Many operations can be performed on variables to compute new values for
+      step parameters or other fields.</p>
+    <section class="section"><h3 class="title sectiontitle">Indexing arrays or hashes</h3>
+      
+      <p class="p">You can retrieve a value from an Array or a Hash using the <code class="ph codeph">[]</code> operator. This operator can also be used when
+        interpolating a value inside a string.</p>
+      <div class="p">
+        <pre class="pre codeblock"><code>parameters:
+  users:
+    # Array[String] is a Puppet data type representing an array of strings
+    type: Array[String]
+
+steps:
+  - task: user::add
+    target: 'host.example.com'
+    parameters:
+      name: $users[0]
+  - task: echo
+    target: 'host.example.com'
+    parameters:
+      message: "hello ${users[0]}"</code></pre>
+      </div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Calling functions</h3>
+      
+      <p class="p">You can call a built-in <a class="xref" href="https://puppet.com/docs/bolt/latest/plan_functions.html#bolt-functions" target="_blank"><span class="ph">Bolt</span> function</a> or <a class="xref" href="https://puppet.com/docs/puppet/latest/function.html" target="_blank"><span class="ph">Puppet</span> function</a> to compute a value.</p>
+      <div class="p">
+        <pre class="pre codeblock"><code>parameters:
+  users:
+    type: Array[String]
+
+steps:
+  - task: user::add
+    parameters:
+      name: $users.first
+  - task: echo
+    message: "hello ${users.join(',')}"</code></pre>
+      </div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Using code blocks</h3>
+      
+      <p class="p">Some <span class="ph">Puppet</span> functions take a block of
+        code as an argument. For instance, you can filter an array of items based on the result of a
+        block of code.</p>
+      <div class="p"> The result of the <code class="ph codeph">filter</code> function is an array here, not a string, because the expression isn't
+        inside quotes
+        <pre class="pre codeblock"><code>parameters:
+  numbers:
+    type: Array[Integer]
+
+steps:
+  - task: sum
+    description: "add up the numbers &gt; 5"
+    parameters:
+      indexes: $numbers.filter |$num| { $num &gt; 5 }</code></pre></div>
+    </section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="connecting_steps_pe">
+  <h2 class="title topictitle2" id="ariaid-title5">Connecting steps</h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">You can connect multiple steps by using the result of one
+    step to compute the parameters for another step.</p>
+    <section class="section"><h3 class="title sectiontitle"><code class="ph codeph">name</code>
+        key</h3>
+      
+    </section>
+    <section class="section">
+      <p class="p">The <code class="ph codeph">name</code> key makes its
+        results available to later steps in a variable with that name.</p>
+      <div class="p">This example uses the <code class="ph codeph">map</code> function to get the value of <code class="ph codeph">stdout</code> from each command result and then joins them into a single string
+        separated by
+        commas.<pre class="pre codeblock"><code>parameters:
+  nodes:
+    type: TargetSpec
+
+steps:
+  - name: hostnames
+    command: hostname -f
+    target: $nodes
+  - task: echo
+    parameters:
+      message: $hostnames.map |$hostname_result| { $hostname_result['stdout'] }.join(',')</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle"><code class="ph codeph">eval</code>
+        step</h3>
+      
+      <p class="p">The <code class="ph codeph">eval</code> step evaluates
+        an expression and saves the result in a variable. This is useful to compute a variable to
+        use multiple times later.</p>
+      <div class="p">
+        <pre class="pre codeblock"><code>parameters:
+  count:
+    type: Integer
+
+steps:
+  - name: double_count
+    eval: $count * 2
+  - task: echo
+    target: web1.example.com
+    parameters:
+      message: "The count is ${count}, and twice the count is ${double_count}"</code></pre>
+      </div>
+    </section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="returning_results_yaml_plans_pe">
+ <h2 class="title topictitle2" id="ariaid-title6">Returning results</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">You can return a result from a plan by setting the <code class="ph codeph">return</code> key at the top level of the plan. When the plan
+  finishes, the <code class="ph codeph">return</code> key is evaluated and
+  returned as the result of the plan. If no <code class="ph codeph">return</code>
+  key is set, the plan returns <code class="ph codeph">undef</code></p>
+  <pre class="pre codeblock"><code>steps:
+  - name: hostnames
+    command: hostname -f
+    target: $nodes
+
+return: $hostnames.map |$hostname_result| { $hostname_result['stdout'] }</code></pre>
+ </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="computing_complex_values_pe">
+ <h2 class="title topictitle2" id="ariaid-title7">Computing complex values</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">To compute complex values, you can use a <span class="ph">Puppet</span> code expression as the value of any field of a step except the
+   <code class="ph codeph">name</code>.</p>
+  <p class="p"><span class="ph">Bolt</span> loads the plan as a YAML data structure.
+   As it executes each step, it evaluates any expressions embedded in the step. Each plan parameter
+   and the values of every previous named step are available in scope.</p>
+  <p class="p">This lets you take advantage of the power of Puppet language in the places
+   it's necessary, while keeping the rest of your plan simple.</p>
+  <p class="p">When your plans need more sophisticated control flow or error handling
+   beyond running a list of steps in order, it's time to convert them to <a class="xref" href="writing_plans_in_puppet_language_pe.html#writing_plans_in_puppet_language_pe" title="Plans allow you to run more than one task with a single command, compute values for the input to a task, process the results of tasks, or make decisions based on the result of running a task."><span class="ph">Puppet</span> Language
+    plans</a>.</p>
+ </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="convert_yaml_plans_to_puppet_pe">
+  <h2 class="title topictitle2" id="ariaid-title8">Converting YAML plans to Puppet language plans</h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">You can convert a YAML plan to a <span class="ph">Puppet</span> language plan with the <code class="ph codeph">bolt plan convert</code> command.</p>
+    <div class="p">
+      <pre class="pre codeblock"><code>bolt plan convert path/to/my/plan.yaml</code></pre>
+    </div>
+    <p class="p">This command takes the relative or absolute path to the YAML plan to be
+      converted and prints the converted <span class="ph">Puppet</span> language plan to
+      stdout.</p>
+    <div class="p">
+      <div class="note note note_note"><span class="note__title">Note:</span> Converting a YAML plan might result in a <span class="ph">Puppet</span> plan which is syntactically correct, but behaves
+        differently. Always manually verify a converted <span class="ph">Puppet</span>
+        language plan's functionality. There are some constructs that do not translate from YAML
+        plans to Puppet language plans. These are listed [TODO: insert link to section below!]
+        below. If you convert a YAML plan to <span class="ph">Puppet</span> and it changes
+        behavior, <a class="xref" href="https://github.com/puppetlabs/bolt/issues" target="_blank">file an issue </a> in
+        Bolt's <span class="ph">Git</span> repo.</div>
+    </div>
+    <div class="p">For example, with this YAML
+      plan:<pre class="pre codeblock"><code># site-modules/mymodule/plans/yamlplan.yaml
+parameters:
+  nodes:
+    type: TargetSpec
+steps:
+  - name: run_task
+    task: sample
+    target: $nodes
+    parameters:
+      message: "hello world"
+return: $run_task</code></pre></div>
+    <div class="p">Run the following
+      conversion:<pre class="pre codeblock"><code>$ bolt plan convert site-modules/mymodule/plans/yamlplan.yaml
+# WARNING: This is an autogenerated plan. It may not behave as expected.
+plan mymodule::yamlplan(
+  TargetSpec $nodes
+) {
+  $run_task = run_task('sample', $nodes, {'message' =&gt; "hello world"})
+  return $run_task
+}</code></pre></div>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title9" id="quirks_convert_yaml_plans_to_puppet_pe">
+  <h2 class="title topictitle2" id="ariaid-title9">Quirks when converting YAML plans to Puppet language</h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">There are some quirks and limitations associated with
+    converting a plan expressed in YAML to a plan expressed in the <span class="ph">Puppet</span> language. In some cases it is impossible to accurately
+    translate from YAML to <span class="ph">Puppet</span>. In others, code that is generated
+    from the conversion is syntactically correct but not idiomatic <span class="ph">Puppet</span> code.</p>
+    <section class="section"><h3 class="title sectiontitle">Named <code class="ph codeph">eval</code>
+        step</h3>
+      
+    </section>
+    <section class="section" id="quirks_convert_yaml_plans_to_puppet_pe__section_rgq_z4z_q3b">
+      <p class="p">The <code class="ph codeph">eval</code> step allows
+        snippets of <span class="ph">Puppet</span> code to be expressed in YAML plans. When
+        converting a multi-line <code class="ph codeph">eval</code> step to <span class="ph">Puppet</span> code and storing the result in a variable, use the
+          <code class="ph codeph">with</code> lambda. </p>
+      <p class="p">For example, here is a YAML plan with a multi-line <code class="ph codeph">eval</code> step:</p>
+      <pre class="pre codeblock"><code>parameters:
+  foo:
+    type: Optional[Integer]
+    description: foo
+    default: 0
+
+steps:
+  - eval: |
+      $x = $foo + 1
+      $x * 2
+    name: eval_step
+
+return: $eval_step
+</code></pre>
+      <p class="p">And here is the same plan, converted to the <span class="ph">Puppet</span> language:</p>
+      <pre class="pre codeblock"><code>plan yaml_plans::with_lambda(
+  Optional[Integer] $foo = 0
+) {
+  $eval_step = with() || {
+    $x = $foo + 1
+    $x * 2
+  }
+
+  return $eval_step
+}
+</code></pre>
+      <p class="p">Writing this plan from scratch using the <span class="ph">Puppet</span> language, you would probably not use the lambda. In this
+        example the converted <span class="ph">Puppet</span> code is correct, but not as
+        natural or readable as it could be.</p>
+    </section>
+    <section class="section" id="quirks_convert_yaml_plans_to_puppet_pe__section_sgq_z4z_q3b"><h3 class="title sectiontitle">Resource step variable interpolation</h3>
+      
+      <p class="p">When applying <span class="ph">Puppet</span> resources in a
+          <code class="ph codeph">resource</code> step, variable interpolation
+        behaves differently in YAML plans and <span class="ph">Puppet</span> language plans.
+        To illustrate this difference, consider this YAML plan:</p>
+      <pre class="pre codeblock"><code>steps:
+  - target: localhost
+    description: Apply a file resource
+    resources:
+    - type: file
+      title: '/tmp/foo'
+      parameters:
+        content: $facts['os']['family']
+        ensure: present
+  - name: file_contents
+    description: Read contents of file managed with file resource
+    eval: &gt;
+      file::read('/tmp/foo')
+      
+return: $file_contents
+</code></pre>
+      <p class="p">This plan performs <code class="ph codeph">apply_prep</code> on a localhost target. Then it uses a <span class="ph">Puppet</span>
+        <code class="ph codeph">file</code> resource to write the OS family
+        discovered from the <span class="ph">Puppet</span>
+        <code class="ph codeph">$facts</code> hash to a temporary file. Finally,
+        it reads the value written to the file and returns it. Running <code class="ph codeph">bolt plan convert</code> on this plan produces this <span class="ph">Puppet</span> code:</p>
+      <pre class="pre codeblock"><code>plan yaml_plans::interpolation_pp() {
+  apply_prep('localhost')
+  $interpolation = apply('localhost') {
+    file { '/tmp/foo':
+      content =&gt; $facts['os']['family'],
+      ensure =&gt; 'present',
+    }
+  }
+  $file_contents = file::read('/tmp/foo')
+
+  return $file_contents
+}
+</code></pre>
+      <p class="p">This Puppet language plan works as expected, whereas the YAML plan it
+        was converted from fails. The failure stems from the <code class="ph codeph">$facts</code>variable being resolved as a plan variable, instead of being evaluated as
+        part of compiling the manifest code in an <code class="ph codeph">apply</code>block.</p>
+    </section>
+    <section class="section" id="quirks_convert_yaml_plans_to_puppet_pe__section_tgq_z4z_q3b"><h3 class="title sectiontitle">Dependency order</h3>
+      
+      <p class="p">The resources in a <code class="ph codeph">resources</code> list are applied in order. It is possible to set dependencies
+        explicitly, but when doing so you must refer to them in a particular way. Consider the
+        following YAML plan:</p>
+      <pre class="pre codeblock"><code>parameters:
+  nodes:
+    type: TargetSpec
+steps:
+  - name: pkg
+    target: $nodes
+    resources:
+      - title: openssh-server
+        type: package
+        parameters:
+          ensure: present
+          before: File['/etc/ssh/sshd_config']
+      - title: /etc/ssh/sshd_config
+        type: file
+        parameters:
+          ensure: file
+          mode: '0600'
+          content: ''
+          require: Package['openssh-server']
+</code></pre>
+      <p class="p">Executing this plan fails during catalog compilation because of how Bolt
+        parses the resources referenced in the <code class="ph codeph">before</code> and <code class="ph codeph">require</code> parameters.
+        You will see the error message <code class="ph codeph">Could not find
+          resource 'File['/etc/ssh/sshd_config']' in parameter 'before'</code>. The solution is to
+        not quote the resource titles:</p>
+      <pre class="pre codeblock"><code>parameters:
+  nodes:
+    type: TargetSpec
+steps:
+  - name: pkg
+    target: $nodes
+    resources:
+      - title: openssh-server
+        type: package
+        parameters:
+          ensure: present
+          before: File[/etc/ssh/sshd_config]
+      - title: /etc/ssh/sshd_config
+        type: file
+        parameters:
+          ensure: file
+          mode: '0600'
+          content: ''
+          require: Package[openssh-server]
+</code></pre>
+      <p class="p">In general, declare resources in order. This is an unusual example to
+        illustrate a case where parameter parsing leads to non-intuitive results.</p>
+    </section>
+  </div>
+</article></article></article></main></body></html>

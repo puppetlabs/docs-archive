@@ -1,0 +1,383 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Each time Puppet runs on a node, it generates a report that provides information such as when the run took place, any issues encountered during the run, and the activity of resources on the node. These reports are collected on the Reports page in the console."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="infrastructure_reports"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Infrastructure reports</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="infrastructure_reports">
+    <h1 class="title topictitle1" id="ariaid-title1">Infrastructure reports </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Each time Puppet runs on a node, it generates a report
+        that provides information such as when the run took place, any issues encountered during the
+        run, and the activity of resources on the node. These reports are collected on the <span class="keyword wintitle">Reports</span> page in the
+        console.</p></div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="working_with_the_reports_table">
+   <h2 class="title topictitle2" id="ariaid-title2">Working with the reports table </h2>
+   
+   <div class="body conbody"><p class="shortdesc">The <span class="ph uicontrol">Reports</span> page provides a summary view of key data from each
+      report. Use this page to track recent node activity so you can audit your system and perform
+      root cause analysis over time. </p>
+      <p class="p">The reports table lists the number of resources on each node in each of
+         the following states:</p>
+      <div class="p">
+         <table class="table"><caption></caption><colgroup><col><col></colgroup><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry">
+                        <strong class="ph b">Correction applied</strong>
+                     </td>
+                     <td class="entry">Number of resources that received a corrective
+                        change after Puppet identified resources that were out of sync with the
+                        applied catalog.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry">
+                        <strong class="ph b">Failed</strong>
+                     </td>
+                     <td class="entry">Number of resources that failed.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry">
+                        <strong class="ph b">Changed</strong>
+                     </td>
+                     <td class="entry">Number of resources that changed.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry">
+                        <strong class="ph b">Unchanged</strong>
+                     </td>
+                     <td class="entry">Number of resources that remained
+                        unchanged.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry">
+                        <strong class="ph b">No-op</strong>
+                     </td>
+                     <td class="entry">Number of resources that would have been changed
+                        if not run in no-op mode.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry">
+                        <strong class="ph b">Skipped</strong>
+                     </td>
+                     <td class="entry">Number of resources that were skipped because
+                        they depended on resources that failed.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry">
+                        <strong class="ph b">Failed restarts</strong>
+                     </td>
+                     <td class="entry">
+                        <p class="p">Number of resources that were supposed to restart but
+                           didn’t. </p>
+                        <p class="p">For example, if changes to one resource notify another
+                           resource to restart, and that resource doesn’t restart, a failed restart
+                           is reported. It’s an indirect failure that occurred in a resource that
+                           was otherwise unchanged.</p>
+                     </td>
+                  </tr>
+               </tbody></table>
+      </div>
+      <p class="p">The reports table also offers the following information:</p>
+      <ul class="ul">
+         <li class="li"><strong class="ph b">No-op mode:</strong> An indicator of
+            whether the node was run in no-op mode.</li>
+         <li class="li"><strong class="ph b">Config retrieval:</strong> Time spent
+            retrieving the catalog for the node (in seconds).</li>
+         <li class="li"><strong class="ph b">Run time:</strong> Time spent applying the
+            catalog on the node (in seconds).</li>
+      </ul>
+      <div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> Report count caching is used to
+            improve console performance. In some cases, caching might cause summary counts of
+            available reports to be displayed inaccurately the first time the page is accessed after
+            a fresh install. </div></div>
+   </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="filtering_reports">
+    <h2 class="title topictitle2" id="ariaid-title3">Filtering reports </h2>
+    
+    <div class="body conbody"><p class="shortdesc">You can filter the list of reports displayed on the
+            <span class="keyword wintitle">Reports</span> page by run status
+        and by node fact. If you set a run status filter, and also set a node fact filter, the table
+        takes both filters into account, and shows only those reports matching both filters. </p>
+        <p class="p">Clicking <span class="ph uicontrol">Remove
+                filter</span> removes all filters currently in effect.</p>
+        <p class="p">The filters you set are persistent. If you set run status or fact
+            filters on the <span class="keyword wintitle">Reports</span> page,
+            they continue to be applied to the table until they're changed or removed, even if you
+            navigate to other pages in the console or log out. The persistent storage is associated
+            with the browser tab, not your user account, and is cleared when you close the tab.</p>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title4" id="filter_by_node_run_status">
+ <h3 class="title topictitle3" id="ariaid-title4">Filter by node run status </h3>
+ 
+ <div class="body taskbody"><p class="shortdesc">Filter reports to quickly focus on nodes with failures or
+  change events by using the <span class="ph uicontrol">Filter by run
+   status</span> bar. </p>
+  <section class="section context"><p class="p"></p></section>
+  <section><ol class="ol steps"><li class="li step">
+    <span class="ph cmd">Select a run status (such as <span class="ph uicontrol">No-op mode: with failures</span>). The table updates to reflect your
+     filter selection.</span>
+   </li><li class="li step">
+    <span class="ph cmd">To remove the run status filter, select <span class="ph uicontrol">All run statuses</span>.</span>
+   </li></ol></section>
+ </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="filter_by_node_fact">
+   <h3 class="title topictitle3" id="ariaid-title5">Filter by node fact </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">You can create a highly specific list of nodes for further
+      investigation by using the fact filter tool. </p>
+      <section class="section context">
+         <p class="p">For example, you can check that nodes you've updated have
+            successfully changed, or find out the operating systems or IP addresses of a set of
+            failed nodes to better understand the failure. You might also filter by facts to fulfill
+            an auditor's request for information, such as the number of nodes running a particular
+            version of software.</p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Filter by fact value</span>. In the <span class="ph uicontrol">Fact</span> field, select one of the available facts. An
+               empty fact field is not allowed.</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note tip note_tip"><span class="note__title">Tip:</span> To see the facts and values reported by a
+                     node on its most recent run, click the node name in the <span class="keyword wintitle">Run status</span> table, then select the
+                     node’s <span class="ph uicontrol">Facts</span> tab.
+                  </div>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Select an Operator:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                           <tr class="row">
+                              <th class="entry align-center" id="filter_by_node_fact__entry__1">Operator </th>
+                              <th class="entry" id="filter_by_node_fact__entry__2">Meaning </th>
+                              <th class="entry" id="filter_by_node_fact__entry__3">Notes</th>
+                           </tr>
+                        </thead><tbody class="tbody">
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">=</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">is</td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3"></td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">!=</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">is not </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3"></td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">~</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">matches a regular
+                                 expression (regex) </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Select this operator to
+                                 use wildcards and other regular expressions if you want to find
+                                 matching facts without having to specify the exact value.</td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">!~</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">does not match a regular
+                                 expression (regex) </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3"></td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">&gt;</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">greater than </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Can be used only with
+                                 facts that have a numeric value.</td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">&gt;=</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">greater than or equal to </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Can be used only with
+                                 facts that have a numeric value.</td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">&lt;</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">less than </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Can be used only with
+                                 facts that have a numeric value.</td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">&lt;=</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">less than or equal to </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Can be used only with
+                                 facts that have a numeric value.</td>
+                           </tr>
+                        </tbody></table>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Value</span> field, enter a value. Strings are case-sensitive, so make sure
+               you use the correct case.</span>
+            <div class="itemgroup info">
+               <p class="p">The filter displays an error if you use an invalid string
+                  operator (for example, selecting a numeric value operator such as <strong class="ph b">
+                     <span class="ph uicontrol">&gt;=</span>
+                  </strong> and entering a non-numeric string such as <kbd class="ph userinput">pilsen</kbd> as the value) or enter an invalid regular
+                  expression.</p>
+               <div class="p">
+                  <div class="note note note_note"><span class="note__title">Note:</span> If you enter an invalid or empty value in
+                     the <span class="ph uicontrol">Value</span> field, <span class="ph">PE</span> takes the following action in order to avoid a
+                     filter error: <ul class="ul">
+                        <li class="li">
+                           <p class="p">Invalid or empty Boolean facts are processed as <strong class="ph b">false</strong>, and results are retrieved
+                              accordingly. </p>
+                        </li>
+                        <li class="li">
+                           <p class="p">Invalid or empty numeric facts are processed as <strong class="ph b">0</strong>, and results are retrieved
+                              accordingly. </p>
+                        </li>
+                        <li class="li">
+                           <p class="p">Invalid or incomplete regular expressions
+                              invalidate the filter, and no results are retrieved.</p>
+                        </li>
+                     </ul></div>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Add</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">As needed, repeat these steps to add additional
+               filters. If filtering by more than one node fact, specify either <span class="ph uicontrol">Nodes must match all rules</span> or <span class="ph uicontrol">Nodes can match any rule</span>.</span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p"></p>
+      </section>
+   </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="working_with_individual_reports">
+    <h2 class="title topictitle2" id="ariaid-title6">Working with individual reports </h2>
+    
+    <div class="body conbody"><p class="shortdesc">To examine a report in greater detail, click <span class="ph uicontrol">Report time</span>. This opens a page that
+        provides details for the node’s resources in three sections: <span class="ph uicontrol">Events</span>, <span class="ph uicontrol">Log</span>, and <span class="ph uicontrol">Metrics</span>.</p>
+        <section class="section" id="working_with_individual_reports__events_tab"><h3 class="title sectiontitle">Events
+                </h3><p class="p">The <span class="ph uicontrol">Events</span> tab lists the events for each managed resource on the node,
+                its status, whether correction was applied to the resource, and — if it changed —
+                what it changed from and what it changed to. For example, a user or a file might
+                change from absent to present. </p><p class="p">To filter resources by
+                event type, click <span class="ph uicontrol">Filter by event
+                    status</span> and choose an event.</p><p class="p">Sort resources
+                by name or events by severity level, ascending or descending, by clicking the
+                    <span class="ph uicontrol">Resource</span> or <span class="ph uicontrol">Events</span> sorting controls.</p><p class="p">To download the events data as a <code class="ph codeph">.csv</code> file, click <span class="ph uicontrol">Export data</span>. The filename is <code class="ph codeph">events-&lt;node
+                    name&gt;-&lt;timestamp&gt;</code>.</p></section>
+        <section class="section" id="working_with_individual_reports__log_tab"><h3 class="title sectiontitle">Log</h3><p class="p">The <span class="ph uicontrol">Log</span>
+                tab lists errors, warnings, and notifications from the node's latest <span class="ph">Puppet</span> run.</p><p class="p">Each message is
+                assigned one of the following severity levels:</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="working_with_individual_reports__log_tab__entry__1">Standard</th>
+                            <th class="entry" id="working_with_individual_reports__log_tab__entry__2">Caution (yellow) </th>
+                            <th class="entry" id="working_with_individual_reports__log_tab__entry__3">Warning (red)</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__log_tab__entry__1">debug </td>
+                            <td class="entry" headers="working_with_individual_reports__log_tab__entry__2">warning </td>
+                            <td class="entry" headers="working_with_individual_reports__log_tab__entry__3">err</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__log_tab__entry__1">info </td>
+                            <td class="entry" headers="working_with_individual_reports__log_tab__entry__2">alert </td>
+                            <td class="entry" headers="working_with_individual_reports__log_tab__entry__3">emerg</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__log_tab__entry__1">notice </td>
+                            <td class="entry" headers="working_with_individual_reports__log_tab__entry__2"></td>
+                            <td class="entry" headers="working_with_individual_reports__log_tab__entry__3">crit</td>
+                        </tr>
+                    </tbody></table><p class="p">To read the report chronologically, click the time sorting
+                controls. To read it in order of issue severity, click the severity level sorting
+                controls.</p><p class="p">To download the log data as a <code class="ph codeph">.csv</code> file, click <span class="ph uicontrol">Export data</span>. The filename is
+                    <code class="ph codeph">log-&lt;node
+                    name&gt;-&lt;timestamp&gt;</code>.</p></section>
+        <section class="section"><h3 class="title sectiontitle">Metrics</h3><p class="p">The <span class="ph uicontrol">Metrics</span> tab
+                provides a summary of the key data from the node's latest <span class="ph">Puppet</span> run.</p>
+            <table class="table" id="working_with_individual_reports__table_xwn_3j4_phb"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="working_with_individual_reports__table_xwn_3j4_phb__entry__1">Metric</th>
+                            <th class="entry" id="working_with_individual_reports__table_xwn_3j4_phb__entry__2">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__1">Report submitted by:</td>
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__2">The certname of the <span class="ph">Puppet</span> master that submitted the
+                                report to <span class="ph">PuppetDB</span>.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__1"><span class="ph">Puppet</span>
+                                environment</td>
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__2">The environment assigned to the
+                                node.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__1"><span class="ph">Puppet</span>
+                                run</td>
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__2">
+                                <div class="p">
+                                    <ul class="ul" id="working_with_individual_reports__ul_ywn_3j4_phb">
+                                        <li class="li">
+                                            <p class="p"> The time that the <span class="ph">Puppet</span> run began</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p"> The time that the Puppet master
+                                                submitted the catalog</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">The time that the Puppet run
+                                                finished</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">The time <span class="ph">PuppetDB</span> received the
+                                                report</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">The duration of the <span class="ph">Puppet</span> run</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">The length of time to retrieve the
+                                                catalog</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">The length of time to apply the
+                                                resources to the catalog </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__1">Catalog application</td>
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__2">Information about the catalog application
+                                that produces the report: the config version that Puppet uses to
+                                match a specific catalog for a node to a specific Puppet run, the
+                                catalog UUID that identifies the catalog used to generate a report
+                                during a Puppet run, and whether the <span class="ph">Puppet</span> run used a cached catalog.
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__1">Resources</td>
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__2">The total number of resources in the
+                                catalog. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__1">Events</td>
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__2">A list of event types and the total count
+                                for each one.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__1">Top resource types</td>
+                            <td class="entry" headers="working_with_individual_reports__table_xwn_3j4_phb__entry__2">A list of the top resource types by time,
+                                in seconds, it took to be applied. </td>
+                        </tr>
+                    </tbody></table></section>
+    </div>
+</article></article></article></main></body></html>

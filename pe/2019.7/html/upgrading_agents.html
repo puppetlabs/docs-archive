@@ -1,0 +1,324 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Upgrade your agents as new versions of Puppet Enterprise become available. The puppet_agent module helps automate upgrades, and provides the safest upgrade. Alternatively, you can upgrade individual nodes using a script."><meta name="DC.relation" scheme="URI" content="upgrading_pe.html#upgrading_pe"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="upgrading_agents"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Upgrading agents</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="upgrading_agents">
+    <h1 class="title topictitle1" id="ariaid-title1">Upgrading agents </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Upgrade your agents as new versions of <span class="ph">Puppet Enterprise</span> become available. The puppet_agent module helps
+        automate upgrades, and provides the safest upgrade. Alternatively, you can upgrade
+        individual nodes using a script.</p>
+        <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Before upgrading agents,
+                verify that the master and agent software versions are compatible. Then after
+                upgrade, run <span class="ph">Puppet</span> on your agents as soon as
+                possible to verify that agents have the correct configuration and that your systems
+                are behaving as expected. </div></div>
+        <section class="section"><h2 class="title sectiontitle">Setting your desired agent version</h2>
+            
+            <p dir="ltr" class="p">To upgrade your master but use an older agent version
+                that is still compatible with the new master, define a <code class="ph codeph">pe_repo::platform::&lt;AGENT_OS_VERSION_ARCHITECTURE&gt;</code>
+                class with the <code class="ph codeph">agent_version</code> variable set to your desired agent version.</p>
+            <p dir="ltr" class="p">To ensure your agents are always running the same
+                version as your master, in the puppetlabs-puppet_agent module, set the <code class="ph codeph">package_version</code> variable
+                for the <code class="ph codeph">puppet_agent</code>
+                class to <code class="ph codeph">auto</code>. This
+                causes agents to automatically upgrade themselves on their first <span class="ph">Puppet</span> run after a master upgrade.</p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="upgrading_pe.html#upgrading_pe" title="Upgrade your PE installation as new versions become available.">Upgrading Puppet Enterprise</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="upgrade_agents_using_the_puppet_agent_module">
+    <h2 class="title topictitle2" id="ariaid-title2">Upgrade agents using the puppet_agent module </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The puppetlabs-puppet_agent module, available from the <span class="ph">Forge</span>, enables you to upgrade multiple <span class="ph">*nix</span>or <span class="ph">Windows</span> agents at one
+        time. The module handles all the latest version-to-version upgrades.</p>
+        <section class="section context"><div class="p">
+                <div class="note important note_important"><span class="note__title">Important:</span> For the most reliable upgrade, always use the latest version
+                    of the puppet_agent module to upgrade agents. Test the upgrade on a subset of
+                    agents, and after you verify the upgrade, upgrade remaining agents.</div>
+            </div></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On your master, download and install the
+                    puppetlabs-puppet_agent module: <code class="ph codeph">puppet
+                        module install puppetlabs-puppet_agent</code>
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Configure the master to download the agent version
+                    you want to upgrade. </span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Master</span> group.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, in the <span class="ph uicontrol">Add a new class</span>
+                            field, enter <code class="ph codeph">pe_repo</code>,
+                            and select the appropriate repo class from the list of classes.</span>
+                        <div class="itemgroup info">
+                            <p class="p">Repo classes are listed as <code class="ph codeph">pe_repo::platform::&lt;AGENT_OS_VERSION_ARCHITECTURE&gt;</code>. </p>
+                            <p class="p">To specify a particular agent version, set the
+                                    <code class="ph codeph">agent_version</code> variable using an <code class="ph codeph">X.Y.Z</code> format (for
+                                example, <code class="ph codeph">5.5.14</code>). When their version is set explicitly, agents
+                                do not automatically upgrade when you upgrade your master. </p>
+                        </div>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Click <span class="ph uicontrol">Add class</span> and commit changes.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">On your master, run <span class="ph">Puppet</span> to configure the newly assigned
+                            class: <code class="ph codeph">puppet agent
+                            -t</code></span>
+                        <div class="itemgroup info">
+                            <p class="p">The new repo is created in <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE
+                                    VERSION&gt;/&lt;PLATFORM&gt;/</code>.</p>
+                        </div>
+                    </li>
+                </ol>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Classification</span>, click <span class="ph uicontrol">Add group</span>, specify options for a new upgrade
+                    node group, and then click <span class="ph uicontrol">Add</span>.</span>
+                <div class="itemgroup info"><div class="p"><ul class="ul">
+                            <li class="li"><p class="p">
+                                    <span class="ph uicontrol">Parent
+                                        name</span> — Select the name of the classification
+                                    node group that you want to set as the parent to this group, in
+                                    this case, <span class="ph uicontrol">All
+                                        Nodes</span>.</p></li>
+                            <li class="li"><p class="p">
+                                    <span class="ph uicontrol">Group
+                                        name</span> —Enter a name that describes the role of
+                                    this classification node group, for example, <kbd class="ph userinput">agent_upgrade</kbd>.</p></li>
+                            <li class="li"><p class="p">
+                                    <span class="ph uicontrol">Environment</span> — Select the environment your
+                                    agents are in.</p></li>
+                            <li class="li"><p class="p">
+                                    <span class="ph uicontrol">Environment
+                                        group</span> — <em class="ph i">Do not</em>
+                                    select this option.&nbsp;</p></li>
+                        </ul></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click the link to <span class="ph uicontrol">Add membership rules, classes, and
+                    variables</span>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Rules</span> tab, create a rule to add the agents that you want to
+                    upgrade to this group, click <span class="ph uicontrol">Add
+                        Rule</span>, and then commit changes.</span>
+                <div class="itemgroup stepxmp"><div class="p">For example:
+                            <ul class="ul">
+                            <li class="li"><p class="p">
+                                    <span class="ph uicontrol">Fact</span> —
+                                        <span class="ph uicontrol">osfamily</span>
+                                </p></li>
+                            <li class="li"><p class="p">
+                                    <span class="ph uicontrol">Operator</span> — <span class="ph uicontrol">=</span>
+                                </p></li>
+                            <li class="li"><p class="p">
+                                    <span class="ph uicontrol">Value</span>
+                                    — <kbd class="ph userinput">RedHat</kbd>
+                                </p></li>
+                        </ul>
+                    </div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Still in the agent upgrade group, click the
+                        <span class="ph uicontrol">Configuration</span> tab,
+                    and in the <span class="ph uicontrol">Add new
+                        class</span> field, add the <span class="ph uicontrol">puppet_agent</span> class, and click <span class="ph uicontrol">Add class</span>.</span>
+                <div class="itemgroup info"><div class="p">If you don’t
+                        immediately see the class, click <span class="ph uicontrol">Refresh</span> to update the classifier.<div class="note note note_note"><span class="note__title">Note:</span> If you’ve changed the prefix parameter of the <span class="ph uicontrol">pe_repo</span> class in your
+                                <span class="ph uicontrol">PE Master</span>
+                            node group, set the <span class="ph uicontrol">puppet-agent source</span> parameter of the upgrade group to
+                                <kbd class="ph userinput">https://&lt;MASTER
+                                HOSTNAME&gt;:8140/&lt;Prefix&gt;</kbd>.</div>
+                    </div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">In the <span class="ph uicontrol">puppet_agent</span> class, specify the version of the <code class="ph codeph">puppet-agent</code> package version that
+                    you want to install, then commit changes. </span>
+                <div class="itemgroup info"><div class="p"><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                    <tr class="row">
+                                        <th class="entry" id="upgrade_agents_using_the_puppet_agent_module__entry__1">
+                                            <span class="ph uicontrol">Parameter</span>
+                                        </th>
+                                        <th class="entry" id="upgrade_agents_using_the_puppet_agent_module__entry__2">
+                                            <span class="ph uicontrol">Value</span>
+                                        </th>
+                                    </tr>
+                                </thead><tbody class="tbody">
+                                    <tr class="row">
+                                        <td class="entry" headers="upgrade_agents_using_the_puppet_agent_module__entry__1">
+                                            <span class="ph uicontrol">package_version</span>
+                                        </td>
+                                        <td class="entry" headers="upgrade_agents_using_the_puppet_agent_module__entry__2">The <code class="ph codeph">puppet-agent</code> package version
+                                            to install, for example <kbd class="ph userinput">5.3.3</kbd>. <p class="p">Set this parameter to <code class="ph codeph">auto</code> to install the same agent version
+                                                that is installed on your master.</p></td>
+                                    </tr>
+                                </tbody></table></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the agents that you're upgrading, run <span class="ph">Puppet</span>: <code class="ph codeph">/opt/puppet/bin/puppet agent -t</code>
+                </span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">After the <span class="ph">Puppet</span> run, you can verify the upgrade with <code class="ph codeph">/opt/puppetlabs/bin/puppet --version</code>
+            </p></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="upgrade_agents_script">
+    <h2 class="title topictitle2" id="ariaid-title3">Upgrade agents using a script</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To upgrade an individual node, for example to test or
+        troubleshoot, you can upgrade directly from the node using a script. This method relies on a
+        package repository hosted on your master.</p>
+        <section class="section context">
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> If you encounter SSL errors during the
+                    upgrade process, ensure your agent's OpenSSL is up to date and matches the
+                    master's version. You can check the master's OpenSSL versions with <code class="ph codeph">/opt/puppetlabs/puppet/bin/openssl
+                        version</code> and the agent's version with <code class="ph codeph">openssl version</code>.</div>
+            </div>
+        </section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title4" id="upgrade_agents_installed_with_the_installation_script">
+    <h3 class="title topictitle3" id="ariaid-title4">Upgrade a <span class="ph">*nix</span> agent using a script </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">You an upgrade an individual <span class="ph">*nix</span> agent using a script.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Configure the master to download the agent version
+                    you want to upgrade. </span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Master</span> group.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, in the <span class="ph uicontrol">Add a new class</span>
+                            field, enter <code class="ph codeph">pe_repo</code>,
+                            and select the appropriate repo class from the list of classes.</span>
+                        <div class="itemgroup info">
+                            <p class="p">Repo classes are listed as <code class="ph codeph">pe_repo::platform::&lt;AGENT_OS_VERSION_ARCHITECTURE&gt;</code>. </p>
+                            <p class="p">To specify a particular agent version, set the
+                                    <code class="ph codeph">agent_version</code> variable using an <code class="ph codeph">X.Y.Z</code> format (for
+                                example, <code class="ph codeph">5.5.14</code>). When their version is set explicitly, agents
+                                do not automatically upgrade when you upgrade your master. </p>
+                        </div>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Click <span class="ph uicontrol">Add class</span> and commit changes.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">On your master, run <span class="ph">Puppet</span> to configure the newly assigned
+                            class: <code class="ph codeph">puppet agent
+                            -t</code></span>
+                        <div class="itemgroup info">
+                            <p class="p">The new repo is created in <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE
+                                    VERSION&gt;/&lt;PLATFORM&gt;/</code>.</p>
+                        </div>
+                    </li>
+                </ol>
+            </li><li class="li step">
+                <span class="ph cmd">SSH into the agent node you want to upgrade.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Run the upgrade command appropriate to the
+                    operating system. </span>
+                <ul class="ul choices">
+                    <li class="li choice">Most <span class="ph">*nix</span>
+                        <pre class="pre codeblock"><code>/opt/puppetlabs/puppet/bin/curl --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem https://&lt;MASTER HOSTNAME&gt;:8140/packages/current/install.bash | sudo bash
+</code></pre>
+                    </li>
+                    <li class="li choice">
+                        <span class="ph">Mac OS X</span>, <span class="ph">Solaris</span>, and <span class="ph">AIX</span>
+                        <pre class="pre codeblock"><code>curl --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem https://&lt;MASTER HOSTNAME&gt;:8140/packages/current/install.bash | sudo bash		  </code></pre>
+                    </li>
+                </ul>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">
+                <span class="ph">PE</span> services restarts automatically after upgrade.
+            </p></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="upgrade_windows_agent_script">
+    <h3 class="title topictitle3" id="ariaid-title5">Upgrade a <span class="ph">Windows</span> agent using a
+        script </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">You can upgrade an individual <span class="ph">Windows</span> agent using a script.&nbsp;For <span class="ph">Windows</span>, this method is riskier than using the puppet_agent
+        module to upgrade, because you must manually complete and verify steps that the module
+        handles automatically. </p>
+        <section class="section context">
+            <div class="note note note_note"><span class="note__title">Note:</span> The <code class="ph codeph">&lt;MASTER HOSTNAME&gt;</code> portion of the installer
+                script—as provided in the following example—refers to the FQDN of the master. The
+                FQDN must be fully resolvable by the machine on which you're installing or upgrading
+                the agent.</div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Stop the <span class="ph">Puppet</span>
+                    service and the <span class="ph">PXP</span> agent service.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph">Windows</span>
+                    agent, run the install script: </span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; $webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('https://&lt;MASTER HOSTNAME&gt;:8140/packages/current/install.ps1', 'install.ps1'); .\install.ps1
+			 </code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Verify that <span class="ph">Puppet</span>
+                    runs are complete. 
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Restart the <span class="ph">Puppet</span>
+                    service and the <span class="ph">PXP</span> agent service.</span>
+            </li></ol></section>
+    </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="upgrade_agents_without_internet_access">
+    <h2 class="title topictitle2" id="ariaid-title6">Upgrade agents without internet access</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">If you don't have access to the internet beyond your infrastructure you can download
+        the appropriate agent tarball from an internet-connected system and then upgrade using a
+        script. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><a class="xref" href="https://puppet.com/misc/pe-files/pe_repo/" target="_blank">Download</a> the appropriate agent tarball from an
+            internet-connected system. </section>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On your master, copy the agent tarball to
+                        <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE
+                        VERSION&gt;/&lt;PLATFORM&gt;</code> .</span>
+            </li><li class="li step">
+                <span class="ph cmd">Run <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent
+                    -t</code></span>
+            </li><li class="li step">
+                <span class="ph cmd">Follow the steps to <a class="xref" href="upgrading_agents.html#upgrade_agents_script" title="To upgrade an individual node, for example to test or troubleshoot, you can upgrade directly from the node using a script. This method relies on a package repository hosted on your master.">Upgrade agents using a script</a>.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="upgrading-agent-independently">
+    <h2 class="title topictitle2" id="ariaid-title7">Upgrading the agent independent of PE</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">You can optionally upgrade the agent to a newer version
+        than the one packaged with your current <span class="ph">PE</span>
+        installation.</p>
+        <p class="p">For details about <span class="ph">Puppet</span> agents
+            versions that are tested and supported for <span class="ph">PE</span>, see the
+                <span class="ph">PE</span> component version table.</p>
+        <p class="p">The agent version is specified on a platform-by-platform basis in the
+                <span class="ph uicontrol">PE Master</span> node group, in
+            any <code class="ph codeph">pe_repo::platform</code> class, using the
+                <code class="ph codeph">agent_version</code> parameter.</p>
+        <p class="p">When you install new nodes or upgrade existing nodes, the agent
+            install script installs the version of the agent specified for its platform class. If a
+            version isn’t specified for the node’s platform, the script installs the default version
+            packaged with your current version of <span class="ph">PE</span>.</p>
+        <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> To install nodes without internet access,
+                download the agent tarball for the version you want to install, as specified using
+                the <code class="ph codeph">agent_version</code>
+            parameter.</div></div>
+        <p class="p">The platform in use on your master requires special consideration. The
+            agent version used on your master must match the agent version used on other
+            infrastructure nodes, including compilers and replicas, otherwise your master won’t
+            compile catalogs for these nodes.</p>
+        <div class="p">To keep infrastructure nodes synced to the same agent version, if you
+            specify a newer <code class="ph codeph">agent_version</code> for your
+            master platform, you must either:<ul class="ul">
+                <li class="li">(Recommended) Upgrade the agent on your master—and any
+                    existing infrastructure nodes—to the newer agent version. You can upgrade these
+                    nodes by running the agent install script.</li>
+                <li class="li">Manually install the older agent version used on your master
+                    on any new infrastructure nodes you provision. You <strong class="ph b">can’t</strong> install these nodes using the agent install script, because the
+                    script uses the agent version specified for the platform class, instead of the
+                    master’s current agent version. Manual installation requires configuring <code class="ph codeph">puppet.conf</code>, DNS alt names, CSR
+                    attributes, and other relevant settings.</li>
+            </ul></div>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="component_versions_in_recent_pe_releases.html#component_versions_in_recent_pe_releases" title="These tables show which components are in Puppet Enterprise (PE) releases, covering recent long-term supported (LTS) releases. To see component version tables for a release that has passed its support phase, switch to the docs site for that release.">Component versions in recent PE releases</a></li></ul></div></nav></article></article></article></main></body></html>

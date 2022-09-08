@@ -1,0 +1,951 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise supports various operating systems depending on the role a machine assumes in your infrastructure."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="supported_operating_systems"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Supported operating systems</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="supported_operating_systems">
+    <h1 class="title topictitle1" id="ariaid-title1">Supported operating systems </h1>
+    <p class="shortdesc"><span class="ph">Puppet Enterprise</span> supports various
+        operating systems depending on the role a machine assumes in your
+        infrastructure.</p>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="supported_operating_systems_and_devices">
+    <h2 class="title topictitle2" id="ariaid-title2">Supported operating systems and devices </h2>
+    
+    <div class="body refbody"><p class="shortdesc">When choosing an operating system, first consider the
+        machine's role. Different roles support different operating systems and
+        architectures.</p>
+        <section class="section"><div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> For details about platform support lifecycles and planned end-of-life support, see
+                        <a class="xref" href="https://puppet.com/docs/puppet-enterprise/platform-support-lifecycle/" target="_blank">Platform support lifecycle</a> on the <span class="ph">Puppet</span> website.</div></div></section>
+        <section class="section" id="supported_operating_systems_and_devices__puppet_master_platforms"><h3 class="title sectiontitle">Master platforms </h3><div class="p">The master role can be installed on
+                these operating systems and architectures. <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="supported_operating_systems_and_devices__puppet_master_platforms__entry__1">Operating system</th>
+                                <th class="entry" id="supported_operating_systems_and_devices__puppet_master_platforms__entry__2">Versions</th>
+                                <th class="entry" id="supported_operating_systems_and_devices__puppet_master_platforms__entry__3">Architecture</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__puppet_master_platforms__entry__1"> Enterprise <span class="ph">Linux</span>
+                                    <ul class="ul">
+                                        <li class="li">
+                                            <p class="p">
+                                                <span class="ph">CentOS</span>
+                                            </p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">
+                                                <span class="ph">Oracle Linux</span>
+                                            </p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">
+                                                <span class="ph">Red Hat Enterprise Linux</span>
+                                            </p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">
+                                                <span class="ph">Scientific Linux</span>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__puppet_master_platforms__entry__2">6, 7, 8</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__puppet_master_platforms__entry__3">
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_bj5_hdj_zhb">
+                                        <li class="li">x86_64</li>
+                                        <li class="li">FIPS 140-2 compliant version 7 </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__puppet_master_platforms__entry__1">
+                                    <span class="ph">SUSE Linux Enterprise Server</span>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__puppet_master_platforms__entry__2">12</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__puppet_master_platforms__entry__3">x86_64</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__puppet_master_platforms__entry__1">
+                                    <span class="ph">Ubuntu</span> (General Availability
+                                    kernels)</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__puppet_master_platforms__entry__2">16.04, 18.04</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__puppet_master_platforms__entry__3">amd64</td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+        <section class="section" id="supported_operating_systems_and_devices__puppet_agent_platforms"><h3 class="title sectiontitle">Agent platforms </h3><div class="p">The agent role can be installed on these operating systems and architectures. <table class="table" id="supported_operating_systems_and_devices__table_vvc_s34_phb"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">Operating system</th>
+                                <th class="entry" id="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">Versions</th>
+                                <th class="entry" id="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">Architecture</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">AIX</span>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">7.1, 7.2<div class="note note note_note"><span class="note__title">Note:</span> We support only technology levels that are
+                                        still under support from <span class="ph">IBM</span>.</div></td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <p class="p"></p>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">Amazon</span>
+                                    <span class="ph">Linux</span>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">2</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <p class="p"></p>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">Debian</span>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">Jessie (8), Stretch (9), Buster (10)</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_wvc_s34_phb">
+                                        <li class="li">
+                                            <p class="p">i386</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">amd64</p>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1"> Enterprise <span class="ph">Linux</span>
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_xvc_s34_phb">
+                                        <li class="li">
+                                            <p class="p">
+                                                <span class="ph">CentOS</span>
+                                            </p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">
+                                                <span class="ph">Oracle Linux</span>
+                                            </p>
+                                        </li>
+                                        <li class="li">
+                                            <span class="ph">Red Hat Enterprise Linux</span>
+                                        </li>
+                                        <li class="li">
+                                            <span class="ph">Scientific Linux</span>
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">
+                                    <p class="p">5, 6, 7, 8</p>
+                                    <div class="p">
+                                        <div class="note note note_note"><span class="note__title">Note:</span> 
+                                            <span class="ph">Scientific Linux</span> 5 is not
+                                            supported. </div>
+                                    </div>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_yvc_s34_phb">
+                                        <li class="li">
+                                            <p class="p">x86_64</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">i386 for versions 5, 6</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">ppc64le for version 7</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">aarch64 for version 7</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">FIPS 140-2 compliant version 7 </p>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">Fedora</span>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">28, 29, 30, 31</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_zvc_s34_phb">
+                                        <li class="li">
+                                            <p class="p">x86_64</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">i386 for version 25</p>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">macOS</span>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">10.12, 10.13, 10.14</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">Microsoft</span>
+                                    <span class="ph">Windows</span>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">7, 8.1, 10</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_awc_s34_phb">
+                                        <li class="li">
+                                            <p class="p">x64</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">x86</p>
+                                        </li>
+                                        <li class="li">FIPS 140-2 compliant version 10</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">Microsoft</span>
+                                    <span class="ph">Windows</span> Server </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">2008, 2008 R2, 2012, 2012 R2, 2012 R2 core, 2016, 2016 core,
+                                    and Desktop Experience, 2019</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_bwc_s34_phb">
+                                        <li class="li">
+                                            <p class="p">x64 for all 2008 and 2012 series</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">x86 for 2008</p>
+                                        </li>
+                                        <li class="li">FIPS 140-2 compliant versions 2012R2 and 2012R2
+                                            core</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">Solaris</span>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">10, 11</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_cwc_s34_phb">
+                                        <li class="li">
+                                            <p class="p">SPARC</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">i386</p>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">SUSE Linux Enterprise Server</span>
+                                </td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">11, 12, 15</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_dwc_s34_phb">
+                                        <li class="li">
+                                            <p class="p">x86_64</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">i386 for version 11</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">ppc64le for version 12</p>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__1">
+                                    <span class="ph">Ubuntu</span> (General Availability
+                                    kernels)</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__2">16.04, 18.04, 20.04</td>
+                                <td class="entry" headers="supported_operating_systems_and_devices__table_vvc_s34_phb__entry__3">
+                                    <ul class="ul" id="supported_operating_systems_and_devices__ul_ewc_s34_phb">
+                                        <li class="li">
+                                            <p class="p">amd64</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">i386 for versions 16.04</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">ppc64el for version 16.04</p>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody></table>
+                <div class="note note note_note"><span class="note__title">Note:</span> Some operating systems require an active subscription with the
+                    vendor's package management system (for example, the <span class="ph">Red Hat</span> Network) to install dependencies.</div>
+            </div></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="centos_dependencies">
+    <h2 class="title topictitle2" id="ariaid-title3"><span class="ph">CentOS</span> dependencies </h2>
+    
+    <div class="body refbody"><p class="shortdesc">When you install <span class="ph">PE</span> or an
+        agent, these packages are also installed from the various operating system
+        repositories.</p>
+        <section class="section"><p class="p">If the machine you're installing on has
+                internet access, dependencies are set up during installation. If your machine
+                doesn't have internet access, you must manually install dependencies.</p></section>
+        <table class="table"><caption></caption><colgroup><col><col><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="centos_dependencies__entry__1"></th>
+                        <th class="entry align-center" id="centos_dependencies__entry__2">All Nodes </th>
+                        <th class="entry align-center" id="centos_dependencies__entry__3">Master Nodes </th>
+                        <th class="entry align-center" id="centos_dependencies__entry__4">Console Nodes </th>
+                        <th class="entry align-center" id="centos_dependencies__entry__5">Console/Console
+                            DB Nodes</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">pciutils </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">which </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">libxml2 </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">dmidecode </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">net-tools </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">curl </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">mailcap </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">libjpeg </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5">x</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">libtool-ltdl </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">unixODBC </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">libxslt </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5">x</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="centos_dependencies__entry__1">zlib </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="centos_dependencies__entry__5"></td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="rhel_dependencies">
+    <h2 class="title topictitle2" id="ariaid-title4"><span class="ph">RHEL</span> dependencies </h2>
+    
+    <div class="body refbody"><p class="shortdesc">When you install <span class="ph">PE</span> or an
+        agent, these packages are also installed from the various operating system
+        repositories.</p>
+        <section class="section"><p class="p">If the machine you're installing on has
+                internet access, dependencies are set up during installation. If your machine
+                doesn't have internet access, you must manually install dependencies.</p></section>
+        <table class="table"><caption></caption><colgroup><col><col><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="rhel_dependencies__entry__1"></th>
+                        <th class="entry align-center" id="rhel_dependencies__entry__2">All Nodes </th>
+                        <th class="entry align-center" id="rhel_dependencies__entry__3">Master Nodes </th>
+                        <th class="entry align-center" id="rhel_dependencies__entry__4">Console Nodes </th>
+                        <th class="entry align-center" id="rhel_dependencies__entry__5">Console/Console
+                            DB Nodes </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">pciutils </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">which </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">libxml2 </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">dmidecode </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">net-tools </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">cronie (RHEL 6, 7) </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">vixie-cron (RHEL 4, 5) </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">curl </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">mailcap </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">libjpeg </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">libtool-ltdl (RHEL 7) </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">unixODBC (RHEL 7) </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">libxslt </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">zlib </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="rhel_dependencies__entry__1">gtk2 </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="rhel_dependencies__entry__5"></td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="sles_dependencies">
+    <h2 class="title topictitle2" id="ariaid-title5"><span class="ph">SUSE Linux Enterprise Server</span> dependencies </h2>
+    
+    <div class="body refbody"><p class="shortdesc">When you install <span class="ph">PE</span> or an
+        agent, these packages are also installed from the various operating system
+        repositories.</p>
+        <section class="section">
+            <p class="p">If the machine you're installing on has internet access, most dependencies are
+                installed during installation. If you encounter problems, inspect the error messages
+                for packages that require other <span class="ph">SUSE Linux Enterprise Server</span> packaging
+                modules to be enabled, and use <code class="ph codeph">zypper package-search
+                    &lt;PACKAGE NAME&gt;</code> to locate them for manual installation.</p>
+        </section>
+        <table class="table"><caption></caption><colgroup><col><col><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="sles_dependencies__entry__1"></th>
+                        <th class="entry align-center" id="sles_dependencies__entry__2">All Nodes </th>
+                        <th class="entry align-center" id="sles_dependencies__entry__3">Master Nodes </th>
+                        <th class="entry align-center" id="sles_dependencies__entry__4">Console Nodes </th>
+                        <th class="entry align-center" id="sles_dependencies__entry__5">Console/Console
+                            DB Nodes </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">pciutils </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">pmtools </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">cron </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libxml2 </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">net-tools </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libxslt </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">curl </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libjpeg </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">db43 </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">unixODBC </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">zlib </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libboost_atomic</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libboost_chrono</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libboost_date_time</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libboost_filesystem</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libboost_locale</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libboost_log</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libboost_program_options</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libboost_random</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libboost_regex</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="sles_dependencies__entry__1">libyaml-cpp</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__2">x</td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="sles_dependencies__entry__5"></td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="ubuntu_dependencies">
+    <h2 class="title topictitle2" id="ariaid-title6"><span class="ph">Ubuntu</span> dependencies </h2>
+    
+    <div class="body refbody"><p class="shortdesc">When you install <span class="ph">PE</span> or an
+        agent, these packages are also installed from the various operating system
+        repositories.</p>
+        <section class="section"><p class="p">If the machine you're installing on has
+                internet access, dependencies are set up during installation. If your machine
+                doesn't have internet access, you must manually install dependencies.</p></section>
+        <table class="table"><caption></caption><colgroup><col><col><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="ubuntu_dependencies__entry__1"></th>
+                        <th class="entry align-center" id="ubuntu_dependencies__entry__2">All Nodes </th>
+                        <th class="entry align-center" id="ubuntu_dependencies__entry__3">Master Nodes </th>
+                        <th class="entry align-center" id="ubuntu_dependencies__entry__4">Console Nodes </th>
+                        <th class="entry align-center" id="ubuntu_dependencies__entry__5">Console/Console
+                            DB Nodes </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">pciutils </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">dmidecode </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">cron </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libxml2 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">hostname </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libldap-2.4-2 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libreadline5 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">file </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libmagic1 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libpcre3 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">curl </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">perl </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">mime-support </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libcap2 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libjpeg62 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libxslt1.1 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libgtk2.0-0 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">ca-certificates-java </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">openjdk-7-jre-headless* </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">libossp-uuid16 </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5">x </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="ubuntu_dependencies__entry__1">zlib </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__2">x </td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__3"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__4"></td>
+                        <td class="entry align-center" headers="ubuntu_dependencies__entry__5"></td>
+                    </tr>
+                </tbody></table>
+        <section class="section"><p class="p">*For <span class="ph">Ubuntu</span> 18.04, use openjdk-8-jre-headless. This
+                package requires the <a class="xref" href="https://help.ubuntu.com/community/Repositories/Ubuntu" target="_blank">universe repository</a> to install. </p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="aix_dependencies_and_limitations">
+    <h2 class="title topictitle2" id="ariaid-title7"><span class="ph">AIX</span> dependencies and limitations </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Before installing the agent on <span class="ph">AIX</span> systems, install these packages.</p>
+        <section class="section">
+            <ul class="ul">
+                <li class="li">bash</li>
+                <li class="li">zlib</li>
+                <li class="li">readline</li>
+                <li class="li">curl</li>
+                <li class="li">OpenSSL</li>
+            </ul>
+            <div class="p">
+                <div class="note caution note_caution"><span class="note__title">CAUTION:</span> For cURL and OpenSSL, you must use the
+                    versions provided by the "AIX Toolbox Cryptographic Content" repository, which
+                    is available via IBM support. Note that the cURL version must be 7.9.3. Do not
+                    use the cURL version in the <span class="ph">AIX</span> toolbox package
+                    for <span class="ph">Linux</span> applications, as that version does not
+                    include support for OpenSSL.</div>
+            </div>
+            <p class="p">To install the bash, zlib, and readline packages on a node
+                directly, run <code class="ph codeph">rpm -Uvh</code> with the
+                following URLs. The RPM package provider must be run as root.</p>
+            <ul class="ul">
+                <li class="li"><a class="xref" href="ftp://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/bash/bash-3.2-1.aix5.2.ppc.rpm" target="_blank">ftp://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/bash/bash-3.2-1.aix5.2.ppc.rpm</a></li>
+                <li class="li"><a class="xref" href="ftp://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/zlib/zlib-1.2.3-4.aix5.2.ppc.rpm" target="_blank">ftp://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/zlib/zlib-1.2.3-4.aix5.2.ppc.rpm</a></li>
+                <li class="li">
+                    <p class="p"><a class="xref" href="ftp://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/readline/readline-6.1-1.aix6.1.ppc.rpm" target="_blank">ftp://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/readline/readline-6.1-1.aix6.1.ppc.rpm</a>
+                            (<span class="ph">AIX</span> 6.1 and 7.1 only)</p>
+                </li>
+                <li class="li">
+                    <p class="p"><a class="xref" href="ftp://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/readline/readline-4.3-2.aix5.1.ppc.rpm" target="_blank">ftp://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/RPMS/ppc/readline/readline-4.3-2.aix5.1.ppc.rpm</a>
+                            (<span class="ph">AIX</span> 5.3 only)</p>
+                </li>
+            </ul>
+            <p class="p">If you are behind a firewall or running an http proxy, the above
+                commands might not work. Instead, use the <span class="ph">AIX</span> toolbox
+                packages download available from <span class="ph">IBM</span>.</p>
+            <p class="p">GPG verification does not work on <span class="ph">AIX</span>, because the RPM version it uses is too old. The <span class="ph">AIX</span> package provider doesn't support package downgrades (installing an older package
+                over a newer package). Avoid using leading zeros when specifying a version number
+                for the <span class="ph">AIX</span> provide, for example, use <code class="ph codeph">2.3.4</code> not <code class="ph codeph">02.03.04</code>.</p>
+            <p class="p">The <span class="ph">PE</span>
+                <span class="ph">AIX</span> implementation supports the NIM, BFF, and RPM
+                package providers. Check the type reference for technical details on these
+                providers.</p>
+        </section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title8" id="solaris_dependencies_and_limitations">
+   <h2 class="title topictitle2" id="ariaid-title8">
+      <span class="ph">Solaris</span> dependencies and limitations </h2>
+   
+   <div class="body refbody"><p class="shortdesc"><span class="ph">Solaris</span> support is agent
+      only. </p>
+      <section class="section"><p class="p">For <span class="ph">Solaris</span> 10, these packages are required:</p><ul class="ul">
+            <li class="li">SUNWgccruntime</li>
+            <li class="li">SUNWzlib</li>
+            <li class="li">In some instances, bash might not be present on <span class="ph">Solaris</span> systems. It needs to be installed before
+               running the installer. Install bash via the media used to install the operating
+               system, or via CSW if that is present on your system. (CSWbash or SUNWbash are both
+               suitable.)</li>
+         </ul><p class="p">For <span class="ph">Solaris</span> 11 these packages are
+            required:</p><ul class="ul">
+            <li class="li">system/readline</li>
+            <li class="li">system/library/gcc-45-runtime</li>
+            <li class="li">library/security/openssl</li>
+         </ul><p class="p">These packages are available in the <span class="ph">Solaris</span> release repository, which is enabled by default in
+            version 11. The installer automatically installs these packages; however, if the release
+            repository is not enabled, the packages must be installed manually.</p></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title9" id="upgrade_your_os_with_pe_installed">
+    <h2 class="title topictitle2" id="ariaid-title9">Upgrade your operating system with <span class="ph">PE</span> installed </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">If you have <span class="ph">PE</span> installed,
+        take extra precautions before performing a major upgrade of your machine's operating
+        system.</p>
+        <section class="section context"><p class="p">Performing major
+                upgrades of your operating system with <span class="ph">PE</span> installed
+                can cause errors and issues with <span class="ph">PE</span>. A major
+                operating system upgrade is an upgrade to a new whole version, such as an upgrade
+                from <span class="ph">CentOS</span> 6.0 to 7.0; it does not refer to a minor
+                version upgrade, like <span class="ph">CentOS</span> 6.5 to 6.6. Major
+                upgrades typically require a new version of <span class="ph">PE</span>.</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Back up your databases and other <span class="ph">PE</span> files.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Perform a complete uninstall (using the <code class="ph codeph">-p</code> and <code class="ph codeph">-d</code> uninstaller options).</span>
+            </li><li class="li step">
+                <span class="ph cmd">Upgrade your operating system.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Install <span class="ph">PE</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Restore your backup.</span>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="backing_up_and_restoring_pe.html#back_up_pe_infrastructure" title="PE backup creates a copy of your Puppet master, including configuration, certificates, code, and PuppetDB.">Back up your infrastructure</a></li><li class="linklist"><a class="link" href="backing_up_and_restoring_pe.html#restore_pe_infrastructure" title="Use the restore commands to migrate your PE master to a new host or to recover from system failure.">Restore your infrastructure</a></li><li class="linklist"><a class="link" href="uninstalling.html#uninstalling" title="Puppet Enterprise includes a script for uninstalling. You can uninstall component infrastructure nodes or from agent nodes.">Uninstalling</a></li><li class="linklist"><a class="link" href="installing_pe.html#installing_pe" title="Installing PE begins with setting up a standard installation: a master, console, and PuppetDB operating on a single node. From here, you can scale up to the large or extra-large installation as your infrastructure grows, or customize configuration as needed.">Installing Puppet Enterprise</a></li></ul></div></nav></article></article></article></main></body></html>

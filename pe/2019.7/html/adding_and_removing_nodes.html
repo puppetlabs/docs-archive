@@ -1,0 +1,172 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="After you install a Puppet agent on a node, accept its certificate signing request and begin managing it with Puppet Enterprise (PE). Or remove nodes that you no longer need."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="adding_and_removing_nodes"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Adding and removing agent nodes</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="adding_and_removing_nodes">
+    <h1 class="title topictitle1" id="ariaid-title1">Adding and removing agent nodes</h1>
+    
+    <div class="body conbody"><p class="shortdesc">After you install a <span class="ph">Puppet</span>
+        agent on a node, accept its certificate signing request and begin managing it with <span class="ph">Puppet Enterprise (PE)</span>. Or remove nodes that you no longer need. </p></div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="managing_CSRs">
+    <h2 class="title topictitle2" id="ariaid-title2">Managing certificate signing requests</h2>
+    
+    <div class="body conbody"><p class="shortdesc">When you install a <span class="ph">Puppet</span> agent on a node, the agent
+        automatically submits a certificate signing request (CSR) to the master. You must accept
+        this request to bring before the node under PE management can be added your deployment. This
+        allows <span class="ph">Puppet</span> to run on the node and enforce your
+        configuration, which in turn adds node information to <span class="ph">PuppetDB</span> and makes the node available throughout the console. </p>
+        <p class="p">You can approve certificate requests from the <span class="ph">PE</span> console or the command line. If DNS altnames are set
+            up for agent nodes, you must approve the CSRs on use the command line interface .</p>
+        <div class="note note note_note"><span class="note__title">Note:</span>  Specific user permissions are required to manage certificate
+            requests: <ul class="ul" id="managing_CSRs__ul_dkx_d31_3hb">
+                <li class="li">To accept or reject CSRs in the console or on the command
+                    line, you need the permission <span class="ph uicontrol">Certificate requests: Accept and reject</span>. </li>
+                <li class="li">To manage certificate requests in the console, you also need
+                    the permission <span class="ph uicontrol">Console:
+                        View</span>.</li>
+            </ul>
+        </div>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="installing_agents.html#installing_agents" title="You can install Puppet Enterprise agents on *nix, Windows, and macOS.">Installing agents</a></li></ul></div></nav><article class="topic concept nested2" aria-labelledby="ariaid-title3" id="managing_certificate_signing_requests_console">
+  <h3 class="title topictitle3" id="ariaid-title3">Managing certificate signing requests in the console</h3>
+  
+  <div class="body conbody"><p class="shortdesc">A certificate signing request appears in the console on the <span class="ph uicontrol">Unsigned
+      certs</span> page after you add an agent node to inventory. Accept or reject submitted
+    requests individually or in a batch.</p>
+    <ul class="ul" id="managing_certificate_signing_requests_console__ul_cv3_l4z_hhb">
+      <li class="li">To manage requests individually, click <span class="ph uicontrol">Accept </span> or <span class="ph uicontrol">Reject</span>.</li>
+      <li class="li">To manage the entire list of requests, click <span class="ph uicontrol">Accept All</span> or <span class="ph uicontrol">Reject All</span>. Nodes are processed in batches. If you close the
+        browser window or navigate to another website while processing is in progress, only the
+        current batch is processed.</li>
+    </ul>
+    <p class="p">After you accept the certificate signing request, the node appears in the console after the
+      next <span class="ph">Puppet</span> run. To make a node available immediately after you
+      approve the request, run <span class="ph">Puppet</span> on demand.</p>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="running_puppet_on_demand_with_orch.html" title="The orchestrator gives you the ability to set up jobs in the console or on the command line to trigger on-demand Puppet runs.">Running Puppet on demand</a></li></ul></div></nav></article><article class="topic concept nested2" aria-labelledby="ariaid-title4" id="managing_certificate_signing_requests_cli">
+    <h3 class="title topictitle3" id="ariaid-title4">Managing certificate signing requests on the command line</h3>
+    
+    <div class="body conbody"><p class="shortdesc">You can view, approve, and reject node requests using the command line.
+            </p>
+        <div class="p">To view pending node requests on the command line:
+            <pre class="pre codeblock"><code>$ sudo puppetserver ca list
+</code></pre></div>
+        <div class="p">To sign a pending request:
+            <pre class="pre codeblock"><code>$ sudo puppetserver ca sign &lt;NAME&gt;
+</code></pre></div>
+        <div class="note note note_note"><span class="note__title">Note:</span> You can use the <span class="ph">Puppet Server</span> CA CLI to sign certificates
+            with altnames or auth extensions by default. </div>
+    </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="remove_nodes">
+        <h2 class="title topictitle2" id="ariaid-title5">Remove agent nodes</h2>
+        
+        <div class="body taskbody"><p class="shortdesc">If you no longer wish to manage an agent node, you can
+                remove it and make its license available for another node. </p>
+                <section class="section context"><p class="p">Removing a
+                                node: </p><ul class="ul">
+                                <li class="li"><p class="p">Deactivates the node
+                                                in <span class="ph">PuppetDB</span>.</p></li>
+                                <li class="li"><p class="p">Deletes the <span class="ph">Puppet</span> master’s
+                                                information cache for the node.</p></li>
+                                <li class="li"><p class="p">Makes the license
+                                                available for another node.</p></li>
+                                <li class="li"><p class="p">Makes the hostname
+                                                available for another node.</p></li>
+                        </ul><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Removing a node
+                                        doesn't uninstall the agent from the
+                        node.</div></div></section>
+                <section><ol class="ol steps"><li class="li step stepexpand">
+                                <span class="ph cmd">On the agent node, stop the agent
+                                        service.</span>
+                                <ul class="ul choices">
+                                        <li class="li choice">Agent versions 4.0
+                                                or later: <code class="ph codeph">service puppet stop</code>
+                                        </li>
+                                        <li class="li choice">Agent versions
+                                                earlier than 4.0: <code class="ph codeph">service pe-puppet stop</code>
+                                        </li>
+                                </ul>
+                                <div class="itemgroup info">
+                                        <div class="note note note_note"><span class="note__title">Note:</span> To see which version
+                                                of <span class="ph">Puppet</span> is
+                                                installed on a node, run <code class="ph codeph">puppet
+                                        --version</code>.</div></div>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">On the master, purge the node:
+                                                <code class="ph codeph">puppet node
+                                                purge &lt;CERTNAME&gt;</code>
+                                </span>
+                                <div class="itemgroup info"><p class="p">The
+                                                node’s certificate is revoked, the certificate
+                                                revocation list (CRL) is updated, and the node is
+                                                deactivated in <span class="ph">PuppetDB</span> and removed from the console. The license is now
+                                                available for another node. The node can't check in
+                                                or re-register with <span class="ph">PuppetDB</span> on the next
+                                                  <span class="ph">Puppet</span>
+                                        run.</p></div>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">If you have compilers, run <span class="ph">Puppet</span> on them: <code class="ph codeph">puppet agent
+                                                -t</code>
+                                </span>
+                                <div class="itemgroup info">
+                                        <p class="p">The updated CRL is managed by <span class="ph">Puppet</span> and distributed
+                                                to compilers. </p>
+                                </div>
+                        </li><li class="li step stepexpand"><strong>Optional: </strong>
+                                <span class="ph cmd">If the node you’re removing was
+                                        pinned to any node groups, you must manually unpin it from
+                                        individual node groups or from all node groups using the
+                                                <code class="ph codeph">unpin-from-all</code> command
+                                        endpoint. </span>
+                        </li></ol></section>
+        </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="uninstalling.html#uninstall_infra_nodes" title="The puppet-enterprise-uninstaller script is installed on the master. In order to uninstall, you must run the uninstaller on each infrastructure node.">Uninstall infrastructure nodes</a></li><li class="linklist"><a class="link" href="commands_endpoint.html#post_v1_commands_unpin_from_all" title="Use the /v1/commands/unpin-from-all to unpin specified nodes from all groups they’re pinned to. Nodes that are dynamically classified using rules aren't affected.">POST /v1/commands/unpin-from-all</a></li></ul></div></nav><article class="topic task nested2" aria-labelledby="ariaid-title6" id="uninstall_nix_agents">
+    <h3 class="title topictitle3" id="ariaid-title6">Uninstall <span class="ph">*nix</span> agents</h3>
+    
+    <div class="body taskbody"><p class="shortdesc">The <span class="ph">*nix</span> agent package
+        includes an uninstall script, which you can use when you're ready to retire a
+        node.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the agent node, run the uninstall script:
+                        <code class="ph codeph">run
+                        /opt/puppetlabs/bin/puppet-enterprise-uninstaller</code></span>
+            </li><li class="li step">
+                <span class="ph cmd">Follow prompts to uninstall.</span>
+            </li><li class="li step">
+                <span class="ph cmd">(Optional) If you plan to reinstall on the node at
+                    a later date, remove the agent certificate for the agent from the master:
+                        <code class="ph codeph">puppetserver ca clean
+                        &lt;AGENT CERT NAME&gt;</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title7" id="uninstall_windows_agents">
+    <h3 class="title topictitle3" id="ariaid-title7">Uninstall <span class="ph">Windows</span> agents</h3>
+    
+    <div class="body taskbody"><p class="shortdesc">To uninstall the agent from a <span class="ph">Windows</span> node, use the <span class="ph">Windows</span>
+        <span class="ph uicontrol">Add or Remove Programs</span> interface,
+        or uninstall from the command line.</p>
+        <section class="section context">
+            <p class="p">Uninstalling the agent removes the <span class="ph">Puppet</span> program directory, the agent service, and all
+                related registry keys. The data directory remains intact, including all SSL keys. To
+                completely remove <span class="ph">Puppet</span> from the system, manually
+                delete the data directory.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Use the <span class="ph">Windows</span>
+                    <span class="ph uicontrol">Add or Remove Programs</span>
+                    interface to remove the agent.</span>
+                <div class="itemgroup info">
+                    <p class="p">Alternatively, you can uninstall from the command line if
+                        you have the original .msi file or know the product code of the installed
+                        MSI, for example: <code class="ph codeph">msiexec /qn
+                            /norestart /x [puppet.msi|&lt;PRODUCT_CODE&gt;]</code>
+                    </p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) If you plan to reinstall on the node at
+                    a later date, remove the agent certificate for the agent from the master:
+                        <code class="ph codeph">puppetserver ca clean
+                        &lt;AGENT CERT NAME&gt;</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article></article></article></article></main></body></html>

@@ -1,0 +1,820 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Once you've installed PE or the client tools package, there are a few tasks you need to do to prepare your PE infrastructure for orchestration services."><meta name="DC.relation" scheme="URI" content="installing_pe_client_tools.html#installing_pe_client_tools"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="configuring_puppet_orchestrator"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configuring Puppet orchestrator</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="configuring_puppet_orchestrator">
+    <h1 class="title topictitle1" id="ariaid-title1">Configuring <span class="ph">Puppet</span> orchestrator </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Once you've installed <span class="ph">PE</span> or
+        the client tools package, there are a few tasks you need to do to prepare your PE
+        infrastructure for orchestration services.</p>
+        <ul class="ul">
+            <li class="li">Set <span class="ph">PE</span> RBAC permissions and token
+                authentication for Puppet orchestrator</li>
+            <li class="li">Enable cached catalogs for use with the orchestrator
+                (optional)</li>
+            <li class="li">Review the orchestrator configuration files and adjust them as
+                needed</li>
+        </ul>
+        <p class="p">All of these instructions assume that PE client tools are
+            installed.</p>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="installing_pe_client_tools.html#installing_pe_client_tools" title="PE client tools are a set of command line tools that let you access Puppet Enterprise services from a workstation that might or might not be managed by Puppet.">Installing PE client tools</a></li></ul></div></nav><article class="topic reference nested1" aria-labelledby="ariaid-title2" id="pe-orchestration-settings">
+    <h2 class="title topictitle2" id="ariaid-title2">Orchestration services settings </h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc"></p>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">global.conf</code>: Global logging and SSL
+                settings</h3><p class="p">
+                <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/global.conf</code> contains
+                settings shared across the <span class="ph">Puppet Enterprise (PE)</span> orchestration
+                services. </p><div class="p">The file <code class="ph codeph">global.certs</code> typically requires no changes and contains the following
+                    settings:<table class="table frame-all"><caption></caption><colgroup><col style="width:28.901734104046245%"><col style="width:34.104046242774565%"><col style="width:36.994219653179194%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__1">Setting</th>
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__2">Definition</th>
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__3">Default</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__1">
+                                    <code class="ph codeph">ssl-cert</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__2">Certificate file path for the
+                                    orchestrator host.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__3">
+                                    <code class="ph codeph">/etc/puppetlabs/orchestration-services/ssl/&lt;orchestrator-host-fqdn&gt;.cert.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__1">
+                                    <code class="ph codeph">ssl-key</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__2">Private key path for the orchestrator
+                                    host.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__3">
+                                    <code class="ph codeph">/etc/puppetlabs/orchestration-services/ssl/&lt;orchestrator-host-fqdn&gt;.private_key.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__1">
+                                    <code class="ph codeph">ssl-ca-cert</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__2">CA file path</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__3">
+                                    <code class="ph codeph">/etc/puppetlabs/puppet/ssl/ca.pem</code>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+        <section class="section"><div class="p">The file <code class="ph codeph">global.logging-config</code> is a path to <code class="ph codeph">logback.xml</code> file that configures logging for
+                most of the orchestration services. See <a class="xref" href="http://logback.qos.ch/manual/configuration.html" target="_blank">http://logback.qos.ch/manual/configuration.html</a> for documentation on the
+                structure of the <code class="ph codeph">logback.xml</code> file.
+                It configures the log location, rotation, and formatting for the following:<ul class="ul">
+                    <li class="li">orchestration-services (appender section <code class="ph codeph">F1</code>)</li>
+                    <li class="li">orchestration-services status (<code class="ph codeph">STATUS</code>)</li>
+                    <li class="li">pcp-broker (<code class="ph codeph">PCP</code>)</li>
+                    <li class="li">pcp-broker access (<code class="ph codeph">PCP_ACCESS</code>)</li>
+                    <li class="li">aggregate-node-count (<code class="ph codeph">AGG_NODE_COUNT</code>)</li>
+                </ul>
+            </div></section>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">bootstrap.cfg</code>: Allow list of
+                trapperkeeper services to start</h3><div class="p">
+                <code class="ph codeph">/etc/puppetlabs/orchestration-services/bootstrap.cfg</code> is the list of
+                trapperkeeper services from the orchestrator and pcp-broker projects that are loaded
+                when the <code class="ph codeph">pe-orchestration-services</code>
+                system service starts.<ul class="ul">
+                    <li class="li">To disable a service in this list, remove it or comment
+                        it with a <code class="ph codeph">#</code> character and
+                        restart <code class="ph codeph">pe-orchestration-services</code>
+                    </li>
+                    <li class="li">To enable an NREPL service for debugging, add <code class="ph codeph">puppetlabs.trapperkeeper.services.nrepl.nrepl-service/nrepl-service</code>
+                        to this list and restart <code class="ph codeph">pe-orchestration-services</code>.</li>
+                </ul>
+            </div></section>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">webserver.conf</code> and <code class="ph codeph">web-routes.conf</code>: The pcp-broker and orchestrator
+                HTTP services</h3><p class="p">
+                <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/webserver.conf</code> describes
+                how and where to the run pcp-broker and orchestrator web services, which accept HTTP
+                API requests from the rest of the <span class="ph">PE</span> installation and
+                from external nodes and users.</p><p class="p">The file <code class="ph codeph">webserver.orchestrator</code> configures the
+                orchestrator web service. Defaults are as follows:</p><div class="p">
+                <table class="table frame-all"><caption></caption><colgroup><col style="width:27.47252747252747%"><col style="width:35.16483516483516%"><col style="width:37.36263736263736%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__13">Setting</th>
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__14">Definition</th>
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__15">Default</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__13">
+                                    <code class="ph codeph">access-log-config</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__14">A logback XML file configuring logging
+                                    for orchestrator access messages.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__15">
+                                    <code class="ph codeph">/etc/puppetlabs/orchestration-services/request-logging.xml</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__13">
+                                    <code class="ph codeph">client-auth</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__14">Determines the mode that the server
+                                    uses to validate the client's certificate for incoming SSL
+                                    connections.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__15">
+                                    <code class="ph codeph">want</code> or <code class="ph codeph">need</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__13">
+                                    <code class="ph codeph">default-server</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__14">Allows multi-server configurations to
+                                    run operations without specifying a server-id. Without a
+                                    server-id, operations will run on the selected default.
+                                    Optional.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__15">
+                                    <code class="ph codeph">true</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__13">
+                                    <code class="ph codeph">ssl-ca-cert</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__14">Sets the path to the CA certificate
+                                    PEM file used for client authentication.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__15"><code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/ca.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__13">
+                                    <code class="ph codeph">ssl-cert</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__14">Sets the path to the server
+                                    certificate PEM file used by the web service for HTTPS.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__15">
+                                    <code class="ph codeph">/etc/puppetlabs/orchestration-services/ssl/&lt;orchestrator-host-fqdn&gt;.cert.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__13">
+                                    <code class="ph codeph">ssl-crl-path</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__14">Describes a path to a Certificate
+                                    Revocation List file. Optional.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__15">
+                                    <code class="ph codeph">/etc/puppetlabs/puppet/ssl/crl.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__13">
+                                    <code class="ph codeph">ssl-host</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__14">Sets the host name to listen on for
+                                    encrypted HTTPS traffic.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__15">
+                                    <code class="ph codeph">0.0.0.0.</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__13">
+                                    <code class="ph codeph">ssl-key</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__14">Sets the path to the private key PEM
+                                    file that corresponds with the <code class="ph codeph">ssl-cert</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__15">
+                                    <code class="ph codeph">/etc/puppetlabs/orchestration-services/ssl/&lt;orchestrator-host-fqdn&gt;.private_key.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__13">
+                                    <code class="ph codeph">ssl-port</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__14">Sets the port to use for encrypted
+                                    HTTPS traffic.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__15">
+                                    <code class="ph codeph">8143</code>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div><p class="p">The file <code class="ph codeph">webserver.pcp-broker</code> configures the pcp-broker web service. Defaults
+                are as follows: </p><div class="p">
+                <table class="table frame-all"><caption></caption><colgroup><col style="width:28.735632183908045%"><col style="width:34.48275862068965%"><col style="width:36.78160919540229%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__43">Setting</th>
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__44">Definition</th>
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__45">Default</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__43">
+                                    <code class="ph codeph">client-auth</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__44">Determines the mode that the server
+                                    uses to validate the client's certificate for incoming SSL
+                                    connections.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__45">
+                                    <code class="ph codeph">want</code> or <code class="ph codeph">need</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__43">
+                                    <code class="ph codeph">ssl-ca-cert</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__44">Sets the path to the CA certificate
+                                    PEM file used for client authentication.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__45"><code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/ca.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__43">
+                                    <code class="ph codeph">ssl-cert</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__44">Sets the path to the server
+                                    certificate PEM file used by the web service for HTTPS.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__45">
+                                    <code class="ph codeph">/etc/puppetlabs/orchestration-services/ssl/&lt;orchestrator-host-fqdn&gt;.cert.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__43">
+                                    <code class="ph codeph">ssl-crl-path</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__44">Describes a path to a Certificate
+                                    Revocation List file. Optional.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__45">
+                                    <code class="ph codeph">/etc/puppetlabs/puppet/ssl/crl.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__43">
+                                    <code class="ph codeph">ssl-host</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__44">Sets the host name to listen on for
+                                    encrypted HTTPS traffic.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__45">
+                                    <code class="ph codeph">0.0.0.0.</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__43">
+                                    <code class="ph codeph">ssl-key</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__44">Sets the path to the private key PEM
+                                    file that corresponds with the <code class="ph codeph">ssl-cert</code>.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__45">
+                                    <code class="ph codeph">/etc/puppetlabs/orchestration-services/ssl/&lt;orchestrator-host-fqdn&gt;.private_key.pem</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__43">
+                                    <code class="ph codeph">ssl-port</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__44">Sets the port to use for encrypted
+                                    HTTPS traffic.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__45">
+                                    <code class="ph codeph">8142</code>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+        <section class="section"><p class="p">
+                <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/web-routes.conf</code>
+                describes how to route HTTP requests made to the API web servers, designating routes
+                for interactions with other services. These should not be modified. See the
+                configuration options at the <a class="xref" href="https://github.com/puppetlabs/trapperkeeper-webserver-jetty9/blob/master/doc/webrouting-config.md" target="_blank">trapperkeeper-webserver-jetty project's docs</a>
+            </p></section>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">analytics.conf</code>: Analytics
+                trapperkeeper service configuration</h3><div class="p">
+                <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/analytics.conf</code> contains
+                the internal setting for the <a class="xref" href="https://github.com/puppetlabs/analytics" target="_blank">analytics</a>
+                trapperkeeper service.<table class="table frame-all"><caption></caption><colgroup><col style="width:27.548209366391184%"><col style="width:35.537190082644635%"><col style="width:36.91460055096419%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__67">Setting</th>
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__68">Definition</th>
+                                <th class="entry colsep-1 rowsep-1" id="pe-orchestration-settings__entry__69">Default</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__67">
+                                    <code class="ph codeph">analytics.url</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__68">Specifies the API root.</td>
+                                <td class="entry colsep-1 rowsep-1" headers="pe-orchestration-settings__entry__69">
+                                    <code class="ph codeph">&lt;puppetserver-host-url&gt;:8140/analytics/v1</code>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">auth.conf</code>: Authorization
+                trapperkeeper service configuration</h3><p class="p">
+                <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/auth.conf</code> contains
+                internal settings for the authorization trapperkeeper service. See configuration
+                options in the <a class="xref" href="https://github.com/puppetlabs/trapperkeeper-authorization/blob/master/doc/authorization-config.md" target="_blank">trapperkeeper-authorization project's
+            docs</a>.</p></section>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">metrics.conf</code>: JXM metrics
+                trapperkeeper service configuration</h3><p class="p">
+                <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/metrics.conf</code> contains
+                internal settings for the JMX metrics service built into orchestration-services. See
+                the service configuration options in the <a class="xref" href="https://github.com/puppetlabs/trapperkeeper-metrics/blob/master/documentation/configuration.md" target="_blank">trapperkeeper-metrics project's docs</a>.</p></section>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">orchestrator.conf</code>: Orchestrator
+                trapperkeeper service configuration</h3><p class="p">
+                <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/orchestrator.conf</code>
+                contains internal settings for the orchestrator project's trapperkeeper service.
+            </p></section>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">pcp-broker.conf</code>: <span class="ph">PCP</span> broker trapperkeeper service configuration
+                </h3><p class="p">
+                <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/pcp-broker.conf</code> contains
+                internal settings for the pcp-broker project's trapperkeeper service. See the
+                service configuration options in the <a class="xref" href="https://github.com/puppetlabs/pcp-broker/blob/master/doc/configuration.md#service-configuration" target="_blank">pcp-broker project's docs</a>.</p></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator">
+   <h2 class="title topictitle2" id="ariaid-title3">Setting <span class="ph">PE</span> RBAC permissions and
+      token authentication for orchestrator </h2>
+   
+   <div class="body conbody"><p class="shortdesc">Before you run any orchestrator jobs, you need to set the
+      appropriate permissions in <span class="ph">PE</span> role-based access control (RBAC)
+      and establish token-based authentication.</p>
+      <section class="section"><p class="p">Most
+                orchestrator users require the following permissions to run orchestrator jobs or
+                tasks:</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__1">Type </th>
+                            <th class="entry" id="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__2">Permission </th>
+                            <th class="entry" id="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__3">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__1">
+                                <span class="ph">Puppet</span> agent </td>
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__2">Run <span class="ph">Puppet</span> on agent nodes. </td>
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__3">The ability to run <span class="ph">Puppet</span> on nodes using the console or
+                                orchestrator. Instance must always be <code class="ph codeph">"*"</code>.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__1">Job orchestrator</td>
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__2">Start, stop and view
+                                jobs</td>
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__3">The ability to start and
+                                stop jobs and tasks, view jobs and job progress, and view an
+                                inventory of nodes that are connected to the PCP broker. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__1">Tasks</td>
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__2">Run tasks</td>
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__3">The ability to run specific
+                                tasks on all nodes, a selected node group, or nodes that match a PQL
+                                query.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__1">Nodes </td>
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__2">View node data from <span class="ph">PuppetDB</span>. </td>
+                            <td class="entry" headers="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__entry__3">The ability to view node
+                                data imported from <span class="ph">PuppetDB</span>. Object
+                                must always be <code class="ph codeph">"*"</code>.</td>
+                        </tr>
+                    </tbody></table><p class="p"></p><div class="p"><div class="note note note_note" id="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__d538e121"><span class="note__title">Note:</span> If you do not have permissions to view a
+                    node group, or the node group doesn't have any matching nodes, that node group
+                    won't be listed as an option for viewing. In addition, a node group does not
+                    appear if no rules have been specified for it. </div></div></section>
+      <section class="section"><h3 class="title sectiontitle">Assign task permissions to a
+            user role</h3><div class="p">
+            <ol class="ol">
+               <li class="li">
+                  <p class="p">In the console, click <span class="ph menucascade"><span class="ph uicontrol">Access control</span><abbr title="and then"> &gt; </abbr><span class="ph uicontrol">User roles</span></span>.</p>
+               </li>
+               <li class="li">
+                  <p class="p">From the list of user roles, click the one you want to have
+                     task permissions. </p>
+               </li>
+               <li class="li">
+                  <p class="p">On the <span class="ph uicontrol">Permissions</span> tab, in the <span class="ph uicontrol">Type</span> box, select <span class="ph uicontrol">Tasks</span>. </p>
+               </li>
+               <li class="li">
+                  <p class="p">For <span class="ph uicontrol">Permission</span>, select <span class="ph uicontrol">Run tasks</span>, and then select a task from the <span class="ph uicontrol">Object</span> list. For example, <span class="ph uicontrol">facter_task</span>.</p>
+               </li>
+               <li class="li">
+                  <p class="p">Click <span class="ph uicontrol">Add
+                        permission</span>, and then commit the change.</p>
+               </li>
+            </ol>
+         </div></section>
+      <section class="section" id="setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator__using_token_authentication"><h3 class="title sectiontitle">Using token authentication </h3><p class="p">Before running an
+            orchestrator job, you must generate an RBAC access token to authenticate to the
+            orchestration service. If you attempt to run a job without a token, <span class="ph">PE</span> prompts you to supply credentials.</p><p class="p">For information about generating a token with the CLI, see the documentation
+            on token-based authentication.</p></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#token_based_authentication" title="Authentication tokens allow a user to enter their credentials once, then receive an alphanumeric &#34;token&#34; to use to access different services or parts of the system infrastructure. Authentication tokens are tied to the permissions granted to the user through RBAC, and provide the user with the appropriate access to HTTP requests.">Token-based authentication</a></li><li class="linklist"><a class="link" href="rbac_user_roles_intro.html#create_a_new_user_role" title="RBAC has four predefined roles: Administrators, Code Deployers, Operators, and Viewers. You can also define your own custom user roles.">Create a new user role</a></li><li class="linklist"><a class="link" href="rbac_user_roles_intro.html#assign_permissions_to_a_user_role" title="You can mix and match permissions to create custom user roles that provide users with precise levels of access to PE actions.">Assign permissions to a user role</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="enable_cached_catalogs_for_use_with_the_orchestrator">
+  <h2 class="title topictitle2" id="ariaid-title4">Enable cached catalogs for use with the orchestrator (optional) </h2>
+  
+  <div class="body taskbody"><p class="shortdesc">Enabling cached catalogs on your agents ensures <span class="ph">Puppet</span>
+    does not enforce any catalog changes on your agents until you run an orchestrator job to enforce
+    changes. </p>
+    <section class="section context"><p class="p">When you use the
+        orchestrator to enforce change in a <span class="ph">Puppet</span> environment (for
+        example, in the <code class="ph codeph">production</code> environment),
+        you want the agents in that environment to rely on their cached catalogs until you run an
+        orchestrator job that includes configuration changes for those agents. Agents in such
+        environments check in during the run interval (30 minutes by default) to reinforce
+        configuration in their cached catalogs, and apply new configuration only when you run <span class="ph">Puppet</span> with an orchestration job.</p><div class="note note note_note"><span class="note__title">Note:</span> This is an optional configuration. You can run Puppet on nodes with the
+        orchestrator in workflows that don't require cached catalogs.</div></section>
+    <section><ol class="ol steps"><li class="li step stepexpand">
+        <span class="ph cmd">Run <span class="ph">Puppet</span> on the new
+          agents.</span>
+        <div class="itemgroup info"><div class="p"><div class="note important note_important"><span class="note__title">Important:</span> Be sure you run <span class="ph">Puppet</span> on the new
+              agents <strong class="ph b">before</strong> assigning any application components
+              to them or performing the next step.</div></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd"> In each agent's <code class="ph codeph">puppet.conf</code> file, in the <code class="ph codeph">[agent]</code>section, add <code class="ph codeph">use_cached_catalog=true</code>. To complete this step, choose one of the following
+          methods:</span>
+        <ul class="ul choices">
+          <li class="li choice">From the command line on each agent machine, run
+            the following
+            command:<pre class="pre codeblock"><code>puppet config set use_cached_catalog true --section agent</code></pre>
+          </li>
+          <li class="li choice">Add an <code class="ph codeph">ini_setting</code> resource in the <code class="ph codeph">node
+              default {}</code> section of the environment’s <code class="ph codeph">site.pp</code>. This adds the setting to <strong class="ph b">all</strong>
+            agents in that environment.
+            &nbsp;<pre class="pre codeblock"><code>if $facts['kernel'] = 'windows' {
+  $config = 'C:/ProgramData/PuppetLabs/puppet/etc/puppet.conf'
+} else {
+  $config = $settings::config
+}
+ 
+ini_setting { 'use_cached_catalog':
+  ensure  =&gt; present,
+  path    =&gt; $config,
+  section =&gt; 'agent',
+  setting =&gt; 'use_cached_catalog',
+  value   =&gt; 'true',
+}</code></pre>
+          </li>
+        </ul>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Run <span class="ph">Puppet</span> on the agents
+          again to enforce this configuration.</span>
+      </li></ol></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="puppet_orchestrator_configuration_files">
+  <h2 class="title topictitle2" id="ariaid-title5">Orchestrator configuration files </h2>
+  
+  <div class="body refbody"><p class="shortdesc">The configuration file for the orchestrator allows you to
+    run commands from the CLI without having to pass additional flags. Whether you are running the
+    orchestrator from the Puppet master or from a separate work station, there are two types of
+    configuration files: a global configuration file and a user-specified configuration
+    file.</p>
+    <section class="section" id="puppet_orchestrator_configuration_files__orchestrator_global_configuration_file"><h3 class="title sectiontitle">Orchestrator global configuration file </h3><p class="p">If you're
+        running the orchestrator from a <span class="ph">PE</span>-managed machine, on
+        either the Puppet master or an agent node, <span class="ph">PE</span> manages
+        the global configuration file. </p><p class="p">This file is installed on both
+        managed and non-managed workstations at:</p><ul class="ul">
+        <li class="li"><strong class="ph b">*nix systems</strong> --- <code class="ph codeph">/etc/puppetlabs/client-tools/orchestrator.conf</code></li>
+        <li class="li"><strong class="ph b">Windows</strong> --- <code class="ph codeph">C:/ProgramData/PuppetLabs/client-tools/orchestrator.conf</code></li>
+      </ul><p class="p">The class that manages the global configuration file is <code class="ph codeph">puppet_enterprise::profile::controller</code>. The
+        following parameters and values are available for this class:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="puppet_orchestrator_configuration_files__orchestrator_global_configuration_file__entry__1">Parameter </th>
+              <th class="entry" id="puppet_orchestrator_configuration_files__orchestrator_global_configuration_file__entry__2">Value </th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_global_configuration_file__entry__1"><code class="ph codeph">manage_orchestrator</code>
+              </td>
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_global_configuration_file__entry__2"><code class="ph codeph">true</code> or <code class="ph codeph">false</code> (default
+                is <code class="ph codeph">true</code>) </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_global_configuration_file__entry__1"><code class="ph codeph">orchestrator_url</code>
+              </td>
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_global_configuration_file__entry__2">url and port (default is Puppet master
+                url and port 8143)</td>
+            </tr>
+          </tbody></table><p class="p">The only value <span class="ph">PE</span> sets in
+        the global configuration file is the <code class="ph codeph">orchestrator_url</code> (which sets the orchestrator's <code class="ph codeph">service-url</code> in <code class="ph codeph">/etc/puppetlabs/client-tools/orchestrator.conf</code>).</p><div class="note important note_important"><span class="note__title">Important:</span> If you're using a managed workstation, do not edit or change the global
+        configuration file. If you're using an unmanaged workstation, you can edit this file as
+        needed. </div></section>
+    <section class="section" id="puppet_orchestrator_configuration_files__orchestrator_user_specified_configuration_file"><h3 class="title sectiontitle">Orchestrator user-specified configuration file </h3><p class="p">You can manually create a user-specified configuration file and populate it with
+        orchestrator configuration file settings. <span class="ph">PE</span> does not
+        manage this file.</p><p class="p">This file needs to be located at <code class="ph codeph">~/.puppetlabs/client-tools/orchestrator.conf</code> for both *nix
+        and Windows. </p><p class="p">If present, the user specified configuration always
+        takes precedence over the global configuration file. For example, if both files have
+        contradictory settings for the <strong class="ph b">environment</strong>, the user
+        specified settings prevail.</p></section>
+    <section class="section" id="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings"><h3 class="title sectiontitle">Orchestrator configuration file settings </h3><p class="p">The
+        orchestrator configuration file is formatted in JSON. For
+        example:</p><pre class="pre codeblock JSON"><code>{
+  "options" : {
+    "service-url": "https://&lt;PUPPET MASTER HOSTNAME&gt;:8143",
+    "cacert": "/etc/puppetlabs/puppet/ssl/certs/ca.pem",
+    "token-file": "~/.puppetlabs/token",
+    "color": true
+  }
+}</code></pre><p class="p">The orchestrator configuration files (the user-specified or global files)
+        can take the following settings:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__1">Setting</th>
+              <th class="entry" id="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__1"><code class="ph codeph">service-url</code></td>
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__2">The URL that points to the Puppet master and the port
+                used to communicate with the orchestration service. (You can set this with the
+                  <code class="ph codeph">orchestrator_url</code> parameter in the
+                  <code class="ph codeph">puppet_enterprise::profile::controller
+                </code>class.) Default value: <code class="ph codeph">https://&lt;PUPPET MASTER HOSTNAME&gt;:8143</code></td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__1"><code class="ph codeph">environment</code></td>
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__2">The environment used when you issue commands with Puppet
+                orchestrator.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__1"><code class="ph codeph">cacert</code></td>
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__2">The path for the Puppet Enterprise CA cert. <ul class="ul">
+                  <li class="li"><p class="p">*nix: <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/ca.pem</code></p></li>
+                  <li class="li"><p class="p">Windows:
+                      C:\ProgramData\PuppetLabs\puppet\etc\ssl\certs\ca.pem</p></li>
+                </ul></td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__1"><code class="ph codeph">token-file</code></td>
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__2">The location for the authentication token. Default
+                value: <code class="ph codeph">~/.puppetlabs/token</code></td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__1"><code class="ph codeph">color</code></td>
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__2">Determines whether the orchestrator output uses color.
+                Set to <code class="ph codeph">true</code> or <code class="ph codeph">false</code>.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__1"><code class="ph codeph">noop</code></td>
+              <td class="entry" headers="puppet_orchestrator_configuration_files__orchestrator_configuration_file_settings__entry__2">Determines whether the orchestrator runs the Puppet
+                agent in no-op mode. Set to <code class="ph codeph">true</code> or
+                  <code class="ph codeph">false</code>.</td>
+            </tr>
+          </tbody></table></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="configuring-pe-bolt-services">
+      <h2 class="title topictitle2" id="ariaid-title6"><span class="ph">PE</span>
+            <span class="ph">Bolt</span> services configuration</h2>
+      
+      
+      <div class="body conbody"><p class="shortdesc">The <span class="ph">PE</span>
+            <span class="ph">Bolt</span> server is a <span class="ph">Ruby</span>
+            service that enables SSH and WinRM tasks from the console. The server accepts requests
+            from the orchestrator, calls out to <span class="ph">Bolt</span> to run the task,
+            and returns the result.</p></div>
+<article class="topic reference nested2" aria-labelledby="ariaid-title7" id="pe-bolt-server-configuration">
+    <h3 class="title topictitle3" id="ariaid-title7">
+        <span class="ph">PE</span>
+        <span class="ph">Bolt</span> server configuration</h3>
+    
+    
+    <div class="body refbody"><p class="shortdesc">The <span class="ph">PE</span>
+        <span class="ph">Bolt</span> server provides an API for running tasks over SSH and
+        WinRM using <span class="ph">Bolt</span>, which is the technology underlying <span class="ph">PE</span> tasks. The API server for tasks is available as
+        pe-bolt-server.</p>
+        <section class="section"><p class="p">The server is a <a class="xref" href="https://puma.io" target="_blank">Puma</a>
+                application that runs as a standalone service.</p><div class="p">The server
+                is configured in&nbsp;<code class="ph codeph">/etc/puppetlabs/bolt-server/conf.d/bolt-server.conf</code>, managed by
+                    the&nbsp;<code class="ph codeph">puppet_enterprise::profile::bolt_server</code>&nbsp;class, which includes
+                these parameters:<table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="pe-bolt-server-configuration__entry__1">Setting</th>
+                                <th class="entry" id="pe-bolt-server-configuration__entry__2">Type</th>
+                                <th class="entry" id="pe-bolt-server-configuration__entry__3">Description</th>
+                                <th class="entry" id="pe-bolt-server-configuration__entry__4">Default</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__1">
+                                    <code class="ph codeph">bolt_server_loglevel</code>
+                                </td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__2">string</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__3">
+                                    <span class="ph">Bolt</span> log level. Acceptable values
+                                    are <code class="ph codeph">debug</code>,
+                                        <code class="ph codeph">info</code>,
+                                        <code class="ph codeph">notice</code>,
+                                        <code class="ph codeph">warn</code>, and
+                                        <code class="ph codeph">error</code>.</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__4">
+                                    <code class="ph codeph">notice</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__1">
+                                    <code class="ph codeph">concurrency</code>
+                                </td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__2">integer</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__3">Maximum number of server
+                                    threads.</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__4">100</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__1">
+                                    <code class="ph codeph">master_host</code>
+                                </td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__2">string</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__3">URI of the master where <span class="ph">Bolt</span> can download tasks.</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__4">
+                                    <code class="ph codeph">$puppet_enterprise::puppet_master_host</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__1">
+                                    <code class="ph codeph">master_port</code>
+                                </td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__2">integer</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__3">Port the <span class="ph">Bolt</span> server can access the master
+                                    on.</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__4">
+                                    <code class="ph codeph">$puppet_enterprise::puppet_master_port</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__1">
+                                    <code class="ph codeph">ssl_cipher_suites</code>
+                                </td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__2">array[string]</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__3">TLS cipher suites in order of
+                                    preference.</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__4">
+                                    <code class="ph codeph">$puppet_enterprise::params::secure_ciphers</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__1">
+                                    <code class="ph codeph">ssl_listen_port</code>
+                                </td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__2">integer</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__3">Port the <span class="ph">Bolt</span> server runs on.</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__4">62658 (<code class="ph codeph">$puppet_enterprise::bolt_server_port</code>)</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__1">
+                                    <code class="ph codeph">whitelist</code>
+                                </td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__2">array[string]</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__3">List of hosts that can connect to
+                                    pe-bolt-server.</td>
+                                <td class="entry" headers="pe-bolt-server-configuration__entry__4">
+                                    <code class="ph codeph">[$certname]</code>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="pe_ace_services_configuration">
+    <h2 class="title topictitle2" id="ariaid-title8"><span class="ph">PE</span> ACE services
+        configuration</h2>
+    <p class="shortdesc">The <span class="ph">PE</span> Agentless
+        Catalog Executor server is a <span class="ph">Ruby</span> service that
+        enables you to execute <span class="ph">Bolt</span> Tasks and <span class="ph">Puppet</span> catalogs remotely. </p>
+    
+<article class="topic reference nested2" aria-labelledby="ariaid-title9" id="pe_ace_server_configuration">
+    <h3 class="title topictitle3" id="ariaid-title9">
+        <span class="ph">PE</span> ACE server configuration</h3>
+    
+    
+    <div class="body refbody"><p class="shortdesc">The <span class="ph">PE</span> ACE server provides
+        an API for running tasks and catalogs against remote targets. </p>
+        <section class="section">The server is a <a class="xref" href="https://puma.io" target="_blank">Puma</a> application that runs as a
+            standalone service.<div class="p">The server is configured in <code class="ph codeph">/etc/puppetlabs/ace-server/conf.d/ace-server.conf, managed by the
+                    puppet_enterprise::profile::ace_server</code> class, which includes these
+                    parameters:<table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="pe_ace_server_configuration__entry__1">Setting</th>
+                                <th class="entry" id="pe_ace_server_configuration__entry__2">Type</th>
+                                <th class="entry" id="pe_ace_server_configuration__entry__3">
+                                    <strong class="ph b">Description</strong>
+                                </th>
+                                <th class="entry" id="pe_ace_server_configuration__entry__4">Default</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="pe_ace_server_configuration__entry__1">
+                                    <code class="ph codeph">service_loglevel</code>
+                                </td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__2">string</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__3">Bolt log level. Acceptable values are
+                                        <code class="ph codeph">debug</code>, <code class="ph codeph">info</code>, <code class="ph codeph">notice</code>, <code class="ph codeph">warn</code>, and <code class="ph codeph">error</code>.</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__4">
+                                    <code class="ph codeph">notice</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_ace_server_configuration__entry__1">
+                                    <code class="ph codeph">concurrency</code>
+                                </td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__2">integer</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__3">Maximum number of server
+                                    threads.</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__4">
+                                    <code class="ph codeph">$puppet_enterprise::ace_server_concurrency</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_ace_server_configuration__entry__1">
+                                    <code class="ph codeph">master_host</code>
+                                </td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__2">string</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__3">URI that ACE can access the master
+                                    on.</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__4">
+                                    <p class="p">
+                                        <code class="ph codeph">pe_repo::compile_master_pool_address</code>
+                                    </p>
+                                    <p class="p">
+                                        <code class="ph codeph">default:
+                                            $puppet_enterprise::puppet_master_host</code>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_ace_server_configuration__entry__1">
+                                    <code class="ph codeph">master_port</code>
+                                </td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__2">integer</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__3">Port that ACE can access the master
+                                    on.</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__4">
+                                    <p class="p">
+                                        <code class="ph codeph">$puppet_enterprise::puppet_master_port</code>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_ace_server_configuration__entry__1">
+                                    <code class="ph codeph">hostcrl</code>
+                                </td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__2">string</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__3">The host CRL path</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__4">
+                                    <p class="p">
+                                        <code class="ph codeph">$puppet_enterprise::params::hostcrl</code>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_ace_server_configuration__entry__1">
+                                    <code class="ph codeph">ssl_cipher_suites</code>
+                                </td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__2">array[string]</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__3">TLS cipher suites in order of
+                                    preference.</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__4">
+                                    <p class="p">
+                                        <code class="ph codeph">$puppet_enterprise::params::secure_ciphers</code>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_ace_server_configuration__entry__1">
+                                    <code class="ph codeph">ssl_listen_port</code>
+                                </td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__2">integer</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__3">Port that ACE runs on.</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__4">
+                                    <p class="p">44633 </p>
+                                    <p class="p">
+                                        <code class="ph codeph">($puppet_enterprise::ace_server_port)</code>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_ace_server_configuration__entry__1">
+                                    <code class="ph codeph">whitelist</code>
+                                </td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__2">array[string]</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__3">List of hosts that can connect to
+                                    pe-ace-server.</td>
+                                <td class="entry" headers="pe_ace_server_configuration__entry__4">
+                                    <p class="p">
+                                        <code class="ph codeph">[$certname]</code>
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div>
+        </section>
+    </div>
+</article></article><article class="topic reference nested1" aria-labelledby="ariaid-title10" id="disabling_application_management_or_orchestration_services">
+    <h2 class="title topictitle2" id="ariaid-title10">Disabling application management or orchestration services </h2>
+    <div class="body refbody">
+        <section class="section"><p class="p">Both application management and
+                orchestration services are on by default in PE. If you need to disable these
+                services, refer to Disabling application management and Disabling orchestration
+                services.</p></section>
+    </div>
+</article></article></article></main></body></html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The &#34;role&#34; in role-based access control refers to a system of user roles, which are assigned to user groups and their users. Those roles contain permissions, which define what a user can or can't do within PE."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="about_rbac_permissions"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>User permissions and user roles</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="about_rbac_permissions">
+   <h1 class="title topictitle1" id="ariaid-title1">User permissions and user roles</h1>
+   
+   <div class="body conbody"><p class="shortdesc">The "role" in role-based access control refers to a system
+      of user roles, which are assigned to user groups and their users. Those roles contain
+      permissions, which define what a user can or can't do within <span class="ph">PE</span>.</p>
+      <p class="p">When you add new users to <span class="ph">PE</span>, they can't
+         actually do anything until they're associated with a user role, either explicitly through
+         role assignment or implicitly through group membership and role inheritance. When a user is
+         added to a role, they receive all the permissions of that role.</p>
+      <p class="p">There are four default user roles: Administrators, Code Deployers,
+         Operators, and Viewers. In addition, you can create custom roles.</p>
+      <p class="p">For example, you might want to create a user role that grants users
+         permission to view but not edit a specific subset of node groups. Or you might want to
+         divide up administrative privileges so that one user role is able to reset passwords while
+         another can edit roles and create users.</p>
+      <p class="p">Permissions are additive. If a user is associated with multiple roles,
+         that user is able to perform all of the actions described by all of the permissions on all
+         of the applied roles.</p>
+   </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="structure_of_user_permissions">
+    <h2 class="title topictitle2" id="ariaid-title2">Structure of user permissions </h2>
+    
+    <div class="body conbody"><p class="shortdesc">User permissions are structured as a triple of <em class="ph i">type</em>, <em class="ph i">permission</em>, and <em class="ph i">object</em>.</p>
+        <ul class="ul">
+            <li class="li"><strong class="ph b">Types</strong> are everything that can
+                be acted on, such as node groups, users, or user roles.</li>
+            <li class="li"><strong class="ph b">Permissions</strong> are what you can
+                do with each type, such as create, edit, or view.</li>
+            <li class="li"><strong class="ph b">Objects</strong> are specific instances
+                of the type.</li>
+        </ul>
+        <p class="p">Some permissions added to the Administrators user role might look like
+            this:</p>
+        <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="structure_of_user_permissions__entry__1">Type </th>
+                        <th class="entry" id="structure_of_user_permissions__entry__2">Permission </th>
+                        <th class="entry" id="structure_of_user_permissions__entry__3">Object </th>
+                        <th class="entry" id="structure_of_user_permissions__entry__4">Description </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="structure_of_user_permissions__entry__1">Node groups </td>
+                        <td class="entry" headers="structure_of_user_permissions__entry__2">View </td>
+                        <td class="entry" headers="structure_of_user_permissions__entry__3">PE Master </td>
+                        <td class="entry" headers="structure_of_user_permissions__entry__4">Gives permission to view the PE
+                            Master node group.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="structure_of_user_permissions__entry__1">User roles </td>
+                        <td class="entry" headers="structure_of_user_permissions__entry__2">Edit </td>
+                        <td class="entry" headers="structure_of_user_permissions__entry__3">All </td>
+                        <td class="entry" headers="structure_of_user_permissions__entry__4">Gives permission to edit all
+                            user roles. </td>
+                    </tr>
+                </tbody></table>
+        <p class="p">When no object is specified, a permission applies to all objects of
+            that type. In those cases, the object is “All”. This is denoted by <code class="ph codeph">"*"</code> in the API.</p>
+        <p class="p">In both the console and the API, <code class="ph codeph">"*"</code> is used to express a permission for which an object doesn’t make
+            sense, such as when creating users.</p>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="user_permissions">
+   <h2 class="title topictitle2" id="ariaid-title3">User permissions </h2>
+   
+   <div class="body refbody"><p class="shortdesc">The table below lists the available object types and their
+      permissions, as well as an explanation of the permission and how to use it. </p>
+      <section class="section"><p class="p">Note that types and permissions have
+            both a display name, which is the name you see in the console interface, and a system
+            name, which is the name you use to construct permissions in the API. In the following
+            table, the display names are used.</p></section>
+      <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+               <tr class="row">
+                  <th class="entry" id="user_permissions__entry__1">Type </th>
+                  <th class="entry" id="user_permissions__entry__2">Permission </th>
+                  <th class="entry" id="user_permissions__entry__3">Definition </th>
+               </tr>
+            </thead><tbody class="tbody">
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Certificate request </td>
+                  <td class="entry" headers="user_permissions__entry__2">Accept and reject </td>
+                  <td class="entry" headers="user_permissions__entry__3">Accept and reject certificate signing
+                     requests. Object must always be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Console </td>
+                  <td class="entry" headers="user_permissions__entry__2">View </td>
+                  <td class="entry" headers="user_permissions__entry__3">View the <span class="ph">PE</span> console. Object must always be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Directory service </td>
+                  <td class="entry" headers="user_permissions__entry__2">View, edit, and test </td>
+                  <td class="entry" headers="user_permissions__entry__3">View, edit, and test directory
+                     service settings. Object must always be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Job orchestrator</td>
+                  <td class="entry" headers="user_permissions__entry__2">Start, stop and view jobs</td>
+                  <td class="entry" headers="user_permissions__entry__3">Start and stop jobs and tasks, view
+                     jobs and job progress, and view an inventory of nodes that are connected to the
+                     PCP broker. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Node groups </td>
+                  <td class="entry" headers="user_permissions__entry__2">Create, edit, and delete child groups </td>
+                  <td class="entry" headers="user_permissions__entry__3">Create new child groups, delete
+                     existing child groups, and modify every attribute of child groups except
+                     environment. This permission is inherited by all descendents of the node
+                     group.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Node groups </td>
+                  <td class="entry" headers="user_permissions__entry__2">Edit child group rules </td>
+                  <td class="entry" headers="user_permissions__entry__3">Edit the rules of descendents of a
+                     node group. This does not grant the ability to edit the rules of the group in
+                     the <code class="ph codeph">object</code> field, only
+                     children of that group. This permission is inherited by all descendents of the
+                     node group.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Node groups </td>
+                  <td class="entry" headers="user_permissions__entry__2">Edit classes, parameters, and
+                     variables </td>
+                  <td class="entry" headers="user_permissions__entry__3">Edit every attribute of a node group
+                     except its environment and rule. This permission is inherited by all
+                     descendents of the node group.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Node groups</td>
+                  <td class="entry" headers="user_permissions__entry__2">Edit configuration data</td>
+                  <td class="entry" headers="user_permissions__entry__3">Edit parameterized configuration data
+                     on a node group. This permission is inherited by all descendents of the node
+                     group. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Node groups </td>
+                  <td class="entry" headers="user_permissions__entry__2">Edit parameters and variables </td>
+                  <td class="entry" headers="user_permissions__entry__3">Edit the class parameters and
+                     variables of a node group's classes. This permission is inherited by all
+                     descendents of the node group.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Node groups </td>
+                  <td class="entry" headers="user_permissions__entry__2">Set environment </td>
+                  <td class="entry" headers="user_permissions__entry__3">Set the environment of a node group.
+                     This permission is inherited by all descendents of the node group.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Node groups </td>
+                  <td class="entry" headers="user_permissions__entry__2">View </td>
+                  <td class="entry" headers="user_permissions__entry__3">See all attributes of a node group,
+                     most notably the values of class parameters and variables. This permission is
+                     inherited by all descendents of the node group.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Nodes </td>
+                  <td class="entry" headers="user_permissions__entry__2">Edit node data from PuppetDB </td>
+                  <td class="entry" headers="user_permissions__entry__3">Edit node data imported from <span class="ph">PuppetDB</span>. Object must always be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Nodes </td>
+                  <td class="entry" headers="user_permissions__entry__2">View node data from PuppetDB </td>
+                  <td class="entry" headers="user_permissions__entry__3">View node data imported from <span class="ph">PuppetDB</span>. Object must always be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Nodes</td>
+                  <td class="entry" headers="user_permissions__entry__2">View sensitive connection information
+                     in inventory service</td>
+                  <td class="entry" headers="user_permissions__entry__3">View sensitive parameters stored in
+                     the inventory service for a connection. For example, user credentials. Object
+                     must always be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Plans</td>
+                  <td class="entry" headers="user_permissions__entry__2">Run plans</td>
+                  <td class="entry" headers="user_permissions__entry__3">Run specific plans on all
+                     nodes.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">
+                     <span class="ph">Puppet</span> agent </td>
+                  <td class="entry" headers="user_permissions__entry__2">Run <span class="ph">Puppet</span> on agent nodes </td>
+                  <td class="entry" headers="user_permissions__entry__3">Trigger a <span class="ph">Puppet</span> run from the console or orchestrator.
+                     Object must always be <code class="ph codeph">"*"</code>.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">
+                     <span class="ph">Puppet</span> environment </td>
+                  <td class="entry" headers="user_permissions__entry__2">Deploy code </td>
+                  <td class="entry" headers="user_permissions__entry__3">Deploy code to a specific <span class="ph">PE</span> environment.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">
+                     <span class="ph">Puppet Server</span>
+                  </td>
+                  <td class="entry" headers="user_permissions__entry__2">Compile catalogs for remote nodes</td>
+                  <td class="entry" headers="user_permissions__entry__3">Compile a catalog for any node managed by this <span class="ph">PE</span> instance. This permission is required to run
+                     impact analysis tasks in <span class="ph">Continuous Delivery for Puppet
+                                                  Enterprise</span>.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Tasks</td>
+                  <td class="entry" headers="user_permissions__entry__2">Run tasks</td>
+                  <td class="entry" headers="user_permissions__entry__3">Run specific tasks on all nodes, a
+                     selected node group, or nodes that match a PQL query.<div class="note important note_important"><span class="note__title">Important:</span> A task must be permitted to run on all nodes in order to
+                        run on nodes that are outside of the <span class="ph">PuppetDB</span>
+                        (over SSH or WinRM for example). As a result, users with such permissions
+                        can run tasks on any nodes they have the credentials to access.</div>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">User groups</td>
+                  <td class="entry" headers="user_permissions__entry__2">Delete</td>
+                  <td class="entry" headers="user_permissions__entry__3">Delete a user group. This can be
+                     granted per group.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">User groups </td>
+                  <td class="entry" headers="user_permissions__entry__2">Import </td>
+                  <td class="entry" headers="user_permissions__entry__3">Import groups from the directory
+                     service for use in RBAC. Object must always be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">User roles </td>
+                  <td class="entry" headers="user_permissions__entry__2">Create </td>
+                  <td class="entry" headers="user_permissions__entry__3">Create new roles. Object must always
+                     be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">User roles </td>
+                  <td class="entry" headers="user_permissions__entry__2">Edit </td>
+                  <td class="entry" headers="user_permissions__entry__3">Edit and delete a role. Object must
+                     always be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">User roles </td>
+                  <td class="entry" headers="user_permissions__entry__2">Edit members </td>
+                  <td class="entry" headers="user_permissions__entry__3">Change which users and groups a role
+                     is assigned to. This can be granted per role. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Users </td>
+                  <td class="entry" headers="user_permissions__entry__2">Create </td>
+                  <td class="entry" headers="user_permissions__entry__3">Create new local users. Remote users
+                     are "created" by that user authenticating for the first time with RBAC. Object
+                     must always be <code class="ph codeph">"*"</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Users </td>
+                  <td class="entry" headers="user_permissions__entry__2">Edit </td>
+                  <td class="entry" headers="user_permissions__entry__3">Edit a local user's data, such as
+                     name or email, and delete a local or remote user from PE. This can be granted
+                     per user. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Users </td>
+                  <td class="entry" headers="user_permissions__entry__2">Reset password </td>
+                  <td class="entry" headers="user_permissions__entry__3">Grant password reset tokens to users
+                     who have forgotten their passwords. This process also reinstates a user after
+                     the use has been revoked. This can be granted per user. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="user_permissions__entry__1">Users </td>
+                  <td class="entry" headers="user_permissions__entry__2">Revoke </td>
+                  <td class="entry" headers="user_permissions__entry__3">Revoke or disable a user. This means
+                     the user is no longer able to authenticate and use the console, node
+                     classifier, or RBAC. This permission also includes the ability to revoke the
+                     user's authentication tokens. This can be granted per user. </td>
+               </tr>
+            </tbody></table>
+      <section class="section" id="user_permissions__display_names_and_corresponding_system_names"><h3 class="title sectiontitle">Display names and corresponding system names </h3><p class="p">The following table provides both the display and system names for the types
+            and all their corresponding permissions. </p><table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="user_permissions__display_names_and_corresponding_system_names__entry__1">Type (display name)</th>
+                     <th class="entry" id="user_permissions__display_names_and_corresponding_system_names__entry__2">Type (system name) </th>
+                     <th class="entry" id="user_permissions__display_names_and_corresponding_system_names__entry__3">Permission (display name) </th>
+                     <th class="entry" id="user_permissions__display_names_and_corresponding_system_names__entry__4">Permission (system name) </th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Certificate requests </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">cert_requests </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Accept and reject </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">accept_reject </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Console </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">console_page </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">View </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">view </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Directory service </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">directory_service </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">View, edit, and test </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">edit </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Job orchestrator</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">orchestrator</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Start, stop and view jobs</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">view</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Node groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">node_groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Create, edit, and delete child
+                        groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">modify_children </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Node groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">node_groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Edit child group rules </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">edit_child_rules </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Node groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">node_groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Edit classes, parameters, and
+                        variables </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">edit_classification </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Node groups</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">node_groups</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Edit configuration data</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">edit_config_data</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Node groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">node_groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Edit parameters and variables </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">edit_params_and_vars </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Node groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">node_groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Set environment </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">set_environment </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Node groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">node_groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">View </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">view </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Nodes </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">nodes </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Edit node data from PuppetDB </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">edit_data </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Nodes </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">nodes </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">View node data from PuppetDB </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">view_data </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Nodes </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">nodes </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">View sensitive connection
+                        information in inventory service</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">view_inventory_sensitive</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Plans</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">plans</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Run Plans</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">run</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Puppet agent </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">puppet_agent </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Run Puppet on agent nodes</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">run</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Puppet environment </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">environment </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Deploy code </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">deploy_code</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">
+                        <span class="ph">Puppet Server</span>
+                     </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">puppetserver</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Compile catalogs for remote
+                        nodes</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">compile_catalogs</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Tasks</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">tasks</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Run Tasks</td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">run</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">User groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">user_groups </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Import </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">import </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">User roles </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">user_roles </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Create </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">create </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">User roles </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">user_roles </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Edit </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">edit </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">User roles </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">user_roles </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Edit members </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">edit_members </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Users </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">users </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Create </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">create </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Users </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">users </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Edit </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">edit </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Users </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">users </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Reset password </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">reset_password </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__1">Users </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__2">users </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__3">Revoke </td>
+                     <td class="entry" headers="user_permissions__display_names_and_corresponding_system_names__entry__4">disable </td>
+                  </tr>
+               </tbody></table></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_api_v1_permissions.html#permissions_endpoints_api_v1" title="You assign permissions to user roles to manage user access to objects. The permissions endpoints enable you to get information about available objects and the permissions that can be constructed for those objects.">Permissions endpoints</a></li></ul></div></nav></article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="working_with_node_group_permissions">
+    <h2 class="title topictitle2" id="ariaid-title4">Working with node group permissions </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Node groups in the node classifier are structured
+        hierarchically; therefore, node group permissions inherit. Users with specific permissions
+        on a node group implicitly receive the permissions on any child groups below that node group
+        in the hierarchy.</p>
+        <p class="p">Two types of permissions affect a node group: those that affect a
+            group itself, and those that affect the group's child groups. For example, giving a user
+            the "Set environment" permission on a group allows the user to set the environment for
+            that group and all of its children. On the other hand, assigning "Edit child group
+            rules" to a group allows a user to edit the rules for any child group of a specified
+            node group, but not for the node group itself. This allows some users to edit aspects of
+            a group, while other users can be given permissions for all children of that group
+            without being able to affect the group itself.</p>
+        <p class="p">Due to the hierarchical nature of node groups, if a user is given a
+            permission on the default (All) node group, this is functionally equivalent to giving
+            them that permission on <code class="ph codeph">"*"</code>.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="best_practices_for_assigning_permissions">
+    <h2 class="title topictitle2" id="ariaid-title5">Best practices for assigning permissions </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Working with user permissions can be a little tricky. You
+        don't want to grant users permissions that essentially escalate their role, for example. The
+        following sections describe some strategies and requirements for setting
+        permissions.</p>
+        <section class="section" id="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions"><h3 class="title sectiontitle">Grant edit permissions to users with create permissions </h3><p class="p">Creating new objects doesn't automatically grant the creator permission to
+                view those objects. Therefore, users who have permission to create roles, for
+                example, must also be given permission to edit roles, or they won't be able to see
+                new roles that they create. Our recommendation is to assign users permission to edit
+                all objects of the type that they have permission to create. For example:</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions__entry__1">Type </th>
+                            <th class="entry" id="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions__entry__2">Permission </th>
+                            <th class="entry" id="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions__entry__3">Object </th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions__entry__1">User roles </td>
+                            <td class="entry" headers="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions__entry__2">Edit members </td>
+                            <td class="entry" headers="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions__entry__3">All (or <code class="ph codeph">"*"</code>) </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions__entry__1">Users </td>
+                            <td class="entry" headers="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions__entry__2">Edit </td>
+                            <td class="entry" headers="best_practices_for_assigning_permissions__grant_edit_permissions_to_users_with_create_permissions__entry__3">All (or <code class="ph codeph">"*"</code>) </td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="best_practices_for_assigning_permissions__avoid_granting_overly_permissive_permissions"><h3 class="title sectiontitle">Avoid granting overly permissive permissions </h3><p class="p">Operators, a default role in PE, have many of the same
+                permissions as Administrators. However, we've intentionally limited this role's
+                ability to edit user roles. This way, members of this group can do many of the same
+                things as Administrators, but they can't edit (or enhance) their own
+                permissions.</p><p class="p">Similarly, avoid granting users more
+                permissions than their roles allow. For example, if users have the <code class="ph codeph">roles:edit:*</code> permission, they are able to add
+                the <code class="ph codeph">node_groups:view:*</code> permission
+                to the roles they belong to, and subsequently see all node groups.</p></section>
+        <section class="section" id="best_practices_for_assigning_permissions__give_permission_to_edit_directory_service_settings_to_the_appropriate_users"><h3 class="title sectiontitle">Give permission to edit directory service settings to the
+                appropriate users </h3><p class="p">The directory service password is
+                not redacted when the settings are requested in the API. Give <code class="ph codeph">directory_service:edit:*</code> permission only to
+                users who are allowed see the password and other settings.</p></section>
+        <section class="section" id="best_practices_for_assigning_permissions__the_ability_to_reset_passwords_should_only_be_given_with_other_password_permissions"><h3 class="title sectiontitle">The ability to reset passwords should be given only
+                with other password permissions </h3><p class="p">The ability to help
+                reset passwords for users who forgot them is granted by the <code class="ph codeph">users:reset_password:&lt;instance&gt;</code>
+                permission. This permission has the side effect of reinstating revoked users after
+                the reset token is used. As such, the reset password permission should be given only
+                to users who are also allowed to revoke and reinstate other users.</p></section>
+    </div>
+</article></article></article></main></body></html>

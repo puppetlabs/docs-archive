@@ -1,0 +1,756 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="These are the endpoints for the node inventory v1 API."><meta name="DC.relation" scheme="URI" content="api_index.html#api_index"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Kate Lopresti <kate.lopresti@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="node_inventory_api"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Node inventory API</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="node_inventory_api">
+ <h1 class="title topictitle1" id="ariaid-title1">Node inventory API</h1>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">These are the endpoints for the node inventory v1 API. </p></div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="api_index.html#api_index" title="APIs allow you to interact with Puppet and Puppet Enterprise (PE) applications from your own code or application integration hooks.">API index</a></li></ul></div></nav><article class="topic concept nested1" aria-labelledby="ariaid-title2" id="node_inventory_api_forming_requests">
+  <h2 class="title topictitle2" id="ariaid-title2">Node inventory API: forming requests</h2>
+  
+  
+
+
+  <div class="body conbody"><p class="shortdesc">Make well-formed HTTP(S) requests to the <span class="ph">Puppet</span> inventory service API.</p>
+    <p class="p">By default, the node inventory service listens on port <code class="ph codeph">8143</code>, and all endpoints are relative to the <code class="ph codeph">/inventory/v1</code> path. For example, the full URL for the
+        <code class="ph codeph">/command/create-connection</code> endpoint on
+      localhost is <code class="ph codeph">https://localhost:8143/inventory/v1/command/create-connection</code>.</p>
+    <section class="section"><h3 class="title sectiontitle">Token authentication </h3><p class="p">All requests made to the inventory service API require authentication.
+        You do this for each endpoint in the service using user authentication tokens contained
+        within the <code class="ph codeph">X-Authentication</code> request
+        header.</p></section>
+    <section class="section" id="node_inventory_api_forming_requests__example_token_usage_deploy_an_environment"><h3 class="title sectiontitle">Example token usage: create a connection entry </h3>
+      <p class="p">To post a new connection entry to the inventory service when running on
+        localhost, first generate a token with the puppet-access tool. Then copy that token and
+        replace <code class="ph codeph">&lt;TOKEN&gt;</code> in the following curl
+        command.</p>
+      <pre class="pre codeblock"><code>curl -k -H 'X-Authentication:&lt;TOKEN&gt;' \
+    -H "Content-Type: application/json" \
+    https://localhost:8143/inventory/v1/command/create-connection -X POST \
+    -d '{"certnames": ["new.node"], "type": "ssh", "parameters": {"tmpdir": "/tmp", "port": 1234}, "sensitive_parameters": {"username": "root", "password": "password"}, "duplicates": "replace"}'</code></pre></section>
+    <section class="section" id="node_inventory_api_forming_requests__section_o5s_lrb_nhb"><h3 class="title sectiontitle">Example token usage: query connections for a certname</h3>
+      
+      <p class="p">To query the <code class="ph codeph">/query/connections</code> endpoint, use the same token and header pattern.</p>
+      <pre class="pre codeblock"><code>curl -k -X GET https://localhost:8143/inventory/v1/query/connections?certname="new.node" \
+     -H 'X-Authentication:&lt;TOKEN&gt;'</code></pre>
+    </section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#token_based_authentication" title="Authentication tokens allow a user to enter their credentials once, then receive an alphanumeric &#34;token&#34; to use to access different services or parts of the system infrastructure. Authentication tokens are tied to the permissions granted to the user through RBAC, and provide the user with the appropriate access to HTTP requests.">Token-based authentication</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="post_command_create-connection">
+  <h2 class="title topictitle2" id="ariaid-title3">POST /command/create-connection</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">Create a new connection entry in the inventory service
+    database.</p>
+    <section class="section" id="post_command_create-connection__section_tmv_1s4_nhb">
+      <p class="p">Connection entries contain connection options, such as credentials,
+        which are used to connect to the certnames provided in the payload via the provided
+        connection type. </p>
+      <p class="p">This endpoint also inserts each of the provided certnames into <span class="ph">PuppetDB</span> with an empty fact set, if they are not already
+        present. After certnames have been added to <span class="ph">PuppetDB</span>, you can
+        view them from the <strong class="ph b">Nodes</strong> page in the <span class="ph">Puppet Enterprise</span> console.
+        You can also add them to an inventory node list when you set up a job to run tasks.</p>
+      <div class="note important note_important"><span class="note__title">Important:</span> When the <span class="ph">Puppet</span> orchestrator targets a
+        certname to run a task, it first considers the value of the <code class="ph codeph">hostname</code> key
+        present in the <code class="ph codeph">parameters</code>, if available. Otherwise, it uses the value of
+        the <code class="ph codeph">certnames</code> key as the hostname. A good practice is to include a
+          <code class="ph codeph">hostname</code> key only when the hostname differs from the
+          <code class="ph codeph">certname</code>. Do not include a hostname key for multiple certname connection
+        entries.</div>
+    </section>
+    <section class="section" id="post_command_create-connection__request_format"><h3 class="title sectiontitle">Request format</h3>
+      
+      <p class="p">The request body must be a JSON object. </p>
+      <dl class="dl">
+        
+          <dt class="dt dlterm"><code class="ph codeph">certnames</code></dt>
+          <dd class="dd"><em class="ph i">required</em> Array containing the
+            list of certnames to associate with connection information.</dd>
+        
+        
+          <dt class="dt dlterm"><code class="ph codeph">type</code></dt>
+          <dd class="dd"><em class="ph i">required</em> String containing
+            either <code class="ph codeph">ssh</code> or <code class="ph codeph">winrm</code>. Instructs bolt-server which connection type to use to
+            access the node when running a task.</dd>
+        
+        
+          <dt class="dt dlterm"><code class="ph codeph">parameters</code></dt>
+          <dd class="dd"><em class="ph i">required</em> Object containing
+            arbitrary key/value pairs. The necessary parameters for connecting to the provided
+            certnames. <div class="note caution note_caution"><span class="note__title">CAUTION:</span> A <code class="ph codeph">hostname</code> key entered here takes precedence over the values in
+                <code class="ph codeph">certnames</code> key.</div></dd>
+        
+        
+          <dt class="dt dlterm"><code class="ph codeph">sensitive_parameters</code></dt>
+          <dd class="dd"><em class="ph i">required</em> Object containing
+            arbitrary key/value pairs. The necessary sensitive data for connecting to the provided
+            certnames, stored in an encrypted format.</dd>
+        
+        
+          <dt class="dt dlterm"><code class="ph codeph">duplicates</code></dt>
+          <dd class="dd"><em class="ph i">required</em> String containing
+            either <code class="ph codeph">error</code> or <code class="ph codeph">replace</code>. Instructs how to handle cases where one or
+            more provided certnames conflict with existing certnames stored in the inventory
+            connections database. <code class="ph codeph">error</code> results in
+            a <code class="ph codeph">409</code>response if any certnames are
+            duplicates. <code class="ph codeph">replace</code> overwrites the
+            existing certnames if there are conflicts.</dd>
+        
+      </dl>
+    </section>
+    <section class="section" id="post_command_create-connection__single_certname_example"><h3 class="title sectiontitle">Request examples</h3>
+      
+      <pre class="pre codeblock json"><code>{
+  "certnames": ["sshnode1.example.com", "sshnode2.example.com"],
+  "type": "ssh",
+  "parameters": {
+    "port": 1234,
+    "connect-timeout": 90,
+    "user": "inknowahorse",
+    "run-as": "fred"
+  },
+  "sensitive_parameters": {
+    "password": "password",
+    "sudo-password": "xtheowl"
+  },
+  "duplicates": "replace"
+}</code></pre>
+      <pre class="pre codeblock"><code>curl -k -H 'X-Authentication:&lt;AUTHENTICATION TOKEN&gt;'\
+    -H "Content-Type: application/json" \
+    https://&lt;MASTER-HOST&gt;:8143/inventory/v1/command/create-connection -X POST \
+    -d '{"certnames": ["sshnode1.example.com","sshnode2.example.com"], "type": "ssh", "parameters": {"port": 1234, "connect-timeout": 90, "user": "inknowahorse", "run-as": "fred"}, "sensitive_parameters": {"password": "password", "sudo-password": "xtheowl"}, "duplicates": "replace"}'</code></pre>
+    </section>
+    <section class="section" id="post_command_create-connection__response_format"><h3 class="title sectiontitle">Response format</h3>
+      
+      <p class="p">If the request is valid according to the schema and the entry is
+        successfully recorded in the database, the server returns a <code class="ph codeph">201</code> response. The response has the same format for single and
+        multiple certname entries.</p>
+      <p class="p">The response is a JSON object containing the <code class="ph codeph">connection_id</code>. </p>
+      <dl class="dl">
+        
+          <dt class="dt dlterm"><code class="ph codeph">connection_id</code></dt>
+          <dd class="dd">A unique identifier that an be used to reference the record.</dd>
+        
+      </dl>
+    </section>
+    <section class="section" id="post_command_create-connection__response_example"><h3 class="title sectiontitle">Response example</h3>
+      
+      <pre class="pre codeblock json"><code>{
+  "connection_id": "3c4df64f-7609-4d31-9c2d-acfa52ed66ec"
+}</code></pre>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">SSH parameters</h3>
+      
+      <p class="p">To create a connection with type <code class="ph codeph">ssh</code>, the following parameters and
+        sensitive parameters are valid. </p>
+      <div class="p">
+        <dl class="dl">
+          
+            <dt class="dt dlterm"><code class="ph codeph">parameters</code></dt>
+            <dd class="dd"><em class="ph i">Required</em>. Object containing the following key/value pairs and the necessary
+              parameters for connecting to the provided certnames.<dl class="dl">
+                
+                  <dt class="dt dlterm"><code class="ph codeph">user</code></dt>
+                  <dd class="dd"><em class="ph i">Required</em> string. The user to log in as when connecting to the host.
+                  </dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">port</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> integer. Connection port with the default of 22.</dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">connect-timeout</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> integer. The length of time, in seconds, PE should wait when
+                    establishing connections. </dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">run-as</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> string. After login, the user name to use for running
+                    commands. The default is the same value as <code class="ph codeph">user</code>.  </dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">tmpdir</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> string. The directory to upload and execute temporary files on
+                    the target, if different than <code class="ph codeph">/temp</code>. </dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">tty</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> boolean. Enable text terminal allocation. </dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">hostname</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> string. The hostname to connect to. Should only be provided if
+                    the desired <code class="ph codeph">certname</code> for the newly created node within PE is
+                    different than the <code class="ph codeph">hostname</code> of the intended target, in which
+                    case the certname field in the request body should be the desired
+                      <code class="ph codeph">certname</code>, and the <code class="ph codeph">hostname</code> field in the
+                    parameters object should be the <code class="ph codeph">hostname</code> to connect to.  As a
+                    good practice, do not provide a <code class="ph codeph">hostname</code> key for connection
+                    entries with multiple certnames, and only include it if the
+                      <code class="ph codeph">certname</code> is different from the hostname of the intended
+                    target. If left unspecified, the Orchestrator will connect to each host using
+                    its <code class="ph codeph">certname</code> as the <code class="ph codeph">hostname</code>. </dd>
+                
+              </dl></dd>
+          
+        </dl>
+        <dl class="dl">
+          
+            <dt class="dt dlterm"><code class="ph codeph">sensitive_parameters</code></dt>
+            <dd class="dd"><em class="ph i">Required</em>. Object containing arbitrary key/value pairs and the necessary
+              sensitive data for connecting to the provided certnames, to be stored in encrypted
+              format. <dl class="dl">
+                
+                  <dt class="dt dlterm"><code class="ph codeph">password</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> string. Password to authenticate. One of either
+                      <code class="ph codeph">password</code> or <code class="ph codeph">private-key-content</code> is
+                    required.</dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">private-key-content </code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> string. Contents of a private key. One of either
+                      <code class="ph codeph">password</code> or <code class="ph codeph">private-key-content</code> is
+                    required.</dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">sudo-password</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> string. Password to use when changing users via
+                      <code class="ph codeph">run-as</code>. Should only be included if <code class="ph codeph">run-as</code> is
+                    specified in the parameters object. </dd>
+                
+              </dl></dd>
+          
+        </dl>
+      </div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">WinRM parameters</h3>
+      
+      <div class="p">For creating a connection with type <code class="ph codeph">winrm</code>, the following parameters and
+        sensitive parameters are valid. <dl class="dl">
+          
+            <dt class="dt dlterm"><code class="ph codeph">parameters</code></dt>
+            <dd class="dd"><em class="ph i">Required</em>. Object containing the following key/value pairs and the necessary
+              parameters for connecting to the provided certnames.<dl class="dl">
+                
+                  <dt class="dt dlterm"><code class="ph codeph">user</code></dt>
+                  <dd class="dd"><em class="ph i">Required</em> string. The user to log in as when connecting to the host.
+                  </dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">port</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> integer. Connection port with the default of 22.</dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">connect-timeout</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> integer. The length of time, in seconds, PE should wait when
+                    establishing connections. </dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">tmpdir</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> string. The directory to upload and execute temporary files on
+                    the target, if different than <code class="ph codeph">/temp</code>. </dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">extensions</code></dt>
+                  <dd class="dd"><em class="ph i">Optional</em> array. List of file extensions that are accepted for tasks.
+                  </dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">hostname</code>
+                  </dt>
+                  <dd class="dd"><em class="ph i">Optional</em> string. The hostname to connect to. Should only be provided if
+                    the desired <code class="ph codeph">certname</code> for the newly created node within PE is
+                    different than the <code class="ph codeph">hostname</code> of the intended target, in which
+                    case the certname field in the request body should be the desired
+                      <code class="ph codeph">certname</code>, and the <code class="ph codeph">hostname</code> field in the
+                    parameters object should be the <code class="ph codeph">hostname</code> to connect to.  As a
+                    good practice, do not provide a <code class="ph codeph">hostname</code> key for connection
+                    entries with multiple certnames, and only include it if the
+                      <code class="ph codeph">certname</code> is different from the hostname of the intended
+                    target. If left unspecified, the Orchestrator will connect to each host using
+                    its <code class="ph codeph">certname</code> as the <code class="ph codeph">hostname</code>. </dd>
+                
+              </dl></dd>
+          
+        </dl><dl class="dl">
+          
+            <dt class="dt dlterm"><code class="ph codeph">sensitive_parameters </code></dt>
+            <dd class="dd"><em class="ph i">Required</em>. Object containing arbitrary key/value pairs and the necessary
+              sensitive data for connecting to the provided certnames, to be stored in an encrypted
+              format. <dl class="dl">
+                
+                  <dt class="dt dlterm"><code class="ph codeph">password</code></dt>
+                  <dd class="dd"><em class="ph i">Required</em> string. The password used to authenticate.</dd>
+                
+              </dl></dd>
+          
+        </dl></div>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="inventory_api_post_command_delete-connection">
+  <h2 class="title topictitle2" id="ariaid-title4">POST /command/delete-connection</h2>
+  
+  
+
+  <div class="body refbody"><p class="shortdesc">Delete certnames from all associated connection entries in
+    the inventory service database and update those certname entries in the <span class="ph">PuppetDB</span> with the flag <code class="ph codeph">preserve: false</code>.</p>
+    <section class="section" id="inventory_api_post_command_delete-connection__section_zhf_x1q_nhb"><h3 class="title sectiontitle">Request format</h3>
+      
+      <p class="p">The request body must be a JSON object containing a certnames key. </p>
+      <dl class="dl">
+        
+          <dt class="dt dlterm"><code class="ph codeph">certnames</code></dt>
+          <dd class="dd"><em class="ph i">required</em> Array containing the
+            list of certnames to be removed. </dd>
+        
+      </dl>
+    </section>
+    <section class="section" id="inventory_api_post_command_delete-connection__section_n4y_4bq_nhb"><h3 class="title sectiontitle">Request examples</h3>
+      
+      <pre class="pre codeblock"><code>{
+  "certnames": ["avery.gooddevice", "amediocre.device"]
+}</code></pre>
+      <pre class="pre codeblock"><code>curl -k -H 'X-Authentication:&lt;AUTHENTICATION TOKEN&gt;'\
+    -H "Content-Type: application/json" \
+    https://&lt;MASTER-HOST&gt;:8143/inventory/v1/command/delete-connection -X POST \
+    -d '{"certnames": ["avery.gooddevice","amediocre.device"]}'</code></pre>
+    </section>
+    <section class="section" id="inventory_api_post_command_delete-connection__section_hyx_qbq_nhb"><h3 class="title sectiontitle">Response format</h3>
+      
+      <p class="p">If the request matches the schema and is processed successfully, the
+        service responds with a <code class="ph codeph">204</code> status code and
+        no body payload. If the user is unauthorized, the service responds with a <code class="ph codeph">403</code> error code.</p>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="inventory_api_errors">
+  <h2 class="title topictitle2" id="ariaid-title5">Command endpoint error responses</h2>
+  
+  
+
+  <div class="body refbody"><p class="shortdesc">General format of error responses.</p>
+    <section class="section" id="inventory_api_errors__section_phw_w3w_nhb">
+   <p class="p">Every error response from the inventory service is a JSON response. Each
+    response is an object the contains the following keys:</p>
+   <dl class="dl">
+    
+     <dt class="dt dlterm"><code class="ph codeph">kind</code></dt>
+     <dd class="dd">The kind of error encountered.</dd>
+    
+    
+     <dt class="dt dlterm"><code class="ph codeph">msg</code></dt>
+     <dd class="dd">The message associated with the error.</dd>
+    
+    
+     <dt class="dt dlterm"><code class="ph codeph">details</code></dt>
+     <dd class="dd">A hash with more information about the error.</dd>
+    
+   </dl>
+   <p class="p">For example, if the request is missing the required content type headers,
+    the following error occurs:</p>
+   <pre class="pre codeblock json"><code>{
+  "kind" : "puppetlabs.inventory/not-acceptable",
+  "msg" : "accept must include content-type json",
+  "details" : ""
+}</code></pre>
+  </section>
+    <section class="section" id="inventory_api_errors__section_ql3_3kw_nhb"><h3 class="title sectiontitle"><code class="ph codeph">kind</code> error responses</h3>
+      
+      <p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p>
+      <dl class="dl">
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/unknown-error</code></dt>
+     <dd class="dd">If an unknown error occurs during the request, the server returns a
+       <code class="ph codeph">500</code> response.</dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/not-acceptable</code></dt>
+     <dd class="dd">If the content provided to the API contains an "accepts" header which
+      does not allow for JSON, the server returns a <code class="ph codeph">406</code> response. </dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/unsupported-type</code></dt>
+     <dd class="dd">If the content provided to the API contains a "content-type" header
+      other than JSON, the server returns a <code class="ph codeph">416</code>
+      response.</dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/json-parse-error</code></dt>
+     <dd class="dd">If there is an error while processing the request body, the server
+      returns a <code class="ph codeph">400</code> response.</dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/schema-validation-error</code></dt>
+     <dd class="dd">If there is a violation of the required format for the request body,
+      the server returns a <code class="ph codeph">400</code> response.</dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/not-permitted</code></dt>
+     <dd class="dd">If the user requesting an action does not have the necessary
+      permissions to do so, the server returns a <code class="ph codeph">403</code> response.</dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/duplicate-certnames</code></dt>
+     <dd class="dd">If the <code class="ph codeph">duplicates</code>
+      parameter is not set, or is set as <code class="ph codeph">error</code>, and
+      one or more of the certnames in the request body already exist within the inventory, the
+      server returns a <code class="ph codeph">409</code> response.</dd>
+    
+      </dl>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="get_query_connections">
+  <h2 class="title topictitle2" id="ariaid-title6">GET /query/connections</h2>
+  
+  
+
+  <div class="body refbody"><p class="shortdesc">List all the connections entries in the inventory database. </p>
+
+    <section class="section"><h3 class="title sectiontitle">Request format</h3>
+      
+      <p class="p">The request body must be a JSON object. </p>
+      <dl class="dl">
+        
+          <dt class="dt dlterm"><code class="ph codeph">certname</code></dt>
+          <dd class="dd"><em class="ph i">optional</em> String that represents
+            the single certname to retrieve.</dd>
+        
+        
+          <dt class="dt dlterm"><code class="ph codeph">sensitive</code></dt>
+          <dd class="dd"><em class="ph i">optional</em> String or boolean that
+            instructs whether to return sensitive parameters for each connection in the response.
+            This parameter is gated by permission validation.</dd>
+        
+        
+          <dt class="dt dlterm"><code class="ph codeph">extract</code></dt>
+          <dd class="dd"><em class="ph i">optional</em> Array of keys to return
+            for each certname. <code class="ph codeph">connection_id</code> is
+            always returned, regardless of whether it is included. When <code class="ph codeph">extract</code> is not present in the body, all keys are returned.<div class="note tip note_tip"><span class="note__title">Tip:</span> In order to return sensitive parameters in the
+              extract list, the <code class="ph codeph">sensitive</code> query
+              parameter must be present and resolve to true. Otherwise, they are excluded.
+            </div></dd>
+        
+      </dl>
+    </section>
+
+    <section class="section" id="get_query_connections__response_format"><h3 class="title sectiontitle">Response format</h3>
+      
+      <p class="p">The response is a JSON object containing the known
+    connections. The following keys are used:</p>
+      <dl class="dl">
+    
+     <dt class="dt dlterm"><code class="ph codeph">items</code></dt>
+     <dd class="dd">Contains an array of all the known connections matching the specified
+      (or not specified) filtering criteria. Each item under <code class="ph codeph">items</code> is an object with the following keys: </dd>
+     <dd class="dd ddexpand">
+      <dl class="dl">
+       
+        <dt class="dt dlterm"><code class="ph codeph">connection_id</code></dt>
+        <dd class="dd">String that is the unique identifier for the connections entry.</dd>
+       
+       
+        <dt class="dt dlterm"><code class="ph codeph">certnames</code></dt>
+        <dd class="dd">Array of strings that contains the certnames of the matching
+         connections entries.</dd>
+       
+       
+        <dt class="dt dlterm"><code class="ph codeph">type</code></dt>
+        <dd class="dd">String that describes the type of connection for the given
+         information. For example, <code class="ph codeph">ssh</code> or <code class="ph codeph">winrm</code>.</dd>
+       
+       
+        <dt class="dt dlterm"><code class="ph codeph">parameters</code></dt>
+        <dd class="dd">Object containing arbitrary key/value pairs and describes connection
+         options for the entry.</dd>
+       
+       
+        <dt class="dt dlterm"><code class="ph codeph">sensitive_parameters</code></dt>
+        <dd class="dd"><em class="ph i">when specified and permitted</em> An
+         object that contains arbitrary key/value pairs and describes the sensitive connection
+         options for the entry.</dd>
+       
+      </dl>
+     </dd>
+    
+   </dl>
+    </section>
+    <section class="section" id="get_query_connections__get_query_connections_example"><h3 class="title sectiontitle">Response examples</h3>
+      
+      <p class="p">A response for a request to list all the connections entries in the
+        inventory database: <code class="ph codeph">GET /query/connections</code>
+      </p>
+      <pre class="pre codeblock json"><code>{
+  "items": [
+    {
+      "connection_id": "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+      "certnames": ["devices.arecool", "dont.youthink"],
+      "type": "ssh",
+      "parameters": {
+        "tmpdir": "/tmp",
+        "port": 1234
+      }
+    },
+    {
+      "connection_id": "4932bfe7-69c4-412f-b15c-ac0a7c2883f1",
+      "certnames": ["managing.devices", "is.evencooler"],
+      "type": "winrm",
+      "parameters": {
+        "tmpdir": "/tmp",
+        "port": 1234
+      }
+    }
+  ]
+}</code></pre>
+      <p class="p">A response for a request to list a specific certname: <code class="ph codeph">GET /query/connections?certname="averygood.device"</code>
+      </p>
+      <pre class="pre codeblock json"><code>{
+  "items": [
+    {
+      "connection_id": "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+      "certnames": ["averygood.device"],
+      "type": "ssh",
+      "parameters": {
+        "tmpdir": "/tmp",
+        "port": 1234
+      }
+    }
+  ]
+}</code></pre>
+      <p class="p">A response for request to list a specific certname and its sensitive
+        parameters: <code class="ph codeph">GET
+          /query/connections?certname="averygood.device"&amp;sensitive=true example</code></p>
+      <pre class="pre codeblock json"><code>{
+  "items": [
+    {
+      "connection_id": "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+      "certnames": ["averygood.device"],
+      "type": "ssh",
+      "parameters": {
+        "tmpdir": "/tmp",
+        "port": 1234
+      },
+      "sensitive_parameters": {
+        "username": "johnjohnjimmyjohn",
+        "password": "C7b0$ls8ltO"
+      }
+    }
+  ]
+}</code></pre>
+      <p class="p">A response for request to list a specific certname and its value for the
+          <code class="ph codeph">type</code> key: <code class="ph codeph">GET
+          /query/connections?certname="averygood.device"&amp;extract=["type"]</code></p>
+      <pre class="pre codeblock"><code>{
+  "items": [
+    {
+      "connection_id": "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+      "certnames": ["averygood.device"],
+      "type": "ssh"
+    }
+  ]
+}</code></pre>
+    </section>
+
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="inventory_api_post_query_connections">
+  <h2 class="title topictitle2" id="ariaid-title7">POST /query/connections</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">Retrieve inventory connections in bulk via
+    certname.</p>
+    <section class="section" id="inventory_api_post_query_connections__section_q5n_wdw_nhb"><h3 class="title sectiontitle">Request format</h3>
+      
+      <p class="p">The request body must be a JSON object.</p>
+      <dl class="dl">
+        
+          <dt class="dt dlterm"><code class="ph codeph">certnames</code></dt>
+          <dd class="dd">Array containing the list of certnames to retrieve from the
+            inventory database. If this key is not included, all connections are returned.</dd>
+        
+        
+          <dt class="dt dlterm"><code class="ph codeph">extract</code></dt>
+          <dd class="dd">Array of keys to return for each certname. <code class="ph codeph">connection_id</code> is always returned, regardless of
+            whether it is included. When <code class="ph codeph">extract</code> is
+            not present in the body, all keys are returned.<div class="note tip note_tip"><span class="note__title">Tip:</span> In
+              order to return sensitive parameters in the extract list, the <code class="ph codeph">sensitive</code> query parameter must be present and
+              resolve to true. Otherwise, they are excluded. </div></dd>
+        
+        
+          <dt class="dt dlterm"><code class="ph codeph">sensitive</code></dt>
+          <dd class="dd"><em class="ph i">optional</em> String or boolean that
+            instructs whether to return sensitive parameters for each connection in the response.
+            This parameter is gated by permission validation.</dd>
+        
+      </dl>
+    </section>
+    <section class="section" id="inventory_api_post_query_connections__section_r2y_kfw_nhb"><h3 class="title sectiontitle">Response format</h3>
+      
+      <p class="p">The response is a JSON object containing the known
+    connections. The following keys are used:</p>
+      <dl class="dl">
+    
+     <dt class="dt dlterm"><code class="ph codeph">items</code></dt>
+     <dd class="dd">Contains an array of all the known connections matching the specified
+      (or not specified) filtering criteria. Each item under <code class="ph codeph">items</code> is an object with the following keys: </dd>
+     <dd class="dd ddexpand">
+      <dl class="dl">
+       
+        <dt class="dt dlterm"><code class="ph codeph">connection_id</code></dt>
+        <dd class="dd">String that is the unique identifier for the connections entry.</dd>
+       
+       
+        <dt class="dt dlterm"><code class="ph codeph">certnames</code></dt>
+        <dd class="dd">Array of strings that contains the certnames of the matching
+         connections entries.</dd>
+       
+       
+        <dt class="dt dlterm"><code class="ph codeph">type</code></dt>
+        <dd class="dd">String that describes the type of connection for the given
+         information. For example, <code class="ph codeph">ssh</code> or <code class="ph codeph">winrm</code>.</dd>
+       
+       
+        <dt class="dt dlterm"><code class="ph codeph">parameters</code></dt>
+        <dd class="dd">Object containing arbitrary key/value pairs and describes connection
+         options for the entry.</dd>
+       
+       
+        <dt class="dt dlterm"><code class="ph codeph">sensitive_parameters</code></dt>
+        <dd class="dd"><em class="ph i">when specified and permitted</em> An
+         object that contains arbitrary key/value pairs and describes the sensitive connection
+         options for the entry.</dd>
+       
+      </dl>
+     </dd>
+    
+   </dl>
+    </section>
+    <section class="section" id="inventory_api_post_query_connections__get_query_connections_example"><h3 class="title sectiontitle">Request and response examples</h3>
+      
+      <p class="p">An empty request body.</p>
+      <pre class="pre codeblock"><code>{}</code></pre>
+      <p class="p">A response for an empty request. </p>
+      <pre class="pre codeblock json"><code>{
+  "items": [
+    {
+      "connection_id": "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+      "certnames": ["devices.arecool", "dont.youthink"],
+      "type": "winrm",
+      "parameters": {
+        "tmpdir": "/tmp",
+        "port": 1234
+      }
+    },
+    {
+      "connection_id": "4932bfe7-69c4-412f-b15c-ac0a7c2883f1",
+      "certnames": ["managing.devices", "is.evencooler"],
+      "type": "ssh",
+      "parameters": {
+        "tmpdir": "/tmp",
+        "port": 1234
+      }
+    }
+  ]
+}</code></pre>
+      <p class="p">A certnames request body.</p>
+      <pre class="pre codeblock"><code>{
+  "certnames": ["averygood.device"]
+}</code></pre>
+      <p class="p">A response for a certnames request.</p>
+      <pre class="pre codeblock"><code>{
+  "items": [
+    {
+      "connection_id": "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+      "certnames": ["averygood.device"],
+      "type": "ssh",
+      "parameters": {
+        "tmpdir": "/tmp",
+        "port": 1234
+      }
+    }
+  ]
+}</code></pre>
+      <p class="p">A request to list a specific certname and its sensitive parameters:
+          <code class="ph codeph">/query/connections?sensitive=true</code></p>
+      <pre class="pre codeblock"><code>{
+  "certnames": ["averygood.device"],
+  "extract": ["certnames", "sensitive_parameters"]
+}</code></pre>
+      <p class="p">A response for a request for a specific certname and its sensitive
+        parameters.</p>
+      <pre class="pre codeblock"><code>{
+  "items": [
+    {
+      "connection_id": "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+      "certnames": ["averygood.device"],
+      "sensitive_parameters": {
+        "username": "johnjohnjimmyjohn",
+        "password": "C7b0$ls8ltO"
+      }
+    }
+  ]
+}</code></pre>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title8" id="inventory_api_query_errors">
+  <h2 class="title topictitle2" id="ariaid-title8">Query endpoint error responses</h2>
+  
+  
+
+  <div class="body refbody"><p class="shortdesc">General format of error responses.</p>
+    <section class="section" id="inventory_api_query_errors__section_phw_w3w_nhb">
+   <p class="p">Every error response from the inventory service is a JSON response. Each
+    response is an object the contains the following keys:</p>
+   <dl class="dl">
+    
+     <dt class="dt dlterm"><code class="ph codeph">kind</code></dt>
+     <dd class="dd">The kind of error encountered.</dd>
+    
+    
+     <dt class="dt dlterm"><code class="ph codeph">msg</code></dt>
+     <dd class="dd">The message associated with the error.</dd>
+    
+    
+     <dt class="dt dlterm"><code class="ph codeph">details</code></dt>
+     <dd class="dd">A hash with more information about the error.</dd>
+    
+   </dl>
+   <p class="p">For example, if the request is missing the required content type headers,
+    the following error occurs:</p>
+   <pre class="pre codeblock json"><code>{
+  "kind" : "puppetlabs.inventory/not-acceptable",
+  "msg" : "accept must include content-type json",
+  "details" : ""
+}</code></pre>
+  </section>
+    <section class="section" id="inventory_api_query_errors__section_ql3_3kw_nhb"><h3 class="title sectiontitle"><code class="ph codeph">kind</code> error responses</h3>
+      
+      <p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p>
+      <dl class="dl">
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/unknown-error</code></dt>
+     <dd class="dd">If an unknown error occurs during the request, the server returns a
+       <code class="ph codeph">500</code> response.</dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/not-acceptable</code></dt>
+     <dd class="dd">If the content provided to the API contains an "accepts" header which
+      does not allow for JSON, the server returns a <code class="ph codeph">406</code> response. </dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/unsupported-type</code></dt>
+     <dd class="dd">If the content provided to the API contains a "content-type" header
+      other than JSON, the server returns a <code class="ph codeph">416</code>
+      response.</dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/json-parse-error</code></dt>
+     <dd class="dd">If there is an error while processing the request body, the server
+      returns a <code class="ph codeph">400</code> response.</dd>
+    
+        
+     <dt class="dt dlterm"><code class="ph codeph">puppetlabs.inventory/schema-validation-error</code></dt>
+     <dd class="dd">If there is a violation of the required format for the request body,
+      the server returns a <code class="ph codeph">400</code> response.</dd>
+    
+      </dl>
+    </section>
+  </div>
+</article></article></article></main></body></html>

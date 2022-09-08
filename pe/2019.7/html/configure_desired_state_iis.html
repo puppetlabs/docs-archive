@@ -1,0 +1,121 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Tell PE how your infrastructure should be configured by grouping and classifying nodes based on their function. Before you begin, think of which of your inventory nodes you want to configure with IIS services."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="configure_desired_state"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configure your desired state</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="configure_desired_state">
+    <h1 class="title topictitle1" id="ariaid-title1">Configure your desired state</h1>
+    <p class="shortdesc">Tell <span class="ph">PE</span> how your infrastructure should be configured
+        by grouping and classifying nodes based on their function. Before you begin, think of which
+        of your inventory nodes you want to configure with IIS services.</p>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="create_classification_group_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title2">Create your classification group</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Create a classification node group. This is a parent group to other node groups you
+        create that contain classification data. You only need to set this up one time. </p>
+        <section class="section context"> </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and click <span class="ph uicontrol">Add group</span>.</span>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">Specify options for the new node group:</span>
+                <div class="itemgroup info">
+                    <ul class="ul">
+                        <li class="li"><span class="ph uicontrol">Parent name</span>: <code class="ph codeph">All Nodes</code></li>
+                        <li class="li"><span class="ph uicontrol">Group name</span>: <code class="ph codeph">All
+                            Classification</code></li>
+                        <li class="li"><span class="ph uicontrol">Environment</span>: <code class="ph codeph">production</code></li>
+                        <li class="li"><span class="ph uicontrol">Environment group</span>: do not select</li>
+                    </ul>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>You have added a classification group. Next, create a node group and add it as a
+            child of this classification group. </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="classify_apache_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title3">Create your <code class="ph codeph">iis</code> node group</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">After you create your parent classification group, make the <code class="ph codeph">iis</code> node
+        group a child of it.</p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and click <span class="ph uicontrol">Add group</span>.</span>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">Specify options for the new node group:</span>
+                <div class="itemgroup info">
+                    <ul class="ul">
+                        <li class="li"><span class="ph uicontrol">Parent name</span>: <code class="ph codeph">All
+                            Classification</code></li>
+                        <li class="li"><span class="ph uicontrol">Group name</span>: <code class="ph codeph">iis</code></li>
+                        <li class="li"><span class="ph uicontrol">Environment</span>: <code class="ph codeph">production</code></li>
+                        <li class="li"><span class="ph uicontrol">Environment group</span>: do not select</li>
+                    </ul>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>You now have a node group for nodes you want to configure IIS on. Next, determine
+            which nodes from your inventory you want to run IIS on and add them to the
+                <code class="ph codeph">iis</code> node group.</section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="add_nodes_to_apache_node_group_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title4">Add nodes to the <code class="ph codeph">iis</code> node group</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Once you determine which nodes from your inventory should be in your
+            <code class="ph codeph">iis</code> node group, pin the nodes to the group. Pinning allows you to add
+        nodes to a group one at a time. You can also dynamically add nodes to a node group based on
+        rules you set in the console, which is helpful for large inventories.</p>
+        <section class="section context">If you are stuck on deciding which nodes should be in your <code class="ph codeph">iis</code>
+            node group, read about <a class="xref" href="grouping_and_classifying_nodes.html#best_practices_for_classifying_node_groups" title="To organize node groups, start with the high-level functional groups that reflect the business requirements of your organization, and work down to smaller segments within those groups.">Best practices for classifying node groups</a>.</section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span> and select the
+                        <code class="ph codeph">iis</code> node group you just created.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">Rules</span> tab, under <span class="ph uicontrol">Certname</span>,
+                    enter the certname of a node you want to add to the <code class="ph codeph">iis</code> node
+                    group.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Pin node</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Repeat for additional nodes you want to add to the <code class="ph codeph">iis</code>
+                    group.</span>
+            </li><li class="li step">
+                <span class="ph cmd">When you are done pinning nodes, commit changes.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>You have added your <code class="ph codeph">iis</code> nodes into a node group. For more
+            information on adding and classifying nodes, read about <a class="xref" href="making_changes_to_node_groups.html#making_changes_to_node_groups" title="You can edit or remove node groups, remove nodes or classes from node groups, and edit or remove parameters and variables.">Making changes to node groups</a> and <a class="xref" href="grouping_and_classifying_nodes.html#grouping_and_classifying_nodes" title="Configure nodes by assigning classes, parameters, and variables to them. This is called classification.">Grouping and classifying nodes</a>.</section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="run_puppet_on_apache_node_group_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title5">Run <span class="ph">Puppet</span> on your IIS
+        nodes</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Run <span class="ph">Puppet</span> in the console to enforce your desired
+        state on the <code class="ph codeph">iis</code> node group you created.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, on the <span class="ph uicontrol">Jobs</span> page, click <span class="ph uicontrol">Run
+                  Puppet</span>.&nbsp;</span>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">Under <span class="ph uicontrol">Run options</span>, do not select anything.</span>
+            </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select <span class="ph uicontrol">Node group</span>.</span>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">In the <span class="ph uicontrol">Chose a node group box</span>, search for the
+                        <code class="ph codeph">iis</code> node group and click
+                    <span class="ph uicontrol">Select</span>.</span>
+            </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run job</span>. </span>
+            <div class="itemgroup stepresult" id="run_puppet_on_apache_node_group_getting_started__d765e284">View the job status and a list of previous
+               Puppet jobs on the <span class="ph uicontrol">Jobs</span> page.</div>
+         </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>Congratulations! You have run <span class="ph">Puppet</span> on your
+                <code class="ph codeph">iis</code> node group. In the future, the IIS nodes will check in with <span class="ph">PE</span> every 30 minutes to confirm that their IIS
+            configuration matches what you've specified, and <span class="ph">PE</span> will
+            correct it if it doesn't.<p class="p">Next, learn how to use roles and profiles to efficiently
+                manage system configurations.</p></section>
+    </div>
+</article></article></article></main></body></html>

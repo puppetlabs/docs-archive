@@ -1,0 +1,689 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="These are the new features, enhancements, resolved issues, and deprecations in this version of PE."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Melissa Amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="release_notes_pe"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>PE release notes</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="release_notes_pe">
+    <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">PE</span> release notes</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">These are the new features, enhancements, resolved issues,
+        and deprecations in this version of <span class="ph">PE</span>. </p></div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="release_notes_pe_x-7">
+    <h2 class="title topictitle2" id="ariaid-title2"><span class="ph">PE</span>
+        <span class="ph">2019.7</span></h2>
+    <p class="shortdesc"></p>
+    
+<article class="topic concept nested2" aria-labelledby="ariaid-title3" id="new_features_pe_x-7">
+    <h3 class="title topictitle3" id="ariaid-title3">New features</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section"><h4 class="title sectiontitle"><span class="ph">PuppetDB</span> on compilers</h4>
+            
+            <p class="p">To improve scalability in large and extra-large installations, <span class="ph">Puppet Server</span> and <span class="ph">PuppetDB</span>
+                services are now installed by default on new compilers. This change reduces
+                bottlenecks and enables easier scaling, because your <span class="ph">PuppetDB</span> capacity is always matched to your server
+                capacity. </p>
+            <p class="p">New compilers that you install with the <code class="ph codeph">puppet infrastructure provision
+                    compiler</code> command are configured with <span class="ph">Puppet Server</span> and <span class="ph">PuppetDB</span>
+                services. After upgrading to this or later versions, you can convert existing
+                compilers with the <code class="ph codeph">puppet infrastructure run
+                    convert_legacy_compiler</code> command. You must open port 5432 from compilers
+                to your master before converting compilers. </p>
+            <div class="p">For best performance, follow these recommendations:<ul class="ul">
+                    <li class="li">Avoid using a mix of new- and legacy-style compilers. </li>
+                    <li class="li">After adding new compilers or converting existing compilers, run
+                            <code class="ph codeph">puppet infrastructure tune</code> on your master and adjust
+                        tuning for compilers as needed. </li>
+                </ul></div>
+            <p class="p">
+                
+            </p>
+        </section>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title4" id="enhancements_pe_x-7">
+    <h3 class="title topictitle3" id="ariaid-title4">Enhancements</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section"><h4 class="title sectiontitle">Replica provisioning process and speed improvements</h4>
+            
+            <p class="p">This release speeds replica provisioning up to 3600 percent by modifying the method
+                for synching <span class="ph">PuppetDB</span>. Additionally, you can now
+                enable a replica at the same time that you provision by using the
+                    <code class="ph codeph">--enable</code> flag with <code class="ph codeph">puppet infrastructure provision
+                    replica</code>.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Console navigation and workflow improvements</h4>
+            
+            <div class="p">This release includes several console enhancements that provide a more intuitive
+                navigational experience. <ul class="ul">
+                    <li class="li">Renamed pages<p class="p">The <span class="ph uicontrol">Inspect</span> section was renamed to
+                                <span class="ph uicontrol">Enforcement</span>. </p><p class="p">The
+                                <span class="ph uicontrol">Run</span> section was renamed to
+                                <span class="ph uicontrol">Orchestration</span>. </p><p class="p">The
+                                <span class="ph uicontrol">Overview</span> page was renamed to
+                                <span class="ph uicontrol">Status</span>. </p></li>
+                    <li class="li">New task and plan workflow<p class="p">The <span class="ph uicontrol">Task</span> and
+                                <span class="ph uicontrol">Plan</span> pages now route to their own details
+                            page for status information about scheduled, running, or previously run
+                            tasks and plans. This change allows you to run a task or plan and view
+                            status information about a task or plan run without leaving that section
+                            of the console.</p></li>
+                    <li class="li">Run a task or plan on a node<p class="p">You can now run <span class="ph">Puppet</span> or a task on a single node from
+                            the node details page.</p></li>
+                    <li class="li">New <span class="ph">Puppet</span> run workflow<p class="p"><span class="ph">Puppet</span> runs no longer have a dedicated
+                            landing page in the sidebar. Instead, select <span class="ph uicontrol">Run
+                                puppet</span> on the <span class="ph uicontrol">Status</span>,
+                                <span class="ph uicontrol">Reports</span>, and <span class="ph uicontrol">Jobs</span>
+                            pages. The <span class="ph uicontrol">Jobs</span> page is now reserved exclusively
+                            for <span class="ph">Puppet</span> run results.</p></li>
+                </ul></div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Easier and more reliable upgrades</h4>
+            
+            <div class="p">This version includes multiple usability and reliability improvements for upgrades.<ul class="ul">
+                    <li class="li">The <code class="ph codeph">puppet infrastructure upgrade compiler</code> command lets you
+                        upgrade one, some, or all of your compilers from your master with a single
+                        command. </li>
+                    <li class="li">The <code class="ph codeph">puppet infrastructure upgrade replica</code> command lets you
+                        upgrade your replica from your master.</li>
+                    <li class="li">The <span class="ph">PuppetDB</span> subcommand,
+                            <code class="ph codeph">delete-reports</code>, speeds upgrade by stopping <span class="ph">PuppetDB</span> and deleting all reports and their
+                        resource events. You can also now use the console to set
+                            <code class="ph codeph">resource-events-ttl</code>, which determines how long PuppetDB
+                        stores a report's resource events.</li>
+                </ul></div><p class="p"></p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Updates to default settings</h4>
+            
+            <div class="p">
+                <ul class="ul">
+                    <li class="li">Authentication token lifetime<p class="p">Tokens now have a default authentication
+                            lifetime of one hour, instead of the previous lifetime of five minutes.
+                            This increase accommodates longer-running <code class="ph codeph">puppet infrastructure
+                                run</code> commands that use authentication tokens.</p></li>
+                    <li class="li">Signing of certificates with authorization extensions<p class="p">The <span class="ph">Puppet</span> CA is now configured to allow
+                            signing certificates with authorization extensions by default. This
+                            change enables easier setup of new compilers. Signing certificates that
+                            have authorization extensions is still disabled in the console, however
+                            the <code class="ph codeph">puppetserver ca</code> CLI displays authorization
+                            extensions in its list output, providing all relevant details about
+                            certificates you're signing.</p></li>
+                    <li class="li"><span class="ph">Windows</span> bulk plug-in sync<p class="p">For <span class="ph">Windows</span> agents, the agent install script
+                            automatically downloads a tarball of plug-ins from the master before the
+                            agent runs for the first time. Previous releases added optional bulk
+                            plug-in sync for <span class="ph">Windows</span> agents, with the
+                            setting disabled by default. This release updates the default to enabled
+                                (<code class="ph codeph">pe_repo::enable_windows_bulk_pluginsync:
+                                true</code>).</p></li>
+                </ul>
+            </div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Plans are now compatible with Bolt 2.0</h4>
+            
+            <div class="p"><span class="ph">PE</span> now requires <span class="ph">Bolt</span>
+                2.0 style plans. Some notable changes include: <ul class="ul">
+                    <li class="li">JSON output now has <code class="ph codeph">target_count</code> instead of
+                            <code class="ph codeph">node_count</code>.</li>
+                    <li class="li">JSON result objects now have <code class="ph codeph">target</code> and
+                            <code class="ph codeph">value</code> keys instead of <code class="ph codeph">node</code> and
+                            <code class="ph codeph">result</code>.</li>
+                    <li class="li"><code class="ph codeph">add_facts(s)</code> now returns the Target passed to it.
+                        Previously, the function returned the Target's set of facts. </li>
+                    <li class="li"><code class="ph codeph">Target.new</code> no longer accepts an options key. Both
+                            <code class="ph codeph">Target.new("options" =&gt; ...)</code> and
+                            <code class="ph codeph">Target.new($uri, "options" =&gt; ...)</code> are no longer
+                        allowed. <code class="ph codeph">Target.new</code> now accepts <em class="ph i">either</em> a string
+                        argument, which is the URI or a hash argument shaped like a target, in the
+                        inventory file.</li>
+                    <li class="li"><code class="ph codeph">run_plan(plan::name, $targets)</code> will fail if the plan has
+                        both a <code class="ph codeph">$nodes</code> and <code class="ph codeph">$targets</code> parameter. If a
+                        plan has parameters called both <code class="ph codeph">$nodes</code> and
+                            <code class="ph codeph">$targets</code>, they must be set explicitly using named
+                        arguments. <p class="p">View the <a class="xref" href="https://github.com/puppetlabs/bolt/blob/master/CHANGELOG.md" target="_blank">Bolt changelog</a> for more
+                            information about Bolt 2.0 features and requirements. </p></li>
+                </ul></div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Simplified prerequisites for select <code class="ph codeph">puppet infrastructure run</code>
+                commands</h4>
+            
+            <div class="p">Several <code class="ph codeph">puppet infrastructure run</code> commands now use the orchestrator,
+                so they typically no longer require configuring SSH as a prerequisite. Affected
+                commands include:<ul class="ul">
+                    <li class="li">Compiler, replica, and agent certificate regeneration<div class="note note note_note"><span class="note__title">Note:</span> In cases where
+                            you're regenerating certificates after recreating your certificate
+                            authority, you must still specify SSH connection details, because nodes
+                            can't connect to the orchestrator without a valid certificate.
+                        </div></li>
+                    <li class="li">Legacy compiler conversion</li>
+                    <li class="li"><span class="ph">PostgreSQL</span> cleanup after upgrade</li>
+                </ul></div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Simplified certificate regeneration for <span class="ph">Windows</span>
+                agents</h4>
+            
+            <p class="p">Certificates for <span class="ph">Windows</span> agents can now be regenerated
+                with a single command, <code class="ph codeph">puppet infrastructure run
+                    regenerate_agent_certificate</code>.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Services added to status command</h4>
+            
+            <p class="p">The <code class="ph codeph">puppet infrastructure status</code> command now reports status for <span class="ph">PostgreSQL</span> as well as the <span class="ph">Bolt</span> and Agentless Catalog Executor (ACE)
+                    services.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Purging a node deletes <span class="ph">PuppetDB</span> data for the
+                node</h4>
+            
+            <p class="p">The <code class="ph codeph">puppet node purge</code> command now removes all data for the node from
+                    <span class="ph">PuppetDB</span>. Previously, the command deactivated the
+                node but didn't delete it, so the node could still appear in <span class="ph">PuppetDB</span> queries.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">FIPS-compliant <span class="ph">PE</span> upgraded to <span class="ph">PostgreSQL</span> 11</h4>
+            
+            <p class="p">FIPS-compliant <span class="ph">PE</span> installations now use <span class="ph">PostgreSQL</span> 11 by default. If you're upgrading an
+                earlier FIPS-compliant PE version, review the <a class="xref" href="upgrading_pe.html#upgrade_cautions" title="These are the major updates to PE since the last long-term support release, 2018.1. Review these recommendations and plan accordingly before upgrading to this version.">cautions for <span class="ph">PostgreSQL</span>
+                    upgrade</a>.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">High availability terminology changed to disaster recovery</h4>
+            
+            <p class="p">We've changed the way we refer to failover capabilities within <span class="ph">PE</span>, from <dfn class="term">high availability</dfn> to
+                    <dfn class="term">disaster recovery</dfn>. This change more accurately reflects the role of
+                a replica in <span class="ph">PE</span> installations, and aligns our
+                terminology with industry standards. Some references to high availability and HA
+                still remain in the software.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Platform support</h4>
+            
+            <p class="p">This version adds support for these platforms.</p>
+            <div class="p"><strong class="ph b">Agent</strong><ul class="ul">
+                    <li class="li"><span class="ph">Ubuntu</span> 20.04</li>
+                    <li class="li">FIPS 140-2 compliant <span class="ph">Microsoft</span>
+                        <span class="ph">Windows</span> Server 2012R2 and 2012R2
+                            core</li>
+                </ul></div>
+        </section>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title5" id="deprecations_and_removals_pe_x-7">
+    <h3 class="title topictitle3" id="ariaid-title5">Deprecations and removals</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section"><h4 class="title sectiontitle">Text install removed</h4>
+            
+            <p class="p">Text-based installation, where you provide a custom configuration file
+                    (<code class="ph codeph">pe.conf</code>), has been removed from the installer. The simplified
+                PE installation process now relies entirely on defaults, apart from specifying a
+                console administrator password. After installation, you can scale or configure your
+                environment as needed.</p>
+            <p class="p">You can still install <span class="ph">PE</span> using a customized
+                    <code class="ph codeph">pe.conf</code> file by running <code class="ph codeph">./puppet-enterprise-installer
+                    -c /tmp/pe.conf</code>.</p>
+        </section><section class="section"><h4 class="title sectiontitle">Legacy compilers deprecated</h4>
+            
+            <p class="p">Legacy compilers without the <span class="ph">PuppetDB</span> service are
+                deprecated. You can <a class="xref" href="installing_compile_masters.html#convert-compiler" title="If you have legacy compilers, you can improve their usability and scalability by adding PuppetDB. In addition to installing the PuppetDB service, converting an existing compiler adds the node to the PE Compiler node group and unpins it from the PE Master node group.">convert</a>
+                legacy compilers after upgrading to this version. </p>
+            
+        </section>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title6" id="resolved_issues_pe_x-7">
+    <h3 class="title topictitle3" id="ariaid-title6">Resolved issues</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p><section class="section"><h4 class="title sectiontitle">Metrics API could leak sensitive information on <span class="ph">Ubuntu</span> platforms</h4>
+        
+        <p class="p"><span class="ph">Puppet Server</span> and <span class="ph">PuppetDB</span>
+            could leak sensitive information such as hostnames through the metrics API when used
+            on <span class="ph">Ubuntu</span> platforms. This version disables the
+            <code class="ph codeph">/metrics/v1</code> endpoints by default and restricts access to the
+            <code class="ph codeph">/metrics/v2</code> endpoints to localhost. (<a class="xref" href="https://puppet.com/security/cve/CVE-2020-7943/" target="_blank">CVE-2020-7943</a>)</p>
+    </section><section class="section"><h4 class="title sectiontitle">Replica upgrade failed when upgrading between recent <span class="ph">PE</span> versions</h4>
+        
+        <p class="p">Replica upgrade failed when upgrading between any <span class="ph">PE</span>
+            versions from 2019.2 to 2019.5. The failure occurred because the upgrade script
+            checked for PostgreSQL 9.6 packages, and erroneously attempted to migrate to
+            PostgreSQL 11, even though that migration already occurred. With this release,
+            replica upgrade no longer uses the upgrade script, so the issue doesn't
+            occur.</p>
+    </section>
+    
+    <section class="section"><h4 class="title sectiontitle">Unexecutable external fact scripts caused upgrades to fail</h4>
+        
+        <p class="p">If an external fact script couldn't be executed during upgrade, upgrade could fail with an unhelpful error message similar to this: <code class="ph codeph">error while processing "%1%" for external facts: %2%</code>. This issue was resolved with a more descriptive error message in Facter 3.14.10, which ships with PE 2019.7, however you might still encounter this issue during upgrades from older versions of PE to PE 2019.7.
+</p>
+    </section>
+    
+    
+    
+    <section class="section"><h4 class="title sectiontitle">Running tasks or plans could produce a class loading error</h4>
+        
+        <p class="p">When running tasks or plans, you could encounter a class loading error if the
+                orchestration service was reloaded when a restart was required. For example: </p>
+        <p class="p"><samp class="ph msgph">cannot link Java class com.puppetlabs.Facter</samp></p>
+        <p class="p"><samp class="ph msgph">missing class name (`com.puppetlabs.Facter')</samp></p>
+        <p class="p"></p>
+    </section>
+        <section class="section"><h4 class="title sectiontitle">The <code class="ph codeph">wait_until_available</code> plan action was broken for PCP
+                transport nodes</h4>
+            
+            <p class="p">Because of an issue with the wait functionality for PCP nodes, the
+                    <code class="ph codeph">wait_until_available</code> action was not working for nodes connected
+                to pp-agent through a pcp-broker. Now, <code class="ph codeph">wait_until_available</code> no
+                longer fails on PCP transport nodes. </p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">JSON output for plans didn't parse correctly</h4>
+            
+            <p class="p">When a <code class="ph codeph">run_command</code> or <code class="ph codeph">run_script</code> plan action
+                printed JSON to <code class="ph codeph">stdout</code>, the resulting <code class="ph codeph">stdout</code> file
+                was null. Plans in <span class="ph">PE</span> now correctly return JSON
+                output from actions like <code class="ph codeph">run_command</code> or
+                <code class="ph codeph">run_script</code>. </p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Unusable plan function <code class="ph codeph">get resources</code> had unhelpful
+                errors</h4>
+            
+            <p class="p">The <code class="ph codeph">get resources</code> function is not yet implemented in <span class="ph">PE</span>, but when users ran it, they would get cryptic
+                errors. Now, the function fails with an informative message. </p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Restarting orchestration-services caused pcp-brokers to become
+                unresponsive</h4>
+            
+            <p class="p">When pe-orchestration-services restarts on PE masters, the pcp-brokers connected to
+                master no longer fail when attempting to reconnect to the master after it returns.
+                    </p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Undefined behavior for <code class="ph codeph">_run_as</code> option in plan
+                actions</h4>
+            
+            <p class="p">The <code class="ph codeph">_run_as</code> option for plan actions has been silently
+                ignored. Now, when you use the option and a plan fails, it raises a helpful error
+                message. </p>
+        </section>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="release_notes_pe_x-6">
+    <h2 class="title topictitle2" id="ariaid-title7"><span class="ph">PE</span>
+        <span class="ph">2019.6</span></h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <p class="p">This version wasn't released.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="release_notes_pe_x-5">
+    <h2 class="title topictitle2" id="ariaid-title8"><span class="ph">PE</span>
+        <span class="ph">2019.5</span></h2>
+    <p class="shortdesc"></p>
+    
+<article class="topic concept nested2" aria-labelledby="ariaid-title9" id="resolved_issues_pe_x-5">
+    <h3 class="title topictitle3" id="ariaid-title9">Resolved issues</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section"><h4 class="title sectiontitle">Metrics API could leak sensitive information</h4>
+            
+            <p class="p"><span class="ph">Puppet Server</span> and <span class="ph">PuppetDB</span>
+                could leak sensitive information such as hostnames through the metrics API. This
+                version disables the <code class="ph codeph">/metrics/v1</code> endpoints by default and restricts
+                access to the <code class="ph codeph">/metrics/v2</code> endpoints to localhost. (<a class="xref" href="https://puppet.com/security/cve/CVE-2020-7943/" target="_blank">CVE-2020-7943</a>)</p>
+        </section>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title10" id="release_notes_pe_x-4">
+    <h2 class="title topictitle2" id="ariaid-title10"><span class="ph">PE</span>
+        <span class="ph">2019.4</span></h2>
+    <p class="shortdesc"></p>
+    
+<article class="topic concept nested2" aria-labelledby="ariaid-title11" id="enhancements_pe_x-4">
+    <h3 class="title topictitle3" id="ariaid-title11">Enhancements</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section"><h4 class="title sectiontitle">Docs versions and archives</h4>
+            
+            <p class="p">With this release, we're switching to using <span class="ph uicontrol">latest</span> as the
+                version number for the <span class="ph">PE</span> update track, rather than
+                using version-specific URLs. Going forward, the <span class="ph uicontrol">latest</span> docs
+                will accumulate changes since the last long-term support release. Concurrently,
+                we're archiving docs for end-of-life and superseded versions of PE. We're making
+                these changes to align with the new <a class="xref" href="https://puppet.com/docs/puppet-enterprise/product-support-lifecycle/" target="_blank"><span class="ph">PE</span> support
+                    lifecycle and versioning cadence</a>, and hopefully reduce version confusion
+                with older docs on our site. </p>
+            <p class="p">If you use an EOL or superseded version of the product, don't worry, you can still
+                access docs for older versions. For details, see <a class="xref" href="archived_pe_docs.html#archived_pe_docs" title="PE docs for recent end-of-life (EOL) or superseded product versions are archived in place, meaning that we continue to host them at their original URLs, but we limit their visibility on the main docs site and no longer update them. You can access archived-in-place docs using their original URLs, or from the links here.">Archived PE docs</a>.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Console enhancements </h4>
+            
+            <p class="p">In an effort to make the console easier to navigate and understand, we have made the
+                following improvements. </p>
+            <p class="p">The <span class="ph uicontrol">Inventory</span> page has a new look. Instead of using widgets to
+                install agents, nodes, and devices, each installation type has a button that links
+                to its own page. There are also more help icons and definitions on the page.</p>
+            <p class="p">The plans event view in the <span class="ph uicontrol">Job details</span> page now displays an
+                output message for each plan run. </p>
+            <div class="p">The following pages have new descriptions and more consistent header designs: <ul class="ul">
+                    <li class="li"><span class="ph uicontrol">Jobs</span></li>
+                    <li class="li"><span class="ph uicontrol">Puppet</span></li>
+                    <li class="li"><span class="ph uicontrol">Task</span></li>
+                    <li class="li"><span class="ph uicontrol">Plan </span></li>
+                    <li class="li"><span class="ph uicontrol">Inventory</span>
+                    </li>
+                    <li class="li"><span class="ph uicontrol">Install agent</span>
+                    </li>
+                    <li class="li"><span class="ph uicontrol">Connect nodes over SSH or WinRM</span></li>
+                    <li class="li"><span class="ph uicontrol">Connect network devices </span></li>
+                    <li class="li"><span class="ph uicontrol">Users</span></li>
+                    <li class="li"><span class="ph uicontrol">Roles</span></li>
+                    <li class="li"><span class="ph uicontrol">User groups</span></li>
+                    <li class="li"><span class="ph uicontrol">License</span>
+                    </li>
+                    <li class="li"><span class="ph uicontrol">Integrations</span></li>
+                    <li class="li"><span class="ph uicontrol">Help</span></li>
+                </ul></div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><span class="ph">Code Manager</span> API module-related keys</h4>
+            
+            <div class="p">Two new keys in the <span class="ph">Code Manager</span>
+                <code class="ph codeph">/deploys</code> endpoint provide greater flexibility in deploying modules. <ul class="ul">
+                    <li class="li"><code class="ph codeph">"deploy-modules"</code> indicates whether <span class="ph">Code Manager</span> deploys modules from the selected
+                        environments.</li>
+                    <li class="li"><code class="ph codeph">"modules"</code> enables you to list specific modules to deploy
+                        within the selected environments. </li>
+                </ul></div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Middleware endpoint for full out_message plan content </h4>
+            
+            <p class="p">There is a new endpoint in the orchestrator that retrieves an individual event, with
+                no truncation of the <code class="ph codeph">out_message</code>. See <a class="xref" href="orchestrator_api_events.endpoint.html#orchestrator_api_get_plan_jobs_job_id_event_id" title="Fetch a specific event for a job.">GET /plan_jobs/:job-id/event/:event-id</a> for more
+                information. </p>
+        </section>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title12" id="resolved_issues_pe_x-4">
+    <h3 class="title topictitle3" id="ariaid-title12">Resolved issues</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section"><h4 class="title sectiontitle">Default for <code class="ph codeph">strict_hostname_checking</code> changed to
+                <code class="ph codeph">true</code></h4>
+            
+            <p class="p">The default setting for <code class="ph codeph">strict_hostname_checking</code> in <span class="ph">PE</span> was changed to <code class="ph codeph">true</code> to resolve a
+                security issue. <span class="ph">PE</span> users who are not upgrading should
+                manually set <code class="ph codeph">strict_hostname_checking</code> to <code class="ph codeph">true</code> to
+                ensure secure behavior. You must also specify the fully qualified domain name of the
+                host when referring to nodes; partial hostname matches, for example <code class="ph codeph">node
+                    /^foo/</code> are no longer supported.</p>
+        </section><section class="section"><h4 class="title sectiontitle">Default class parameters had incorrect format in console</h4>
+            
+            <p class="p">Default structured parameters in the console were always interpreted as text,
+                specifically as <span class="ph">Puppet</span> code. Now, they are correctly
+                transformed into JSON to allow them to be used directly in a classifier parameter
+                value without modification.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><span class="ph uicontrol">Activity</span> tab had inconsistent behaviors on <span class="ph uicontrol">Node
+                    details</span> page</h4>
+            
+            <p class="p">Content in the <span class="ph uicontrol">Activity</span> tab on the <span class="ph uicontrol">Node
+                    details</span> page would appear inconsistently, disappearing and
+                reappearing after clicking on other tabs. The underlying behavior causing this issue
+                has been fixed. </p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Empty bolt.yaml at environment root broke plans </h4>
+            
+            <p class="p">An empty bolt.yaml file in the root of an environment directory will no longer
+                prevent users from viewing and running plans.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Restarting pe-orchestration-serives caused pcp-brokers to become
+                unresponsive</h4>
+            
+            <p class="p">When pe-orchestration-services restarts on <span class="ph">PE</span> masters,
+                pcp-brokers connected to the master no longer experience failures when attempting to
+                reconnect to the master.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Class parameter selection in Firefox had inconsistent behaviors</h4>
+            
+            <p class="p">In the current versions of Firefox, some odd behavior appeared when editing class
+                parameters. The class parameter selection would impact other selections in the class
+                in unexpected ways. As a result, the ability to edit the parameter was removed. You
+                can still edit the parameter value, but cannot choose a different parameter. This
+                resolves the issue in Firefox, simplifies the interaction, and makes the behavior
+                consistent with other pages.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">PE ports were vulnerable to LOGJAM </h4>
+            
+            <p class="p">PE ports were vulnerable to LOGJAM because they used common, shared Diffie-Hellman
+                primes. The default Diffie-Hellman ephemeral key size has been increased to 2048 for
+                all JVM PE services, like Puppetserver, PuppetDB, etc. </p>
+        </section>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title13" id="release_notes_pe_x-3">
+    <h2 class="title topictitle2" id="ariaid-title13"><span class="ph">PE</span>
+        <span class="ph">2019.3</span></h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <p class="p"></p>
+    </div>
+<article class="topic concept nested2" aria-labelledby="ariaid-title14" id="enhancements_pe_x-3">
+    <h3 class="title topictitle3" id="ariaid-title14">Enhancements</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section"><h4 class="title sectiontitle">Java 11 upgrade</h4>
+            
+            <p class="p">This version includes an upgrade from Java version 8 to version 11. If you've
+                customized <span class="ph">PE</span> Java services, or use plug-ins that
+                include Java code, test <span class="ph">PE</span> 2019.3 and later
+                thoroughly in a non-production environment before upgrading.</p>
+        </section><section class="section"><h4 class="title sectiontitle"><span class="ph">Puppet</span> ensures platform repositories aren't installed
+                in order to prevent accidental agent upgrade</h4>
+            
+            <p class="p">Previously, <span class="ph">Bolt</span> users who installed the <span class="ph">Puppet</span> 5 or 6 platform repositories could experience
+                unsupported agent upgrades on managed nodes. With this release, <span class="ph">Puppet</span> ensures that the release packages for those
+                platforms are not installed on managed nodes by enforcing <code class="ph codeph">ensure
+                    =&gt; 'absent'</code> for the packages. </p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><span class="ph">Windows</span> install script optionally downloads a tarball
+                of plug-ins </h4>
+            
+            <p class="p">For <span class="ph">Windows</span> agents, the agent install script optionally
+                downloads a tarball of plug-ins from the master before the agent runs for the first
+                time. Depending on how many modules you have installed, bulk plug-in sync can speed
+                agent installation significantly.</p>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> If your master runs in a different environment from your agent nodes, you might
+                    see some reduced benefit from bulk plug-in sync. The plug-in tarball is created based
+                    on the plug-ins running on the master agent, which might not match the plug-ins
+                    required for agents in a different environment.</div>
+            </div>
+            <p class="p">This feature is controlled by the setting <code class="ph codeph">pe_repo::enable_windows_bulk_pluginsync</code> which you can configure in Hiera or
+                in the console. The default setting for bulk plug-in sync is <code class="ph codeph">false</code> (disabled).</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><code class="ph codeph">puppet infrastructure run</code> commands no longer require
+                an authentication token</h4>
+            
+            <p class="p"><code class="ph codeph">puppet infrastructure run</code> commands that affect <span class="ph">PuppetDB</span>, including <code class="ph codeph">migrate_split_to_mono</code> and <code class="ph codeph">enable_ha_failover</code>, no longer require setting up token-based
+                authentication as a prerequisite for running the command. By default, these commands
+                use the master's <span class="ph">PuppetDB</span> certificate for
+                    authentication.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><code class="ph codeph">puppet infrastructure run</code> commands provide more
+                useful output</h4>
+            
+            <p class="p"><code class="ph codeph">puppet infrastructure run</code> commands, such as those for
+                regenerating certificates or enabling high availability failover, provide more readable
+                output, making them easier to troubleshoot.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Calculations for <span class="ph">PostgreSQL</span> settings are
+                fine-tuned</h4>
+            
+            <p class="p">The <code class="ph codeph">shared_buffers</code> setting uses less RAM by default due to improvements
+                in calculating <span class="ph">PostgreSQL</span> settings. Previously, <span class="ph">PostgreSQL</span> settings were based on the total RAM allocated
+                to the node it was installed on. Settings are now calculated based on total RAM less the
+                default RAM used by <span class="ph">PE</span> services. As a result, on an 8GB
+                installation for example, the default <code class="ph codeph">shared_buffers</code> setting is reduced
+                from ~2GB to ~1GB. </p>
+            <p class="p">
+                
+            </p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><span class="ph">PostgreSQL</span> can optionally be cleaned up after
+                upgrading</h4>
+            
+            <p class="p">After upgrading, you can optionally remove packages and directories associated with
+                older <span class="ph">PostgreSQL</span> versions with the command <code class="ph codeph">puppet infrastructure run remove_old_postgresql_versions</code>. If
+                applicable, the installer prompts you to complete this cleanup.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><span class="ph">*nix</span> command for regenerating agent certificates
+                includes a parameter for CRL cleanup</h4>
+            
+            <p class="p">The <code class="ph codeph">puppet infra run regenerate_agent_certificate</code> command includes a
+                <code class="ph codeph">clean_crl</code> parameter. Setting <code class="ph codeph">clean_crl</code> to <code class="ph codeph">true</code> cleans up the local CRL
+                bundle. When you regenerate certificates for <span class="ph">*nix</span> agents
+                after recreating your certificate authority, you must include this parameter with the
+                value set to <code class="ph codeph">true</code>. If you're regenerating agent
+                certificates without recreating the CA, you don't need to clean up the
+                CRL.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><code class="ph codeph">puppetlabs-pe_bootstrap</code> task supports <span class="ph">Puppet</span> agent on <span class="ph">CentOS</span>
+                8</h4>
+            
+            <p class="p">The <code class="ph codeph">puppetlabs-pe_bootstrap</code> task that ships in <span class="ph">PE</span> has been updated to support <span class="ph">Puppet</span> agent installation on <span class="ph">CentOS</span> 8. </p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">New task targets API</h4>
+            
+            <p class="p">Use the new task targets API to fine-tune task permissions automatically. See <a class="xref" href="orchestrator_api_commands_endpoint.html#post__command_task_target" title="Create a new task-target, which is a collection of tasks, nodes and node groups that define a permission group. When a user has permissions to run via a given task-target, they are granted permissions to run the given set of tasks, on the set of nodes described by the task-target">POST /command/task_target</a> and <a class="xref" href="orchestrator_api_scopes_endpoint.html#orchestrator_api_scopes_endpoint" title="Use the scopes endpoint to retrieve resources for task constraints.">Puppet orchestrator API: scopes endpoint</a>.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Console enhancements</h4>
+            
+            <div class="p">These are enhancements to the console in this release:<ul class="ul">
+                <li class="li">Plan metadata<p class="p">View plan metadata and parameters. To view them in the console,
+                    type in a name of a plan in the <span class="ph uicontrol">Plan</span> field and click
+                    <span class="ph uicontrol">View plan metadata</span>. To view metadata on the command
+                    line, run <code class="ph codeph">puppet plan show &lt;PLAN NAME&gt;</code>.</p></li>
+                <li class="li"><span class="ph uicontrol">Test connections</span> option<p class="p">Test connections for nodes and
+                    devices before adding them to your inventory. This option is enabled by default
+                    on the <span class="ph uicontrol">Inventory</span> page. If a connection fails, you can
+                    edit the node or device information and try again. </p></li>
+                <li class="li">Custom PQL queries<p class="p">Add your own custom PQL queries to the console and use them
+                    for running <span class="ph">Puppet</span> and tasks. See <a class="xref" href="running_tasks_in_the_console.html#add_custom_pql_queries" title="Add your own PQL queries to the console and quickly access them when running jobs.">Add custom PQL queries to the console</a> for more information.</p></li>
+                <li class="li">Breadcrumbs<p class="p">Pages in the console now have breadcrumbs, showing you where you
+                    are in the interface. The breadcrumbs are links you can use to move to parent
+                    pages. </p></li>
+                <li class="li">Transport details<p class="p">View the transport mechanism, SSH or WinRM for example, for
+                    task runs in the <span class="ph uicontrol">Connections</span> and
+                    <span class="ph uicontrol">Activity</span> tabs on the <span class="ph uicontrol">Nodes</span>
+                    page.</p></li>
+                <li class="li"><span class="ph uicontrol">Run</span> drop-down menu<p class="p">The <span class="ph uicontrol">Run Puppet on these
+                    nodes</span> button has been replaced with a <span class="ph uicontrol">Run</span>
+                    drop down menu so you can run <span class="ph">Puppet</span>or run a
+                    task for the nodes listed on the current page. The new option is available on
+                    the <span class="ph uicontrol">Overview</span>, <span class="ph uicontrol">Events</span>, and
+                    <span class="ph uicontrol">Packages</span> pages.</p></li>
+                <li class="li">Ability to select environment for tasks and plans<p class="p">When you run a task or a
+                            plan in the console, you can now specify an environment other than
+                                <code class="ph codeph">production</code>.</p></li>
+                <li class="li">Additional run options<p class="p">In addition to <code class="ph codeph">no-op</code>, you can now
+                    specify <code class="ph codeph">debug</code>, <code class="ph codeph">trace</code>, and
+                    <code class="ph codeph">eval-trace</code> run options when running <span class="ph">Puppet</span>. </p></li>
+            </ul></div>
+        </section><section class="section"><h4 class="title sectiontitle">Platform support</h4>
+            
+            <p class="p">This version adds support for these platforms.</p>
+            <div class="p"><strong class="ph b">Agent</strong><ul class="ul">
+                <li class="li"><span class="ph">Fedora</span> 31</li>
+            </ul></div>
+        </section>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title15" id="deprecations_and_removals_pe_x-3">
+    <h3 class="title topictitle3" id="ariaid-title15">Deprecations and removals</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section"><h4 class="title sectiontitle">Deprecated platform support</h4>
+            
+            <p class="p">Support for these platforms is deprecated in this release and will be removed in a
+                future version of <span class="ph">PE</span>:</p>
+            <div class="p"><strong class="ph b">Master</strong><ul class="ul">
+                <li class="li"><span class="ph">Enterprise Linux</span> 6</li>
+                <li class="li"><span class="ph">Ubuntu</span> 16.04</li>
+            </ul></div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><span class="ph">Razor</span> deprecated</h4><span class="ph">Razor</span>, the provisioning application that deploys
+            bare-metal systems, is deprecated in this release, and will be removed in a future
+            version. If you want to continue using <span class="ph">Razor</span>, you can use
+            the <a class="xref" href="https://github.com/puppetlabs/razor-server" target="_blank">open source version</a> of the tool. </section>
+        <section class="section"><h4 class="title sectiontitle">Node graph removed</h4>
+            
+            <p class="p">The node graph in the console has been removed due to infrequent use. The graph was
+                used to view relationships between resources and classes within a node catalog. To
+                generate a node graph now, use the <span class="ph">Puppet</span>
+                <a class="xref" href="https://puppet-vscode.github.io/docs/features/puppet-commands/" target="_blank">VS Code extension</a>. </p>
+        </section>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title16" id="resolved_issues_pe_x-3">
+    <h3 class="title topictitle3" id="ariaid-title16">Resolved issues</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section"><h4 class="title sectiontitle">Console was inaccessible on <span class="ph">macOS</span> Catalina using
+                default certificates</h4>
+            
+            <p class="p">Enhanced security requirements in <span class="ph">macOS</span> Catalina
+                prevented accessing the console using the default certificate generated during
+                installation. </p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><code class="ph codeph">puppet infrastructure run</code> commands could fail if the agent was
+                run with cron</h4>
+            
+            <p class="p">
+                <code class="ph codeph">puppet infrastructure run</code> commands, such as those used for certain
+                installation, upgrade, and certificate management tasks, could fail if the <span class="ph">Puppet</span> agent was run with cron. The failure occurred
+                if the command conflicted with a <span class="ph">Puppet</span>
+                    run.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Mismatch between classifier classification and matching nodes for regexp
+                rules</h4>
+            
+            <p dir="ltr" class="p"><span class="ph">PuppetDB</span>’s regular expression matching had
+                surprising behaviors for structured fact value comparisons. For example, the
+                structured fact <code class="ph codeph">os</code> is a rule that matches <code class="ph codeph">["~", "os",
+                    ":"]</code>. <span class="ph">PuppetDB</span> would unintentionally
+                match every node that has the <code class="ph codeph">os</code> structured fact because the
+                regular expression was applied to the JSON encoded version of the fact value. </p>
+            <p dir="ltr" class="p">The classifier does not use <span class="ph">PuppetDB</span> for
+                determining classification and regular expressions in the classifier rules syntax
+                only support direct value comparisons for string types.</p>
+            <p dir="ltr" class="p">This caused issues in the console where the node list and counts for the
+                "matching nodes" display sometimes indicated that nodes were matching even though
+                the classifier would not consider them matching. </p>
+            <div class="p" dir="ltr">Now, the same criteria is applied to the displays and counts that the
+                classifier uses. The output of the classifier’s rule translation endpoints makes
+                queries that match the classifier behavior.<div class="note note note_note"><span class="note__title">Note:</span> This fix doesn't change the way
+                    nodes are classified, only how the console displays matching
+                        nodes.</div></div>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Code manager could not deploy <span class="ph">Forge</span> modules with a
+                proxy</h4>
+            
+            <p class="p">The commands <code class="ph codeph">puppet code deploy</code> and <code class="ph codeph">r10k</code> failed
+                when behind a proxy. The commands didn't use the configured proxy settings and using
+                them would result in problems downloading modules from the <span class="ph">Puppet</span>
+                <span class="ph">Forge</span>. This was due to an issue in a dependency gem. </p>
+            <p class="p">Now, the commands work behind a proxy.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Orchestrator error message included <span class="ph">Bolt</span> command
+                suggestions</h4>
+            
+            <p class="p">When a plan or task was not found, the resulting error message gave a suggestion to
+                run <code class="ph codeph">bolt {plan,task} show</code>, which is unhelpful in <span class="ph">PE</span>. The error message no longer shows the <span class="ph">Bolt</span> command suggestion.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle"><code class="ph codeph">bolt.yaml</code> plans did not work in <span class="ph">PE</span></h4>
+            
+            <p class="p">Plans with <code class="ph codeph">bolt.yaml</code> in the root directory of the environment will
+                no longer fail. Don't use the <code class="ph codeph">modulepath</code> setting in
+                    <code class="ph codeph">bolt.yaml</code>, because it may lead to unintended consequences when
+                loading tasks and plans.</p>
+        </section>
+        <section class="section"><h4 class="title sectiontitle">Ed25519 SSH keys couldn't be used to run task on agentless node</h4>
+            
+            <p class="p">Running a task on an agentless node using an ed25519 SSH keys would result in an
+                error. </p>
+        </section>
+    </div>
+</article></article></article></article></main></body></html>

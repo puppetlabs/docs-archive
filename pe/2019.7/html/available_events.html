@@ -1,0 +1,30 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="reference"><meta name="description" content="These are the events for which hook scripts can be provided:"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="available_events"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Available events</title></head><body id="available_events"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+ <h1 class="title topictitle1" id="ariaid-title1">Available events </h1>
+ 
+ <div class="body refbody"><p class="shortdesc">These are the events for which hook scripts can be
+  provided:</p>
+  <section class="section">
+   <ul class="ul">
+    <li class="li"><code class="ph codeph">node-booted</code>: Triggered
+     every time a node boots via iPXE.</li>
+    <li class="li"><code class="ph codeph">node-registered</code>:
+     Triggered after a node has been registered. Limited hardware information is available after
+     registration.</li>
+    <li class="li"><code class="ph codeph">node-deleted</code>: Triggered
+     after a node has been deleted.</li>
+    <li class="li"><code class="ph codeph">node-bound-to-policy</code>:
+     Triggered after a node has been bound to a policy. The script input contains a <code class="ph codeph">policy</code> property with the details of the policy that has been
+     bound to the node.</li>
+    <li class="li"><code class="ph codeph">node-unbound-from-policy</code>: Triggered after a node has been marked as uninstalled by
+     the <code class="ph codeph">reinstall-node</code> command and thus has been
+     returned to the set of nodes available for installation.</li>
+    <li class="li"><code class="ph codeph">node-facts-changed</code>:
+     Triggered whenever a node changes its facts.</li>
+    <li class="li"><code class="ph codeph">node-install-finished</code>:
+     Triggered when a policy finishes its last step.</li>
+   </ul>
+  </section>
+ </div>
+</article></main></body></html>

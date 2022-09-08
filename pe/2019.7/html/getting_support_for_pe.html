@@ -1,0 +1,583 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="You can get commercial support for versions of PE in mainstream and extended support. You can also get support from our user community."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="getting_support_for_pe"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Getting support</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="getting_support_for_pe">
+    <h1 class="title topictitle1" id="ariaid-title1">Getting support </h1>
+    
+    <div class="body conbody"><p class="shortdesc">You can get commercial support for versions of <span class="ph">PE</span> in
+        mainstream and extended support. You can also get support from our user community. </p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="pe_support_lifecycle">
+      <h2 class="title topictitle2" id="ariaid-title2"><span class="ph">Puppet Enterprise</span> support life cycle </h2>
+      
+      <div class="body refbody"><p class="shortdesc">Some of our releases have long term support (LTS);
+            others have short term support (STS). For each release, there are three phases of
+            product support: Mainstream support, Extended support, and End of Life (EOL). </p>
+            <section class="section"><p class="p">For full information about types
+                        of releases, support phases and dates for each release, frequency of
+                        releases, and recommendations for upgrading, see the <a class="xref" href="https://puppet.com/misc/puppet-enterprise-lifecycle" target="_blank"><span class="ph">Puppet Enterprise</span> support
+                              lifecycle</a> page. </p><p class="p">If the latest release
+                        with the most up-to-date features is right for you, <a class="xref" href="https://puppet.com/download-puppet-enterprise" target="_blank">Download, try, or upgrade <span class="ph">Puppet Enterprise</span></a>. Alternatively, download an older supported release from
+                              <a class="xref" href="https://puppet.com/misc/pe-files/previous-releases" target="_blank">Previous releases</a>. </p></section>
+            <section class="section"><h3 class="title sectiontitle">Open source tools and
+                        libraries</h3><p class="p"><span class="ph">PE</span>
+                        uses open source tools and libraries. We use both externally maintained
+                        components (such as <span class="ph">Ruby</span>, <span class="ph">PostgreSQL</span>, and the JVM) and also projects
+                        which we own and maintain (such as <span class="ph">Facter</span>,
+                              <span class="ph">Puppet</span> agent, <span class="ph">Puppet Server</span>, and <span class="ph">PuppetDB</span>.) </p><p class="p">Projects which we own and maintain are "upstream" of our commercial
+                        releases. Our open source projects move faster and have shorter support life
+                        cycles than <span class="ph">PE</span>. We might discontinue updates
+                        to our open source platform components before their commercial EOL dates. We
+                        vet upstream security and feature releases and update supported versions
+                        according to customer demand and our <a class="xref" href="https://puppet.com/docs/vulnerability-submission-process" target="_blank">Security policy</a>.</p></section>
+      </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="the_customer_support_portal">
+    <h2 class="title topictitle2" id="ariaid-title3">Support portal</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">We provide responsive, dependable, quality support to
+        resolve any issues regarding the installation, operation, and use of <span class="ph">Puppet Enterprise (PE)</span>. </p>
+        <p class="p">There are two levels of commercial support plans for <span class="ph">PE</span>: Standard and Premium. Both allow you to report
+            your support issues to our confidential <a class="xref" href="https://support.puppet.com/hc/" target="_blank">customer support
+                portal</a>. When you purchase <span class="ph">PE</span>, you
+            receive an account and log-on for the portal, which includes access to our knowledge
+            base.</p>
+        <div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> We use the term "standard installation" to refer to a <span class="ph">PE</span> installation of up to 4,000 nodes. A Standard
+                Support Plan is not limited to this installation type, however. Standard here refers
+                to the support level, not the size of the <span class="ph">PE</span>
+                installation. </div>
+        </div>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="puppet_metrics_collector">
+    <h2 class="title topictitle2" id="ariaid-title4"><span class="ph">Puppet</span> metrics collector</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">The <span class="ph">Puppet</span> metrics collector can help troubleshoot
+        performance issues with <span class="ph">PE</span> components. </p>
+        <p class="p"><span class="ph">Puppet</span> Professional Services and Support use and recommend
+            the tool to help optimize <span class="ph">PE</span> installations.</p>
+        <p class="p">The <span class="ph">Puppet</span> metrics collector is available from the <span class="ph">Forge</span> at <a class="xref" href="https://forge.puppet.com/puppetlabs/puppet_metrics_collector" target="_blank">https://forge.puppet.com/puppetlabs/puppet_metrics_collector</a>.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="pe_support_script">
+    <h2 class="title topictitle2" id="ariaid-title5"><span class="ph">PE</span> support script</h2>
+    
+    <div class="body conbody"><p class="shortdesc">When seeking support, you might be asked to run an
+        information-gathering support script. This script collects a large amount of system
+        information and <span class="ph">PE</span> diagnostics, compresses the data, and
+        prints the location of the zipped tarball when it finishes running. </p>
+        <p class="p">The script is provided by the <code class="ph codeph">pe_support_script</code> module bundled with the installer. </p>
+        <section class="section"><h3 class="title sectiontitle">Running the support script</h3>
+            
+            <p class="p">Run the support script on the command line of your <span class="ph">PE</span> master or any agent node running <span class="ph">Red Hat Enterprise Linux</span>, <span class="ph">Ubuntu</span>, or
+                    <span class="ph">SUSE Linux Enterprise Server</span> operating systems with the command:
+                    <code class="ph codeph">/opt/puppetlabs/bin/puppet enterprise
+                    support</code>. </p>
+            <p class="p">Use these options when you run the support script to modify the
+                output:</p>
+            <div class="p">
+                <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="pe_support_script__entry__1">Option</th>
+                                <th class="entry" id="pe_support_script__entry__2">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="pe_support_script__entry__1">
+                                    <code class="ph codeph">--verbose</code>
+                                </td>
+                                <td class="entry" headers="pe_support_script__entry__2">Logs verbosely.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_support_script__entry__1">
+                                    <code class="ph codeph">--debug</code>
+                                </td>
+                                <td class="entry" headers="pe_support_script__entry__2">Logs debug information.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_support_script__entry__1">
+                                    <code class="ph codeph">--classifier</code>
+                                </td>
+                                <td class="entry" headers="pe_support_script__entry__2">Collects classification data.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_support_script__entry__1">
+                                    <code class="ph codeph">--dir
+                                        &lt;DIRECTORY&gt;</code>
+                                </td>
+                                <td class="entry" headers="pe_support_script__entry__2">Specifies where to save the support
+                                    script's resulting tarball.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_support_script__entry__1">
+                                    <code class="ph codeph">--ticket
+                                        &lt;NUMBER&gt;</code>
+                                </td>
+                                <td class="entry" headers="pe_support_script__entry__2">Specifies a support ticket number for
+                                    record-keeping purposes.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_support_script__entry__1">
+                                    <code class="ph codeph">--encrypt</code>
+                                </td>
+                                <td class="entry" headers="pe_support_script__entry__2">Encrypts the support script's
+                                    resulting tarball with GnuPG encryption. <div class="note note note_note"><span class="note__title">Note:</span> You must have GPG or GPG2 available
+                                        in your <code class="ph codeph">PATH</code> in order to encrypt the
+                                        tarball.</div>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="pe_support_script__entry__1">
+                                    <code class="ph codeph">--log-age</code>
+                                </td>
+                                <td class="entry" headers="pe_support_script__entry__2">Specifies how many days worth of logs
+                                    the support script collects. Valid values are positive integers
+                                    or <code class="ph codeph">all</code> to collect all logs, up to 1 GB per
+                                    log.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <p class="p">The next iteration of the support script, version 3, is currently
+                under development and may be selected by running <code class="ph codeph">/opt/puppetlabs/bin/puppet enterprise support
+                    --v3</code>. This new version of the support script has more options, which
+                can be used in addition to the list in the table above.</p>
+            <div class="p"><table class="table frame-all"><caption></caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry align-left" id="pe_support_script__entry__17">Option</th>
+                                <th class="entry align-left" id="pe_support_script__entry__18">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry align-left" headers="pe_support_script__entry__17"><code class="ph codeph">--v3</code></td>
+                                <td class="entry align-left" headers="pe_support_script__entry__18">Activate version 3 of the support
+                                    script. This option is required in order to use any other option
+                                    listed in this table.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry align-left" headers="pe_support_script__entry__17"><code class="ph codeph">--list</code></td>
+                                <td class="entry align-left" headers="pe_support_script__entry__18">List diagnostics that may be enabled
+                                    or disabled. Diagnostics labeled "opt-in" must be explicitly
+                                    enabled. All others are enabled by default.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry align-left" headers="pe_support_script__entry__17"><code class="ph codeph">--enable &lt;LIST&gt;</code></td>
+                                <td class="entry align-left" headers="pe_support_script__entry__18">A comma-separated list of diagnostic
+                                    names to enable. Use the <code class="ph codeph">--list</code> option to print available
+                                    names. The <code class="ph codeph">--enable</code> option must be used to
+                                    activate diagnostics marked as "opt-in."</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry align-left" headers="pe_support_script__entry__17"><code class="ph codeph">--disable &lt;LIST&gt;</code></td>
+                                <td class="entry align-left" headers="pe_support_script__entry__18">A comma-separated list of diagnostic
+                                    names to enable. Use the <code class="ph codeph">--list</code> option to print available
+                                    names.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry align-left" headers="pe_support_script__entry__17"><code class="ph codeph">--only &lt;LIST&gt;</code></td>
+                                <td class="entry align-left" headers="pe_support_script__entry__18">A comma-separated list of diagnostic
+                                    names to enable. All other diagnostics will be disabled. Use the
+                                        <code class="ph codeph">--list</code> option to print available names.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry align-left" headers="pe_support_script__entry__17"><code class="ph codeph">--upload</code></td>
+                                <td class="entry align-left" headers="pe_support_script__entry__18">Upload the output tarball to Puppet
+                                    Support via SFTP. Requires the <code class="ph codeph">--ticket &lt;NUMBER&gt;</code> option to be
+                                    used.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry align-left" headers="pe_support_script__entry__17"><code class="ph codeph">--upload_disable_host_key_check</code></td>
+                                <td class="entry align-left" headers="pe_support_script__entry__18">Disable SFTP host key checking. See
+                                        <a class="xref" href="https://support.puppet.com/hc/en-us/articles/360009970114-KB-0305-How-do-I-use-SFTP-to-upload-files-to-Puppet-support-" target="_blank">Support article KB#0305</a> for a list
+                                    of current host key values.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry align-left" headers="pe_support_script__entry__17"><code class="ph codeph">--upload_user &lt;USER&gt;</code></td>
+                                <td class="entry align-left" headers="pe_support_script__entry__18">Specify a SFTP user to use when
+                                    uploading. If not specified, a shared write-only account will be
+                                    used.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry align-left" headers="pe_support_script__entry__17"><code class="ph codeph">--upload_key &lt;FILE&gt;</code></td>
+                                <td class="entry align-left" headers="pe_support_script__entry__18">Specify a SFTP key to use with <code class="ph codeph">--upload_user</code>.</td>
+                            </tr>
+                        </tbody></table></div>
+            <div class="p" dir="ltr">Here are some examples of using the version 3 flags when
+                running the support
+                script:<pre class="pre codeblock"><code># Collect diagnostics for just Puppet and Puppet Server
+/opt/puppetlabs/bin/puppet enterprise support --v3 --only puppet,puppetserver
+
+# Enable collection of PE classification
+/opt/puppetlabs/bin/puppet enterprise support --v3 --enable pe.console.classifier-groups
+
+# Disable collection of system logs, upload result to Puppet
+/opt/puppetlabs/bin/puppet enterprise support --v3 --disable system.logs --upload --ticket 12345</code></pre></div>
+            <p dir="ltr" class="p">Descriptions of diagnostics that can be selected using
+                the <code class="ph codeph">--enable</code>, <code class="ph codeph">--disable</code>, and <code class="ph codeph">--only</code> flags are found in the next section. </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Information collected by the
+                support script</h3><p dir="ltr" class="p">The following sections
+                describe the information collected by version 1 and version 3 of the support
+                script.</p><p class="p"><strong class="ph b">base-status</strong></p><p dir="ltr" class="p">The <code class="ph codeph">base-status</code> check collects basic diagnostics about the PE
+                installation. This check is unique in that it is always enabled and is not affected
+                by the <code class="ph codeph">--disable</code> or <code class="ph codeph">--only</code> flags.</p><p dir="ltr" class="p">Information collected by the <code class="ph codeph">base-status</code> check:</p><ul class="ul">
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">The version of the support script that is
+                        running, the Puppet ticket number, if supplied, and the time at which the
+                        script was run.</p>
+                </li>
+            </ul><p class="p"><strong class="ph b">system</strong></p><p dir="ltr" class="p">The checks in the <code class="ph codeph">system</code> scope gather diagnostics, logs, and configuration related to
+                the operating system.</p><p dir="ltr" class="p">Information collected by
+                the <code class="ph codeph">system.config</code> check:</p><ul class="ul">
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A copy of <code class="ph codeph">/etc/hosts</code></p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A copy of <code class="ph codeph">/etc/nsswitch.conf</code></p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A copy of <code class="ph codeph">/etc/resolv.conf</code></p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">Configuration for the apt, yum, and dnf package
+                        managers</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">The operating system version</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">The umask in effect</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">The status of SELinux</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A list of configured network interfaces</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A list of configured firewall rules</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A list of loaded firewall kernel modules</p>
+                </li>
+            </ul><p dir="ltr" class="p">Information collected by the <code class="ph codeph">system.logs</code> check:</p><ul class="ul">
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A copy of the system log (syslog)</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A copy of the kernel log (dmesg)</p>
+                </li>
+            </ul><p dir="ltr" class="p">Information collected by the <code class="ph codeph">system.status</code> check:</p><ul class="ul">
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">Values of variables set in the environment</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A list of running processes</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A list of enabled services</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">The uptime of the system</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">A list of established network connections</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">NTP status</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">The IP address and hostname of the node running
+                        the script, according to DNS</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">Disk usage</p>
+                </li>
+                <li dir="ltr" class="li">
+                    <p dir="ltr" class="p">RAM usage</p>
+                </li>
+            </ul><p class="p"><strong class="ph b">puppet</strong></p><p dir="ltr" class="p">The checks in the <code class="ph codeph">puppet</code> scope gather diagnostics, logs, and configuration related to
+                the <span class="ph">Puppet</span> agent services.</p><p dir="ltr" class="p">Information collected by the <code class="ph codeph">puppet.config</code> check:</p><ul class="ul">
+                <li dir="ltr" class="li">
+                    <div class="p" dir="ltr"><span class="ph">Facter</span>
+                        configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/facter/facter.conf</code></li>
+                        </ul></div>
+                </li>
+                <li dir="ltr" class="li">
+                    <div class="p" dir="ltr"><span class="ph">Puppet</span>
+                        configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/device.conf</code></li>
+                            <li class="li">
+                                <p dir="ltr" class="p"><code class="ph codeph">/etc/puppetlabs/puppet/hiera.yaml</code></p>
+                            </li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/puppet.conf</code></li>
+                        </ul></div>
+                </li>
+                <li dir="ltr" class="li">
+                    <div class="p" dir="ltr">PXP agent configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/pxp-agent/modules/</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/pxp-agent/pxp-agent.conf</code></li>
+                        </ul></div>
+                </li>
+            </ul><div class="p" dir="ltr">Information collected by the <code class="ph codeph">puppet.logs</code> check:<ul class="ul">
+                    <li class="li"><span class="ph">Puppet</span> log files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/var/log/puppetlabs/puppet</code></li>
+                        </ul></li>
+                    <li class="li">JournalD logs for the <code class="ph codeph">puppet</code> service</li>
+                    <li class="li">PXP agent log files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/var/log/puppetlabs/puppet</code></li>
+                        </ul></li>
+                    <li class="li">JournalD logs for the <code class="ph codeph">pxp-agent</code> service</li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">puppet.status</code> check:<ul class="ul">
+                    <li class="li"><code class="ph codeph">facter
+                            -p</code> output and debug-level messages</li>
+                    <li class="li">A list of <span class="ph">Ruby</span> gems
+                        installed for use by <span class="ph">Puppet</span></li>
+                    <li class="li">Ping output for the <span class="ph">Puppet Server</span> the agent is configured to use</li>
+                    <li class="li">A copy of the following files and directories from the
+                            <span class="ph">Puppet</span>
+                        <code class="ph codeph">statedir</code>:<ul class="ul">
+                            <li class="li"><code class="ph codeph">classes.txt</code></li>
+                            <li class="li"><code class="ph codeph">graphs/</code></li>
+                            <li class="li"><code class="ph codeph">last_run_summary.yaml</code></li>
+                        </ul></li>
+                    <li class="li">A listing of metadata (name, size, etc.) of files
+                        present in the following directories:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs</code></li>
+                            <li class="li"><code class="ph codeph">/var/log/puppetlabs</code></li>
+                            <li class="li"><code class="ph codeph">/opt/puppetlabs</code></li>
+                        </ul></li>
+                    <li class="li">A listing of <span class="ph">Puppet</span> and
+                            <span class="ph">PE</span> packages installed on the system along
+                        with verification output for each</li>
+                </ul></div><p class="p"><strong class="ph b">puppetserver</strong></p><p dir="ltr" class="p">The checks in the <code class="ph codeph">puppetserver</code> scope gather diagnostics, logs, and configuration
+                related to the <span class="ph">Puppet Server</span> service.</p><div class="p">Information collected by the <code class="ph codeph">puppetserver.config</code> check:<ul class="ul">
+                    <li class="li"><span class="ph">Puppet Server</span> configuration
+                            files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/code/hiera.yaml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/auth.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/autosign.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/classfier.yaml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/fileserver.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/hiera.yaml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/puppet.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/puppetdb.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/routes.yaml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetserver/bootstrap.cfg</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetserver/code-manager-request-logging.xml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetserver/conf.d/</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetserver/logback.xml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetserver/request-logging.xml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/r10k/r10k.yaml</code></li>
+                            <li class="li"><code class="ph codeph">/opt/puppetlabs/server/data/code-manager/r10k.yaml</code></li>
+                        </ul></li>
+                </ul></div><div class="p" dir="ltr">Information collected by the <code class="ph codeph">puppetserver.logs</code> check:<ul class="ul">
+                    <li class="li"><span class="ph">Puppet Server</span> log files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/var/log/puppetlabs/puppetserver/</code></li>
+                        </ul></li>
+                    <li class="li">JournalD logs for the <code class="ph codeph">pe-puppetserver</code> service</li>
+                    <li class="li"><span class="ph">r10k</span> log files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/var/log/puppetlabs/r10k/</code></li>
+                        </ul></li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">puppetserver.metrics</code> check:<ul class="ul">
+                    <li class="li">Data stored in <code class="ph codeph">/opt/puppetlabs/puppet-metrics-collector/puppetserver</code></li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">puppetserver.status</code> check:<ul class="ul">
+                    <li dir="ltr" class="li">
+                        <p dir="ltr" class="p">A list of certificates issued by the <span class="ph">Puppet</span> CA</p>
+                    </li>
+                    <li dir="ltr" class="li">
+                        <p dir="ltr" class="p">A list of Ruby gems installed for use by <span class="ph">Puppet Server</span></p>
+                    </li>
+                    <li dir="ltr" class="li">
+                        <p dir="ltr" class="p">Output from the <code class="ph codeph">status/v1/services</code> API</p>
+                    </li>
+                    <li dir="ltr" class="li">
+                        <p dir="ltr" class="p">Output from the <code class="ph codeph">puppet/v3/environment_modules</code>
+                            API</p>
+                    </li>
+                    <li dir="ltr" class="li">
+                        <p dir="ltr" class="p">Output from the <code class="ph codeph">puppet/v3/environments</code> API</p>
+                    </li>
+                    <li dir="ltr" class="li">
+                        <p dir="ltr" class="p"><code class="ph codeph">environment.conf</code> and <code class="ph codeph">hiera.yaml</code> files from
+                            each <span class="ph">Puppet</span> code environment</p>
+                    </li>
+                    <li dir="ltr" class="li">
+                        <p dir="ltr" class="p">The disk space used by <span class="ph">Code Manager</span> cache, storage, client, and
+                            staging directories</p>
+                    </li>
+                    <li dir="ltr" class="li">
+                        <p dir="ltr" class="p">The disk space used by the server's File
+                            Bucket</p>
+                    </li>
+                    <li class="li">The output of <code class="ph codeph">r10k deploy display</code></li>
+                </ul></div><p class="p"><strong class="ph b">puppetdb</strong></p><p dir="ltr" class="p">The checks in the <code class="ph codeph">puppetdb</code> scope gather diagnostics, logs, and configuration related to
+                the <span class="ph">PuppetDB</span> service.</p><div class="p" dir="ltr">Information collected by the <code class="ph codeph">puppetdb.config</code> check:<ul class="ul">
+                    <li class="li">Configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetdb/bootstrap.cfg</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetdb/certificate-whitelist</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetdb/conf.d/</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetdb/logback.xml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppetdb/request-logging.xml</code></li>
+                        </ul></li>
+                </ul></div><div class="p" dir="ltr">Information collected by the <code class="ph codeph">puppetdb.logs</code> check:<ul class="ul">
+                    <li class="li">PuppetDB log files: <code class="ph codeph">/var/log/puppetlabs/puppetdb</code></li>
+                    <li class="li">JournalD logs for the <code class="ph codeph">pe-puppetdb</code> service</li>
+                </ul></div><div class="p" dir="ltr">Information collected by the <code class="ph codeph">puppetdb.metrics</code> check:<ul class="ul">
+                    <li class="li">Data stored in <code class="ph codeph">/opt/puppetlabs/puppet-metrics-collector/puppetdb</code></li>
+                </ul></div><div class="p" dir="ltr">Information collected by the <code class="ph codeph">puppetdb.status</code> check:<ul class="ul">
+                    <li class="li">Output from the <code class="ph codeph">status/v1/services</code> API</li>
+                    <li class="li">Output from the <code class="ph codeph">pdb/admin/v1/summary-stats</code> API</li>
+                    <li class="li">A list of active certnames from the PQL query <code class="ph codeph">nodes[certname] {deactivated is null and
+                            expired is null}</code></li>
+                </ul></div><strong class="ph b">pe</strong><p dir="ltr" class="p">The
+                checks in the <code class="ph codeph">pe</code> scope gather
+                diagnostics, logs, and configuration related to <span class="ph">Puppet Enterprise</span> services.</p><div class="p">Information collected by the <code class="ph codeph">pe.config</code> check:<ul class="ul">
+                    <li class="li">Installer configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/enterprise/conf.d/</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/enterprise/hiera.yaml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/installer/answers.install</code></li>
+                        </ul></li>
+                    <li class="li"><span class="ph">PE</span> client tools
+                        configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/client-tools/orchestrator.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/client-tools/puppet-access.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/client-tools/puppet-code.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/client-tools/puppetdb.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/client-tools/services.conf</code></li>
+                        </ul></li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">pe.logs</code> check:<ul class="ul">
+                    <li class="li"><span class="ph">PE</span> installer log
+                            files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/var/log/puppetlabs/installer/</code></li>
+                        </ul></li>
+                </ul></div><ul class="ul">
+                <li class="li"><span class="ph">PE</span> backup and restore log
+                        files:<ul class="ul">
+                        <li class="li"><code class="ph codeph">/var/log/puppetlabs/pe-backup-tools/</code></li>
+                        <li class="li"><code class="ph codeph">/var/log/puppetlabs/puppet_infra_recover_config_cron.log</code></li>
+                    </ul></li>
+            </ul><div class="p">Information collected by the <code class="ph codeph">pe.status</code> check:<ul class="ul">
+                    <li class="li">Output from <code class="ph codeph">puppet infra status</code></li>
+                    <li class="li">Current tuning settings from <code class="ph codeph">puppet infra tune</code></li>
+                    <li class="li">Recommended tuning settings from <code class="ph codeph">puppet infra tune</code></li>
+                </ul></div><div class="p" dir="ltr">This check is disabled by default.
+                Information collected by the <code class="ph codeph">pe.file-sync</code> check when activated by the <code class="ph codeph">--enable</code> option:<ul class="ul">
+                    <li class="li"><span class="ph">Puppet</span> manifests and
+                        other content from <code class="ph codeph">/etc/puppetlabs/code-staging/</code></li>
+                    <li class="li"><span class="ph">Puppet</span> manifests and
+                        other content stored in <span class="ph">Git</span> repos under
+                            <code class="ph codeph">/opt/puppetlabs/server/data/puppetserver/filesync</code></li>
+                </ul></div><p class="p"><strong class="ph b">pe.console</strong></p><p class="p">The checks in the <code class="ph codeph">pe.console</code> scope gather diagnostics, logs, and configuration related
+                to the <span class="ph">Puppet Enterprise</span> console service.</p><div class="p">Information collected by the <code class="ph codeph">pe.console.config</code> check:<ul class="ul">
+                    <li class="li">Configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/console-services/bootstrap.cfg</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/console-services/conf.d/</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/console-services/logback.xml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/console-services/rbac-certificate-whitelist</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/console-services/request-logging.xml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/nginx/conf.d/</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/nginx/nginx.conf</code></li>
+                        </ul></li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">pe.console.logs</code> check:<ul class="ul">
+                    <li class="li">Console log files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/var/log/puppetlabs/console-services/</code></li>
+                            <li class="li"><code class="ph codeph">/var/log/puppetlabs/nginx/</code></li>
+                        </ul></li>
+                    <li class="li">JournalD logs for the <code class="ph codeph">pe-puppetdb</code> and <code class="ph codeph">pe-nginx</code> services</li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">pe.console.status</code> check:<ul class="ul">
+                    <li class="li">Output from the <code class="ph codeph">/status/v1/services</code> API</li>
+                    <li class="li">Directory service connection configuration, with
+                        passwords removed</li>
+                </ul></div><div class="p">This check is disabled by default. Information
+                collected by the <code class="ph codeph">pe.console.classifier-groups</code> check when activated by the <code class="ph codeph">--enable</code> option:<ul class="ul">
+                    <li class="li">All classification data provided by the <code class="ph codeph">/v1/groups</code> API
+                        endpoint</li>
+                </ul></div><p class="p"><strong class="ph b">pe.orchestration</strong></p><p class="p">The checks in the <code class="ph codeph">pe.orchestration</code> scope gather diagnostics, logs,
+                and configuration related to the <span class="ph">Puppet Enterprise</span>
+                orchestration services.</p><div class="p">Information collected by the
+                    <code class="ph codeph">pe.orchestration.config</code>
+                    check:<ul class="ul">
+                    <li class="li">ACE server configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/ace-server/conf.d/</code></li>
+                        </ul></li>
+                    <li class="li"><span class="ph">Bolt</span> server configuration
+                            files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/bolt-server/conf.d/</code></li>
+                        </ul></li>
+                    <li class="li">Orchestration service configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/bootstrap.cfg</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/conf.d/analytics.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/conf.d/auth.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/conf.d/global.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/conf.d/inventory.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/conf.d/metrics.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/conf.d/orchestrator.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/conf.d/pcp-broker.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/conf.d/web-routes.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/conf.d/webserver.conf</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/logback.xml</code></li>
+                            <li class="li"><code class="ph codeph">/etc/puppetlabs/puppet/orchestration-services/request-logging.xml</code></li>
+                        </ul></li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">pe.orchestration.logs</code> check:<ul class="ul">
+                    <li class="li">ACE server log files: <code class="ph codeph">/var/log/puppetlabs/ace-server/</code></li>
+                    <li class="li">JournalD logs for the <code class="ph codeph">pe-ace-server</code> service</li>
+                    <li class="li"><span class="ph">Bolt</span> server log files:
+                            <code class="ph codeph">/var/log/puppetlabs/bolt-server/</code></li>
+                    <li class="li">JournalD logs for the <code class="ph codeph">pe-bolt-server</code> service</li>
+                    <li class="li">Orchestrator log files: <code class="ph codeph">/var/log/puppetlabs/orchestration-services/</code></li>
+                    <li class="li">JournalD logs for the <code class="ph codeph">pe-orchestration-services</code> service</li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">pe.orchestration.metrics</code> check:<ul class="ul">
+                    <li class="li">Data stored in <code class="ph codeph">/opt/puppetlabs/puppet-metrics-collector/orchestrator/</code></li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">pe.orchestration.status</code> check:<ul class="ul">
+                    <li class="li">Output from the <code class="ph codeph">/status/v1/services</code> API</li>
+                </ul></div><p class="p"><strong class="ph b">pe.postgres</strong></p><p class="p">The checks in the <code class="ph codeph">pe.postgres</code> scope gather diagnostics, logs, and configuration related
+                to the <span class="ph">Puppet Enterprise</span>
+                <span class="ph">PostgreSQL</span> database.</p><div class="p">Information collected by the <code class="ph codeph">pe.postgres.config</code> check:<ul class="ul">
+                    <li class="li">Configuration files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/opt/puppetlabs/server/data/postgresql/*/data/postgresql.conf</code></li>
+                            <li class="li"><code class="ph codeph">/opt/puppetlabs/server/data/postgresql/*/data/postmaster.opts</code></li>
+                            <li class="li"><code class="ph codeph">/opt/puppetlabs/server/data/postgresql/*/data/pg_ident.conf</code></li>
+                            <li class="li"><code class="ph codeph">/opt/puppetlabs/server/data/postgresql/*/data/pg_hba.conf</code></li>
+                        </ul></li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">pe.postgres.logs</code> check:<ul class="ul">
+                    <li class="li"><span class="ph">PostgreSQL</span> log files:<ul class="ul">
+                            <li class="li"><code class="ph codeph">/var/log/puppetlabs/postgresql/*/</code></li>
+                            <li class="li"><code class="ph codeph">/opt/puppetlabs/server/data/postgresql/pg_upgrade_internal.log</code></li>
+                            <li class="li"><code class="ph codeph">/opt/puppetlabs/server/data/postgresql/pg_upgrade_server.log</code></li>
+                            <li class="li"><code class="ph codeph">/opt/puppetlabs/server/data/postgresql/pg_upgrade_utility.log</code></li>
+                        </ul></li>
+                    <li class="li">JournalD logs for the <code class="ph codeph">pe-postgresql</code> service</li>
+                </ul></div><div class="p">Information collected by the <code class="ph codeph">pe.postgres.status</code> check:<ul class="ul">
+                    <li class="li">A list of setting values that the database is using
+                        while running</li>
+                    <li class="li">A list of currently established database connections and
+                        the queries being executed</li>
+                    <li class="li">A distribution of <span class="ph">Puppet</span>
+                        run start times for thundering herd detection</li>
+                    <li class="li">The status of any configured replication slots</li>
+                    <li class="li">The status of any active replication connections</li>
+                    <li class="li">The size of database directories on disk</li>
+                    <li class="li">The size of databases as reported by the database
+                        service</li>
+                    <li class="li">The size of tables and indices within databases</li>
+                </ul></div></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="getting_support_from_the_puppet_community">
+  <h2 class="title topictitle2" id="ariaid-title6">Community support</h2>
+  
+  <div class="body conbody"><p class="shortdesc">As a <span class="ph">Puppet Enterprise</span> customer you are
+    more than welcome to participate in our large and helpful open source community as well as
+    report issues against the open source project.</p>
+    <ul class="ul">
+      <li class="li">Join the <a class="xref" href="https://groups.google.com/a/puppet.com/forum/#!forum/pe-users" target="_blank"><span class="ph">Puppet Enterprise</span> user group</a>. Your request to join is sent to
+          <span class="ph">Puppet, Inc.</span> for authorization and you receive an email when
+        you’ve been added to the user group. <ul class="ul">
+          <li class="li">Click on “Sign in and apply for membership.”</li>
+          <li class="li">Click on “Enter your email address to access the document.”</li>
+          <li class="li">Enter your email address.</li>
+        </ul></li>
+      <li class="li">Join the open source <a class="xref" href="http://groups.google.com/group/puppet-users" target="_blank"><span class="ph">Puppet</span> user group</a>.</li>
+      <li class="li">Join the <a class="xref" href="http://groups.google.com/group/puppet-dev" target="_blank"><span class="ph">Puppet</span> developers group</a>.</li>
+      <li class="li">Report issues with the <a class="xref" href="https://tickets.puppetlabs.com/browse/PUP" target="_blank">open source <span class="ph">Puppet</span> project</a>.</li>
+    </ul>
+  </div>
+</article></article></article></main></body></html>

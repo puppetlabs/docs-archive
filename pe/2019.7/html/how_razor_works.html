@@ -1,0 +1,121 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="There are five key steps for provisioning nodes with Razor."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="how_razor_works"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>How Razor works</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="how_razor_works">
+   <h1 class="title topictitle1" id="ariaid-title1">How <span class="ph">Razor</span> works</h1>
+   
+   
+   <div class="body conbody"><p class="shortdesc">There are five key steps for provisioning nodes with <span class="ph">Razor</span>.</p>
+      <div class="p">
+         <figure class="fig fignone"><figcaption><span class="fig--title-label">Figure 1. </span>
+               <span class="ph">Razor</span> identifies a node</figcaption>
+            
+            <br><img class="image" src="razor-1.png" alt="Graphic showing a server identified by its metadata."><br>
+         </figure>
+      </div>
+      <p class="p">When a new node appears, <span class="ph">Razor</span> discovers
+         its characteristics by booting it with the <span class="ph">Razor</span> microkernel
+         and using <span class="ph">Facter</span> to inventory its facts.</p>
+      <div class="p">
+         <figure class="fig fignone"><figcaption><span class="fig--title-label">Figure 2. </span>The node is tagged</figcaption>
+            
+            <br><img class="image" src="razor-2.png" alt="Graphic showing a server tagged based on its metadata."><br>
+         </figure>
+      </div>
+      <p class="p">The node is tagged based on its characteristics. Tags contain a match
+         condition — a Boolean expression that has access to the node’s facts and determines whether
+         the tag is to be applied to the node or not.</p>
+      <div class="p">
+         <figure class="fig fignone"><figcaption><span class="fig--title-label">Figure 3. </span>The node tags match a <span class="ph">Razor</span>
+               policy </figcaption>
+            
+            <br><img class="image" src="razor-3.png" alt="Graphic showing a server with tags A and B matching to a policy with tags A and B."><br>
+         </figure>Node tags are compared to tags in the policy table. The first policy with tags that
+         match the node’s tags is applied to the node.</div>
+      <div class="p">
+         <figure class="fig fignone"><figcaption><span class="fig--title-label">Figure 4. </span>Policies pull together all the provisioning
+               elements</figcaption>
+            
+            <br><img class="image" src="razor-4.png" alt="Graphic showing that repositories, tasks, brokers, tags, and miscellaneous data are all governed by policies."><br>
+         </figure>
+      </div>
+      <div class="p">
+         <figure class="fig fignone"><figcaption><span class="fig--title-label">Figure 5. </span>
+               <span class="ph">Razor</span> provisions the node </figcaption>
+            
+            <br><img class="image" src="razor-5.png" alt="Graphic showing a server provisioned with Puppet and Windows."><br>
+         </figure>The node is now installed. If you choose, you can hand off management of the node to
+            <span class="ph">Puppet Enterprise</span>.</div>
+   </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="razor_system_requirements">
+   <h2 class="title topictitle2" id="ariaid-title2"><span class="ph">Razor</span> system requirements</h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">The <span class="ph">Razor</span> server and client
+      are supported on these operating systems.</p>
+      <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+               <tr class="row">
+                  <th class="entry" id="razor_system_requirements__entry__1">Component</th>
+                  <th class="entry" id="razor_system_requirements__entry__2">Supported OS</th>
+               </tr>
+            </thead><tbody class="tbody">
+               <tr class="row">
+                  <td class="entry" headers="razor_system_requirements__entry__1">Server</td>
+                  <td class="entry" headers="razor_system_requirements__entry__2">
+                     <ul class="ul">
+                        <li class="li">
+                           <p class="p"><span class="ph">RHEL</span> 6 and 7</p>
+                        </li>
+                        <li class="li">
+                           <p class="p"><span class="ph">CentOS</span> 6 and 7</p>
+                        </li>
+                     </ul>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="razor_system_requirements__entry__1">Client</td>
+                  <td class="entry" headers="razor_system_requirements__entry__2">
+                     <ul class="ul">
+                        <li class="li"><span class="ph">Windows</span> 2008 R2
+                           Server</li>
+                        <li class="li"><span class="ph">Windows</span> 2012 R2
+                           Server</li>
+                        <li class="li"><span class="ph">Windows</span> 2016
+                           Server</li>
+                        <li class="li">ESXi 5.5</li>
+                        <li class="li"><span class="ph">RHEL</span> 6 and 7</li>
+                        <li class="li"><span class="ph">CentOS</span> 6 and 7</li>
+                        <li class="li"><span class="ph">Debian</span> Wheezy</li>
+                     </ul>
+                  </td>
+               </tr>
+            </tbody></table>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="pre-requisites_for_machines_provisioned_with_razor">
+   <h2 class="title topictitle2" id="ariaid-title3">Pre-requisites for machines provisioned with <span class="ph">Razor</span></h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">To successfully install an operating system on a machine
+      using <span class="ph">Razor</span>, the machine must meet these
+      specifications.</p>
+      <section class="section">
+         <div class="p">
+            <ul class="ul">
+               <li class="li">
+                  <p class="p">Have at least 512MB RAM.</p>
+               </li>
+               <li class="li">
+                  <p class="p">Be supported by the operating system you're installing.</p>
+               </li>
+               <li class="li">
+                  <p class="p">Be able to successfully boot into the microkernel. The
+                     microkernel is based on <a class="xref" href="https://wiki.centos.org/Manuals/ReleaseNotes/CentOS7" target="_blank">CentOS 7</a>, 64-bit only, and supports the <a class="xref" href="https://en.wikipedia.org/wiki/X86-64" target="_blank">x86-64 Intel architecture</a>.</p>
+               </li>
+               <li class="li">
+                  <p class="p">Be able to successfully boot the <a class="xref" href="http://ipxe.org/" target="_blank">iPXE</a>
+                     firmware.</p>
+               </li>
+            </ul>
+         </div>
+      </section>
+   </div>
+</article></article></article></main></body></html>

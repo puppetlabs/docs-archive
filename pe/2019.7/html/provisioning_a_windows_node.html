@@ -1,0 +1,493 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Provisioning deploys and installs your chosen operating system to target nodes."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Melissa Amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="provisioning_a_windows_node"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Provisioning a Windows node</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="provisioning_a_windows_node">
+    <h1 class="title topictitle1" id="ariaid-title1">Provisioning a <span class="ph">Windows</span> node</h1>
+    <p class="shortdesc">Provisioning deploys and installs your chosen operating
+        system to target nodes.</p>
+    
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" lang="en-us" id="what_triggers_provisioning">
+   <h2 class="title topictitle2" id="ariaid-title2">What triggers provisioning</h2>
+   
+   
+   <div class="body conbody"><p class="shortdesc">There are four requirements for <span class="ph">Razor</span> to provision a node.</p>
+      <div class="p">
+         <ul class="ul">
+            <li class="li">
+               <p class="p">The node must boot with iPXE software.</p>
+            </li>
+            <li class="li">
+               <p class="p">The node's network must link to the <span class="ph">Razor</span> server through TFTP.</p>
+            </li>
+            <li class="li">
+               <p class="p">A <span class="ph">Razor</span> policy must match the
+                  node.</p>
+            </li>
+            <li class="li">
+               <p class="p">The node's <code class="ph codeph">installed</code> flag must be set to <code class="ph codeph">false</code>. </p>
+            </li>
+         </ul>
+      </div>
+      <p class="p">When these conditions are met, <span class="ph">Razor</span>
+         recognizes the node, applies the first matching policy in the policy table, and provisions
+         the node.</p>
+      <div class="p">With these requirements in mind, you can modify your <span class="ph">Razor</span> workflow to suit your goals, your environment, and your
+         familiarity with <span class="ph">Razor</span>. <ul class="ul">
+            <li class="li">
+               <p class="p">
+                  <a class="xref" href="provisioning_a_nix_node.html#provision-begin" title="This workflow enables you to learn about Razor and verify tags before provisioning nodes.">Provision for new users</a> enables you to
+                  learn about <span class="ph">Razor</span> and verify tags before
+                  provisioning nodes. </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <a class="xref" href="provisioning_a_nix_node.html#provision-advanced" title="This workflow enables you to seamlessly provision nodes in an existing environment.">Provision for advanced users</a> enables you
+                  to seamlessly provision nodes in an existing environment. </p>
+            </li>
+         </ul></div>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="provision-windows-node">
+    <h2 class="title topictitle2" id="ariaid-title3">Provision a <span class="ph">Windows</span> node</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">This <span class="ph">Windows</span> workflow
+        adapts the&nbsp;provisioning for new users workflow. This process enables you to learn about
+            <span class="ph">Razor</span> and verify tags before provisioning
+        nodes.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <div class="p">You're ready to provision a node after you configure: <ul class="ul">
+                    <li class="li"><p class="p">A&nbsp;DHCP/DNS/TFTP service with
+                            SELinux configured to enable PXE boot</p></li>
+                    <li class="li"><p class="p">
+                            <span class="ph">Puppet Enterprise</span>
+                        </p></li>
+                    <li class="li"><p class="p">The <span class="ph">Razor</span> server and client </p></li>
+                </ul>
+            </div>To
+            provision <span class="ph">Windows</span> machines, you also need: <ul class="ul">
+                <li class="li">
+                    <p class="p">A <span class="ph">Windows</span> machine running
+                        the same OS that you plan to provision. This machine is used to create a
+                        WinPE image. </p>
+                </li>
+                <li class="li">
+                    <p class="p">(Optional) An activation key for the OS. A trial license
+                        is used if you don't have an activation key.</p>
+                </li>
+            </ul>
+            <p class="p">To follow along with the examples in this workflow, you must also
+                have a new node with at least 8GB of memory. Don’t boot the node before you begin
+                the provisioning process. </p>
+        </section>
+        <section class="section context">
+            <p class="p">In this workflow, you load iPXE software and
+                register nodes with the microkernel so you can view node details. Then you configure
+                    <span class="ph">Razor</span> objects, finishing with creating a policy.
+                Provisioning is triggered when you reinstall the node in order to remove
+                    the&nbsp;<code class="ph codeph">installed</code>&nbsp;flag.</p>
+            <p class="p">The examples in this workflow demonstrate provisioning a sample
+                node with <span class="ph">Windows</span>. You can modify the settings and
+                scale up your workflow as needed for your environment.</p>
+        </section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title4" id="config_smb_share">
+    <h3 class="title topictitle3" id="ariaid-title4">Configure SMB share</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Because neither the WinPE environment nor the <span class="ph">Windows</span> installer can use an HTTP source for installation,
+        you must use a server message block (SMB) server to store the <span class="ph">Razor</span> repositories.</p>
+        <section class="section context">You can configure SMB share automatically,
+            using a <span class="ph">Razor</span> class parameter, or manually.</section>
+    </div>
+<article class="topic task nested3" aria-labelledby="ariaid-title5" id="auto-config-smb-share">
+    <h4 class="title topictitle4" id="ariaid-title5">Automatically configure SMB share</h4>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Enable the SMB share class parameter on the <span class="ph">Razor</span> server to let <span class="ph">Razor</span> set
+        up the SMB share automatically.</p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, select <span class="ph menucascade"><span class="ph uicontrol">Nodes</span><abbr title="and then"> &gt; </abbr><span class="ph uicontrol">Classification</span></span>, then click the <span class="ph">Razor</span> server node
+                    group.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, enable the SMB share parameter. </span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                    <tr class="row">
+                                        <th class="entry" id="auto-config-smb-share__entry__1">
+                                            <span class="ph uicontrol">Parameter</span>
+                                        </th>
+                                        <th class="entry" id="auto-config-smb-share__entry__2">
+                                            <span class="ph uicontrol">Value</span>
+                                        </th>
+                                    </tr>
+                                </thead><tbody class="tbody">
+                                    <tr class="row">
+                                        <td class="entry" headers="auto-config-smb-share__entry__1">
+                                            <span class="ph uicontrol">enable_windows_smb</span>
+                                        </td>
+                                        <td class="entry" headers="auto-config-smb-share__entry__2">true</td>
+                                    </tr>
+                                </tbody></table>
+                        <div class="note note note_note"><span class="note__title">Note:</span> If you change&nbsp;<span class="ph uicontrol">enable_windows_smb</span>&nbsp;from&nbsp;<span class="ph uicontrol">true</span>&nbsp;to&nbsp;<span class="ph uicontrol">false</span>&nbsp;later, the
+                            share remains enabled but isn’t managed by <span class="ph">Puppet</span>.</div>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Commit changes, run <span class="ph">Puppet</span>, and then restart the <code class="ph codeph">pe-razor-server</code> service.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p"></p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li></ul></div></nav></article><article class="topic task nested3" aria-labelledby="ariaid-title6" id="manually_configure_smb_share">
+   <h4 class="title topictitle4" id="ariaid-title6">Manually configure SMB share</h4>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">If Samba is already installed on your <span class="ph">Razor</span> server, you can manually configure it to work with <span class="ph">Razor</span>.</p>
+      <section class="section context"></section>
+      <section><ol class="ol steps"><li class="li step">
+            <span class="ph cmd">Navigate to the Samba directory:&nbsp;<code class="ph codeph">cd /etc/samba</code></span>
+         </li><li class="li step">
+            <span class="ph cmd">Edit the <code class="ph codeph">smb.conf</code> file:</span>
+            <ol type="a" class="ol substeps">
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Modify the network settings as necessary for
+                     your environment.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Edit the <code class="ph codeph">global</code> service definition to <a class="xref" href="https://www.samba.org/samba/docs/man/manpages/smb.conf.5.html#idp60894080" target="_blank">allow unauthenticated access</a>.</span>
+                  <div class="itemgroup stepxmp">
+                     <div class="p">
+                        <pre class="pre codeblock"><code>[global]
+    security     = user
+    map to guest = bad user</code></pre>
+                     </div>
+                  </div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Add a service definition that allows anonymous
+                     access and points to the<code class="ph codeph">
+                        repo_store_root</code>&nbsp;class parameter of the&nbsp;<code class="ph codeph">pe_razor</code>&nbsp;module.</span>
+                  <div class="itemgroup stepxmp">
+                     <div class="p">
+                        <pre class="pre codeblock"><code>[razor]
+    comment   = Windows Installers
+    path      = /opt/puppetlabs/server/data/razor-server/repo
+    guest ok  = yes
+    writable  = no
+    browsable = yes</code></pre>
+                     </div>
+                  </div>
+               </li>
+            </ol>
+         </li><li class="li step">
+            <span class="ph cmd">Restart Samba: <code class="ph codeph">service smb restart</code></span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+   </div>
+</article></article><article class="topic task nested2" aria-labelledby="ariaid-title7" id="load-ipxe-begin">
+    <h3 class="title topictitle3" id="ariaid-title7">Load iPXE software</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Set your machines to PXE boot so that <span class="ph">Razor</span> can interact with the node and provision the operating
+        system. This process uses both the&nbsp;<code class="ph codeph">undionly.kpxe</code>&nbsp;file from the iPXE open source software stack and a <span class="ph">Razor</span><code class="ph codeph">bootstrap.ipxe</code>&nbsp;script.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Download the iPXE boot image <a class="xref" href="http://boot.ipxe.org/undionly.kpxe" target="_blank">http://boot.ipxe.org/undionly.kpxe</a> and copy the
+                    image to your TFTP server’s<code class="ph codeph">
+                        /var/lib/tftpboot</code> directory: </span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>`cp undionly.kpxe /var/lib/tftpboot`</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Download the iPXE bootstrap script from the <span class="ph">Razor</span> server and copy the script to your TFTP
+                        server’s<code class="ph codeph">
+                    /var/lib/tftpboot</code>&nbsp;directory:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>`wget   "https://$&lt;RAZOR_HOSTNAME&gt;:$&lt;HTTPS_PORT&gt;/api/microkernel/bootstrap?nic_max=1&amp;http_port=$&lt;HTTP_PORT&gt;" -O /var/lib/tftpboot/bootstrap.ipxe`</code></pre><div class="note note note_note"><span class="note__title">Note:</span> Don’t use&nbsp;<code class="ph codeph">localhost</code>&nbsp;as the name of the
+                                <span class="ph">Razor</span> host. The bootstrap script
+                            chain-loads the next iPXE script from the server, so it must contain the
+                            correct host name.</div></div></div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title8" id="register_a_node_with_the_microkernel">
+        <h3 class="title topictitle3" id="ariaid-title8">Register a node with the microkernel</h3>
+        
+        
+        <div class="body taskbody"><p class="shortdesc">Registering a node lets you learn about the node
+                before <span class="ph">Razor</span> provisions it. With registered nodes,
+                you can view facts about the node, add metadata to the node, and see which tags the
+                node matches.</p>
+                <section><ol class="ol steps"><li class="li step stepexpand">
+                                <span class="ph cmd">Boot the node. This can mean
+                                        physically pressing the power button, using IPMI to manage
+                                        the node’s power state, or, in the case of a VM, starting
+                                        the VM.</span>
+                                <div class="itemgroup stepresult"><p class="p">The node boots into the microkernel and
+                                                  <span class="ph">Razor</span> discovers the
+                                                node. After the initial PXE boot, the node downloads
+                                                the microkernel.</p></div>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">On the <span class="ph">Razor</span> server, view the
+                                        new node:&nbsp;<code class="ph codeph">razor
+                                                nodes</code></span>
+                                <div class="itemgroup stepxmp"><div class="p">The output displays the new node ID and name, for
+                                                example:<pre class="pre codeblock"><code> id: "http://localhost:8150/api/collections/node/node1"
+ name: "node1"
+ spec: "/razor/v1/collections/nodes/member"</code></pre></div></div>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">View the node’s
+                                                details:&nbsp;<code class="ph codeph">razor nodes &lt;NODE_NAME&gt;</code></span>
+                                <div class="itemgroup stepxmp"><div class="p">The output displays hardware and DHCP information,
+                                                the path to the log, and a placeholder for tags, for
+                                                example:<pre class="pre codeblock"><code> hw_info:
+         mac: ["08-00-27-8a-5e-5d"]
+      serial: "0"
+        uuid: "9a717dc3-2392-4853-89b9-27fec1aec7b2"
+ dhcp_mac: "08-00-27-8a-5e-5d"
+ log:
+         log =&gt; http://localhost:8150/api/collections/node/node1/log
+ tags: []</code></pre></div></div>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">When the microkernel is running on
+                                        the machine, view facts about the node:&nbsp;<code class="ph codeph">razor nodes
+                                                &lt;NODE_NAME&gt; facts</code></span>
+                                <div class="itemgroup info"><p class="p"><span class="ph">Facter</span> periodically
+                                                sends facts back to the server about the node,
+                                                including IP address, details about network cards,
+                                                and block devices.</p></div>
+                        </li></ol></section>
+                <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+        </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title9" id="build_a_winpe_image">
+   <h3 class="title topictitle3" id="ariaid-title9">Build a WinPE image</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Create a custom <span class="ph">Windows</span>
+      Preinstallation Environment (WinPE) WIM image containing <span class="ph">Razor</span>
+      scripts.</p>
+      <section class="section context"></section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">On an existing <span class="ph">Windows</span>
+               machine running the same operating system that you plan to install, install the <a class="xref" href="http://msdn.microsoft.com/en-us/library/windows/hardware/hh825486.aspx" target="_blank">Windows assessment and deployment kit</a> in the default
+               location.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Copy the directory at <code class="ph codeph">/opt/puppetlabs/server/apps/razor-server/share/razor-server/build-winpe</code>
+               from the <span class="ph">Razor</span> server to the existing <span class="ph">Windows</span> machine. If the directory is absent from your
+                  <span class="ph">Razor</span> server, use <a class="xref" href="https://s3.amazonaws.com/pe-razor-resources/build-winpe.zip" target="_blank">this archive</a>.&nbsp;</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Change into the directory you created in the previous
+               step, for example,&nbsp;<code class="ph codeph">c:\build-winpe</code></span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">(Optional) To include additional <span class="ph">Windows</span> drivers in the WIM image – for example, if your
+               machines require proprietary UCS drivers – place <code class="ph codeph">.inf</code> files in the&nbsp;<code class="ph codeph">extra-drivers</code>&nbsp;folder inside the <code class="ph codeph">build-winpe</code>
+               directory.</span>
+            <div class="itemgroup info">
+               <p class="p">You can place individual files or directories in the <code class="ph codeph">extra-drivers</code> folder.
+                  &nbsp;</p>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Run one of these build scripts, depending on whether
+               you’re using unsigned drivers:</span>
+            <ul class="ul choices">
+               <li class="li choice">Standard build
+                  script&nbsp;<pre class="pre codeblock"><code>powershell -executionpolicy bypass -noninteractive -file build-razor-winpe.ps1 -razorurl http://razor:8150/svc</code></pre></li>
+               <li class="li choice">Build script for unsigned drivers
+                  <pre class="pre codeblock"><code>powershell -executionpolicy bypass -noninteractive -file build-razor-winpe.ps1 -razorurl http://razor:8150/svc -allowunsigned</code></pre></li>
+            </ul>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>When the build script completes, a <code class="ph codeph">razor-winpe.wim</code> image appears in a new <code class="ph codeph">razor-winpe</code> directory inside the current
+         working directory.&nbsp;</section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title10" id="create_a_repository_and_add_the_winpe_image">
+   <h3 class="title topictitle3" id="ariaid-title10">Create a repository and add the WinPE image</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Because <span class="ph">Razor</span> can’t unpack
+         <span class="ph">Windows</span> DVD images, you must create a stub repository and
+      manually fill it with content.</p>
+      <section class="section context"></section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Copy the <span class="ph">Windows</span> ISO
+               image to the <span class="ph">Razor</span> server.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Create an empty repository.</span>
+            <div class="itemgroup stepxmp">
+               <div class="p">For
+                  example:<pre class="pre codeblock"><code>razor create-repo --name win2012r2 --task windows/2012r2
+    --no-content true</code></pre></div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">After the repository is created, log into your <span class="ph">Razor</span> server as root, change into the repository
+               directory, <code class="ph codeph">/opt/puppetlabs/server/data/razor-server/&lt;REPO_NAME&gt;</code>, then mount
+               the ISO image:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code> $ mount -o loop &lt;/PATH/TO/WINDOWS_SERVER.ISO&gt; /mnt
+ $ cp -pr /mnt/* &lt;REPO_NAME&gt;
+ $ umount /mnt
+ $ chown -R pe-razor: &lt;REPO_NAME&gt;</code></pre>
+                  <div class="note note note_note"><span class="note__title">Note:</span> The repository directory is specified by
+                        the&nbsp;<code class="ph codeph">repo_store_root</code>&nbsp;class parameter of the&nbsp;<code class="ph codeph">pe_razor</code> module. Your directory might be
+                     different from the default if you customized this parameter.</div>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Copy the WinPE image from the existing <span class="ph">Windows</span> machine to the repository directory on the <span class="ph">Razor</span> server.</span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="repositories.html" title="A repository is where you store all of the actual bits used by Razor to install a node. Or, in some cases, the external location of bits that you link to. A repo is identified by a unique name.">Repositories</a></li><li class="linklist"><a class="link" href="using_the_razor_client.html#repository-commands" title="Repository commands enable you to create and delete specified repositories from the Razor database and specify the task that installs the contents of a repository.">Repository commands</a></li><li class="linklist"><a class="link" href="api_reference.html#repositories_api" title="These commands enable you to create a new repository or delete a repository from the internal Razor database. You can also ensure that a specified repository uses a specified task.">Repositories API</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title11" id="create-tags">
+    <h3 class="title topictitle3" id="ariaid-title11">(Optional) Create tags</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Tags let you group nodes based on their characteristics.
+        You can then apply policies based on tags to install appropriate operating systems on tagged
+        nodes. If you don’t specify tags for a policy, the policy binds to any node.</p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">To create a tag called&nbsp;<kbd class="ph userinput">small</kbd> with a rule that matches
+                    machines that have less than 4GB of memory:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code> razor create-tag --name small
+   --rule '["&lt;", ["num", ["fact", "memorysize_mb"]], 4128]'</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) Inspect the tag on the
+                        server:&nbsp;<code class="ph codeph">razor tags
+                        &lt;TAG_NAME&gt;</code></span>
+                <div class="itemgroup stepxmp">
+                    <div class="p">For example,&nbsp;<code class="ph codeph">razor tags small</code>&nbsp;responds with:
+                        <pre class="pre codeblock"><code> From https://razor:8151/api/collections/tags/small:
+     name: small
+     rule: ["&lt;", ["num", ["fact", "memorysize_mb"]], 4128]
+    nodes: 1
+ policies: 0</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) Confirm that expected nodes now have
+                    the tag:&nbsp;<code class="ph codeph">razor tags
+                        &lt;TAG_NAME&gt; nodes</code></span>
+                <div class="itemgroup stepxmp">
+                    <p class="p">For example,&nbsp;<code class="ph codeph">razor tags small nodes</code>&nbsp;displays a table of registered
+                        nodes that have less than 4GB of memory.</p>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> To see details about the policies associated with
+                a tag, run&nbsp;<code class="ph codeph">razor tags &lt;TAG_NAME&gt;
+                    policies</code>. To see its rule, run&nbsp;<code class="ph codeph">razor tags &lt;TAG_NAME&gt; rule</code>.</div>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="tags.html" title="A tag consists of a unique name and a rule. Tags match a node if evaluating the node against the tag's facts results in true. Tag matching is case sensitive.">Tags</a></li><li class="linklist"><a class="link" href="using_the_razor_client.html#tag_commands" title="Tag commands enable you to create new tags, set the rules used to apply the tag to nodes, change the rule of a specified tag, or delete a specified tag.">Tag commands</a></li><li class="linklist"><a class="link" href="api_reference.html#tags_api" title="These commands enable you to create a tag, delete a tag, or change the rule for a tag.">Tags API</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title12" id="create-broker">
+    <h3 class="title topictitle3" id="ariaid-title12">(Optional) Create a broker</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Brokers hand off nodes to configuration management systems
+        like <span class="ph">Puppet Enterprise</span>.</p>
+        <section class="section context"></section>
+        <section><div class="li step p">
+                <span class="ph cmd">To hand off <span class="ph">Razor</span>
+                    nodes to a <span class="ph">Puppet</span> master at&nbsp;<code class="ph codeph">puppet-master.example.com</code>:</span>
+                <div class="itemgroup stepxmp">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>razor create-broker --name pe --broker-type puppet-pe
+  --configuration server=puppet-master.example.com</code></pre>
+                    </div>
+                </div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="brokers.html#brokers" title="Brokers hand off nodes to configuration management systems like Puppet Enterprise. Brokers consist of two parts: a broker type and information specific to the broker type.">Brokers</a></li><li class="linklist"><a class="link" href="using_the_razor_client.html#broker_commands" title="Broker commands enable you to create a new broker configuration, set or clear a specified key value for a broker, and delete a specified broker.">Broker commands</a></li><li class="linklist"><a class="link" href="api_reference.html#brokers_api" title="A broker is responsible for configuring a newly installed node for a specific configuration management system. For Puppet Enterprise, you generally use brokers only with the type puppet-pe.">Brokers API</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title13" id="create_a_policy">
+    <h3 class="title topictitle3" id="ariaid-title13">Create a policy</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Policies tell <span class="ph">Razor</span> what
+        operating system to install on the provisioned node, where to get the OS software, how to
+        configure it, and how to communicate between the node and <span class="ph">Puppet Enterprise</span>.</p>
+        <section><div class="li step p">
+                <span class="ph cmd">To create a policy that installs <span class="ph">CentOS</span> on machines tagged with&nbsp;<code class="ph codeph">small</code>, then hands them off to <span class="ph">Puppet Enterprise</span> for management:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code> razor create-policy --name centos-for-small
+    --repo centos-6.7 --broker pe --tag small
+    --hostname 'host${id}.example.com' --root-password secret</code></pre></div></div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><div class="note note note_note"><span class="note__title">Note:</span> You can
+                view details of a specific policy by running&nbsp;<code class="ph codeph">razor policies &lt;POLICY_NAME&gt;</code>. You can view a table
+                of all policies by running&nbsp;<code class="ph codeph">razor
+                    policies</code>. The order in which policies are listed in the table is
+                important because Razor applies the first matching policy to a node.</div></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="policies.html" title="Policies tell Razor what bits to install, where to get the bits, how to configure them, and how the installed node can communicate with Puppet Enterprise.">Policies</a></li><li class="linklist"><a class="link" href="using_the_razor_client.html#policy-commands" title="Policies govern how nodes are provisioned.">Policy commands</a></li><li class="linklist"><a class="link" href="api_reference.html#policies_api" title="Policies govern how nodes are provisioned depending on how they are tagged.">Policies API</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title14" id="reinstall_the_node">
+    <h3 class="title topictitle3" id="ariaid-title14">Reinstall the node</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">By default, <span class="ph">Razor</span> protects
+        existing nodes from reprovisioning by marking all existing nodes as&nbsp;installed. You must
+        specifically instruct the server to reinstall the node in order to trigger
+        provisioning.</p>
+        <section class="section context">You can skip this step if you change
+                the&nbsp;<code class="ph codeph">protect_new_nodes</code>&nbsp;option to&nbsp;<code class="ph codeph">false</code>, which allows <span class="ph">Razor</span> to provision a
+            node as soon as it PXE boots with a matching policy. Be sure you understand how the
+                <code class="ph codeph">protect_new_nodes</code>&nbsp;option works
+            before changing it, however. Failure to protect existing nodes can result in data
+            loss.</section>
+        <section><div class="li step p">
+                <span class="ph cmd">Reinstall the node:&nbsp;<code class="ph codeph">razor reinstall-node &lt;NODE_NAME&gt;</code></span>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">When you reinstall the
+                node, <span class="ph">Razor</span> clears the&nbsp;<code class="ph codeph">installed</code>&nbsp;flag and the node restarts and boots into
+                the microkernel. The microkernel reports its facts, and <span class="ph">Razor</span> provisions the node by applying the first
+                applicable policy in the policy table.</p><p class="p">When provisioning is
+                complete, you can log into the node using the&nbsp;<code class="ph codeph">root_password</code>&nbsp;as specified by the node’s metadata,
+                or by the policy that the node is bound to. You can also see the node and its
+                details in the console, and manage it there as you would any other
+            node.</p></section>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title15" lang="en-us" id="viewing_information_about_nodes">
+   <h2 class="title topictitle2" id="ariaid-title15">Viewing information about nodes</h2>
+   
+   
+   <div class="body conbody"><p class="shortdesc">Use these commands to view details about nodes in your
+      environment.</p>
+      <section class="section"><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="viewing_information_about_nodes__entry__1">Command</th>
+                        <th class="entry" id="viewing_information_about_nodes__entry__2">Result</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="viewing_information_about_nodes__entry__1">
+                           <code class="ph codeph">razor nodes</code>
+                        </td>
+                        <td class="entry" headers="viewing_information_about_nodes__entry__2">Displays a list of nodes that <span class="ph">Razor</span> knows about.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="viewing_information_about_nodes__entry__1">
+                           <code class="ph codeph">razor nodes</code>
+                           <code class="ph codeph">&lt;NODE_NAME&gt;</code>
+                        </td>
+                        <td class="entry" headers="viewing_information_about_nodes__entry__2">Displays details about the specified
+                           node.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="viewing_information_about_nodes__entry__1">
+                           <code class="ph codeph">razor nodes</code>
+                           <code class="ph codeph">&lt;NODE_NAME&gt;</code>
+                           <code class="ph codeph">log</code>
+                        </td>
+                        <td class="entry" headers="viewing_information_about_nodes__entry__2">Displays a log that includes the timing and
+                           status of installation events, as well as downloads of kickstart files
+                           and post-install scripts.</td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+   </div>
+</article></article></article></main></body></html>

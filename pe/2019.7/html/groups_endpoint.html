@@ -1,0 +1,1378 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The groups endpoint is used to create, read, update, and delete groups."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="groups_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Groups endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="groups_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1"><code class="ph codeph">Groups</code> endpoint</h1>
+    
+    <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">groups</code> endpoint is used to create, read, update, and delete groups. </p>
+        <p class="p">A group belongs to an environment, applies classes (possibly with
+            parameters), and matches nodes based on rules. Because groups are so central to the
+            classification process, this endpoint is where most of the action is.</p>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_v1_groups">
+   <h2 class="title topictitle2" id="ariaid-title2">GET /v1/groups </h2>
+   
+   <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/groups</code> endpoint to retrieve a list of all node groups in the node
+      classifier.</p>
+      <section class="section"></section>
+      <section class="section" id="get_v1_groups__query_parameters"><h3 class="title sectiontitle">Query
+            parameters </h3><p class="p">The request accepts these parameters.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="get_v1_groups__query_parameters__entry__1">Parameter </th>
+                     <th class="entry" id="get_v1_groups__query_parameters__entry__2">Value</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__query_parameters__entry__1">
+                        <code class="ph codeph">inherited</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__query_parameters__entry__2">If set to any value besides
+                           <code class="ph codeph">0</code> or <code class="ph codeph">false</code>, the node group includes the
+                        classes, class parameters, configuration data, and variables that it
+                        inherits from its ancestors.</td>
+                  </tr>
+               </tbody></table></section>
+      <section class="section" id="get_v1_groups__response_format"><h3 class="title sectiontitle">Response
+            format </h3><p class="p">The response is a JSON array of node group objects,
+            using these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="get_v1_groups__response_format__entry__1">Key </th>
+                     <th class="entry" id="get_v1_groups__response_format__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">The name of the node group (a string).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">id</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">The node group's ID, which is a string
+            containing a type-4 (random) UUID. The regular expression used to validate node group
+            UUIDs is <code class="ph codeph">[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}</code>.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">description</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">An optional key containing an arbitrary string
+            describing the node group.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">environment</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">The name of the node group's environment (a
+            string), which indirectly defines what classes are available for the node group to set,
+            and is the environment that nodes classified into this node group run under.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">environment_trumps</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">This is a boolean that changes the behavior of classifications that this node group is
+            involved in. The default behavior is to return a classification-conflict error if the
+            node groups that a node is classified into do not all have the same environment. If this
+            flag is set, then this node group's environment overrides the environments of the other
+            node groups (provided that none of them also have this flag set), with no attempt made
+            to validate that the other node groups' classes and class parameters exist in this node
+            group's environment.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">parent</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">The ID of the node group's parent (a string). A node group is not
+            permitted to be its own parent, unless it is the <span class="ph uicontrol">All Nodes</span> group, which is the root of the hierarchy.
+            Note that the root group always has the lowest-possible random UUID, <code class="ph codeph">00000000-0000-4000-8000-000000000000</code>.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">rule</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">A boolean condition
+            on node properties. When a node's properties satisfy this condition, it's classified
+            into the node group.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">classes</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">An object that defines both the classes consumed
+            by nodes in this node group and any non-default values for their parameters. The keys of
+            the object are the class names, and the values are objects describing the parameters.
+            The parameter objects' keys are parameter names, and the values are what the node group
+            sets for that parameter (always a string).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">config_data</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">An object similar to the <code class="ph codeph">classes</code> object that specifies
+                        parameters that are applied to classes if the class is assigned in the
+                        classifier or in puppet code. The keys of the object are the class names,
+                        and the values are objects describing the parameters. The parameter objects’
+                        keys are parameter names, and the values are what the group sets for that
+                        parameter (always a string). This feature is enabled/disabled via the
+                           <code class="ph codeph">classifier::allow-config-data</code> setting. When set to false, this
+                        key is stripped from the payload.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">deleted</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">An object similar
+            to the <code class="ph codeph">classes</code> object that shows which
+            classes and class parameters set by the node group have since been deleted. If none of
+            the node group's classes or parameters have been deleted, this key is not present, so
+            checking the presence of this key is an easy way to check whether the node group has
+            references that need updating. The keys of this object are class names, and the values
+            are further objects. These secondary objects always contain the <code class="ph codeph">puppetlabs.classifier/deleted</code> key, whose value is a
+            Boolean indicating whether the entire class has been deleted. The other keys of these
+            objects are parameter names, and the other values are objects that always contain two
+            keys: <code class="ph codeph">puppetlabs.classifier/deleted</code>,
+            mapping to a boolean indicating whether the specific class parameter has been deleted;
+            and <code class="ph codeph">value</code>, mapping to the string value
+            set by the node group for this parameter (the value is duplicated for convenience, as it
+            also appears in the <code class="ph codeph">classes</code> object).
+            </p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">variables</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">An object that defines
+            the values of any top-level variables set by the node group. The object is a mapping
+            between variable names and their values (which can be any JSON value).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" id="get_v1_groups__entry-1521155793267" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">last_edited</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p"> The most
+            recent time at which a user committed changes to a node group. This is a time stamp in
+            ISO 8601 format, <code class="ph codeph">YYYY-MM-DDTHH:MM:SSZ</code>. </p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" id="get_v1_groups__entry-1521155801084" headers="get_v1_groups__response_format__entry__1">
+                        <code class="ph codeph">serial_number</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups__response_format__entry__2">
+                        <p class="p">A number assigned to a node group. This number is incremented each
+            time changes to a group are committed. <code class="ph codeph">serial_number</code> is used to prevent conflicts when multiple
+            users make changes to the same node group at the same time. </p>
+                     </td>
+                  </tr>
+               </tbody></table><p class="p">This example shows a node group
+            object:</p><pre class="pre codeblock javascript"><code>{
+  "name": "Webservers",
+  "id": "fc500c43-5065-469b-91fc-37ed0e500e81",
+  "last_edited": "2018-02-20T02:36:17.776Z",
+  "serial_number": 16,
+  "environment": "production",
+  "description": "This group captures configuration relevant to all web-facing production webservers, regardless of location.",
+  "parent": "00000000-0000-4000-8000-000000000000",
+  "rule": ["and", ["~", ["trusted", "certname"], "www"],
+                  ["&gt;=", ["fact", "total_ram"], "512"]],
+  "classes": {
+    "apache": {
+      "serveradmin": "bofh@travaglia.net",
+      "keepalive_timeout": "5"
+    }
+  },
+  "config_data": {
+    "puppet_enterprise::profile::console": {"certname": "console.example.com"},
+    "puppet_enterprise::profile::puppetdb": {"listen_address": "0.0.0.0"}
+  },
+  "variables": {
+    "ntp_servers": ["0.us.pool.ntp.org", "1.us.pool.ntp.org", "2.us.pool.ntp.org"]
+  }
+}</code></pre><p class="p">This example shows a node group object that refers to some classes
+            and parameters that have been
+            deleted:</p><pre class="pre codeblock javascript"><code>{
+  "name": "Spaceship",
+  "id": "fc500c43-5065-469b-91fc-37ed0e500e81",
+  "last_edited": "2018-03-13T21:37:03.608Z",
+  "serial_number": 42,
+  "environment": "space",
+  "parent": "00000000-0000-4000-8000-000000000000",
+  "rule": ["=", ["fact", "is_spaceship"], "true"],
+  "classes": {
+    "payload": {
+      "type": "cubesat",
+      "count": "8",
+      "mass": "10.64"
+    },
+    "rocket": {
+      "stages": "3"
+    }
+  },
+  "deleted": {
+    "payload": {"puppetlabs.classifier/deleted": true},
+    "rocket": {
+      "puppetlabs.classifier/deleted": false,
+      "stages": {
+        "puppetlabs.classifier/deleted": true,
+        "value": "3"
+      }
+    }
+  },
+  "variables": {}
+}</code></pre><p class="p">The entire <code class="ph codeph">payload</code>
+            class has been deleted, because its deleted parameters object's <code class="ph codeph">puppetlabs.classifier/deleted</code> key maps to <code class="ph codeph">true</code>, in contrast to the <code class="ph codeph">rocket</code> class, which has had only its <code class="ph codeph">stages</code> parameter deleted.</p></section>
+      <section class="section" id="get_v1_groups__rule_condition_grammar"><h3 class="title sectiontitle">Rule condition grammar </h3><p class="p">Nodes can be classified into
+            groups using rules. This example shows how rule conditions must be
+            structured:</p><pre class="pre codeblock"><code>    condition  : [ {bool} {condition}+ ] | [ "not" {condition} ] | {operation}
+         bool  : "and" | "or"
+    operation  : [ {operator} {fact-path} {value} ]
+     operator  : "=" | "~" | "&gt;" | "&gt;=" | "&lt;" | "&lt;="
+    fact-path  : {field-name} | [ {path-type} {field-name} {path-component}+ ]
+    path-type  : "trusted" | "fact"
+path-component : field-name | number
+    field-name : string</code></pre><p class="p">For the regex operator <code class="ph codeph">"~"</code>, the value is interpreted as a Java regular expression. Literal
+            backslashes must be used to escape regex characters in order to match those characters
+            in the fact value.</p><p class="p">For the numeric comparison operators
+               (<code class="ph codeph">"&gt;"</code>, <code class="ph codeph">"&gt;="</code>, <code class="ph codeph">"&lt;"</code>, and <code class="ph codeph">"&lt;="</code>), the
+            fact value (which is always a string) is coerced to a number (either integral or
+            floating-point). If the value can't be coerced to a number, the numeric operation
+            evaluates to false.</p><p class="p">For the fact path, the rule can be either a
+            string representing a top level field (the only current meaningful value here would be
+            "name" representing the node name) or a list of strings and indices that represent
+            looking up a field in a nested data structure. When passing a list of strings or
+            indices, the first and second entries in the list must be strings. Subsequent entries
+            can be indices.</p><p class="p">Regular facts start with "fact" (for example,
+               <code class="ph codeph">["fact", "architecture"]</code>) and
+            trusted facts start with "trusted" (for example, <code class="ph codeph">["trusted", "certname"]</code>).</p></section>
+      <section class="section" id="get_v1_groups__error_responses"><h3 class="title sectiontitle">Error
+            responses </h3><p class="p">
+            <code class="ph codeph">serial_number</code>
+         </p><p class="p">If you commit a node group with a <code class="ph codeph">serial_number</code> that an API
+            call has previously assigned, the service returns a 409 Conflict response.
+         </p></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="post_v1_groups">
+   <h2 class="title topictitle2" id="ariaid-title3">POST /v1/groups </h2>
+   
+   <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/groups</code> endpoint to create a new node group without specifying its ID. When
+      you use this endpoint, the node classifier service randomly generates an ID.</p>
+      <section class="section" id="post_v1_groups__request_format"><h3 class="title sectiontitle">Request
+            format </h3><p class="p">The request body must be a JSON object describing
+            the node group to be created. The request uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="post_v1_groups__request_format__entry__1">Key </th>
+                     <th class="entry" id="post_v1_groups__request_format__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__request_format__entry__1">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__request_format__entry__2">
+                        <p class="p">The name of the node group (a string).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__request_format__entry__1">
+                        <code class="ph codeph">environment</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__request_format__entry__2">
+                        <p class="p">The name of the node group's environment. This
+            key is optional; if it's not provided, the default environment (<code class="ph codeph">production</code>) is used.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__request_format__entry__1">
+                        <code class="ph codeph">environment_trumps</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__request_format__entry__2">
+                        <p class="p">Whether this node
+            group's environment should override those of other node groups at classification-time.
+            This key is optional; if it's not provided, the default value of <code class="ph codeph">false</code> is used.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__request_format__entry__1">
+                        <code class="ph codeph">description</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__request_format__entry__2">
+                        <p class="p">A string
+            describing the node group. This key is optional; if it's not provided, the node group
+            has no description and this key doesn't appear in responses.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__request_format__entry__1">
+                        <code class="ph codeph">parent</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__request_format__entry__2">
+                        <p class="p">The ID of the node group's parent
+            (required).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__request_format__entry__1">
+                        <code class="ph codeph">rule</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__request_format__entry__2">
+                        <p class="p">The condition that
+            must be satisfied for a node to be classified into this node group</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__request_format__entry__1">
+                        <code class="ph codeph">variables</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__request_format__entry__2">
+                        <p class="p">An object that defines the names and values of any
+            top-level variables set by the node group. The keys of the object are the variable
+            names, and the corresponding value is that variable's value, which can be any sort of
+            JSON value. The <code class="ph codeph">variables</code> key is
+            optional, and if a node group does not define any top-level variables then it may be
+            omitted.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__request_format__entry__1">
+                        <code class="ph codeph">classes</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__request_format__entry__2">
+                        <p class="p">An object that defines the classes to be used by nodes in the node group. The <code class="ph codeph">classes</code> key is required, and at minimum
+            should be an empty object ({}). The <code class="ph codeph">classes</code> key also contains the parameters for each class. Some classes have
+            required parameters. This is a two-level object; that is, the keys of the object are
+            class names (strings), and each key's value is another object that defines class
+            parameter values. This innermost object maps between class parameter names and their
+            values. The keys are the parameter names (strings), and each value is the parameter's
+            value, which can be any kind of JSON value. The <code class="ph codeph">classes</code> key is <em class="ph i">not</em> optional; if it is
+            missing, the service returns a <span class="keyword msgnum">400</span><samp class="ph msgph">Bad Request</samp>
+            response.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__request_format__entry__1">
+                        <code class="ph codeph">config_data</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__request_format__entry__2">An optional object that defines
+                        the class parameters to be used by nodes in the group. Its structure is the
+                        same as the classes object. If you use a <code class="ph codeph">config_data</code> key but provide only the class, like
+                           <code class="ph codeph">"config_data":
+                           {"qux":{}}</code>, no configuration data is stored.<div class="note note note_note"><span class="note__title">Note:</span> This feature is enabled with the <code class="ph codeph">classifier::allow-config-data</code>
+                           setting. When set to false, the presence of this key in the payload
+                           results in a <samp class="ph msgph">400</samp>
+                           response.</div></td>
+                  </tr>
+               </tbody></table></section>
+      <section class="section" id="post_v1_groups__response_format"><h3 class="title sectiontitle">Response
+            format </h3><p class="p">If the node group was successfully created, the
+            service returns a <samp class="ph msgph">303 See Other</samp> response,
+            with the path to retrieve the created node group in the "location" header of the
+            response.</p></section>
+      <section class="section" id="post_v1_groups__error_responses"><h3 class="title sectiontitle">Error
+            responses </h3><p class="p">Responses and keys returned for create group
+            requests depend on the type of error. </p><p class="p">
+            <code class="ph codeph">schema-violation</code>
+         </p><div class="p">If any of the required keys are missing or the values of any of
+            the defined keys do not match the required type, the service returns a <samp class="ph msgph">400 Bad Request </samp>response using these keys: <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="post_v1_groups__error_responses__entry__1">Key</th>
+                        <th class="entry" id="post_v1_groups__error_responses__entry__2">Definition</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__1">
+                           <code class="ph codeph">kind</code>
+                        </td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__2">"schema-violation"</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__1">
+                           <code class="ph codeph">details</code>
+                        </td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__2">An object that contains three keys: <ul class="ul">
+                              <li class="li"><code class="ph codeph">submitted</code> — Describes the submitted object. </li>
+                              <li class="li"><code class="ph codeph">schema</code> — Describes the schema that object is expected
+                                 to conform to. </li>
+                              <li class="li"><code class="ph codeph">error</code> — Describes how the submitted object failed to
+                                 conform to the schema. </li>
+                           </ul>
+                        </td>
+                     </tr>
+                  </tbody></table></div><p class="p">
+            <code class="ph codeph">malformed-request</code>
+         </p><div class="p">If the request's body could not be parsed as JSON, the service
+            returns a <samp class="ph msgph">400 Bad Request</samp> response using
+            these keys: <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="post_v1_groups__error_responses__entry__7">Key</th>
+                        <th class="entry" id="post_v1_groups__error_responses__entry__8">Definition</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__7">
+                           <code class="ph codeph">
+                              <code class="ph codeph">
+                                 <code class="ph codeph">kind</code>
+                              </code>
+                           </code>
+                        </td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__8">"malformed-request"</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__7">
+                           <code class="ph codeph">
+                              <code class="ph codeph">
+                                 <code class="ph codeph">details</code>
+                              </code>
+                           </code>
+                        </td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__8">An object that contains two keys: <ul class="ul">
+                              <li class="li"><code class="ph codeph">body</code> — Holds the request body that was received. </li>
+                              <li class="li"><code class="ph codeph">error</code> — Describes how the submitted object failed to
+                                 conform to the schema. </li>
+                           </ul>
+                        </td>
+                     </tr>
+                  </tbody></table></div><p class="p">
+            <code class="ph codeph">uniqueness-violation</code>
+         </p><div class="p">If your attempt to create the node group violates uniqueness
+            constraints (such as the constraint that each node group name must be unique within its
+            environment), the service returns a <samp class="ph msgph">422
+               Unprocessable Entity</samp> response using these keys: <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="post_v1_groups__error_responses__entry__13">
+                           <strong class="ph b">Key</strong>
+                        </th>
+                        <th class="entry" id="post_v1_groups__error_responses__entry__14">
+                           <strong class="ph b">Definition</strong>
+                        </th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__13">
+                           <code class="ph codeph">kind</code>
+                        </td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__14">"uniqueness-violation"</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__13">
+                           <code class="ph codeph">msg</code>
+                        </td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__14">Describes which fields of the node group
+                           caused the constraint to be violated, along with their values.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__13">
+                           <code class="ph codeph">details</code>
+                        </td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__14">An object that contains two keys: <ul class="ul">
+                              <li class="li"><code class="ph codeph">conflict</code> — An object whose keys are the fields of the
+                                 node group that violated the constraint and whose values are the
+                                 corresponding field values. </li>
+                              <li class="li"><code class="ph codeph">constraintName</code> — The name of the database constraint
+                                 that was violated. </li>
+                           </ul>
+                        </td>
+                     </tr>
+                  </tbody></table></div><p class="p">
+            <code class="ph codeph">missing-referents</code>
+         </p><div class="p">If classes or class parameters defined by the node group, or
+            inherited by the node group from its parent, do not exist in the submitted node group's
+            environment, the service returns a <samp class="ph msgph">422
+               Unprocessable Entity</samp> response. In both cases the response object uses these
+            keys: <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="post_v1_groups__error_responses__entry__21">Key</th>
+                        <th class="entry" id="post_v1_groups__error_responses__entry__22">Definition</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__21">kind</td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__22">"missing-referents"</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__21">msg</td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__22">Describes the error and lists the missing
+                           classes or parameters.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__21">details</td>
+                        <td class="entry" headers="post_v1_groups__error_responses__entry__22">An array of objects, where each object
+                           describes a single missing referent, and has the following keys: <ul class="ul">
+                              <li class="li"><code class="ph codeph">kind</code> — "missing-class" or "missing-parameter",
+                                 depending on whether the entire class doesn't exist, or the class
+                                 just doesn't have the parameter. </li>
+                              <li class="li"><code class="ph codeph">missing</code> — The name of the missing class or class
+                                 parameter. </li>
+                              <li class="li"><code class="ph codeph">environment</code> — The environment that the class or
+                                 parameter is missing from; that is, the environment of the node
+                                 group where the error was encountered. </li>
+                              <li class="li"><code class="ph codeph">group</code> — The name of the node group where the error was
+                                 encountered. Due to inheritance, this might not be the group where
+                                 the parameter was defined. </li>
+                              <li class="li"><code class="ph codeph">defined_by</code> — The name of the node group that defines
+                                 the class or parameter. </li>
+                           </ul>
+                        </td>
+                     </tr>
+                  </tbody></table></div><p class="p">
+            <code class="ph codeph">missing-parent</code>
+         </p><p class="p">If the parent of the node group does not exist, the service
+            returns a <samp class="ph msgph">422 Unprocessable Entity</samp>
+            response. The response object uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="post_v1_groups__error_responses__entry__29">Key </th>
+                     <th class="entry" id="post_v1_groups__error_responses__entry__30">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__29">
+                        <code class="ph codeph">kind</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__30">"missing-parent"</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__29">
+                        <code class="ph codeph">msg</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__30">Shows the parent UUID that did not
+                        exist.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__29">
+                        <code class="ph codeph">details</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__30">The full submitted node
+                        group.</td>
+                  </tr>
+               </tbody></table><p class="p">
+            <code class="ph codeph">inheritance-cycle</code>
+         </p><p class="p">If the request causes an inheritance cycle, the service returns a
+               <samp class="ph msgph">422 Unprocessable Entity</samp> response. The
+            response object uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="post_v1_groups__error_responses__entry__37">Key </th>
+                     <th class="entry" id="post_v1_groups__error_responses__entry__38">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__37">
+                        <code class="ph codeph">kind</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__38">"inheritance-cycle"</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__37">
+                        <code class="ph codeph">details</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__38">An array of node group objects
+                        that includes each node group involved in the cycle</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__37">
+                        <code class="ph codeph">msg</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups__error_responses__entry__38">A shortened description of the
+                        cycle, including a list of the node group names with each followed by its
+                        parent until the first node group is repeated.</td>
+                  </tr>
+               </tbody></table></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="get_v1_groups_id">
+   <h2 class="title topictitle2" id="ariaid-title4">GET /v1/groups/&lt;id&gt; </h2>
+   
+   <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/groups/\&lt;id&gt;</code> endpoint to retrieve a node group with the given
+      ID.</p>
+      <section class="section" id="get_v1_groups_id__response_format"><h3 class="title sectiontitle">Response
+            format </h3><p class="p">The response is a JSON array of node group objects,
+            using these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="get_v1_groups_id__response_format__entry__1">Key </th>
+                     <th class="entry" id="get_v1_groups_id__response_format__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">The name of the node group (a string).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">id</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">The node group's ID, which is a string
+            containing a type-4 (random) UUID. The regular expression used to validate node group
+            UUIDs is <code class="ph codeph">[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}</code>.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">description</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">An optional key containing an arbitrary string
+            describing the node group.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">environment</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">The name of the node group's environment (a
+            string), which indirectly defines what classes are available for the node group to set,
+            and is the environment that nodes classified into this node group run under.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">environment_trumps</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">This is a boolean that changes the behavior of classifications that this node group is
+            involved in. The default behavior is to return a classification-conflict error if the
+            node groups that a node is classified into do not all have the same environment. If this
+            flag is set, then this node group's environment overrides the environments of the other
+            node groups (provided that none of them also have this flag set), with no attempt made
+            to validate that the other node groups' classes and class parameters exist in this node
+            group's environment.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">parent</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">The ID of the node group's parent (a string). A node group is not
+            permitted to be its own parent, unless it is the <span class="ph uicontrol">All Nodes</span> group, which is the root of the hierarchy.
+            Note that the root group always has the lowest-possible random UUID, <code class="ph codeph">00000000-0000-4000-8000-000000000000</code>.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">rule</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">A boolean condition
+            on node properties. When a node's properties satisfy this condition, it's classified
+            into the node group.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">classes</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">An object that defines both the classes consumed
+            by nodes in this node group and any non-default values for their parameters. The keys of
+            the object are the class names, and the values are objects describing the parameters.
+            The parameter objects' keys are parameter names, and the values are what the node group
+            sets for that parameter (always a string).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">deleted</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">An object similar
+            to the <code class="ph codeph">classes</code> object that shows which
+            classes and class parameters set by the node group have since been deleted. If none of
+            the node group's classes or parameters have been deleted, this key is not present, so
+            checking the presence of this key is an easy way to check whether the node group has
+            references that need updating. The keys of this object are class names, and the values
+            are further objects. These secondary objects always contain the <code class="ph codeph">puppetlabs.classifier/deleted</code> key, whose value is a
+            Boolean indicating whether the entire class has been deleted. The other keys of these
+            objects are parameter names, and the other values are objects that always contain two
+            keys: <code class="ph codeph">puppetlabs.classifier/deleted</code>,
+            mapping to a boolean indicating whether the specific class parameter has been deleted;
+            and <code class="ph codeph">value</code>, mapping to the string value
+            set by the node group for this parameter (the value is duplicated for convenience, as it
+            also appears in the <code class="ph codeph">classes</code> object).
+            </p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">variables</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">An object that defines
+            the values of any top-level variables set by the node group. The object is a mapping
+            between variable names and their values (which can be any JSON value).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">last_edited</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p"> The most
+            recent time at which a user committed changes to a node group. This is a time stamp in
+            ISO 8601 format, <code class="ph codeph">YYYY-MM-DDTHH:MM:SSZ</code>. </p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__1">
+                        <code class="ph codeph">serial_number</code>
+                     </td>
+                     <td class="entry" headers="get_v1_groups_id__response_format__entry__2">
+                        <p class="p">A number assigned to a node group. This number is incremented each
+            time changes to a group are committed. <code class="ph codeph">serial_number</code> is used to prevent conflicts when multiple
+            users make changes to the same node group at the same time. </p>
+                     </td>
+                  </tr>
+               </tbody></table></section>
+      <section class="section" id="get_v1_groups_id__error_responses"><h3 class="title sectiontitle">Error
+            responses </h3><p class="p">If the node group with the given ID cannot be
+            found, the service returns <samp class="ph msgph">404 Not Found</samp>
+            and <code class="ph codeph">malformed-uuid</code> responses . The body
+            includes a generic <samp class="ph msgph">404</samp> error response as
+            described in the errors documentation.</p><p class="p">
+            <code class="ph codeph">serial_number</code>
+         </p><p class="p">If you commit a node group with a <code class="ph codeph">serial_number</code> that an API
+            call has previously assigned, the service returns a 409 Conflict response.
+         </p></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="node_classifier_errors.html#node_classifier_errors" title="Familiarize yourself with error responses to make working the node classifier service API easier.">Node classifier errors</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="put_v1_groups_id">
+   <h2 class="title topictitle2" id="ariaid-title5">PUT /v1/groups/&lt;id&gt; </h2>
+   
+   <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/groups/&lt;id&gt;</code> to create a node group with the given ID.</p>
+      <section class="section"><div class="p">
+            <div class="note caution note_caution"><span class="note__title">CAUTION:</span> Any existing node group with the given ID is overwritten.<p class="p">It is
+                  possible to overwrite an existing node group with a new node group definition that
+                  contains deleted classes or parameters.</p></div>
+            <div class="note important note_important"><span class="note__title">Important:</span> You must supply a valid type-4 (random) UUID for the ID.</div>
+         </div></section>
+      <section class="section" id="put_v1_groups_id__request_format"><h3 class="title sectiontitle">Request
+            format </h3><p class="p">The request body must be a JSON object describing
+            the node group to be created. The request uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="put_v1_groups_id__request_format__entry__1">Key </th>
+                     <th class="entry" id="put_v1_groups_id__request_format__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__1">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__2">
+                        <p class="p">The name of the node group (a string).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__1">
+                        <code class="ph codeph">environment</code>
+                     </td>
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__2">
+                        <p class="p">The name of the node group's environment. This
+            key is optional; if it's not provided, the default environment (<code class="ph codeph">production</code>) is used.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__1">
+                        <code class="ph codeph">environment_trumps</code>
+                     </td>
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__2">
+                        <p class="p">Whether this node
+            group's environment should override those of other node groups at classification-time.
+            This key is optional; if it's not provided, the default value of <code class="ph codeph">false</code> is used.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__1">
+                        <code class="ph codeph">description</code>
+                     </td>
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__2">
+                        <p class="p">A string
+            describing the node group. This key is optional; if it's not provided, the node group
+            has no description and this key doesn't appear in responses.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__1">
+                        <code class="ph codeph">parent</code>
+                     </td>
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__2">
+                        <p class="p">The ID of the node group's parent
+            (required).</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__1">
+                        <code class="ph codeph">rule</code>
+                     </td>
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__2">
+                        <p class="p">The condition that
+            must be satisfied for a node to be classified into this node group</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__1">
+                        <code class="ph codeph">variables</code>
+                     </td>
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__2">
+                        <p class="p">An object that defines the names and values of any
+            top-level variables set by the node group. The keys of the object are the variable
+            names, and the corresponding value is that variable's value, which can be any sort of
+            JSON value. The <code class="ph codeph">variables</code> key is
+            optional, and if a node group does not define any top-level variables then it may be
+            omitted.</p>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__1">
+                        <code class="ph codeph">classes</code>
+                     </td>
+                     <td class="entry" headers="put_v1_groups_id__request_format__entry__2">
+                        <p class="p">An object that defines the classes to be used by nodes in the node group. The <code class="ph codeph">classes</code> key is required, and at minimum
+            should be an empty object ({}). The <code class="ph codeph">classes</code> key also contains the parameters for each class. Some classes have
+            required parameters. This is a two-level object; that is, the keys of the object are
+            class names (strings), and each key's value is another object that defines class
+            parameter values. This innermost object maps between class parameter names and their
+            values. The keys are the parameter names (strings), and each value is the parameter's
+            value, which can be any kind of JSON value. The <code class="ph codeph">classes</code> key is <em class="ph i">not</em> optional; if it is
+            missing, the service returns a <span class="keyword msgnum">400</span><samp class="ph msgph">Bad Request</samp>
+            response.</p>
+                     </td>
+                  </tr>
+               </tbody></table></section>
+      <section class="section" id="put_v1_groups_id__response_format"><h3 class="title sectiontitle">Response
+            format </h3><p class="p">If the node group is successfully created, the
+            service returns a <samp class="ph msgph">201 Created</samp> response,
+            with the node group object (in JSON) as the body. If the node group already exists and
+            is identical to the submitted node group, then the service takes no action and returns a
+               <samp class="ph msgph">200 OK</samp> response, again with the node
+            group object as the body.</p></section>
+      <section class="section" id="put_v1_groups_id__error_responses"><h3 class="title sectiontitle">Error
+            responses </h3><p class="p">If the requested node group object contains the
+               <code class="ph codeph">id</code> key, and its value differs from
+            the UUID specified in the request's path, the service returns a <samp class="ph msgph">400 Bad Request</samp> response. </p><div class="p">The response
+            object uses these keys: <table class="table"><caption></caption><colgroup><col><col></colgroup><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry">
+                           <strong class="ph b">Key</strong>
+                        </td>
+                        <td class="entry">
+                           <strong class="ph b">Definition</strong>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry">
+                           <code class="ph codeph">kind</code>
+                        </td>
+                        <td class="entry">"conflicting-ids"</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry">
+                           <code class="ph codeph">details</code>
+                        </td>
+                        <td class="entry">An object that contains two keys: <ul class="ul">
+                              <li class="li"><code class="ph codeph">submitted</code> — Contains the ID submitted in the request
+                                 body. </li>
+                              <li class="li"><code class="ph codeph">fromUrl</code> — Contains the ID taken from the request URL.
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                  </tbody></table></div><p class="p">In addition, this operation can produce the general
+               <code class="ph codeph">malformed-error</code> response and any
+            response that could also be generated by the POST group creation endpoint.</p></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="post_v1_groups_id">
+  <h2 class="title topictitle2" id="ariaid-title6">POST /v1/groups/&lt;id&gt;</h2>
+  
+  <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/groups/&lt;id&gt;</code> endpoint to update the name, environment,
+    parent, rule, classes, class parameters, configuration data, and variables of the node group
+    with the given ID by submitting a node group delta.</p>
+    <section class="section"><h3 class="title sectiontitle">Request format</h3><p class="p">The request body must be JSON object describing the delta to be applied
+        to the node group.</p><p class="p">The <code class="ph codeph">classes</code>, <code class="ph codeph">config_data</code>, <code class="ph codeph">variables</code>, and <code class="ph codeph">rule</code> keys of the delta are merged with the node group, and then any keys of the
+        resulting object that have a null value are deleted. This allows you to remove classes,
+        class parameters, configuration data, variables, or the rule from the node group by setting
+        them to null in the delta.</p><p class="p">If the delta has a rule key that’s set
+        to a new value or nil, it's updated wholesale or removed from the group accordingly.</p><p class="p">The <code class="ph codeph">name</code>,
+          <code class="ph codeph">environment</code>, <code class="ph codeph">description</code>, and <code class="ph codeph">parent</code> keys, if present in the delta,
+        replace the old values wholesale with their values.</p><p class="p">The <code class="ph codeph">serial_number </code>key is optional. If
+        you update a node group and provide the <code class="ph codeph">serial_number</code> in the payload, and the <code class="ph codeph">serial_number</code> is not the current one for that group,
+        the service returns a 409 Conflict response. To bypass this check, omit the <code class="ph codeph">serial_number</code>.</p><p class="p">Note that the root group’s rule cannot be edited; any attempts to do so raise a <samp class="ph msgph">422 Unprocessable Entity</samp> response.</p><p class="p">In the following examples, a delta is merged with a node group to update the
+        group.</p><div class="p">Node
+        group:<pre class="pre codeblock"><code>{
+  "name": "Webservers",
+  "id": "58463036-0efa-4365-b367-b5401c0711d3",
+  "environment": "staging",
+  "parent": "00000000-0000-4000-8000-000000000000",
+  "rule": ["~", ["trusted", "certname"], "www"],
+  "classes": {
+    "apache": {
+      "serveradmin": "bofh@travaglia.net",
+      "keepalive_timeout": 5
+    },
+    "ssl": {
+      "keystore": "/etc/ssl/keystore"
+    }
+  },
+  "variables": {
+    "ntp_servers": ["0.us.pool.ntp.org", "1.us.pool.ntp.org", "2.us.pool.ntp.org"]
+  }
+}</code></pre>Delta:<pre class="pre codeblock"><code>{
+  "name": "Production Webservers",
+  "id": "58463036-0efa-4365-b367-b5401c0711d3",
+  "environment": "production",
+  "parent": "01522c99-627c-4a07-b28e-a25dd563d756",
+  "classes": {
+    "apache": {
+      "serveradmin": "roy@reynholm.co.uk",
+      "keepalive_timeout": null
+    },
+    "ssl": null
+  },
+  "variables": {
+    "dns_servers": ["dns.reynholm.co.uk"]
+  }
+}</code></pre>Updated
+        group:<pre class="pre codeblock"><code>{
+  "name": "Production Webservers",
+  "id": "58463036-0efa-4365-b367-b5401c0711d3",
+  "environment": "production",
+  "parent": "01522c99-627c-4a07-b28e-a25dd563d756",
+  "rule": ["~", ["trusted", "certname"], "www"],
+  "classes": {
+    "apache": {
+      "serveradmin": "roy@reynholm.co.uk"
+    }
+  },
+  "variables": {
+    "ntp_servers": ["0.us.pool.ntp.org", "1.us.pool.ntp.org", "2.us.pool.ntp.org"],
+    "dns_servers": ["dns.reynholm.co.uk"]
+  }
+}</code></pre>Note
+        that the <code class="ph codeph">ssl</code> class was
+        deleted because its entire object was mapped to null, whereas for the <code class="ph codeph">apache</code> class only the <code class="ph codeph">keepalive_timeout</code> parameter was
+        deleted.</div></section>
+    <section class="section"><h3 class="title sectiontitle">Deleted classes and class
+        parameters</h3><p class="p">If the node group definition contains classes and
+        parameters that have been deleted it is still possible to update the node group with those
+        parameters and classes. Updates that don’t increase the number of errors associated with a
+        node group are allowed.</p></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3>
+      
+      <p class="p">The response object uses these keys:</p>
+      <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="post_v1_groups_id__entry__1">Key</th>
+              <th class="entry" id="post_v1_groups_id__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="post_v1_groups_id__entry__1">kind</td>
+              <td class="entry" headers="post_v1_groups_id__entry__2">"conflicting-ids"</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_groups_id__entry__1">details</td>
+              <td class="entry" headers="post_v1_groups_id__entry__2">An object that contains two keys: <ul class="ul">
+                  <li class="li"><code class="ph codeph">submitted</code> — Contains the ID submitted in the request body. </li>
+                  <li class="li"><code class="ph codeph">fromUrl</code> — Contains the ID taken from the request URL. </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody></table>
+      <p class="p">If the requested node group object contains the <code class="ph codeph">id</code> key, and its value differs from the UUID
+        specified in the request’s path, the service returns a <samp class="ph msgph">400 Bad Request</samp> response.</p><p class="p">In addition, this operation
+        can produce the general <samp class="ph msgph">malformed-error</samp>
+        response and any response that could also be generated by the POST group creation
+        endpoint.</p><p class="p"><samp class="ph msgph">422</samp>
+        responses to POST requests can include errors that were caused by the node group’s children,
+        but a node group being created with a PUT request cannot have any children.</p></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="delete_v1_groups_id">
+   <h2 class="title topictitle2" id="ariaid-title7">DELETE /v1/groups/&lt;id&gt;</h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Use the&nbsp;<code class="ph codeph">/v1/groups/\&lt;id\&gt;</code>&nbsp;endpoint to delete the node group with
+      the given ID.</p>
+      <section class="section" id="delete_v1_groups_id__response_format"><h3 class="title sectiontitle">Response
+            format </h3><p class="p">If the delete operation is successful, the sever
+            returns a <samp class="ph msgph">204 No Content</samp>
+         response.</p></section>
+      <section class="section" id="delete_v1_groups_id__error_responses"><h3 class="title sectiontitle">Error
+            responses </h3><p class="p">In addition to the general <code class="ph codeph">malformed-uuid</code> response, if the node group with the
+            given ID does not exist, the service returns a <samp class="ph msgph">404
+               Not Found</samp> response, as described in the errors documentation.</p><p class="p">
+            <strong class="ph b">
+               <code class="ph codeph">children-present</code>
+            </strong>
+         </p><p class="p">The service returns a <samp class="ph msgph">422
+               Unprocessable Entity</samp> and rejects the delete request if the node group that is
+            being deleted has children. </p><p class="p">The response object uses these
+            keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="delete_v1_groups_id__error_responses__entry__1">Key </th>
+                     <th class="entry" id="delete_v1_groups_id__error_responses__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="delete_v1_groups_id__error_responses__entry__1">
+                        <code class="ph codeph">kind</code>
+                     </td>
+                     <td class="entry" headers="delete_v1_groups_id__error_responses__entry__2">"children-present"</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="delete_v1_groups_id__error_responses__entry__1">
+                        <code class="ph codeph">msg</code>
+                     </td>
+                     <td class="entry" headers="delete_v1_groups_id__error_responses__entry__2">Explains why the delete was
+                        rejected and names the children.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="delete_v1_groups_id__error_responses__entry__1">
+                        <code class="ph codeph">details</code>
+                     </td>
+                     <td class="entry" headers="delete_v1_groups_id__error_responses__entry__2">Contains the node group in
+                        question along with all of its children.</td>
+                  </tr>
+               </tbody></table></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="node_classifier_errors.html#node_classifier_errors" title="Familiarize yourself with error responses to make working the node classifier service API easier.">Node classifier errors</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title8" id="post_v1_groups_id_pin">
+   <h2 class="title topictitle2" id="ariaid-title8">POST /v1/groups/&lt;id&gt;/pin </h2>
+   
+   <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/groups/&lt;id&gt;/pin</code> endpoint to pin nodes to the group with the given
+      ID.</p>
+      <section class="section" id="post_v1_groups_id_pin__request_format"><h3 class="title sectiontitle">Request
+            format </h3><p class="p">You can provide the names of the nodes to pin in
+            two ways.</p><ul class="ul">
+            <li class="li">
+               <p class="p">As the value of the <code class="ph codeph">nodes</code> query parameter. For multiple nodes, use a comma-separated list
+                  format.</p>
+               <p class="p">For example:</p>
+               <p class="p">
+                  <code class="ph codeph">POST
+                     /v1/groups/58463036-0efa-4365-b367-b5401c0711d3/pin?nodes=foo%2Cbar%2Cbaz</code>
+               </p>
+               <p class="p">This request pins the nodes <code class="ph codeph">foo</code>, <code class="ph codeph">bar</code>, and <code class="ph codeph">baz</code> to the
+                  group.</p>
+            </li>
+            <li class="li">
+               <p class="p">In the body of a request. In the <code class="ph codeph">nodes</code> field of a JSON object, specify the node name as
+                  the value. For multiple nodes, use a JSON array.</p>
+               <p class="p">For example:</p>
+               <p class="p">
+                  <code class="ph codeph">{"nodes": ["foo", "bar", "baz"]}</code>
+               </p>
+               <p class="p">This request pins the nodes <code class="ph codeph">foo</code>, <code class="ph codeph">bar</code>, and <code class="ph codeph">baz</code> to the
+                  group.</p>
+            </li>
+         </ul><p class="p">It's easier to use the query parameter method. However, if you want
+            to affect a large number of nodes at once, the query string might get truncated. Strings
+            are truncated if they exceed 8,000 characters. In such cases, use the second method. The
+            request body in the second method is allowed to be many megabytes in size.</p></section>
+      <section class="section" id="post_v1_groups_id_pin__response_format"><h3 class="title sectiontitle">Response
+            format </h3><p class="p">If the pin is successful, the service returns a
+               <samp class="ph msgph">204 No Content</samp> response with an empty
+            body.</p></section>
+      <section class="section" id="post_v1_groups_id_pin__error_responses"><h3 class="title sectiontitle">Error
+            responses </h3><p class="p">This endpoint uses the following error
+            responses.</p><p class="p">If you don't supply the <code class="ph codeph">nodes</code> query parameter or a request body, the service returns a
+               <samp class="ph msgph">400 Malformed Request</samp> response, using
+            these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="post_v1_groups_id_pin__error_responses__entry__1">Key </th>
+                     <th class="entry" id="post_v1_groups_id_pin__error_responses__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__1">
+                        <code class="ph codeph">kind</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__2">"missing-parameters"</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__1">
+                        <code class="ph codeph">msg</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__2">Explains the missing <code class="ph codeph">nodes</code> query parameter.</td>
+                  </tr>
+               </tbody></table><p class="p">If you supply a request body that is not valid JSON, the
+            service returns a <samp class="ph msgph">400 Malformed Request</samp>
+            response. The response object uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="post_v1_groups_id_pin__error_responses__entry__7">Key </th>
+                     <th class="entry" id="post_v1_groups_id_pin__error_responses__entry__8">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__7">
+                        <code class="ph codeph">kind</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__8">"malformed-request"</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__7">
+                        <code class="ph codeph">details</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__8">An object with a <code class="ph codeph">body</code> key containing the body as received
+                        by the service, and an <code class="ph codeph">error</code> field containing a string describing the error
+                        encountered when trying to parse the request's body.</td>
+                  </tr>
+               </tbody></table><p class="p">If the request's body is valid JSON, but the payload is not
+            an object with just the <code class="ph codeph">nodes</code> field and
+            no other fields, the service returns a <samp class="ph msgph">400
+               Malformed Request</samp> response. The response object uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="post_v1_groups_id_pin__error_responses__entry__13">Key </th>
+                     <th class="entry" id="post_v1_groups_id_pin__error_responses__entry__14">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__13">
+                        <code class="ph codeph">kind</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__14">"schema-violation"</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__13">
+                        <code class="ph codeph">msg</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_pin__error_responses__entry__14">Describes the difference between
+                        what was submitted and the required format.</td>
+                  </tr>
+               </tbody></table></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title9" id="post_v1_groups_id_unpin">
+   <h2 class="title topictitle2" id="ariaid-title9">POST /v1/groups/&lt;id&gt;/unpin </h2>
+   
+   <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/groups/&lt;id&gt;/unpin</code> endpoint to unpin nodes from the group with the given
+      ID.</p>
+      <section class="section"><div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> Nodes not actually pinned to the group can be
+               specified without resulting in an error.</div>
+         </div></section>
+      <section class="section" id="post_v1_groups_id_unpin__request_format"><h3 class="title sectiontitle">Request
+            format </h3><p class="p">You can provide the names of the nodes to pin in
+            two ways.</p><ul class="ul">
+            <li class="li">
+               <p class="p">As the value of the <code class="ph codeph">nodes</code> query parameter. For multiple nodes, use a comma-separated list
+                  format.</p>
+               <p class="p">For example:</p>
+               <p class="p">
+                  <code class="ph codeph">POST
+                     /v1/groups/58463036-0efa-4365-b367-b5401c0711d3/unpin?nodes=foo%2Cbar%2Cbaz</code>
+               </p>
+               <p class="p">This request unpins the nodes <code class="ph codeph">foo</code>, <code class="ph codeph">bar</code>, and <code class="ph codeph">baz</code> from
+                  the group. If any of the specified nodes were not pinned to the group, they are
+                  ignored.</p>
+            </li>
+            <li class="li">
+               <p class="p">In the body of a request. In the <code class="ph codeph">nodes</code> field of a JSON object, specify the node name as
+                  the value. For multiple nodes, use a JSON array.</p>
+               <p class="p">For example:</p>
+               <p class="p">
+                  <code class="ph codeph">{"nodes": ["foo", "bar", "baz"]}</code>
+               </p>
+               <p class="p">This request unpins the nodes <code class="ph codeph">foo</code>, <code class="ph codeph">bar</code>, and <code class="ph codeph">baz</code> from
+                  the group. If any of the specified nodes were not pinned to the group, they are
+                  ignored.</p>
+            </li>
+         </ul><p class="p">It's easier to use the query parameter method. However, if you want
+            to affect a large number of nodes at once, the query string might get truncated. Strings
+            are truncated if they exceed 8,000 characters. In such cases, use the second method. The
+            request body in the second method is allowed to be many megabytes in size.</p></section>
+      <section class="section" id="post_v1_groups_id_unpin__response_format"><h3 class="title sectiontitle">Response
+            format </h3><p class="p">If the unpin is successful, the service returns a
+               <samp class="ph msgph">204 No Content</samp> response with an empty
+            body.</p></section>
+      <section class="section" id="post_v1_groups_id_unpin__error_responses"><h3 class="title sectiontitle">Error
+            responses </h3><p class="p">If you don't supply the <code class="ph codeph">nodes</code> query parameter or a request body, the service
+            returns a <samp class="ph msgph">400 Malformed Request</samp> response.
+            The response object uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="post_v1_groups_id_unpin__error_responses__entry__1">Key </th>
+                     <th class="entry" id="post_v1_groups_id_unpin__error_responses__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__1">
+                        <code class="ph codeph">kind</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__2">"missing-parameters"</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__1">
+                        <code class="ph codeph">msg</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__2">Explains the missing <code class="ph codeph">nodes</code> query parameter.</td>
+                  </tr>
+               </tbody></table><p class="p">If a request body is supplied but it is not valid JSON, the
+            service returns a <samp class="ph msgph">400 Malformed Request</samp>
+            response. The response object uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="post_v1_groups_id_unpin__error_responses__entry__7">Key </th>
+                     <th class="entry" id="post_v1_groups_id_unpin__error_responses__entry__8">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__7">
+                        <code class="ph codeph">kind</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__8">"malformed-request"</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__7">
+                        <code class="ph codeph">details</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__8">An object with a <code class="ph codeph">body</code> key containing the body as received
+                        by the service, and an <code class="ph codeph">error</code> field containing a string describing the error
+                        encountered when trying to parse the request's body.</td>
+                  </tr>
+               </tbody></table><p class="p">If the request's body is valid JSON, but the payload is not
+            an object with just the <code class="ph codeph">nodes</code> field and
+            no other fields, the service returns a <samp class="ph msgph">400
+               Malformed Request</samp> response. The response object uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="post_v1_groups_id_unpin__error_responses__entry__13">Key </th>
+                     <th class="entry" id="post_v1_groups_id_unpin__error_responses__entry__14">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__13">
+                        <code class="ph codeph">kind</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__14">"schema-violation"</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__13">
+                        <code class="ph codeph">msg</code>
+                     </td>
+                     <td class="entry" headers="post_v1_groups_id_unpin__error_responses__entry__14">Describes the difference between
+                        what was submitted and the required format.</td>
+                  </tr>
+               </tbody></table></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title10" id="get-v1-groups-id-rules">
+  <h2 class="title topictitle2" id="ariaid-title10">GET /v1/groups/:id/rules</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">Use <code class="ph codeph">/v1/groups/:id/rules</code> to resolve the rules for the requested group and then translate
+    those rules to work with the nodes and inventory endpoints in <span class="ph">PuppetDB</span>.</p>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><div class="p">A successful response includes these keys:<dl class="dl">
+          
+            <dt class="dt dlterm"><code class="ph codeph">rule</code></dt>
+            <dd class="dd">The rules for the group in classifier format.</dd>
+          
+          
+            <dt class="dt dlterm"><code class="ph codeph">rule_with_inherited</code></dt>
+            <dd class="dd">The inherited rules (including the rules for this group) in
+              classifier format</dd>
+          
+          
+            <dt class="dt dlterm"><code class="ph codeph">translated</code></dt>
+            <dd class="dd">An object containing two children, each of the inherited rules
+              translated into a different format.</dd>
+            <dd class="dd ddexpand">
+              <dl class="dl">
+                
+                  <dt class="dt dlterm"><code class="ph codeph">nodes_query_format</code></dt>
+                  <dd class="dd">The optimized translated inherited group in the format
+                    that works with the nodes endpoint in <span class="ph">PuppetDB</span>.</dd>
+                
+                
+                  <dt class="dt dlterm"><code class="ph codeph">inventory_query_format</code></dt>
+                  <dd class="dd">The optimized translated inherited group in the format
+                    that works with the inventory endpoint in <span class="ph">PuppetDB</span>.</dd>
+                
+              </dl>
+            </dd>
+          
+        </dl></div>
+      <pre class="pre codeblock"><code>{
+  "rule": [
+    "=",
+    [
+      "fact",
+      "is_spaceship"
+    ],
+    "true"
+  ],
+  "rule_with_inherited": [
+    "and",
+    [
+      "=",
+      [
+        "fact",
+        "is_spaceship"
+      ],
+      "true"
+    ],
+    [
+      "~",
+      "name",
+      ".*"
+    ]
+  ],
+  "translated": {
+    "nodes_query_format": [
+      "or",
+      [
+        "=",
+        [
+          "fact",
+          "is_spaceship"
+        ],
+        "true"
+      ],
+      [
+        "=",
+        [
+          "fact",
+          "is_spaceship",
+          true
+        ]
+      ]
+    ],
+    "inventory_query_format": [
+      "or",
+      [
+        "=",
+        "facts.is_spaceship",
+        "true"
+      ],
+      [
+        "=",
+        "facts.is_spaceship",
+        true
+      ]
+    ]
+  }
+}</code></pre></section>
+    <section class="section" id="get-v1-groups-id-rules__section_e3j_22m_tgb"><h3 class="title sectiontitle">Error responses</h3>
+      
+      <p class="p">In addition to the general <code class="ph codeph">malformed-uuid</code> error response, if the group with the given ID cannot be found, a
+        404 Not Found response is returned.</p>
+    </section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="node_classifier_errors.html#error_response_description" title="Errors from the node classifier service are JSON responses.">Error response description</a></li></ul></div></nav></article></article></article></main></body></html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="The built-in Puppet certificate authority automatically generates a root and intermediate certificate, but you can set up an independent intermediate certificate authority during installation if you need additional intermediate certificates, or if you prefer to use a public authority CA."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Melissa Amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="use_an_independent_intermediate_ca"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Use an independent intermediate certificate authority</title></head><body id="use_an_independent_intermediate_ca"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+   <h1 class="title topictitle1" id="ariaid-title1">Use an independent intermediate certificate authority</h1>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">The built-in <span class="ph">Puppet</span>
+      certificate authority automatically generates a root and intermediate certificate, but you can
+      set up an independent intermediate certificate authority during installation if you need
+      additional intermediate certificates, or if you prefer to use a public authority CA. </p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <p class="p">You must have a CA chain, a CRL chain, and a private key. The chains and key file must
+            be PEM encoded and the CRL chain must be ordered from least to most authoritative, with
+            the cert for the CA that you intend to use positioned first in the chain files. </p>
+      </section>
+      <section class="section context">
+         <div class="p">
+            <br><img class="image" src="independent_CA.png"><br>
+         </div>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Copy your CA chain, CRL chain, and private key to the
+               node where you're installing the master. </span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note tip note_tip"><span class="note__title">Tip:</span> Allow access to your private key only from
+                     the <span class="ph">PE</span> installation process, which runs as
+                     root.</div>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Follow the instructions to install <span class="ph">PE</span> in text mode, adding the <code class="ph codeph">signing_ca</code> parameter to <code class="ph codeph">pe.conf</code>. &nbsp;</span>
+            <div class="itemgroup stepxmp">
+               <div class="p">You must include all three key/value pairs for the <code class="ph codeph">signing_ca</code> parameter:
+                     <code class="ph codeph">bundle</code>, <code class="ph codeph">crl_chain</code>, and <code class="ph codeph">private_key</code>.&nbsp;<pre class="pre codeblock"><code>{
+ "pe_install::signing_ca": {
+   "bundle": "/root/ca/int_ca_bundle"
+   "crl_chain": "/root/ca/int_crl_chain"
+   "private_key": "/root/ca/int_key"
+ }
+}</code></pre></div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Validate that the CA is working
+               using the standard openssl tools installed with <span class="ph">PE</span>. </span>
+            <div class="itemgroup stepxmp">
+               <div class="p">
+                  <pre class="pre codeblock"><code>openssl x509 -in /etc/puppetlabs/puppet/ssl/ca/signed/&lt;HOSTNAME&gt;.crt 
+-text -noout
+Certificate:
+   Data:
+       Version: 3 (0x2)
+       Serial Number: 1 (0x1)
+   Signature Algorithm: sha256WithRSAEncryption
+       Issuer: CN=intermediate-ca
+...
+</code></pre>
+               </div>
+            </div>
+         </li></ol></section>
+   </div>
+</article></main></body></html>

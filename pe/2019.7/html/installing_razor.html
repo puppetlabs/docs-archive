@@ -1,0 +1,654 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="After you set up a Razor environment, you're ready to install Razor."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="installing_razor"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Installing Razor</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="installing_razor">
+    <h1 class="title topictitle1" id="ariaid-title1">Installing <span class="ph">Razor</span></h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">After you set up a <span class="ph">Razor</span>
+        environment, you're ready to install <span class="ph">Razor</span>.</p>
+        <p class="p"></p>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="install_razor">
+   <h2 class="title topictitle2" id="ariaid-title2">Install <span class="ph">Razor</span></h2>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">At a minimum, to install <span class="ph">Razor</span>, you must install the <span class="ph">Razor</span> server. You can also install the
+      client to make interacting with the server easier and to enable authentication security to
+      control permissions.</p>
+      <section class="section context">
+         <div class="p">
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> Use variables to avoid repeatedly replacing
+               placeholder text. For installation, we recommend declaring a server name and the port
+               to use for <span class="ph">Razor</span> with these
+                  commands:<pre class="pre codeblock"><code>export RAZOR_HOSTNAME=&lt;server name&gt;
+export HTTP_PORT=8150
+export HTTPS_PORT=8151</code></pre><p class="p">The installation tasks on this page use <code class="ph codeph">$&lt;RAZOR_HOSTNAME&gt;</code>, <code class="ph codeph">$&lt;HTTP_PORT&gt;</code>, and <code class="ph codeph">$&lt;HTTPS_PORT&gt;</code> to represent these
+                  variables.</p></div>
+         </div>
+      </section>
+   </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title3" id="install-razor-server">
+    <h3 class="title topictitle3" id="ariaid-title3">Install the <span class="ph">Razor</span> server</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Installing <span class="ph">Razor</span> involves
+        classifying a node with the&nbsp;<code class="ph codeph">pe_razor</code>&nbsp;module.&nbsp;</p>
+        <section class="section context">
+            <p class="p">When <span class="ph">Puppet Enterprise</span> applies this
+                classification, the software downloads automatically and installs a <span class="ph">Razor</span> server and a <span class="ph">PostgreSQL</span> database. The download can take several
+                minutes.</p>
+            <div class="p">Because the <span class="ph">Razor</span> software is
+                stored online, you need an internet connection to install it.<div class="note note note_note"><span class="note__title">Note:</span> You cannot install Razor with the <code class="ph codeph">pe_razor</code> module if your master node has FIPS mode
+                    enabled.</div></div>
+            <div class="p">
+                <div class="note important note_important"><span class="note__title">Important:</span> Don't install the <span class="ph">Razor</span> server on your master.</div>
+            </div>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, create a classification node group
+                    for the <span class="ph">Razor</span> server.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click the <span class="ph">Razor</span>
+                    server node group, click <span class="ph uicontrol">Configuration</span>, then in the <span class="ph uicontrol">Add new class</span> field, enter <code class="ph codeph">pe_razor</code> and click <span class="ph uicontrol">Add class</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Commit changes.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph">Razor</span>
+                    server, run <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent -t</code>
+                </span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="grouping_and_classifying_nodes.html#create_classification_node_groups" title="Create classification node groups to assign classification data to nodes.">Create classification node groups</a></li><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li></ul></div></nav><article class="topic task nested3" aria-labelledby="ariaid-title4" id="install-razor-server-offline">
+    <h4 class="title topictitle4" id="ariaid-title4">Install the <span class="ph">Razor</span> server while
+        you're offline</h4>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Install <span class="ph">Razor</span> using your
+        own remote directory containing a <span class="ph">Puppet Enterprise</span> tarball and the <span class="ph">Razor</span> microkernel. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">Copy the&nbsp;<a class="xref" href="https://pup.pt/razor-microkernel-latest" target="_blank">Razor
+                    microkernel</a>&nbsp;and the&nbsp;<a class="xref" href="https://puppet.com/download-puppet-enterprise" target="_blank">
+                    <span class="ph">Puppet Enterprise</span> tarball</a>&nbsp;appropriate for your
+                installation to your own FTP site or to the <span class="ph">Razor</span>
+                server. </p></section>
+        <section class="section context"><p class="p">If you save the files
+                locally, when you specify directory paths, use three forward slashes (<code class="ph codeph">file:///</code>). If you save
+                the files on the <span class="ph">Razor</span> server, use two forward
+                slashes (<code class="ph codeph">file://</code>).</p><div class="p">The example parameter values in this task use this directory structure:
+                <pre class="pre codeblock"><code>[root@razor ~]# tree  /tmp/razor_files/
+/tmp/razor_files/
+├── 2017.2.3/
+│   └── puppet-enterprise-2017.2.3-el-7-x86_64.tar.gz
+└── microkernel-008.tar</code></pre>
+            </div></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, create a classification node group
+                    for the <span class="ph">Razor</span> server.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click the <span class="ph">Razor</span>
+                    server node group, click <span class="ph uicontrol">Configuration</span>, then in the <span class="ph uicontrol">Add new class</span> field, enter <code class="ph codeph">pe_razor</code> and click <span class="ph uicontrol">Add class</span>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">In the <span class="ph uicontrol">pe_razor</span> class, specify the URL for your tarball, and then
+                    click <span class="ph uicontrol">Add
+                    parameter</span>.</span>
+                <div class="itemgroup info"><div class="p">
+                        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                    <tr class="row">
+                                        <th class="entry" id="install-razor-server-offline__entry__1">Parameter</th>
+                                        <th class="entry" id="install-razor-server-offline__entry__2">Value</th>
+                                    </tr>
+                                </thead><tbody class="tbody">
+                                    <tr class="row">
+                                        <td class="entry" headers="install-razor-server-offline__entry__1">
+                                            <span class="ph uicontrol">pe_tarball_base_url</span>
+                                            <div class="p">
+                                                <div class="note note note_note"><span class="note__title">Note:</span> This
+                                                  parameter can be used only for installation, not
+                                                  upgrades</div>
+                                            </div>
+                                        </td>
+                                        <td class="entry" headers="install-razor-server-offline__entry__2">
+                                            <p class="p">Full path to a directory that
+                                                contains
+                                                &lt;PE_VERSION&gt;/&lt;PE_INSTALLER&gt;.tar.gz, for
+                                                example <code class="ph codeph">file:///tmp/razor_files</code>.</p>
+                                            <p class="p">The complete URL is automatically
+                                                constructed by appending the <span class="ph">PE</span> build and file name
+                                                to the base directory. </p>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                    </div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">In the <span class="ph uicontrol">pe_razor</span> class, specify the URL for the microkernel, and then
+                    click <span class="ph uicontrol">Add
+                    parameter</span>.</span>
+                <div class="itemgroup info"><div class="p">
+                        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                    <tr class="row">
+                                        <th class="entry" id="install-razor-server-offline__entry__5">Parameter</th>
+                                        <th class="entry" id="install-razor-server-offline__entry__6">Value</th>
+                                    </tr>
+                                </thead><tbody class="tbody">
+                                    <tr class="row">
+                                        <td class="entry" headers="install-razor-server-offline__entry__5">
+                                            <span class="ph uicontrol">microkernel_url</span>
+                                        </td>
+                                        <td class="entry" headers="install-razor-server-offline__entry__6">
+                                            <p class="p">Full path to the
+                                                microkernel-&lt;VERSION&gt;.tar, for example <code class="ph codeph">file:///tmp/razor_files/microkernel-008.tar</code>.</p>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                    </div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Commit changes.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph">Razor</span>
+                    server, run <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent -t</code>
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) Install the <span class="ph">Razor</span> client.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">From a web-enabled machine, fetch these
+                            gems:</span>
+                        <div class="itemgroup info"><div class="p">
+                                <pre class="pre codeblock"><code>/opt/puppetlabs/puppet/bin/gem fetch colored --version 1.2
+/opt/puppetlabs/puppet/bin/gem fetch command_line_reporter --version 3.3.6
+/opt/puppetlabs/puppet/bin/gem fetch mime-types --version 1.25.1
+/opt/puppetlabs/puppet/bin/gem fetch multi_json --version 1.12.1
+/opt/puppetlabs/puppet/bin/gem fetch razor-client --version 1.9.4
+/opt/puppetlabs/puppet/bin/gem fetch faraday --version 0.15.4
+</code></pre>
+                            </div></div>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Copy the downloaded gems to a directory on
+                            the <span class="ph">Razor</span> server.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Install the gems on the <span class="ph">Razor</span> server: <code class="ph codeph">/opt/puppetlabs/puppet/bin/gem install -f --local
+                                *.gem</code>
+                        </span>
+                    </li>
+                </ol>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="grouping_and_classifying_nodes.html#create_classification_node_groups" title="Create classification node groups to assign classification data to nodes.">Create classification node groups</a></li><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li></ul></div></nav></article><article class="topic task nested3" aria-labelledby="ariaid-title5" id="change_the_default_razor_port">
+    <h4 class="title topictitle4" id="ariaid-title5">Change the default <span class="ph">Razor</span>
+        port</h4>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">The default ports for <span class="ph">Razor</span>
+        are port 8150 for HTTP communication between the server and nodes, and port 8151 for HTTPS,
+        used for accessing the public API. You can optionally change the default ports if they’re
+        occupied by another service, out of range, or blocked by a firewall.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, select the&nbsp;<span class="ph uicontrol">Classification</span>, then click
+                    the node group that contains the&nbsp;<span class="ph uicontrol">pe_razor</span>&nbsp;module.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the&nbsp;<span class="ph uicontrol">Configuration</span>&nbsp;tab, under&nbsp;<span class="ph uicontrol">pe_razor</span>&nbsp;in
+                        the&nbsp;<span class="ph uicontrol">Parameters</span>&nbsp;box, select whether you want to change
+                        <span class="ph uicontrol">server_http_port</span>&nbsp;or&nbsp;<span class="ph uicontrol">server_https_port</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">In the&nbsp;<span class="ph uicontrol">Value</span>&nbsp;field, enter the port number to use,
+                        click&nbsp;<span class="ph uicontrol">Add
+                        parameter</span>, and then commit changes. </span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic reference nested3" aria-labelledby="ariaid-title6" id="parameters_for_the_pe_razor_class">
+    <h4 class="title topictitle4" id="ariaid-title6">Parameters for the <code class="ph codeph">pe_razor</code> class</h4>
+    
+    
+    <div class="body refbody"><p class="shortdesc">Parameters for the&nbsp;<span class="ph uicontrol">pe_razor</span> class enable customization of your <span class="ph">Razor</span> installation. You can review configuration settings
+        that are currently being used by <span class="ph">Razor</span> with the <code class="ph codeph">razor config</code> command.</p>
+        <section class="section"><div class="p">The&nbsp;<code class="ph codeph">pe_razor</code>&nbsp;class has these parameters: <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="parameters_for_the_pe_razor_class__entry__1">Parameter</th>
+                                <th class="entry" id="parameters_for_the_pe_razor_class__entry__2">Default</th>
+                                <th class="entry" id="parameters_for_the_pe_razor_class__entry__3">Description</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">api_config_blacklist</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">[‘facts.blacklist’,
+                                    ‘database_url’]</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Properties that <span class="ph">Razor</span> hides from query results.
+                                    You can add additional properties to protect sensitive
+                                    data.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">auth_config</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">/etc/puppetlabs/razor-server/shiro.ini</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Path to the authentication
+                                    configuration file.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">auth_enabled</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">false</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">
+                                    <code class="ph codeph">true</code>&nbsp;to
+                                    enable authentication for requests to&nbsp;<code class="ph codeph">/api</code>&nbsp;endpoints, or
+                                        <code class="ph codeph">false</code>.
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">broker_path</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">/etc/puppetlabs/razor-server/brokers:brokers</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Colon-separated list of directories
+                                    containing broker types.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">checkin_interval</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">15</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Interval, in seconds, at which the
+                                    microkernel checks in with the <span class="ph">Razor</span> server.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">database_url</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">jdbc:postgresql:razor?user=razor&amp;sslmode=require&amp;sslcert=/etc/puppetlabs/razor-server/ssl/client.cert.pem&amp;sslkey=/etc/puppetlabs/razor-server/ssl/client.key.pk8</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">URL for the <span class="ph">Razor</span> server.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">dbpassword</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">razor</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Password to the <span class="ph">Razor</span> database.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">facts_blacklist</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">[‘domain’, ‘filesystems’, ‘fqdn’,
+                                    ‘hostname’, ‘id’, ‘/kernel.*/’, ‘memoryfree’, ‘memorysize’,
+                                    ‘memorytotal’, ‘/operatingsystem.*/’, ‘osfamily’, ‘path’, ‘ps’,
+                                    ‘rubysitedir’, ‘rubyversion’, ‘selinux’, ‘sshdsakey’,
+                                    ‘/sshfp_[dr]sa/’, ‘sshrsakey’, ‘/swap.*/’, ‘timezone’,
+                                    ‘/uptime.*/’]</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Facts that <span class="ph">Razor</span> ignores. Each entry can be
+                                    a string or a regexp enclosed in&nbsp;<code class="ph codeph">/../</code>&nbsp;where any fact that matches
+                                    the regexp is dropped. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">facts_match_on</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">[]</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Array of values used to match nodes
+                                    from within the microkernel to nodes in the <span class="ph">Razor</span> database. By default, this
+                                    parameter excludes <code class="ph codeph">/^macaddress.&amp;#42;/</code>&nbsp;(regex),<code class="ph codeph"> serialnumber</code>,
+                                        and&nbsp;<code class="ph codeph">uuid</code>, which are already used. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">hook_execution_path</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">/opt/puppetlabs/puppet/bin</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Colon-separated list of paths that <span class="ph">Razor</span> searches in order when
+                                    running hooks, prior to using the default execution
+                                    path.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">hook_path</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">/etc/puppetlabs/razor-server/hooks:hooks</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Colon-separated list of directories
+                                    containing hook types.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">match_nodes_on</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">[‘mac’]</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Array of values used to match nodes
+                                    when a node PXE boots. Values can include&nbsp;<code class="ph codeph">mac</code>,&nbsp;<code class="ph codeph">serial</code>,&nbsp;<code class="ph codeph">asset</code>, <code class="ph codeph">oruuid</code>. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">microkernel_debug_level</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">quiet</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Sets the logging level for the
+                                    microkernel. Valid values are&nbsp;<code class="ph codeph">quiet</code> or&nbsp;<code class="ph codeph">debug</code>. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">microkernel_extension_zip</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">/etc/puppetlabs/razor-server/mk-extension.zip</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Zip file that specifies custom facts
+                                    or other code that is unpacked by the microkernel prior to
+                                    checkin.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">microkernel_kernel_args</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">"</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Additional command-line arguments that
+                                    are supplied to the microkernel during boot.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">microkernel_url</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">https://pm.puppetlabs.com/puppet-enterprise-razor-microkernel-$</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Location of the <span class="ph">Razor</span> microkernel used to install
+                                        <span class="ph">Razor</span> offline.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">pe_tarball_base_url</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">https://pm.puppetlabs.com/puppet-enterprise</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Location of the <span class="ph">Puppet Enterprise</span> tarball used to install
+                                        <span class="ph">Razor</span> offline.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">protect_new_nodes</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">false</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">
+                                    <code class="ph codeph">true</code>&nbsp;to
+                                    make new machines ineligible for provisioning, or <code class="ph codeph">false</code>.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">repo_store_root</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">/opt/puppetlabs/server/data/razor-server/repo</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Directory where repository contents
+                                    are downloaded and served.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">secure_api</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">true</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">
+                                    <code class="ph codeph">true</code>&nbsp;to
+                                    require HTTPS/SSL communication with&nbsp;<code class="ph codeph">/api</code> endpoints. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">server_http_port</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">8150</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Port that nodes use to communicate
+                                    with the server over HTTP. Only URLs starting with <code class="ph codeph">/svc</code> need to be
+                                    available on this port. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">server_https_port</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">8151</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Port that the client uses to
+                                    communicate with the server’s public API over HTTPS. Only URLs
+                                    starting with <code class="ph codeph">/api</code> need to be available on this port. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__1">
+                                    <code class="ph codeph">task_path</code>
+                                </td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__2">/etc/puppetlabs/razor-server/tasks:tasks</td>
+                                <td class="entry" headers="parameters_for_the_pe_razor_class__entry__3">Colon-separated list of directories
+                                    containing tasks.</td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+    </div>
+</article></article><article class="topic task nested2" aria-labelledby="ariaid-title7" id="verify_the_razor_server">
+    <h3 class="title topictitle3" id="ariaid-title7">Verify the <span class="ph">Razor</span> server</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Use a test command to verify that the <span class="ph">Razor</span> server is correctly installed. The output JSON
+            file&nbsp;<code class="ph codeph">test.out</code> contains a list of
+        available <span class="ph">Razor</span> commands.</p>
+        <section class="section context"></section>
+        <section><div class="li step p">
+                <span class="ph cmd">Test the <span class="ph">Razor</span>
+                    configuration:&nbsp;</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>wget https://$&lt;RAZOR_HOSTNAME&gt;:$&lt;HTTPS_PORT&gt;/api -O test.out</code></pre></div></div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title8" id="install_the_razor_client">
+   <h3 class="title topictitle3" id="ariaid-title8">Install the <span class="ph">Razor</span> client</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">The <span class="ph">Razor</span> client is
+      installed as a <span class="ph">Ruby</span> gem,&nbsp;<code class="ph codeph">razor-client</code>. The process for installing the client differs by
+      platform.</p>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p"></p>
+      </section>
+   </div>
+<article class="topic task nested3" aria-labelledby="ariaid-title9" id="install_the_razor_client_on_nix_systems">
+   <h4 class="title topictitle4" id="ariaid-title9">Install the <span class="ph">Razor</span> client on <span class="ph">*nix</span> systems</h4>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Make interacting with the <span class="ph">Razor</span> server from <span class="ph">*nix</span> systems
+      easier by installing the <span class="ph">Razor</span> client.</p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Install the client:&nbsp;<code class="ph codeph">gem install razor-client</code></span>
+            <div class="itemgroup info">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> If you're installing the <span class="ph">Razor</span> client on your master, you must specify the
+                  location of the gem: <code class="ph codeph">
+                     <strong class="ph b">/opt/puppetlabs/puppet/bin/gem install
+                        razor-client</strong>
+                  </code></div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Point the <span class="ph">Razor</span> client
+               to the server:&nbsp;<code class="ph codeph">razor -u
+                  https://$&lt;RAZOR_HOSTNAME&gt;:$&lt;HTTPS_PORT&gt;/api</code></span>
+            <div class="itemgroup info">
+               <p class="p">An error displays if the client isn’t installed or can’t
+                  connect to the server.</p>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">(Optional) If you receive a warning message about
+               JSON, you can optionally disable it:&nbsp;<code class="ph codeph">gem
+                  install json_pure</code></span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p"></p>
+      </section>
+   </div>
+</article><article class="topic task nested3" aria-labelledby="ariaid-title10" id="install_the_razor_client_on_windows_systems">
+   <h4 class="title topictitle4" id="ariaid-title10">Install the <span class="ph">Razor</span> client on <span class="ph">Windows</span> systems</h4>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Make interacting with the <span class="ph">Razor</span> server from <span class="ph">Windows</span> systems
+      easier by installing the <span class="ph">Razor</span> client.</p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">From a <span class="ph">Puppet</span> command
+               prompt ( <span class="ph menucascade"><span class="ph uicontrol">Start</span><abbr title="and then"> &gt; </abbr><span class="ph uicontrol">Start Command Prompt with
+                     Puppet</span><abbr title="and then"> &gt; </abbr><span class="ph uicontrol">Run as administrator</span></span>), install the client:&nbsp;<code class="ph codeph">gem
+                  install razor-client</code></span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Set an environment variable for the <span class="ph">Razor</span> server URL:&nbsp;<code class="ph codeph">setx RAZOR_API
+               https://$&lt;RAZOR_HOSTNAME&gt;:8151/api</code>.</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note tip note_tip"><span class="note__title">Tip:</span> Alternatively, you can set the variable
+                        through&nbsp;<span class="ph uicontrol">User
+                        Accounts</span>&nbsp;in the <span class="ph uicontrol">Control Panel</span>.</div>
+               </div>
+            </div>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p"></p>
+      </section>
+   </div>
+</article></article><article class="topic task nested2" aria-labelledby="ariaid-title11" id="enable_authentication_security">
+   <h3 class="title topictitle3" id="ariaid-title11">Enable authentication security</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Enable authentication security to control what tasks users
+      can perform. For example, you might limit certain users to read permissions to avoid
+      accidental overwrite of nodes.</p>
+      <section class="section context">
+         <p class="p">Two methods are required to secure your <span class="ph">Razor</span> server:</p>
+         <ul class="ul">
+            <li class="li">
+               <p class="p">Authentication security using Shiro – disabled by default</p>
+            </li>
+            <li class="li">
+               <p class="p">Protocol security using HTTPS and TLS/SSL – enabled by default
+                  if you’re using <span class="ph">Puppet Enterprise</span> and you install <span class="ph">Razor</span> on a managed node</p>
+            </li>
+         </ul>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, in the&nbsp;<span class="ph uicontrol">pe_razor</span>&nbsp;class, specify Shiro
+               authentication parameters.</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                           <tr class="row">
+                              <th class="entry" id="enable_authentication_security__entry__1">
+                                 <span class="ph uicontrol">Parameter</span>
+                              </th>
+                              <th class="entry" id="enable_authentication_security__entry__2">
+                                 <span class="ph uicontrol">Value</span>
+                              </th>
+                           </tr>
+                        </thead><tbody class="tbody">
+                           <tr class="row">
+                              <td class="entry" headers="enable_authentication_security__entry__1">
+                                 <span class="ph uicontrol">auth_enabled</span>
+                              </td>
+                              <td class="entry" headers="enable_authentication_security__entry__2">
+                                 <span class="ph uicontrol">true</span>
+                              </td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry" headers="enable_authentication_security__entry__1">
+                                 <span class="ph uicontrol">auth_configured</span>
+                              </td>
+                              <td class="entry" headers="enable_authentication_security__entry__2">Location of the Shiro file,&nbsp;<code class="ph codeph">/etc/puppetlabs/razor-server/shiro.ini</code></td>
+                           </tr>
+                        </tbody></table>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Specify users, passwords, and roles in
+                  your&nbsp;<code class="ph codeph">shiro.ini</code>&nbsp;file,
+               located at&nbsp;<code class="ph codeph">/etc/puppetlabs/razor-server/shiro.ini</code>.</span>
+            <div class="itemgroup stepxmp">
+               <div class="p">For example, this INI file specifies two users:&nbsp;<code class="ph codeph">razor</code>&nbsp;is an admin who can perform
+                  all functions, and&nbsp;<code class="ph codeph">other</code> is
+                  a user who can perform only read operations, such as viewing
+                  collections.<pre class="pre codeblock"><code>[main]
+sha256Matcher = org.apache.shiro.authc.credential.Sha256CredentialsMatcher
+iniRealm.credentialsMatcher = $sha256Matcher 
+
+[users]
+# define users known to shiro, using the format:
+# &lt;username&gt; = &lt;sha256 password hash&gt;, &lt;role&gt;[, &lt;role&gt;...]
+razor = 9b4f1d0e11dcc029c3493d945e44ee077b68978466c0aab6d1ce453aac5f0384, admin
+other = d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1, user
+
+[roles]
+# define roles and their associated permissions
+admin = *
+user = query:*</code></pre></div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Restart the <span class="ph">Razor</span>
+                  service:&nbsp;<code class="ph codeph">service pe-razor-server
+                  restart</code></span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+   </div>
+<article class="topic reference nested3" aria-labelledby="ariaid-title12" id="permissions_for_razor">
+    <h4 class="title topictitle4" id="ariaid-title12">Permissions for <span class="ph">Razor</span></h4>
+    
+    
+    <div class="body refbody"><p class="shortdesc">These are the available permissions for <span class="ph">Razor</span>.</p>
+        <section class="section"><div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> Commands have varying access control
+                    patterns. Use&nbsp;<code class="ph codeph">razor
+                        &lt;COMMAND_NAME&gt; --help</code>&nbsp;to view required permissions for
+                    each command.</div>
+                <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="permissions_for_razor__entry__1">Task</th>
+                                <th class="entry" id="permissions_for_razor__entry__2">Permission</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="permissions_for_razor__entry__1">Query all collections</td>
+                                <td class="entry" headers="permissions_for_razor__entry__2">
+                                    <code class="ph codeph">query:*</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="permissions_for_razor__entry__1">Query the node collection</td>
+                                <td class="entry" headers="permissions_for_razor__entry__2">
+                                    <code class="ph codeph">query:nodes</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="permissions_for_razor__entry__1">Query a specific node</td>
+                                <td class="entry" headers="permissions_for_razor__entry__2">
+                                    <code class="ph codeph">query:nodes:&lt;NODE_NAME&gt;</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="permissions_for_razor__entry__1">Run all commands</td>
+                                <td class="entry" headers="permissions_for_razor__entry__2">
+                                    <code class="ph codeph">commands:*</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="permissions_for_razor__entry__1">Create policies</td>
+                                <td class="entry" headers="permissions_for_razor__entry__2">
+                                    <code class="ph codeph">commands:create-policy:*</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="permissions_for_razor__entry__1">Create policies starting with a
+                                    specific name</td>
+                                <td class="entry" headers="permissions_for_razor__entry__2">
+                                    <code class="ph codeph">commands:create-policy:&lt;NAME&gt;*</code>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+    </div>
+</article></article><article class="topic task nested2" aria-labelledby="ariaid-title13" id="verify_razor_versions">
+    <h3 class="title topictitle3" id="ariaid-title13">Verify <span class="ph">Razor</span> versions</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Verify your installation by checking the version of the
+            <span class="ph">Razor</span> server and client. This information can also be
+        useful for troubleshooting.</p>
+        <section><div class="li step p">
+                <span class="ph cmd">On the client or server, verify versions: <code class="ph codeph">razor
+                        --version</code>&nbsp;or&nbsp;<code class="ph codeph">razor -v</code></span>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+    </div>
+</article></article></article></article></main></body></html>

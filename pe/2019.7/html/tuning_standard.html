@@ -1,0 +1,449 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="reference"><meta name="description" content="Use these guidelines to configure your installation to maximize its use of available system (CPU and RAM) resources."><meta name="DC.relation" scheme="URI" content="hardware_requirements.html#hardware_requirements"><meta name="DC.relation" scheme="URI" content="config_intro.html#config_intro"><meta name="DC.relation" scheme="URI" content="config_puppetserver.html#tune_the_maximum_number_of_jruby_instances"><meta name="DC.relation" scheme="URI" content="config_puppetdb.html#configure_command_processing_threads"><meta name="DC.relation" scheme="URI" content="config_java_args.html#increase_the_java_heap_size_for_pe_java_services"><meta name="DC.relation" scheme="URI" content="config_console.html#tuning_the_postgresql_buffer_pool_size"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="tuning_standard"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Tuning standard installations</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="tuning_standard">
+    <h1 class="title topictitle1" id="ariaid-title1">Tuning standard installations </h1>
+    
+    <div class="body refbody"><p class="shortdesc">Use these guidelines to configure your installation to
+        maximize its use of available system (CPU and RAM) resources.</p>
+        <section class="section"><p class="p">
+                <span class="ph">PE</span> is composed of multiple services on one or more
+                infrastructure hosts. Each service has multiple settings that can be configured to
+                maximize use of system resources and optimize performance. The default settings for
+                each service are conservative, because the set of services sharing resources on each
+                host varies depending on your infrastructure. </p><p class="p">Optimized
+                settings vary depending on the complexity and scale of your infrastructure. For
+                example, you might need to allocate more memory per <span class="ph">JRuby</span> depending on the number of environments, or the
+                number of agents and their run intervals.</p><p class="p">Configure
+                settings after an install or upgrade, or after making changes to infrastructure
+                hosts, including changing the system resources of existing hosts, or adding new
+                hosts, including compilers.</p><p class="p">
+                
+            </p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="hardware_requirements.html#hardware_requirements" title="These hardware requirements are based on internal testing at Puppet and are meant only as guidelines to help you determine your hardware needs.">Hardware requirements</a></li><li class="linklist"><a class="link" href="config_intro.html#config_intro" title="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances.">Methods for configuring Puppet Enterprise</a></li><li class="linklist"><a class="link" href="config_puppetserver.html#tune_the_maximum_number_of_jruby_instances" title="The jruby_max_active_instances setting controls the maximum number of JRuby instances to allow on the Puppet Server.">Tune the maximum number of JRuby instances</a></li><li class="linklist"><a class="link" href="config_puppetdb.html#configure_command_processing_threads" title="The command_processing_threads setting defines how many command processing threads PuppetDB uses to sort incoming data. Each thread can process a single command at a time. The setting defaults to half the number of cores in your system.">Configure command processing threads</a></li><li class="linklist"><a class="link" href="config_java_args.html#increase_the_java_heap_size_for_pe_java_services" title="The Java heap size is the Java Virtual Machine (JVM) memory allocated to Java services in Puppet Enterprise (PE). You can use any configuration method you choose. We will use the console to change the Java heap size for console services, Puppet Server, orchestration services, or PuppetDB in the examples below.">Increase the Java heap size for PE Java services</a></li><li class="linklist"><a class="link" href="config_console.html#tuning_the_postgresql_buffer_pool_size" title="If you are experiencing performance issues or instability with the console, adjust the buffer memory settings for PostgreSQL.">Tuning the PostgreSQL buffer pool size</a></li></ul></div></nav><article class="topic reference nested1" aria-labelledby="ariaid-title2" id="master_tuning">
+   <h2 class="title topictitle2" id="ariaid-title2">Master tuning</h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">These are the default and recommended tuning settings for
+      your master or high availability replica.</p>
+      <section class="section"><h3 class="title sectiontitle">Tuning for 4 cores, 8 GB of
+            RAM </h3><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col><col><col><col><col><col><col><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="master_tuning__entry__1" rowspan="2">Install type</th>
+                        <th class="entry align-center" id="master_tuning__entry__2" colspan="3">
+                           <span class="ph">Puppet Server</span>
+                        </th>
+                        <th class="entry align-center" id="master_tuning__entry__3" colspan="2">
+                           <span class="ph">PuppetDB</span>
+                        </th>
+                        <th class="entry align-center" id="master_tuning__entry__4">Console</th>
+                        <th class="entry align-center" id="master_tuning__entry__5">Orchestrator</th>
+                        <th class="entry align-center" id="master_tuning__entry__6" colspan="2">
+                           <span class="ph">PostgreSQL</span>
+                        </th>
+                        <th class="entry align-center" id="master_tuning__entry__7" colspan="2">CPU
+                           totals</th>
+                        <th class="entry align-center" id="master_tuning__entry__8" colspan="2">Memory totals</th>
+                     </tr>
+                     <tr class="row">
+                        <th class="entry" id="master_tuning__entry__9"><span class="ph">JRuby</span> max active instances</th>
+                        <th class="entry" id="master_tuning__entry__10">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__11">Reserved code cache (MB)</th>
+                        <th class="entry" id="master_tuning__entry__12">Command processing
+                           threads</th>
+                        <th class="entry" id="master_tuning__entry__13">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__14">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__15">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__16">Shared buffers (MB)</th>
+                        <th class="entry" id="master_tuning__entry__17">Work memory (MB)</th>
+                        <th class="entry" id="master_tuning__entry__18">Used</th>
+                        <th class="entry" id="master_tuning__entry__19">Free</th>
+                        <th class="entry" id="master_tuning__entry__20">Used (MB)</th>
+                        <th class="entry" id="master_tuning__entry__21">Free (MB)</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="master_tuning__entry__1">Default</td>
+                        <td class="entry" headers="master_tuning__entry__2 master_tuning__entry__9">3</td>
+                        <td class="entry" headers="master_tuning__entry__2 master_tuning__entry__10">2048</td>
+                        <td class="entry" headers="master_tuning__entry__2 master_tuning__entry__11">512</td>
+                        <td class="entry" headers="master_tuning__entry__3 master_tuning__entry__12">2</td>
+                        <td class="entry" headers="master_tuning__entry__3 master_tuning__entry__13">256</td>
+                        <td class="entry" headers="master_tuning__entry__4 master_tuning__entry__14">256</td>
+                        <td class="entry" headers="master_tuning__entry__5 master_tuning__entry__15">192</td>
+                        <td class="entry" headers="master_tuning__entry__6 master_tuning__entry__16">2048</td>
+                        <td class="entry" headers="master_tuning__entry__6 master_tuning__entry__17">4</td>
+                        <td class="entry" headers="master_tuning__entry__7 master_tuning__entry__18">5</td>
+                        <td class="entry" headers="master_tuning__entry__7 master_tuning__entry__19">-1</td>
+                        <td class="entry" headers="master_tuning__entry__8 master_tuning__entry__20">5312</td>
+                        <td class="entry" headers="master_tuning__entry__8 master_tuning__entry__21">2880</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="master_tuning__entry__1">Recommended</td>
+                        <td class="entry" headers="master_tuning__entry__2 master_tuning__entry__9">2</td>
+                        <td class="entry" headers="master_tuning__entry__2 master_tuning__entry__10">1024</td>
+                        <td class="entry" headers="master_tuning__entry__2 master_tuning__entry__11">512</td>
+                        <td class="entry" headers="master_tuning__entry__3 master_tuning__entry__12">1</td>
+                        <td class="entry" headers="master_tuning__entry__3 master_tuning__entry__13">512</td>
+                        <td class="entry" headers="master_tuning__entry__4 master_tuning__entry__14">512</td>
+                        <td class="entry" headers="master_tuning__entry__5 master_tuning__entry__15">512</td>
+                        <td class="entry" headers="master_tuning__entry__6 master_tuning__entry__16">2048</td>
+                        <td class="entry" headers="master_tuning__entry__6 master_tuning__entry__17">4</td>
+                        <td class="entry" headers="master_tuning__entry__7 master_tuning__entry__18">3</td>
+                        <td class="entry" headers="master_tuning__entry__7 master_tuning__entry__19">1</td>
+                        <td class="entry" headers="master_tuning__entry__8 master_tuning__entry__20">5120</td>
+                        <td class="entry" headers="master_tuning__entry__8 master_tuning__entry__21">3072</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="master_tuning__entry__1">With compilers</td>
+                        <td class="entry" headers="master_tuning__entry__2 master_tuning__entry__9">2</td>
+                        <td class="entry" headers="master_tuning__entry__2 master_tuning__entry__10">1024</td>
+                        <td class="entry" headers="master_tuning__entry__2 master_tuning__entry__11">512</td>
+                        <td class="entry" headers="master_tuning__entry__3 master_tuning__entry__12">2</td>
+                        <td class="entry" headers="master_tuning__entry__3 master_tuning__entry__13">1024</td>
+                        <td class="entry" headers="master_tuning__entry__4 master_tuning__entry__14">512</td>
+                        <td class="entry" headers="master_tuning__entry__5 master_tuning__entry__15">512</td>
+                        <td class="entry" headers="master_tuning__entry__6 master_tuning__entry__16">2048</td>
+                        <td class="entry" headers="master_tuning__entry__6 master_tuning__entry__17">4</td>
+                        <td class="entry" headers="master_tuning__entry__7 master_tuning__entry__18">4</td>
+                        <td class="entry" headers="master_tuning__entry__7 master_tuning__entry__19">0</td>
+                        <td class="entry" headers="master_tuning__entry__8 master_tuning__entry__20">5632</td>
+                        <td class="entry" headers="master_tuning__entry__8 master_tuning__entry__21">2560</td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+      <section class="section"><h3 class="title sectiontitle">Tuning for 8 cores, 16 GB of
+            RAM </h3><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col><col><col><col><col><col><col><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="master_tuning__entry__64" rowspan="2">Install type</th>
+                        <th class="entry align-center" id="master_tuning__entry__65" colspan="3">
+                           <span class="ph">Puppet Server</span>
+                        </th>
+                        <th class="entry align-center" id="master_tuning__entry__66" colspan="2">
+                           <span class="ph">PuppetDB</span>
+                        </th>
+                        <th class="entry align-center" id="master_tuning__entry__67">Console</th>
+                        <th class="entry align-center" id="master_tuning__entry__68">Orchestrator</th>
+                        <th class="entry align-center" id="master_tuning__entry__69" colspan="2">
+                           <span class="ph">PostgreSQL</span>
+                        </th>
+                        <th class="entry align-center" id="master_tuning__entry__70" colspan="2">CPU totals</th>
+                        <th class="entry align-center" id="master_tuning__entry__71" colspan="2">Memory totals</th>
+                     </tr>
+                     <tr class="row">
+                        <th class="entry" id="master_tuning__entry__72"><span class="ph">JRuby</span> max active instances</th>
+                        <th class="entry" id="master_tuning__entry__73">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__74">Reserved code cache (MB)</th>
+                        <th class="entry" id="master_tuning__entry__75">Command processing
+                           threads</th>
+                        <th class="entry" id="master_tuning__entry__76">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__77">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__78">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__79">Shared buffers (MB)</th>
+                        <th class="entry" id="master_tuning__entry__80">Work memory (MB)</th>
+                        <th class="entry" id="master_tuning__entry__81">Used</th>
+                        <th class="entry" id="master_tuning__entry__82">Free</th>
+                        <th class="entry" id="master_tuning__entry__83">Used (MB)</th>
+                        <th class="entry" id="master_tuning__entry__84">Free (MB)</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="master_tuning__entry__64">Default</td>
+                        <td class="entry" headers="master_tuning__entry__65 master_tuning__entry__72">4</td>
+                        <td class="entry" headers="master_tuning__entry__65 master_tuning__entry__73">2048</td>
+                        <td class="entry" headers="master_tuning__entry__74">1024</td>
+                        <td class="entry" headers="master_tuning__entry__66 master_tuning__entry__75">4</td>
+                        <td class="entry" headers="master_tuning__entry__76">256</td>
+                        <td class="entry" headers="master_tuning__entry__67 master_tuning__entry__77">256</td>
+                        <td class="entry" headers="master_tuning__entry__68 master_tuning__entry__78">192</td>
+                        <td class="entry" headers="master_tuning__entry__69 master_tuning__entry__79">4096</td>
+                        <td class="entry" headers="master_tuning__entry__80">4</td>
+                        <td class="entry" headers="master_tuning__entry__70 master_tuning__entry__81">8</td>
+                        <td class="entry" headers="master_tuning__entry__82">0</td>
+                        <td class="entry" headers="master_tuning__entry__71 master_tuning__entry__83">7872</td>
+                        <td class="entry" headers="master_tuning__entry__84">8512</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="master_tuning__entry__64">Recommended</td>
+                        <td class="entry" headers="master_tuning__entry__65 master_tuning__entry__72">5</td>
+                        <td class="entry" headers="master_tuning__entry__65 master_tuning__entry__73">3840</td>
+                        <td class="entry" headers="master_tuning__entry__74">1024</td>
+                        <td class="entry" headers="master_tuning__entry__66 master_tuning__entry__75">2</td>
+                        <td class="entry" headers="master_tuning__entry__76">1024</td>
+                        <td class="entry" headers="master_tuning__entry__67 master_tuning__entry__77">768</td>
+                        <td class="entry" headers="master_tuning__entry__68 master_tuning__entry__78">768</td>
+                        <td class="entry" headers="master_tuning__entry__69 master_tuning__entry__79">4096</td>
+                        <td class="entry" headers="master_tuning__entry__80">4</td>
+                        <td class="entry" headers="master_tuning__entry__70 master_tuning__entry__81">7</td>
+                        <td class="entry" headers="master_tuning__entry__82">1</td>
+                        <td class="entry" headers="master_tuning__entry__71 master_tuning__entry__83">11520</td>
+                        <td class="entry" headers="master_tuning__entry__84">4864</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="master_tuning__entry__64">With compilers</td>
+                        <td class="entry" headers="master_tuning__entry__65 master_tuning__entry__72">2</td>
+                        <td class="entry" headers="master_tuning__entry__65 master_tuning__entry__73">1536</td>
+                        <td class="entry" headers="master_tuning__entry__74">1024</td>
+                        <td class="entry" headers="master_tuning__entry__66 master_tuning__entry__75">4</td>
+                        <td class="entry" headers="master_tuning__entry__76">3072</td>
+                        <td class="entry" headers="master_tuning__entry__67 master_tuning__entry__77">768</td>
+                        <td class="entry" headers="master_tuning__entry__68 master_tuning__entry__78">768</td>
+                        <td class="entry" headers="master_tuning__entry__69 master_tuning__entry__79">4096</td>
+                        <td class="entry" headers="master_tuning__entry__80">4</td>
+                        <td class="entry" headers="master_tuning__entry__70 master_tuning__entry__81">6</td>
+                        <td class="entry" headers="master_tuning__entry__82">2</td>
+                        <td class="entry" headers="master_tuning__entry__71 master_tuning__entry__83">11264</td>
+                        <td class="entry" headers="master_tuning__entry__84">5120</td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+      <section class="section"><h3 class="title sectiontitle">Tuning
+            16 cores, 32 GB of RAM</h3><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col><col><col><col><col><col><col><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="master_tuning__entry__127" rowspan="2">Install type</th>
+                        <th class="entry align-center" id="master_tuning__entry__128" colspan="3">
+                           <span class="ph">Puppet Server</span>
+                        </th>
+                        <th class="entry align-center" id="master_tuning__entry__129" colspan="2">
+                           <span class="ph">PuppetDB</span>
+                        </th>
+                        <th class="entry align-center" id="master_tuning__entry__130">Console</th>
+                        <th class="entry align-center" id="master_tuning__entry__131">Orchestrator</th>
+                        <th class="entry align-center" id="master_tuning__entry__132" colspan="2">
+                           <span class="ph">PostgreSQL</span>
+                        </th>
+                        <th class="entry align-center" id="master_tuning__entry__133" colspan="2">CPU totals</th>
+                        <th class="entry align-center" id="master_tuning__entry__134" colspan="2">Memory totals</th>
+                     </tr>
+                     <tr class="row">
+                        <th class="entry" id="master_tuning__entry__135"><span class="ph">JRuby</span> max active instances</th>
+                        <th class="entry" id="master_tuning__entry__136">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__137">Reserved code cache (MB)</th>
+                        <th class="entry" id="master_tuning__entry__138">Command processing
+                           threads</th>
+                        <th class="entry" id="master_tuning__entry__139">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__140">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__141">Java heap (MB)</th>
+                        <th class="entry" id="master_tuning__entry__142">Shared buffers (MB)</th>
+                        <th class="entry" id="master_tuning__entry__143">Work memory (MB)</th>
+                        <th class="entry" id="master_tuning__entry__144">Used</th>
+                        <th class="entry" id="master_tuning__entry__145">Free</th>
+                        <th class="entry" id="master_tuning__entry__146">Used (MB)</th>
+                        <th class="entry" id="master_tuning__entry__147">Free (MB)</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="master_tuning__entry__127">Default</td>
+                        <td class="entry" headers="master_tuning__entry__128 master_tuning__entry__135">4</td>
+                        <td class="entry" headers="master_tuning__entry__128 master_tuning__entry__136">2048</td>
+                        <td class="entry" headers="master_tuning__entry__137">2048</td>
+                        <td class="entry" headers="master_tuning__entry__129 master_tuning__entry__138">8</td>
+                        <td class="entry" headers="master_tuning__entry__139">256</td>
+                        <td class="entry" headers="master_tuning__entry__130 master_tuning__entry__140">256</td>
+                        <td class="entry" headers="master_tuning__entry__131 master_tuning__entry__141">192</td>
+                        <td class="entry" headers="master_tuning__entry__132 master_tuning__entry__142">4096</td>
+                        <td class="entry" headers="master_tuning__entry__143">4</td>
+                        <td class="entry" headers="master_tuning__entry__133 master_tuning__entry__144">12</td>
+                        <td class="entry" headers="master_tuning__entry__145">4</td>
+                        <td class="entry" headers="master_tuning__entry__134 master_tuning__entry__146">8896</td>
+                        <td class="entry" headers="master_tuning__entry__147">23872</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="master_tuning__entry__127">Recommended</td>
+                        <td class="entry" headers="master_tuning__entry__128 master_tuning__entry__135">11</td>
+                        <td class="entry" headers="master_tuning__entry__128 master_tuning__entry__136">11264</td>
+                        <td class="entry" headers="master_tuning__entry__137">2048</td>
+                        <td class="entry" headers="master_tuning__entry__129 master_tuning__entry__138">4</td>
+                        <td class="entry" headers="master_tuning__entry__139">2048</td>
+                        <td class="entry" headers="master_tuning__entry__130 master_tuning__entry__140">1024</td>
+                        <td class="entry" headers="master_tuning__entry__131 master_tuning__entry__141">1024</td>
+                        <td class="entry" headers="master_tuning__entry__132 master_tuning__entry__142">8192</td>
+                        <td class="entry" headers="master_tuning__entry__143">4</td>
+                        <td class="entry" headers="master_tuning__entry__133 master_tuning__entry__144">15</td>
+                        <td class="entry" headers="master_tuning__entry__145">1</td>
+                        <td class="entry" headers="master_tuning__entry__134 master_tuning__entry__146">25600</td>
+                        <td class="entry" headers="master_tuning__entry__147">7168</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="master_tuning__entry__127">With compilers</td>
+                        <td class="entry" headers="master_tuning__entry__128 master_tuning__entry__135">4</td>
+                        <td class="entry" headers="master_tuning__entry__128 master_tuning__entry__136">4096</td>
+                        <td class="entry" headers="master_tuning__entry__137">2048</td>
+                        <td class="entry" headers="master_tuning__entry__129 master_tuning__entry__138">8</td>
+                        <td class="entry" headers="master_tuning__entry__139">5120</td>
+                        <td class="entry" headers="master_tuning__entry__130 master_tuning__entry__140">1024</td>
+                        <td class="entry" headers="master_tuning__entry__131 master_tuning__entry__141">1024</td>
+                        <td class="entry" headers="master_tuning__entry__132 master_tuning__entry__142">8192</td>
+                        <td class="entry" headers="master_tuning__entry__143">4</td>
+                        <td class="entry" headers="master_tuning__entry__133 master_tuning__entry__144">12</td>
+                        <td class="entry" headers="master_tuning__entry__145">4</td>
+                        <td class="entry" headers="master_tuning__entry__134 master_tuning__entry__146">21504</td>
+                        <td class="entry" headers="master_tuning__entry__147">11264</td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+      
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="compiler_tuning">
+   <h2 class="title topictitle2" id="ariaid-title3">Compiler tuning</h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">These are the default and recommended tuning settings for
+      compilers.</p>
+      <section class="section"><h3 class="title sectiontitle">Tuning 4 cores, 8 GB of
+            RAM</h3><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="compiler_tuning__entry__1" rowspan="2">Install type</th>
+                        <th class="entry align-center" id="compiler_tuning__entry__2" colspan="3">
+                           <span class="ph">Puppet Server</span>
+                        </th>
+                        <th class="entry align-center" id="compiler_tuning__entry__3" colspan="2">CPU totals</th>
+                        <th class="entry align-center" id="compiler_tuning__entry__4" colspan="2">Memory totals</th>
+                     </tr>
+                     <tr class="row">
+                        <th class="entry" id="compiler_tuning__entry__5"><span class="ph">JRuby</span> max active instances</th>
+                        <th class="entry" id="compiler_tuning__entry__6">Java heap (MB)</th>
+                        <th class="entry" id="compiler_tuning__entry__7">Reserved code cache (MB)</th>
+                        <th class="entry" id="compiler_tuning__entry__8">Used</th>
+                        <th class="entry" id="compiler_tuning__entry__9">Free</th>
+                        <th class="entry" id="compiler_tuning__entry__10">Used (MB)</th>
+                        <th class="entry" id="compiler_tuning__entry__11">Free (MB)</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="compiler_tuning__entry__1">Default</td>
+                        <td class="entry" headers="compiler_tuning__entry__2 compiler_tuning__entry__5">3</td>
+                        <td class="entry" headers="compiler_tuning__entry__2 compiler_tuning__entry__6">2048</td>
+                        <td class="entry" headers="compiler_tuning__entry__7">512</td>
+                        <td class="entry" headers="compiler_tuning__entry__3 compiler_tuning__entry__8">3</td>
+                        <td class="entry" headers="compiler_tuning__entry__9">1</td>
+                        <td class="entry" headers="compiler_tuning__entry__4 compiler_tuning__entry__10">2560</td>
+                        <td class="entry" headers="compiler_tuning__entry__11">5632</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="compiler_tuning__entry__1">Recommended</td>
+                        <td class="entry" headers="compiler_tuning__entry__2 compiler_tuning__entry__5">3</td>
+                        <td class="entry" headers="compiler_tuning__entry__2 compiler_tuning__entry__6">1536</td>
+                        <td class="entry" headers="compiler_tuning__entry__7">512</td>
+                        <td class="entry" headers="compiler_tuning__entry__3 compiler_tuning__entry__8">3</td>
+                        <td class="entry" headers="compiler_tuning__entry__9">1</td>
+                        <td class="entry" headers="compiler_tuning__entry__4 compiler_tuning__entry__10">2048</td>
+                        <td class="entry" headers="compiler_tuning__entry__11">6144</td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+      <section class="section"><h3 class="title sectiontitle">Tuning 8 cores, 16 GB of
+            RAM</h3><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="compiler_tuning__entry__28" rowspan="2">Install type</th>
+                        <th class="entry align-center" id="compiler_tuning__entry__29" colspan="3">
+                           <span class="ph">Puppet Server</span>
+                        </th>
+                        <th class="entry align-center" id="compiler_tuning__entry__30" colspan="2">CPU totals</th>
+                        <th class="entry align-center" id="compiler_tuning__entry__31" colspan="2">Memory totals</th>
+                     </tr>
+                     <tr class="row">
+                        <th class="entry" id="compiler_tuning__entry__32"><span class="ph">JRuby</span> max active instances</th>
+                        <th class="entry" id="compiler_tuning__entry__33">Java heap (MB)</th>
+                        <th class="entry" id="compiler_tuning__entry__34">Reserved code cache (MB)</th>
+                        <th class="entry" id="compiler_tuning__entry__35">Used</th>
+                        <th class="entry" id="compiler_tuning__entry__36">Free</th>
+                        <th class="entry" id="compiler_tuning__entry__37">Used (MB)</th>
+                        <th class="entry" id="compiler_tuning__entry__38">Free (MB)</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="compiler_tuning__entry__28">Default</td>
+                        <td class="entry" headers="compiler_tuning__entry__29 compiler_tuning__entry__32">4</td>
+                        <td class="entry" headers="compiler_tuning__entry__29 compiler_tuning__entry__33">2048</td>
+                        <td class="entry" headers="compiler_tuning__entry__34">1024</td>
+                        <td class="entry" headers="compiler_tuning__entry__30 compiler_tuning__entry__35">4</td>
+                        <td class="entry" headers="compiler_tuning__entry__36">4</td>
+                        <td class="entry" headers="compiler_tuning__entry__31 compiler_tuning__entry__37">3072</td>
+                        <td class="entry" headers="compiler_tuning__entry__38">13312</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="compiler_tuning__entry__28">Recommended</td>
+                        <td class="entry" headers="compiler_tuning__entry__29 compiler_tuning__entry__32">7</td>
+                        <td class="entry" headers="compiler_tuning__entry__29 compiler_tuning__entry__33">5376</td>
+                        <td class="entry" headers="compiler_tuning__entry__34">1024</td>
+                        <td class="entry" headers="compiler_tuning__entry__30 compiler_tuning__entry__35">7</td>
+                        <td class="entry" headers="compiler_tuning__entry__36">1</td>
+                        <td class="entry" headers="compiler_tuning__entry__31 compiler_tuning__entry__37">6400</td>
+                        <td class="entry" headers="compiler_tuning__entry__38">9984</td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+      <section class="section"><h3 class="title sectiontitle">Tuning 16 cores, 32 GB of
+            RAM</h3><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="compiler_tuning__entry__55" rowspan="2">Install type</th>
+                        <th class="entry align-center" id="compiler_tuning__entry__56" colspan="3">
+                           <span class="ph">Puppet Server</span>
+                        </th>
+                        <th class="entry align-center" id="compiler_tuning__entry__57" colspan="2">CPU totals</th>
+                        <th class="entry align-center" id="compiler_tuning__entry__58" colspan="2">Memory totals</th>
+                     </tr>
+                     <tr class="row">
+                        <th class="entry" id="compiler_tuning__entry__59"><span class="ph">JRuby</span> max active instances</th>
+                        <th class="entry" id="compiler_tuning__entry__60">Java heap (MB)</th>
+                        <th class="entry" id="compiler_tuning__entry__61">Reserved code cache (MB)</th>
+                        <th class="entry" id="compiler_tuning__entry__62">Used</th>
+                        <th class="entry" id="compiler_tuning__entry__63">Free</th>
+                        <th class="entry" id="compiler_tuning__entry__64">Used (MB)</th>
+                        <th class="entry" id="compiler_tuning__entry__65">Free (MB)</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="compiler_tuning__entry__55">Default</td>
+                        <td class="entry" headers="compiler_tuning__entry__56 compiler_tuning__entry__59">4</td>
+                        <td class="entry" headers="compiler_tuning__entry__56 compiler_tuning__entry__60">2048</td>
+                        <td class="entry" headers="compiler_tuning__entry__61">2048</td>
+                        <td class="entry" headers="compiler_tuning__entry__57 compiler_tuning__entry__62">4</td>
+                        <td class="entry" headers="compiler_tuning__entry__63">12</td>
+                        <td class="entry" headers="compiler_tuning__entry__58 compiler_tuning__entry__64">4096</td>
+                        <td class="entry" headers="compiler_tuning__entry__65">28672</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="compiler_tuning__entry__55">Recommended</td>
+                        <td class="entry" headers="compiler_tuning__entry__56 compiler_tuning__entry__59">15</td>
+                        <td class="entry" headers="compiler_tuning__entry__56 compiler_tuning__entry__60">15360</td>
+                        <td class="entry" headers="compiler_tuning__entry__61">2048</td>
+                        <td class="entry" headers="compiler_tuning__entry__57 compiler_tuning__entry__62">15</td>
+                        <td class="entry" headers="compiler_tuning__entry__63">1</td>
+                        <td class="entry" headers="compiler_tuning__entry__58 compiler_tuning__entry__64">17408</td>
+                        <td class="entry" headers="compiler_tuning__entry__65">15360</td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+   </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="using_the_puppet_infrastructure_tune_command">
+    <h2 class="title topictitle2" id="ariaid-title4">Using the <code class="ph codeph">puppet infrastructure tune</code> command</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">puppet infrastructure tune</code> command outputs
+        optimized settings for <span class="ph">PE</span> services based on recommended
+        guidelines. </p>
+        <p class="p">When you run <code class="ph codeph">puppet infrastructure tune</code>, it queries <span class="ph">PuppetDB</span> to identify infrastructure hosts and their
+            processor and memory facts, and outputs settings in YAML format for use in <span class="ph">Hiera</span>. The command optimizes based on available system
+            resources, not agent load or environment complexity. </p>
+        <p class="p">The <code class="ph codeph">puppet infrastructure tune</code> command is compatible with
+            all <span class="ph">PE</span> configurations. The command must be run on your
+            master as root.</p>
+        <div class="p">You can add these options to the <code class="ph codeph">puppet infrastructure tune</code> command:<ul class="ul">
+                <li class="li"><code class="ph codeph">--memory_per_jruby &lt;MB&gt;</code> optimizes the <span class="ph">Puppet Server</span> service for environment complexity.</li>
+                <li class="li"><code class="ph codeph">--current</code> outputs currently specified settings
+                    for <span class="ph">PE</span> services in the console and in <span class="ph">Hiera</span>, and identifies duplicate settings found in
+                    both places. <div class="note tip note_tip"><span class="note__title">Tip:</span> Specify settings in the console or <span class="ph">Hiera</span>, but not both. Console settings take
+                        precedence over <span class="ph">Hiera</span> settings</div></li>
+            </ul></div>
+        <p class="p">For more information about the tune command, run <code class="ph codeph">puppet infrastructure tune
+            --help</code>.</p>
+    </div>
+</article></article></article></main></body></html>

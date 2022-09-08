@@ -1,0 +1,54 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="There are several configurations available for Puppet Enterprise. The configuration you use depends on the number of nodes in your environment and the resources required to serve agent catalogs. All PE installations begin with the standard configuration, and scale up by adding additional components as needed."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="choosing_an_architecture"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Choosing an architecture</title></head><body id="choosing_an_architecture"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+   <h1 class="title topictitle1" id="ariaid-title1">Choosing an architecture </h1>
+   
+   <div class="body conbody"><p class="shortdesc">There are several configurations available for <span class="ph">Puppet Enterprise</span>.
+      The configuration you use depends on the number of nodes in your environment and the resources
+      required to serve agent catalogs. All <span class="ph">PE</span> installations begin
+      with the standard configuration, and scale up by adding additional components as needed. </p>
+      <section class="section"><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="choosing_an_architecture__entry__1">Configuration</th>
+                     <th class="entry" id="choosing_an_architecture__entry__2">Description</th>
+                     <th class="entry" id="choosing_an_architecture__entry__3">Node limit</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="choosing_an_architecture__entry__1">Standard installation (Recommended)</td>
+                     <td class="entry" headers="choosing_an_architecture__entry__2">All infrastructure components are installed on
+                        the master. This installation type is the easiest to install, upgrade, and
+                        troubleshoot. </td>
+                     <td class="entry" headers="choosing_an_architecture__entry__3">Up to 4,000</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="choosing_an_architecture__entry__1">Large installation</td>
+                     <td class="entry" headers="choosing_an_architecture__entry__2">Similar to a standard installation, plus one or
+                        more compilers and a load balancer which help distribute the agent catalog
+                        compilation workload. </td>
+                     <td class="entry" headers="choosing_an_architecture__entry__3">4,000–20,000</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="choosing_an_architecture__entry__1">Extra-large installation</td>
+                     <td class="entry" headers="choosing_an_architecture__entry__2">Similar to a large installation, plus a separate
+                        node which hosts the PE-PostgreSQL instance. </td>
+                     <td class="entry" headers="choosing_an_architecture__entry__3">More than 20,000</td>
+                  </tr>
+               </tbody></table><div class="p">
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> You can add high availability to an installation with or without
+               compilers by configuring a replica of your master. High availability isn't supported
+               with standalone PE-PostgreSQL.</div>
+         </div></section>
+      <section class="section"><h2 class="title sectiontitle">Standard
+            installation</h2><div class="p">
+            <br><img class="image" src="standard.png" alt="Graphic showing the standard reference architecture, where end users interact with a single master, and the master interacts with multiple agents."><br>
+         </div></section>
+      <section class="section"><h2 class="title sectiontitle">Large installation</h2><div class="p">
+            <br><img class="image" src="large.png" alt="Graphic showing a large reference architecture, where end users interact with a single master. The master interacts with multiple compilers and multiple agents."><br>
+         </div></section>
+      <section class="section"><h2 class="title sectiontitle">Extra-large
+            installation</h2><div class="p">
+            <br><img class="image" src="xl.png" alt="Graphic showing an extra-large reference architecture, where end users interact with a single master. The master interacts with multiple compilers, multiple agents, and a standalone PE-PostgreSQL node."><br>
+         </div></section>
+   </div>
+</article></main></body></html>

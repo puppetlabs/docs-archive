@@ -1,0 +1,34 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise comes with some pre-installed tasks, but you must install all plans or any other tasks you want to use."><meta name="DC.relation" scheme="URI" content="puppetfile.html#managing_environment_content_with_puppetfiles"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="installing_tasks"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Installing tasks and plans</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="installing_tasks">
+    <h1 class="title topictitle1" id="ariaid-title1">Installing tasks and plans</h1>
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">Puppet Enterprise</span> comes with some pre-installed tasks, but you must
+        install all plans or any other tasks you want to use.</p>
+        <div class="note note note_note"><span class="note__title">Note:</span> Many of the modules that come pre-installed with the open-source
+                <span class="ph">Bolt</span> tool will not be available by default in <span class="ph">PE</span>. </div>
+        <section class="section"><div class="p">
+                <span class="ph">PE</span> comes with the following tasks already installed:
+                    <ul class="ul">
+                    <li class="li"><code class="ph codeph">package</code> - Inspect, install, upgrade, and manage packages.</li>
+                    <li class="li"><code class="ph codeph">service</code> - Start, stop, restart, and check the status of a
+                        service.</li>
+                    <li class="li"><code class="ph codeph">facter_task</code> - Inspect the value of system facts.</li>
+                    <li class="li"><code class="ph codeph">puppet_conf</code> - Inspect <span class="ph">Puppet</span>
+                        agent configuration settings.</li>
+                </ul></div><p class="p">Tasks and plans are packaged in <span class="ph">Puppet</span> modules.</p>
+            <p class="p"> Tasks can be installed from the <a class="xref" href="https://forge.puppet.com/" target="_blank"><span class="ph">Forge</span></a> and managed with a
+                    <span class="ph">Puppetfile</span> and <span class="ph">Code Manager</span>. </p>
+            <p class="p">Plans must be installed using <span class="ph">Code Manager</span>. See <a class="xref" href="plans_limitations.html" title="Some plan language and features are not available in PE or have some caveats.">Plan caveats and limitations</a> for information about code deployment for plans. </p>
+            <div class="p">Additional modules that include helpful task and plan content
+                include: <ul class="ul">
+                    <li class="li">
+                        <p class="p"><a class="xref" href="https://forge.puppet.com/puppetlabs/puppet_agent" target="_blank">puppet_agent</a>: Install <span class="ph">Puppet</span> Agent package. </p>
+                    </li>
+                    <li class="li">
+                        <p class="p"><a class="xref" href="https://forge.puppet.com/puppetlabs/reboot" target="_blank">reboot</a>: Manage system reboots.</p>
+                    </li>
+                </ul></div></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="puppetfile.html#managing_environment_content_with_puppetfiles" title="A&nbsp;Puppetfile specifies detailed information about each environment's Puppet code and data, including where to get that code and data from, where to install it, and whether to update it.">Managing environment content with a Puppetfile</a></li></ul></div></nav></article></article></main></body></html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Upgrade your PE installation as new versions become available."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="upgrading_pe"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Upgrading Puppet Enterprise</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="upgrading_pe">
+    <h1 class="title topictitle1" id="ariaid-title1">Upgrading <span class="ph">Puppet Enterprise</span>
+    </h1>
+    <p class="shortdesc">Upgrade your <span class="ph">PE</span>
+        installation as new versions become available. </p>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="supported_upgrade_paths">
+    <h2 class="title topictitle2" id="ariaid-title2">Upgrade paths </h2>
+    
+    <div class="body refbody"><p class="shortdesc">These are the valid upgrade paths for&nbsp;<span class="ph">PE</span>.</p>
+        <section class="section"><p class="p"></p><div class="p"><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="supported_upgrade_paths__entry__1">If you're on
+                                    version...</th>
+                                <th class="entry" id="supported_upgrade_paths__entry__2">Upgrade to...</th>
+                                <th class="entry" id="supported_upgrade_paths__entry__3">Notes</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1"><span class="ph">2019.7</span> (latest)</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">You're up to date!</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2019.y</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">latest</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2018.1.2 or later<p class="p">2018.1.3 or later with
+                                        disaster recovery</p></td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">latest</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3" rowspan="2">You must have version 2018.1.2 or
+                                    later in order to complete prerequisites for upgrade to the
+                                    latest version.<p class="p">With disaster recovery enabled, you must have
+                                        version 2018.1.3 in order to upgrade to the latest version.
+                                        Alternatively, you can forget and then recreate your replica
+                                        after upgrade. </p></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2018.1.0 or 2018.1.1</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">2018.1.z</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2017.3.z</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">2018.1</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2017.2.z</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">2018.1</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2017.1.z</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">2018.1</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2016.5.z</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">2018.1</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2016.4.10 or
+                                    later</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">2018.1</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2016.4.9 or
+                                    earlier</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2" rowspan="5">2016.4.z, then 2018.1</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3" rowspan="5">To upgrade
+                                    to 2018.1 from 2015.2.z through 2016.4.9, you must first <a class="xref" href="https://docs.puppet.com/pe/2016.4/upgrade_mono.html" target="_blank">upgrade to the latest
+                                    2016.4.z</a>.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2016.2.z</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2016.1.z</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2015.3.z</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">2015.2.z</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="supported_upgrade_paths__entry__1">3.8.x</td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__2">2016.4.z, then 2018.1 </td>
+                                <td class="entry" headers="supported_upgrade_paths__entry__3">To upgrade from 3.8.x,
+                                    you must first <a class="xref" href="https://docs.puppet.com/pe/2016.4/migrate_pe_catalog_preview.html" target="_blank">
+                                        <dfn class="term">migrate</dfn> to the latest
+                                        2016.4.z</a>. This upgrade requires a different process
+                                    than upgrades from other versions. </td>
+                            </tr>
+                        </tbody></table></div></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="upgrade_cautions">
+    <h2 class="title topictitle2" id="ariaid-title3">Upgrade cautions</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">These are the major updates to <span class="ph">PE</span> since the last
+        long-term support release, 2018.1. Review these recommendations and plan accordingly before
+        upgrading to this version.</p>
+        <section class="section"><div class="p">
+                <div class="note important note_important"><span class="note__title">Important:</span> Always back up your installation before
+                    performing any upgrade.</div>
+            </div></section>
+        
+    </div>
+<article class="topic concept nested2" aria-labelledby="ariaid-title4" id="puppetdb-migrations-in-pe-2019.1-2019.3-and-2019.7">
+    <h3 class="title topictitle3" id="ariaid-title4"><span class="ph">PuppetDB</span> migrations in <span class="ph">PE</span> 2019.1, 2019.3, and 2019.7</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <p class="p">Upgrades to <span class="ph">PE</span> 2019.1, 2019.3, and 2019.7 involve
+            database migrations that can slow upgrade significantly. Deleting <span class="ph">PuppetDB</span> reports and truncating the resource events
+            table before you upgrade can reduce migration time and lessen your downtime. </p>
+        <div class="p">If you're upgrading from 2019.7 or later, or <span class="ph">PE</span> LTS
+            version 2018.1.15 or later, you can run a packaged delete reports command before
+            <a class="xref" href="upgrading_pe.html#upgrade_cautions" title="These are the major updates to PE since the last long-term support release, 2018.1. Review these recommendations and plan accordingly before upgrading to this version.">upgrade</a>. For other versions that don't
+            include the delete reports command, you can manually delete reports by following
+            these steps.<ol class="ol">
+                <li class="li">Stop the <span class="ph">PuppetDB</span> service: <code class="ph codeph">service
+                    pe-puppetdb stop</code></li>
+                <li class="li">On your PE-PostgreSQL server, create a file named
+                    <code class="ph codeph">/tmp/delete-reports.sql</code> and set it to be owned by the
+                    <code class="ph codeph">pe-postgres</code> user (<code class="ph codeph">chown pe-postgres:pe-postgres
+                        /tmp/delete-reports.sql</code>).</li>
+                <li class="li">Add contents to the <code class="ph codeph">.sql</code> file according to your <span class="ph">PE</span> version.<div class="p"><span class="ph">PE</span> versions earlier than 2019.3
+                        <pre class="pre codeblock"><code>BEGIN TRANSACTION;
+                            
+                            ALTER TABLE certnames DROP CONSTRAINT IF EXISTS certnames_reports_id_fkey;
+                            UPDATE certnames SET latest_report_id = NULL;
+                            TRUNCATE TABLE reports CASCADE;
+                            
+                            ALTER TABLE certnames
+                            ADD CONSTRAINT certnames_reports_id_fkey
+                            FOREIGN KEY (latest_report_id) REFERENCES reports(id) ON DELETE SET NULL;
+                            
+                            COMMIT TRANSACTION;</code></pre></div><span class="ph">PE</span> 2019.3 through
+                    2019.7<pre class="pre codeblock"><code>BEGIN TRANSACTION;
+                        
+                        ALTER TABLE certnames DROP CONSTRAINT IF EXISTS certnames_reports_id_fkey;
+                        UPDATE certnames SET latest_report_id = NULL;
+                        
+                        DO $$ DECLARE
+                        r RECORD;
+                        BEGIN
+                        FOR r IN (SELECT tablename FROM pg_tables WHERE tablename LIKE 'resource_events_%') LOOP
+                        EXECUTE 'DROP TABLE ' || quote_ident(r.tablename);
+                        END LOOP;
+                        END $$;
+                        
+                        TRUNCATE TABLE reports CASCADE;
+                        
+                        ALTER TABLE certnames
+                        ADD CONSTRAINT certnames_reports_id_fkey
+                        FOREIGN KEY (latest_report_id) REFERENCES reports(id) ON DELETE SET NULL;
+                        
+                        COMMIT TRANSACTION;</code></pre></li>
+                <li class="li">Run the command: <code class="ph codeph">su - pe-postgres -s /bin/bash -c
+                    "/opt/puppetlabs/server/bin/psql -d pe-puppetdb -f
+                    /tmp/delete-reports.sql"</code></li>
+            </ol></div>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title5" id="java-11-upgrade-in-pe-2019.3">
+    <h3 class="title topictitle3" id="ariaid-title5">Java 11 upgrade in <span class="ph">PE</span> 2019.3</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <p class="p"><span class="ph">PE</span> 2019.3 includes an upgrade from Java version 8 to
+            version 11. If you've customized <span class="ph">PE</span> Java services, or
+            use plug-ins that include Java code, test <span class="ph">PE</span> 2019.3
+            and later thoroughly in a non-production environment before upgrading.</p>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title6" id="orchestrator-memory-use-increase-in-pe-2019.2">
+    <h3 class="title topictitle3" id="ariaid-title6">Orchestrator memory use increase in <span class="ph">PE</span> 2019.2</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <p class="p"><span class="ph">Puppet</span> orchestrator uses more
+            memory in version 2019.2 than in previous versions due to the addition of a Java
+            virtual machine (JVM), which enables new features and functionalities such as plans.
+            If your memory use is near capacity when running <span class="ph">PE</span>
+            2019.1 or older versions, allocate additional memory before upgrading to <span class="ph">PE</span> 2019.2. </p>
+        <p class="p">Additionally, take care when writing plans, as they can require
+            more memory than is allocated to the orchestrator. To work around this issue,
+            rewrite the plan or increase the memory allocated to the orchestrator.</p>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title7" id="postgresql-11-upgrade-in-pe-2019.2">
+    <h3 class="title topictitle3" id="ariaid-title7"><span class="ph">PostgreSQL</span> 11 upgrade in
+        <span class="ph">PE</span> 2019.2</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <p class="p"><span class="ph">PE</span> 2019.2.0 includes an upgrade from <code class="ph codeph">pe-postgresql</code> version 9.6 to version 11. As with any
+            major version bump of <span class="ph">PostgreSQL</span>, the datastore must
+            be migrated to a format compatible with the new version of <span class="ph">PostgreSQL</span>. The <span class="ph">PE</span>
+            installer performs this migration automatically using the <span class="ph">PostgreSQL</span>
+            <code class="ph codeph">pg_upgrade</code> utility. Because both the 9.6 datastore
+            and the new 11 datastore remain present on disk, the partition used for <span class="ph">PostgreSQL</span> must have enough space for the migrated
+            datastore (calculated with a margin as 110% of the current 9.6 datastore). The
+            installer issues a warning and cancels the upgrade if there is insufficient
+            space.</p>
+        <p class="p">The datastore migration also increases the amount of time required
+            to complete the upgrade. The time required varies depending on your installation's
+            size and hardware setup, but broadly, expect between two and four minutes of
+            additional time per 10GB of datastore size.</p>
+        <p class="p">The <code class="ph codeph">pe-modules</code>
+            <code class="ph codeph">pe_postgresql_info</code>
+            fact provides information about the size of your <span class="ph">PostgreSQL</span> installation as well as the size and
+            number of available bytes for the partition. To review this fact, run <code class="ph codeph">facter -p pe_postgresql_info</code> on the <span class="ph">PE</span> node that runs the <code class="ph codeph">pe-postgresql</code> service (either the master
+            node or the standalone <span class="ph">PostgreSQL</span> node in extra-large
+            installations).</p>
+        <div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> If you use an external <span class="ph">PostgreSQL</span> instance not managed by <span class="ph">PE</span>, you must separately upgrade the instance to
+                <span class="ph">PostgreSQL</span> 11. For more information, see
+                <a class="xref" href="upgrading_pe.html#upgrading_postgresql" title="If you use the default PE-PostgreSQL database installed alongside PuppetDB, you don't have to take special steps to upgrade PostgreSQL. However, if you have a standalone PE-PostgreSQL instance, or if you use a PostgreSQL instance not managed by PE, you must take extra steps to upgrade PostgreSQL.">Upgrading
+                    PostgreSQL</a>.</div>
+        </div>
+        <p class="p">After upgrading, you can optionally remove packages and directories associated with
+            older <span class="ph">PostgreSQL</span> versions with the command
+            <code class="ph codeph">puppet infrastructure run remove_old_postgresql_versions</code>. If
+            applicable, the installer prompts you to complete this cleanup.</p>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title8" id="tlsv1-and-v1.1-disabled-in-pe-2019.1">
+    <h3 class="title topictitle3" id="ariaid-title8">TLSv1 and v1.1 disabled in <span class="ph">PE</span> 2019.1</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <div class="p">As of <span class="ph">PE</span> 2019.1, TLSv1 and TLSv1.1 is now disabled by
+            default to comply with security regulations. You must <a class="xref" href="enable_tlsv1.html">enable TLSv1</a> to upgrade agents on these platforms:
+                
+            <ul class="ul">
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">AIX</span>
+                        </p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">CentOS</span> 5</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">RHEL</span> 5</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">SLES 11</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">Solaris</span> 10</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">Windows</span> Server 2008 R2</p>
+                    </li>
+                </ul>
+        </div>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title9" id="certificate-architecture-and-handling-in-pe-2019.0">
+    <h3 class="title topictitle3" id="ariaid-title9">Certificate architecture and handling in <span class="ph">PE</span> 2019.0</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <div class="p">
+            <span class="ph">PE</span> 2019.0 and later, courtesy of <span class="ph">Puppet Server</span>, uses an intermediate certificate authority
+            architecture by default. When you update to <span class="ph">PE</span> 2019.0 or
+            later, you have several options for whether and when to adopt the new intermediate
+            certificate architecture:<ul class="ul">
+                <li class="li"><strong class="ph b">To <em class="ph i">upgrade</em> to 2019.0 or later and keep your existing CA</strong>, upgrade
+                    infrastructure nodes and agents as normal. You can continue to use pre-6.x
+                    agents with a <span class="ph">Puppet</span> 6.x or <span class="ph">PE</span> 2019.0 or later master as long as you don't
+                    regenerate certificates. </li>
+                <li class="li"><strong class="ph b">To <em class="ph i">migrate</em> to 2019.0 or later and keep your existing CA</strong>, install
+                    the new version and copy <code class="ph codeph">/etc/puppetlabs/puppet/ssl</code> from your old master. You can continue
+                    to use pre-6.x agents with a <span class="ph">Puppet</span> 6.x or <span class="ph">PE</span> 2019.0 or later master as long as you don't
+                    regenerate certificates. </li>
+                <li class="li"><strong class="ph b">To adopt the new CA architecture</strong>, upgrade both your master and agents,
+                    and then <a class="xref" href="https://puppet.com/docs/pe/2019.0/regenerate_certificates.html#regenerate-certificates-in-pe-monolithic-installs" target="_blank">regenerate certificates</a>. If you
+                    don't upgrade all of your nodes to 6.x, don't regenerate certificates, because
+                    pre-6.x agents won't work with the new CA architecture.</li>
+            </ul></div>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title10" id="mcollective-removal-in-pe-2019.0">
+    <h3 class="title topictitle3" id="ariaid-title10"><span class="ph">MCollective</span> removal in <span class="ph">PE</span>
+        2019.0</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <p class="p">If you're upgrading from a 2018.1 installation
+            with <span class="ph">MCollective</span> enabled, you must take additional steps to
+            ensure a successful upgrade. </p><p class="p">
+                <strong class="ph b">Before upgrade</strong>
+            </p><div class="p">
+                <ul class="ul">
+                    <li class="li"><div class="p">
+                        <a class="xref" href="upgrading_pe.html#removing_mco" title="Remove MCollective and its related files from the nodes in your infrastructure. You must have PE version 2018.1.1 or later to complete this task.">Remove <span class="ph">MCollective</span>
+                        </a> from nodes in your infrastructure. If any nodes are configured
+                        with <span class="ph">MCollective</span> or <span class="ph">ActiveMQ</span> profiles when you attempt to
+                        upgrade, the installer halts and prompts you to remove the profiles. For
+                        example, remove <span class="ph">PE</span>
+                        <span class="ph">MCollective</span> node group and any of the deprecated
+                        parameters: <ul class="ul">
+                            <li class="li">mcollective_middleware_hosts </li>
+                            <li class="li">mcollective </li>
+                            <li class="li">mcollective_middleware_port </li>
+                            <li class="li">mcollective_middleware_user </li>
+                            <li class="li">mcollective_middleware_password</li>
+                        </ul><div class="note tip note_tip"><span class="note__title">Tip:</span> If your <span class="ph">PuppetDB</span> includes outdated catalogs
+                            for nodes that aren't currently being managed, the installer might
+                            report that <span class="ph">MCollective</span> is active on those
+                            nodes. You can deactivate the nodes with <code class="ph codeph">puppet node deactivate </code>or
+                            use <span class="ph">Puppet</span> to update the
+                            records.</div>
+                    </div></li>
+                </ul>
+            </div><p class="p">
+                <strong class="ph b">After upgrade</strong>
+            </p><div class="p">
+                <ul class="ul">
+                    <li class="li"><div class="p">Manually remove these node groups:
+                        <ul class="ul">
+                            <li class="li"><p class="p">
+                                <span class="ph uicontrol">PE
+                                    MCollective</span>
+                            </p></li>
+                            <li class="li"><p class="p">
+                                <span class="ph uicontrol">PE ActiveMQ
+                                    Broker</span>
+                            </p></li>
+                            <li class="li"><p class="p">Any custom node group
+                                you created for <span class="ph">ActiveMQ</span> hubs
+                            </p></li>
+                        </ul>
+                    </div></li>
+                    <li class="li"><p class="p">If you customized classification
+                        with references to <span class="ph">MCollective</span> or <span class="ph">ActiveMQ</span> profiles, remove the profiles
+                        from your classification. In this version of <span class="ph">PE</span>, nodes that include <span class="ph">MCollective</span> or <span class="ph">ActiveMQ</span> profiles trigger a warning
+                        during agent runs. Future versions of <span class="ph">PE</span>
+                        that remove the profiles completely can trigger failures in catalog
+                        compilation if you leave the profiles in place. </p></li>
+                </ul>
+            </div>
+    </div>
+<article class="topic task nested3" aria-labelledby="ariaid-title11" id="removing_mco">
+    <h4 class="title topictitle4" id="ariaid-title11">Removing <span class="ph">MCollective</span>
+    </h4>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Remove <span class="ph">MCollective</span> and its related
+        files from the nodes in your infrastructure. You must have <span class="ph">PE</span>
+        version 2018.1.1 or later to complete this task.</p>
+        <section class="section context">
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> This procedure does not remove your <span class="ph">MCollective</span> or ActiveMQ log files. </div>
+            </div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd" id="removing_mco__d111e36">In the console, click
+                  <span class="ph uicontrol">Classification</span>, and
+               select the node group <span class="ph uicontrol">PE
+                  Infrastructure</span>. </span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, find the <span class="ph uicontrol">puppet_enterprise</span> class. Select the <span class="ph uicontrol">mcollective</span> parameter and edit its
+               value to <kbd class="ph userinput">absent</kbd>. </span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <table class="table" id="removing_mco__d111e142"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                           <tr class="row">
+                              <th class="entry" id="removing_mco__d111e142__entry__1">Class</th>
+                              <th class="entry" id="removing_mco__d111e142__entry__2">Parameter</th>
+                              <th class="entry" id="removing_mco__d111e142__entry__3">Value</th>
+                           </tr>
+                        </thead><tbody class="tbody">
+                           <tr class="row">
+                              <td class="entry" headers="removing_mco__d111e142__entry__1">
+                                 <code class="ph codeph">puppet_enterprise</code>
+                              </td>
+                              <td class="entry" headers="removing_mco__d111e142__entry__2">
+                                 <code class="ph codeph">mcollective</code>
+                              </td>
+                              <td class="entry" headers="removing_mco__d111e142__entry__3">
+                                 <code class="ph codeph">absent</code>
+                              </td>
+                           </tr>
+                        </tbody></table>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd" id="removing_mco__d111e198">Click <span class="ph uicontrol">Add parameter</span> and commit the change.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd" id="removing_mco__d111e207">Set up a job and run <span class="ph">Puppet</span> on the <span class="ph uicontrol">PE Infrastructure</span> node group to enforce your
+               changes.</span>
+         </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p">The server components of <span class="ph">MCollective</span>, including pe-activemq and the peadmin user, are
+            removed from the master and the <span class="ph">MCollective</span> service on agents is
+            stopped. You must complete the upgrade to 2019.0 or later to completely remove <span class="ph">MCollective</span> from agents.</p>
+        </section>
+    </div>
+</article></article></article><article class="topic task nested1" aria-labelledby="ariaid-title12" id="test_modules_before_pe_upgrade">
+    <h2 class="title topictitle2" id="ariaid-title12">Test modules before upgrade</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">To ensure that your modules work with the newest version
+        of <span class="ph">PE</span>, update and test them with <span class="ph">Puppet Development Kit
+                                                  (PDK)</span> before upgrading.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">If you are already using
+                    <span class="ph">PDK</span>, your modules should pass validation and unit
+                tests with your currently installed version of <span class="ph">PDK</span>.&nbsp;</p></section>
+        <section class="section context"><p class="p">Update <span class="ph">PDK</span> with each new release to ensure compatability
+                with new versions of <span class="ph">PE</span>.</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Download and install <span class="ph">PDK</span>. If you already have <span class="ph">PDK</span> installed, this updates <span class="ph">PDK</span> to its latest version. For detailed
+                    instructions and download links, see the <a class="xref" href="https://puppet.com/docs/pdk/1.x/pdk_install.html" target="_blank">installing</a> instructions.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd"> If you have not previously used <span class="ph">PDK</span> with your modules, convert them to a <span class="ph">PDK</span> compatible format. This makes changes to your
+                    module to enable validation and unit testing with <span class="ph">PDK</span>. For important usage details, see the <a class="xref" href="https://puppet.com/docs/pdk/1.x/pdk_converting_modules.html" target="_blank">converting modules</a> documentation.&nbsp;</span>
+                <div class="itemgroup info">
+                    <p class="p">For example, from within the module directory, run:</p>
+                    <pre class="pre codeblock"><code>pdk convert</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">If your modules are already compatible with <span class="ph">PDK</span>, update them to the latest&nbsp;module
+                    template. If you converted modules in step 2, you do not need to update the
+                    template. To learn more about updating, see the <a class="xref" href="https://puppet.com/docs/pdk/1.x/pdk_updating_modules.html" target="_blank">updating module</a> templates documentation.</span>
+                <div class="itemgroup info">
+                    <p class="p">For example, from within the module directory, run:</p>
+                    <pre class="pre codeblock"><code>pdk update</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Validate and run unit tests for each module,
+                    specifying the version of <span class="ph">PE</span> you are upgrading
+                    to. When specifying a <span class="ph">PE</span> version, be sure to
+                    specify at least the year and the release number, such as 2018.1. For
+                    information about module validations and testing, see the <a class="xref" href="https://puppet.com/docs/pdk/1.x/pdk_testing.html" target="_blank">validating and testing modules</a> documentation.</span>
+                <div class="itemgroup info">
+                    <p class="p">For example, from within the module directory, run:</p>
+                    <pre class="pre codeblock"><code>pdk validate
+pdk test unit</code></pre>
+                    The <code class="ph codeph">pdk test
+                        unit</code> command verifies that testing dependencies and directories are
+                    present and runs the unit tests that you write. It does not create unit tests
+                    for your module.</div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">If your module fails validation or unit tests,
+                    make any necessary changes to your code. </span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">After you've verified
+                that your modules work with the new <span class="ph">PE</span> version, you
+                can continue with your upgrade.</p></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title13" id="upgrade_standard">
+    <h2 class="title topictitle2" id="ariaid-title13">Upgrade a standard installation</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To upgrade, run the <span class="ph">PE</span> installer on your master, and
+        then upgrade any additional components.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Back up your <span class="ph">PE</span> installation.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand"><strong>Optional: </strong>
+                    <span class="ph cmd">Speed upgrade by cleaning up <span class="ph">PuppetDB</span> reports.
+                        On your master, run <code class="ph codeph">/opt/puppetlabs/bin/puppetdb
+                            delete-reports</code></span>
+            <div class="itemgroup info">If the command fails to execute, you're likely using a version of <span class="ph">PuppetDB</span> that doesn't yet include the command. See <a class="xref" href="upgrading_pe.html#upgrade_cautions" title="These are the major updates to PE since the last long-term support release, 2018.1. Review these recommendations and plan accordingly before upgrading to this version.">Upgrade cautions</a> for manual steps.</div>
+        </li><li class="li step stepexpand">
+            <span class="ph cmd">
+            <a class="xref" href="https://puppet.com/try-puppet/puppet-enterprise/download/" target="_blank">Download</a> the tarball appropriate to
+            your operating system and architecture. </span>
+        </li><li class="li step stepexpand">
+                <span class="ph cmd">Unpack the installation tarball: <code class="ph codeph">tar -xf &lt;tarball&gt;</code></span>
+                <div class="itemgroup info">You need about 1 GB of space to untar the
+                    installer.</div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">From the installer directory, run the installer:
+                        <code class="ph codeph">sudo
+                        ./puppet-enterprise-installer</code></span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <div class="note note note_note"><span class="note__title">Note:</span> To specify a different <code class="ph codeph">pe.conf</code> file other
+                            than the existing file, use the -c flag: <code class="ph codeph">sudo
+                                ./puppet-enterprise-installer -c &lt;FULL PATH TO
+                                pe.conf&gt;</code>
+                            <p class="p">With this flag, your previous <code class="ph codeph">pe.conf</code> is backed up
+                                to
+                                    <code class="ph codeph">/etc/puppetlabs/enterprise/conf.d/&lt;TIMESTAMP&gt;.conf</code>
+                                and a new <code class="ph codeph">pe.conf</code> is created at
+                                    <code class="ph codeph">/etc/puppetlabs/enterprise/conf.d/pe.conf</code>.</p></div>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">If prompted, change the console administrator password: <code class="ph codeph">puppet
+                        infrastructure console_password
+                    --password=&lt;MY_PASSWORD&gt;</code></span>
+                <div class="itemgroup info">For security purposes, you're prompted to change the password if you didn't do
+                    so when you originally installed. If you don't change the password, the console
+                    administrator account is revoked. </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">If you have compilers, on your master logged in as root, run: <code class="ph codeph">puppet
+                        infrastructure upgrade compiler
+                        &lt;COMPILER_FQDN-1&gt;,&lt;COMPILER_FQDN-2&gt;</code></span>
+                <div class="itemgroup info">
+                    <div class="note tip note_tip"><span class="note__title">Tip:</span> To upgrade all compilers, run: <code class="ph codeph">puppet infrastructure
+                            upgrade compiler --all</code></div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Upgrade these additional <span class="ph">PE</span> infrastructure components.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <ul class="ul">
+                            <li class="li">
+                                <p class="p">Agents</p>
+                            </li>
+                            <li class="li">
+                                <p class="p">
+                                    <span class="ph">Razor</span>
+                                </p>
+                            </li>
+                            <li class="li">
+                                <p class="p">
+                                    <span class="ph">PE</span> client tools — Install the
+                                    appropriate version of client tools that matches the <span class="ph">PE</span> version you upgraded to.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">In high availability installations, upgrade your
+                    replica.</span>
+                <div class="itemgroup info">
+                    <p class="p">The replica is temporarily unavailable to serve as backup during this step,
+                        so you should time upgrading your replica to minimize risk.</p>
+                </div>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">On your master logged in as root, run: <code class="ph codeph">puppet infrastructure
+                                upgrade replica &lt;REPLICA_FQDN&gt;</code></span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">After the replica upgrade successfully completes, verify that master
+                            and replica services are operational. On your master, run:
+                                <code class="ph codeph">/opt/puppetlabs/bin/puppet-infra status</code></span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">If your replica reports errors, reinitialize the replica. On your
+                            replica, run: <code class="ph codeph">/opt/puppetlabs/bin/puppet-infra reinitialize
+                                replica -y</code></span>
+                    </li>
+                </ol>
+            </li><li class="li step stepexpand"><strong>Optional: </strong>
+                <span class="ph cmd">Convert legacy compilers to the new style compiler
+                    running the <span class="ph">PuppetDB</span> service.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">Open port 5432 from compilers to your master.</span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">On your master logged in as root, run: <code class="ph codeph">puppet
+                                infrastructure run convert_legacy_compiler
+                                compiler=&lt;COMPILER_FQDN-1&gt;,&lt;COMPILER_FQDN-2&gt;</code> or
+                                <code class="ph codeph">puppet infrastructure run
+                                convert_legacy_compiler all=true</code></span>
+                    </li>
+                </ol>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="backing_up_and_restoring_pe.html#back_up_pe_infrastructure" title="PE backup creates a copy of your Puppet master, including configuration, certificates, code, and PuppetDB.">Back up your infrastructure</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title14" id="migrate_split_mono">
+    <h2 class="title topictitle2" id="ariaid-title14">Migrate from a split to a standard installation</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Split installations, where the master, console, and <span class="ph">PuppetDB</span> are installed on separate nodes, are no longer
+        supported as of <span class="ph">PE</span> version 2019.2. Before upgrading to 2019.2
+        or later, migrate from an existing split installation to a standard (formerly called
+        monolithic) installation—with or without compilers—and a standalone PE-PostgreSQL
+        node.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">You must be running a version of <span class="ph">PE</span>
+                on all infrastructure nodes that includes the <code class="ph codeph">puppet infrastructure run</code> command. To verify that this
+                command is available on your systems, run <code class="ph codeph">puppet infrastructure run --help</code>.</p><p class="p">The
+                    <code class="ph codeph">puppet infrastructure run</code>
+                command leverages built-in <span class="ph">Bolt</span> plans to automate
+                certain management tasks. To use this command, you must be able to connect using SSH
+                from your master to any nodes that the command modifies. You can establish an SSH
+                connection using key forwarding, a local key file, or by specifying keys in <code class="ph codeph">.ssh/config</code> on your master. For more
+                information, see <a class="xref" href="https://puppet.com/docs/bolt/latest/bolt_configuration_options.html#openssh-configuration-options" target="_blank">
+                    <span class="ph">Bolt</span> OpenSSH configuration options</a>.</p>
+        </section>
+        <section class="section context">
+            <div class="note important note_important"><span class="note__title">Important:</span>  The migration command used in this task
+                automates a number of manual steps, including editing <code class="ph codeph">pe.conf</code>, unpinning and uninstalling
+                packages from affected infrastructure nodes, and running <span class="ph">Puppet</span> multiple times. Treat this process as you
+                would any major migration by thoroughly testing it in an environment that's as
+                similar to your production environment as possible.</div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On your master, verify that <code class="ph codeph">pe.conf</code> contains correct
+                    information for <code class="ph codeph">console_host</code>, <code class="ph codeph">puppetdb_host</code>, and <code class="ph codeph">database_host</code>.</span>
+                <div class="itemgroup info">The migration command uses this
+                    information to correctly migrate these nodes.<div class="note note note_note"><span class="note__title">Note:</span> If your
+                        split <span class="ph">PE</span> installation includes multiple
+                        standalone <span class="ph">PuppetDB</span> nodes, the migration
+                        command will fail with an error. </div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Make sure that the master can connect via SSH to
+                    your console node, <span class="ph">PuppetDB</span> node, and (if
+                    present) standalone PE-PostgreSQL node.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On your master logged in as root, run <code class="ph codeph">puppet infrastructure run
+                        migrate_split_to_mono</code>
+                </span>
+                <div class="itemgroup info">You can specify this optional
+                        parameter:<ul class="ul">
+                        <li class="li"><code class="ph codeph">tmpdir</code> — Path to a directory to use for
+                            uploading and executing temporary files.</li>
+                    </ul></div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>After completion, your master is running the
+            console and <span class="ph">PuppetDB</span> services and you can retire or
+            repurpose the old console node. If you <strong class="ph b">did not</strong> start
+            with a standalone PE-PostgreSQL node, your old <span class="ph">PuppetDB</span>
+            node now functions in that capacity. If you <strong class="ph b">did</strong> start
+            with a standalone PE-PostgreSQL node, it continues to function in that capacity and you
+            can retire or repurpose the old <span class="ph">PuppetDB</span> node.</section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title15" id="upgrading_postgresql">
+   <h2 class="title topictitle2" id="ariaid-title15">Upgrading PostgreSQL</h2>
+   
+   
+   <div class="body conbody"><p class="shortdesc">If you use the default PE-PostgreSQL database installed
+      alongside <span class="ph">PuppetDB</span>, you don't have to take special steps to
+      upgrade <span class="ph">PostgreSQL</span>. However, if you have a standalone
+      PE-PostgreSQL instance, or if you use a <span class="ph">PostgreSQL</span> instance not
+      managed by <span class="ph">PE</span>, you must take extra steps to upgrade <span class="ph">PostgreSQL</span>.</p>
+      <p class="p">You must upgrade a standalone PE-PostgreSQL instance each time you
+         upgrade <span class="ph">PE</span>. To upgrade a standalone PE-PostgreSQL instance,
+         simply run the installer on the PE-PostgreSQL node first, then proceed with upgrading the
+         rest of your infrastructure. </p>
+      <div class="p">You must upgrade a <span class="ph">PostgreSQL</span> instance not managed by <span class="ph">PE</span> only when there's an upgrade to <span class="ph">PostgreSQL</span> in <span class="ph">PE</span>. To upgrade
+         an unmanaged <span class="ph">PostgreSQL</span> instance, use one of these methods: <ul class="ul">
+            <li class="li">
+               <p class="p"> Back up databases, wipe your old <span class="ph">PostgreSQL</span>
+                  installation, install the latest version of <span class="ph">PostgreSQL</span>, and restore the databases.</p>
+            </li>
+            <li class="li">
+               <p class="p">Back up databases, set up a new node with the latest version of <span class="ph">PostgreSQL</span>, restore databases to the new node, and
+                  reconfigure <span class="ph">PE</span> to point to the new <code class="ph codeph">database_host</code>. </p>
+            </li>
+            <li class="li">
+               <p class="p">Run <code class="ph codeph">pg_upgrade</code> to get from the older <span class="ph">PostgreSQL</span> version to the latest version. </p>
+            </li>
+         </ul></div>
+   </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title16" id="checking_for_updates">
+   <h2 class="title topictitle2" id="ariaid-title16">Checking for updates </h2>
+   
+   <div class="body conbody"><p class="shortdesc">To see the version of <span class="ph">PE</span>
+      you're currently using, run <code class="ph codeph">puppet --version</code>
+      on the command line. Check the <span class="ph">PE</span> download site to find
+      information about the latest maintenance release.</p>
+      <div class="p">
+         <div class="note note note_note"><span class="note__title">Note:</span> By default, the master checks for updates whenever
+            the <code class="ph codeph">pe-puppetserver</code> service restarts.
+            As part of the check, it passes some basic, anonymous information to <span class="ph">Puppet</span> servers. You can optionally disable
+            update checking. </div>
+      </div>
+   </div>
+</article></article></article></main></body></html>

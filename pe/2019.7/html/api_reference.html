@@ -1,0 +1,687 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the Razor API to interact with Razor and provision bare metal nodes"><meta name="DC.relation" scheme="URI" content="api_index.html#api_index"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="api_reference"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Razor API reference</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="api_reference">
+    <h1 class="title topictitle1" id="ariaid-title1">
+        <span class="ph">Razor</span> API reference </h1>
+    <p class="shortdesc">Use the <span class="ph">Razor</span> API to
+        interact with <span class="ph">Razor</span> and provision bare metal
+        nodes</p>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="api_index.html#api_index" title="APIs allow you to interact with Puppet and Puppet Enterprise (PE) applications from your own code or application integration hooks.">API index</a></li></ul></div></nav><article class="topic concept nested1" aria-labelledby="ariaid-title2" id="the_default_bootstrap_ipxe_file">
+    <h2 class="title topictitle2" id="ariaid-title2">The default bootstrap iPXE file </h2>
+    
+    <div class="body conbody"><p class="shortdesc">A GET request to <code class="ph codeph">/api/microkernel/bootstrap</code> returns the iPXE script that you should put on your
+        TFTP server (usually called <code class="ph codeph">bootstrap.ipxe</code>). The script gathers information about the node (the <code class="ph codeph">hw_info</code>) that it sends to the server and that
+        the server uses to identify the node and determine how exactly the node should
+        boot.</p>
+        <p class="p">The URL accepts the parameter <code class="ph codeph">nic_max</code>, which you should set to the maximum number of network interfaces
+            that respond to DHCP on any given node. It defaults to 4.</p>
+        <p class="p">The URL also accepts an <code class="ph codeph">http_port</code> parameter, which tells <span class="ph">Razor</span>
+            which port its internal HTTP communications should use, and the <code class="ph codeph">/svc</code> URLs must be available through that port. The
+            default install uses 8150 for this.</p>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="configuration">
+    <h2 class="title topictitle2" id="ariaid-title3">Configuration API</h2>
+    
+    <div class="body refbody"><p class="shortdesc"><span class="ph">Razor</span> configuration is
+        pulled from a configuration file controlled by <span class="ph">Puppet Enterprise</span>. You
+        can change configuration values in the console with class parameters of the <code class="ph codeph">pe_razor</code> class.</p>
+        <section class="section">
+            <div class="note note note_note"><span class="note__title">Note:</span> In order for configuration changes to take
+                effect, you must restart the <span class="ph">Razor</span> service by running
+                    <code class="ph codeph">service pe-razor-server restart</code>
+                on the <span class="ph">Razor</span> server.</div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">View configuration (<code class="ph codeph">config</code>)</h3>
+            
+            <p class="p">The <code class="ph codeph">config</code>
+                endpoint displays details about your <span class="ph">Razor</span>
+                configuration.</p>
+            <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Properties specified in
+                    the <code class="ph codeph">api_config_blacklist</code> aren't
+                    returned by the <code class="ph codeph">config</code>
+                    endpoint.</div>The endpoint handles a <code class="ph codeph">GET</code> request to the collection URL specified in <code class="ph codeph">/api</code>.</div>
+        </section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="nodes_api">
+  <h2 class="title topictitle2" id="ariaid-title4">Nodes API</h2>
+  
+  <div class="body refbody"><p class="shortdesc">These commands enable you to register a node, set a node's
+    hardware information, remove a single node, or remove a node's associate with any policies and
+    clear its <code class="ph codeph">installed</code> flag. </p>
+    <section class="section"><h3 class="title sectiontitle">Register a node (<code class="ph codeph">register-node</code>) </h3><p class="p">Register a node with <span class="ph">Razor</span> before it is discovered, and
+        potentially provisioned. </p><p class="p">In environments in which some nodes have
+        been provisioned outside of the purview of <span class="ph">Razor</span>, this
+        command offers a way to tell <span class="ph">Razor</span> that a node is valuable
+        and not eligible for automatic reprovisioning. Such nodes are reprovisioned only if they are
+        marked available with the <code class="ph codeph">reinstall-node</code>
+        command.</p><p class="p">The <code class="ph codeph">register-node</code> command allows you to perform the same registration that would
+        happen when a new node checks in, but ahead of time. The <code class="ph codeph">register-node</code> command uses the <code class="ph codeph">installed</code> value to indicate that a node has already been installed,
+        which signals to <span class="ph">Razor</span> to ignore the node and act as if it
+        had successfully installed that node.</p><p class="p">In order for this command to
+        be effective, <code class="ph codeph">hw_info</code> must contain enough
+        information that the node can successfully be identified based on the hardware information
+        sent from iPXE when the node boots; this usually includes the MAC addresses of all network
+        interfaces of the node.</p><p class="p"><code class="ph codeph">register-nodes</code> accepts the following parameters:</p><ul class="ul">
+        <li class="li"><code class="ph codeph">hw_info</code> — Required,
+          provides the hardware information for the node. This is used to match the node on first
+          boot with the record in the database. The <code class="ph codeph">hw_info</code> can contain all or a subset of the following entries: <ul class="ul">
+            <li class="li"><code class="ph codeph">netN</code> — The MAC
+              addresses of each network interface, for example <code class="ph codeph">net0</code> or <code class="ph codeph">net2</code>: The order
+              of the MAC addresses is not significant. </li>
+            <li class="li"><code class="ph codeph">serial</code> — The
+              DMI serial number of the node. </li>
+            <li class="li"><code class="ph codeph">asset</code> — The DMI
+              asset tag of the node. </li>
+            <li class="li"><code class="ph codeph">uuid</code> — DMI UUID
+              of the node. </li>
+          </ul></li>
+        <li class="li"><code class="ph codeph">installed</code> — A
+          Boolean flag indicating whether this node is considered installed and therefore not
+          eligible for reprovisioning by <span class="ph">Razor</span></li>
+      </ul><p class="p">
+        <strong class="ph b">API example</strong>
+      </p><p class="p">Registering a machine before booting it with <code class="ph codeph">installed</code> set to <code class="ph codeph">true</code> protects it from accidental reinstallation by <span class="ph">Razor</span>:</p><pre class="pre codeblock"><code>{
+  "hw_info": {
+    "net0":   "78:31:c1:be:c8:00",
+    "net1":   "72:00:01:f2:13:f0",
+    "net2":   "72:00:01:f2:13:f1"
+  },
+  "installed": true
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Set node hardware info (<code class="ph codeph">set-node-hw-info</code>) </h3><p class="p">When a node's hardware changes, such as a network card being replaced, the <span class="ph">Razor</span> server needs to be informed so it can correctly match the
+        new hardware to the existing node definition.</p><p class="p">The <code class="ph codeph">set-node-hw-info</code> command lets you replace the existing
+        hardware data with new data, prior to booting the modified node on the network. For example,
+        update node172 with new hardware information as
+        follows:</p><pre class="pre codeblock"><code>  {
+      "node": "node172",
+      "hw_info": {
+        "net0":   "78:31:c1:be:c8:00",
+        "net1":   "72:00:01:f2:13:f0",
+        "net2":   "72:00:01:f2:13:f1"
+      }
+  }</code></pre><p class="p">The format of the <code class="ph codeph">hw_info</code> is the same as for the <code class="ph codeph">register-node</code> command.</p></section>
+    <section class="section"><h3 class="title sectiontitle">Delete node (<code class="ph codeph">delete-node</code>) </h3><p class="p">To remove a
+        single node, provide its
+        name:</p><pre class="pre codeblock"><code>{
+  "name": "node17"
+}</code></pre><div class="p">
+        <div class="note note note_note"><span class="note__title">Note:</span> If the deleted node boots again at some point, <span class="ph">Razor</span> automatically recreates it.</div>
+      </div></section>
+    <section class="section"><h3 class="title sectiontitle">Reinstall node (<code class="ph codeph">reinstall-node</code>)</h3><p class="p">To remove a
+        node's association with any policy and clear its <code class="ph codeph">installed</code> flag, provide its
+        name:</p><pre class="pre codeblock"><code>{
+  "name": "node17"
+}</code></pre><p class="p">After the node reboots, it boots back into the microkernel, goes through
+        discovery and tag matching, and can bind to another policy for reinstallation. This command
+        does not change the node's metadata or facts.</p></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="ipmi_api">
+  <h2 class="title topictitle2" id="ariaid-title5">IPMI API </h2>
+  
+  <div class="body refbody"><p class="shortdesc">IPMI commands are node commands based on the Intelligent
+    Platform Management Interface.</p>
+    <section class="section"><div class="p">
+        <div class="note note note_note"><span class="note__title">Note:</span> You must install the <code class="ph codeph">ipmitool</code> on the <span class="ph">Razor</span> server
+          before using IPMI commands. To install the tool, run <code class="ph codeph">yum install ipmitool -y</code>.</div>
+      </div></section>
+    <section class="section"><h3 class="title sectiontitle">Set node IPMI credentials
+          (<code class="ph codeph">set-node-ipmi-credentials</code>) </h3><p class="p"><span class="ph">Razor</span> can store IPMI credentials on a
+        per-node basis. These credentials include a hostname (or IP address), username, and password
+        to use when contacting the BMC/LOM/IPMI LAN or LANplus service to check or update power
+        state and other node data. </p><p class="p">After IPMI credentials have been set up
+        for a node, you can use the <code class="ph codeph">reboot-node</code> and
+          <code class="ph codeph">set-node-desired-power-state</code>
+        commands.</p><p class="p">These three data items must be set or reset together, in
+        a single operation. When you omit a parameter, <span class="ph">Razor</span> sets it
+        to <code class="ph codeph">NULL</code> (representing no value, or the
+          <code class="ph codeph">NULL</code> username/password as defined by
+        IPMI).</p><p class="p">The structure of a request
+        is:</p><pre class="pre codeblock"><code>{
+  "name": "node17",
+  "ipmi_hostname": "bmc17.example.com",
+  "ipmi_username": null,
+  "ipmi_password": "sekretskwirrl"
+}</code></pre><p class="p">This command works only with remote IPMI targets, not locally; therefore,
+        you <em class="ph i">must</em> provide an IPMI hostname.</p></section>
+    <section class="section"><h3 class="title sectiontitle">Reboot node (<code class="ph codeph">reboot-node</code>) </h3><p class="p">If you've
+        associated IPMI credentials with a node, <span class="ph">Razor</span> can use IPMI
+        to trigger a hard power cycle. </p><p class="p">Just provide the name of the
+        node:</p><pre class="pre codeblock"><code>{
+  "name": "node1",
+}</code></pre><p class="p">The IPMI communication spec includes some generous internal rate limits
+        to prevent it from overwhelming the network or host server. If an execution slot isn't
+        available on the target node, your <code class="ph codeph">reboot-node</code> command goes into a background queue, and runs as soon as a slot is
+        available.</p><p class="p">This background queue is cumulative and persistent:
+        there are no limits on how many commands you can queue up, how frequently a node can be
+        rebooted, or how long a command can stay in the queue. If you restart your <span class="ph">Razor</span> server before the queued commands are executed, they
+        remain in the queue and run after the server restarts.</p><p class="p">The <code class="ph codeph">reboot node</code> command is not integrated with IPMI
+        power state monitoring, so you can't see power transitions in the record or when polling the
+        node object.</p></section>
+    <section class="section"><h3 class="title sectiontitle">Set a node's desired power state
+          (<code class="ph codeph">set-node-desired-power-state</code>) </h3><p class="p">By default, <span class="ph">Razor</span> checks your nodes' power
+        states every few minutes in the background. If it detects a node in a non-desired state, <span class="ph">Razor</span> issues an IPMI command directing the node to its desired
+        state.</p><p class="p">To set the desired state for a
+        node:</p><pre class="pre codeblock"><code>{
+  "name": "node1234",
+  "to":   "on"|"off"|null
+}</code></pre><p class="p">The <code class="ph codeph">name</code> parameter
+        identifies the node to change the setting on. The <code class="ph codeph">to</code> parameter contains the desired power state to set. Valid values are <code class="ph codeph">on</code>, <code class="ph codeph">off</code>, or <code class="ph codeph">null</code> (the JSON NULL/nil
+        value), which reflect "power on", "power off", and "do not enforce power state"
+        respectively.</p></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="node_metadata">
+  <h2 class="title topictitle2" id="ariaid-title6">Node metadata API</h2>
+  
+  <div class="body refbody"><p class="shortdesc">These commands enable you to add, update, or remove metadata
+    keys and remove metadata entries.</p>
+    <section class="section"><h3 class="title sectiontitle">Modify node metadata (<code class="ph codeph">modify-node-metadata</code>) </h3>
+      
+      <p class="p">Node metadata is a collection of key/value pairs, much like a node's
+        facts. The difference is that the facts represent what the node tells <span class="ph">Razor</span> about itself, while its metadata represents what you tell
+          <span class="ph">Razor</span> about the node.</p>
+      <p class="p">The <code class="ph codeph">modify-node-metadata</code> command lets you add, update, or remove individual metadata
+        keys, or clear a node's metadata:</p>
+      <pre class="pre codeblock"><code>{
+  "node": "node1",
+  "update": {                         # Add or update these keys
+      "key1": "value1",
+      "key2": "value2",
+        ...
+  }
+  "remove": [ "key3", "key4", ... ],  # Remove these keys
+  "no_replace": true                  # Do not replace keys on
+                                        # update. Only add new keys
+}</code></pre>
+      <p class="p">or</p>
+      <pre class="pre codeblock"><code>{
+  "node": "node1",
+  "clear": true                       # Clear all metadata
+}</code></pre>
+      <p class="p">You can submit multiple updates or removals in a single command.
+        However, <code class="ph codeph">clear</code> only works on its own.</p>
+      <div class="p">
+        <div class="note tip note_tip"><span class="note__title">Tip:</span> In batch updates with <code class="ph codeph">no_replace</code>, use <code class="ph codeph">force</code> to bypass errors. Existing keys aren't modified.</div>
+      </div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Update node metadata (<code class="ph codeph">update-node-metadata</code>)</h3>
+      
+      <p class="p">The <code class="ph codeph">update-node-metadata</code> command offers a simplified way to update a single metadata
+        key. </p>
+      <p class="p">The body for the command must be:</p>
+      <pre class="pre codeblock"><code>{
+    "node"      : "mode1",
+    "key"       : "my_key",
+    "value"     : "my_val",
+    "no_replace": true
+}</code></pre>
+      <p class="p">The <code class="ph codeph">no_replace</code>
+        parameter is optional. If it is <code class="ph codeph">true</code>, the
+        metadata entry is not modified if it already exists.</p>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Remove node metadata (<code class="ph codeph">remove-node-metadata</code>)</h3>
+      
+      <p class="p">The <code class="ph codeph">remove-node-metadata</code> command offers a simplified way to remove either a single
+        metadata entry or all metadata entries on a node:</p>
+      <pre class="pre codeblock"><code>{
+  "node" : "node1",
+  "key"  : "my_key",
+}</code></pre>
+      <p class="p">or</p>
+      <pre class="pre codeblock"><code>{
+  "node" : "node1",
+  "all"  : true,     # Removes all keys
+}</code></pre>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="repositories_api">
+    <h2 class="title topictitle2" id="ariaid-title7">Repositories API</h2>
+    
+    <div class="body refbody"><p class="shortdesc">These commands enable you to create a new repository or
+        delete a repository from the internal <span class="ph">Razor</span> database. You can
+        also ensure that a specified repository uses a specified task.</p>
+        <section class="section"><h3 class="title sectiontitle">Create new repository (<code class="ph codeph">create-repo</code>) </h3>
+            
+            <p class="p">The <code class="ph codeph">create-repo</code>
+                command creates a new repository. The repository can contain the content to install
+                a node, or it can point to an existing online repository.</p>
+            <div class="p">You can create three types of repositories: <ul class="ul">
+                    <li class="li">Those that reference content available on another
+                        server, for example, on a mirror you maintain (<code class="ph codeph">url</code>). </li>
+                    <li class="li">Those where <span class="ph">Razor</span> unpacks
+                        ISOs for you and serves their contents (<code class="ph codeph">iso_url</code>). </li>
+                    <li class="li">Those where <span class="ph">Razor</span> creates
+                        a stub directory that you can manually fill with content (<code class="ph codeph">no_content</code>). </li>
+                </ul>
+            </div>
+            <p class="p">The <code class="ph codeph">task</code>
+                parameter is mandatory in all three variants of this command, and indicates the
+                default task that should be used when installing machines using this repository. The
+                    <code class="ph codeph">task</code> parameter can be
+                overridden at the policy level. If you're not using a task, reference the stock task
+                    <code class="ph codeph">noop</code>.</p>
+            <div class="p">To have <span class="ph">Razor</span> unpack an ISO for you
+                and serve its content: <pre class="pre codeblock"><code>{
+  "name": "fedora19",
+  "iso_url": "file:///tmp/Fedora-19-x86_64-DVD.iso"
+  "task": "puppet"
+}</code></pre>
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> Supplying the <code class="ph codeph">iso_url</code> property when you create a repository ensures
+                    that you can delete it from the server with the <code class="ph codeph">delete-repo</code> command.</div>To create a repository
+                that points to an existing resource without loading anything onto the <span class="ph">Razor</span> server:
+                <pre class="pre codeblock"><code>{
+  "name": "fedora19",
+  "url": "http://mirrors.n-ix.net/fedora/linux/releases/19/Fedora/x86_64/os/"
+  "task": "noop"
+}</code></pre>To
+                create an empty directory that you can manually fill later:
+                <pre class="pre codeblock"><code>{
+  "name": "win2012r2",
+  "no_content": true
+  "task": "noop"
+}</code></pre>
+            </div>
+            <p class="p">After creating a <code class="ph codeph">no_content</code> repository, you can log into your <span class="ph">Razor</span> server and fill the repository directory with
+                the content, for example by loopback-mounting the install media and copying it into
+                the directory. The repository directory is specified by the <code class="ph codeph">repo_store_root</code> class parameter of the <code class="ph codeph">pe_razor</code> class. By default, the
+                directory is in <code class="ph codeph">/opt/puppetlabs/server/data/razor_server/repo</code>.</p>
+            <p class="p">Using <code class="ph codeph">no_content</code>
+                is usually required for <span class="ph">Windows</span> install media,
+                because the library that <span class="ph">Razor</span> uses to unpack ISO
+                images can't handle <span class="ph">Windows</span> ISO images.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Delete a repository (<code class="ph codeph">delete-repo</code>)</h3>
+            
+            <p class="p">The <code class="ph codeph">delete-repo</code>
+                command deletes a repository from the internal <span class="ph">Razor</span>
+                database. </p>
+            <p class="p">The command accepts a single repository name:</p>
+            <pre class="pre codeblock"><code>{
+  "name": "fedora16"
+}</code></pre>
+            <p class="p">This command deletes the repository from the internal <span class="ph">Razor</span> database. If you supplied the <code class="ph codeph">iso_url</code> property when you created the
+                repository, the folder is also deleted from the server. If you didn't supply the
+                    <code class="ph codeph">iso_url</code> property, content
+                remains in the repository directory.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Update a repository's specified task (<code class="ph codeph">update-repo-task</code>)</h3>
+            
+            <div class="p">Ensures that a specified repository uses the task this command
+                specifies, setting the task if necessary. If a node is currently provisioning
+                against the repo when you run this command, provisioning might fail.
+                <pre class="pre codeblock"><code>{
+  "repo": "my_repo",
+  "task": "other_task"
+}</code></pre>
+            </div>
+        </section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title8" id="tasks-api">
+  <h2 class="title topictitle2" id="ariaid-title8">Tasks API</h2>
+  
+  <div class="body refbody"><p class="shortdesc">This commands enables you to create a task in the <span class="ph">Razor</span> database.</p>
+    <section class="section">
+      <div class="note important note_important"><span class="note__title">Important:</span> 
+                    <span class="ph">Razor</span> tasks differ from <span class="ph">Puppet</span> tasks, which let you run arbitrary scripts
+                    and commands using <span class="ph">Puppet</span>. See the orchestrator
+                    documentation for information about <span class="ph">Puppet</span>
+                    tasks.</div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Create task (<code class="ph codeph">create-task</code>)</h3>
+      
+      <p class="p">The <code class="ph codeph">create-task</code> command
+        creates a task in the <span class="ph">Razor</span> database. This command is an
+        alternative to manually placing task files in the <code class="ph codeph">task_path</code>. If you anticipate needing to make changes to tasks, we recommend the
+        disk-backed task approach.</p>
+      <div class="p">The body of the <code class="ph codeph">POST</code>
+        request for this command has the following form:
+        <pre class="pre codeblock"><code>{
+  "name": "redhat6",
+  "os": "Red Hat Enterprise Linux",
+  "boot_seq": {
+    "1": "boot_install",
+    "default": "boot_local"
+  },
+  "templates": {
+    "boot_install": " ... ERB template for an ipxe boot file ...",
+    "installer": " ... another ERB template ..."
+  }
+}</code></pre>The
+        possible properties in the request are: <ul class="ul">
+          <li class="li"><code class="ph codeph">name</code> — The name
+            of the task; must be unique. </li>
+          <li class="li"><code class="ph codeph">os</code> — The name of
+            the OS; mandatory. </li>
+          <li class="li"><code class="ph codeph">description</code> —
+            Human-readable description. </li>
+          <li class="li"><code class="ph codeph">boot_seq</code> — A hash
+            mapping the boot counter or 'default' to an ERB template. </li>
+          <li class="li"><code class="ph codeph">templates</code> — A
+            hash mapping template names to the actual ERB template text. </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title9" id="tags_api">
+  <h2 class="title topictitle2" id="ariaid-title9">Tags API</h2>
+  
+  <div class="body refbody"><p class="shortdesc">These commands enable you to create a tag, delete a tag, or
+    change the rule for a tag.</p>
+    <section class="section"><h3 class="title sectiontitle">Create tag (<code class="ph codeph">create-tag</code>)</h3><div class="p">To create a tag,
+        use the following in the body of your <code class="ph codeph">POST</code>
+        request:<pre class="pre codeblock"><code>{
+  "name": "small",
+  "rule": ["=", ["fact", "processorcount"], "2"]
+}</code></pre>The
+          <code class="ph codeph">name</code> of the tag must be unique; the
+          <code class="ph codeph">rule</code> is a match expression.
+      </div></section>
+    <section class="section"><h3 class="title sectiontitle">Delete tag (<code class="ph codeph">delete-tag</code>)</h3><div class="p">To delete a tag,
+        use the following in the body of your <code class="ph codeph">POST</code>
+        request:<pre class="pre codeblock"><code>{
+  "name": "small",
+  "force": true
+}</code></pre>You
+        can't delete a tag while it's being used by a policy, unless you set the optional <code class="ph codeph">force</code> parameter to <code class="ph codeph">true</code>. In that case, <span class="ph">Razor</span> removes
+        the tag from all policies using it and then deletes it.</div></section>
+    <section class="section"><h3 class="title sectiontitle">Update tag (<code class="ph codeph">update-tag-rule</code>)</h3><div class="p">To change
+        the rule for a tag, use the following in the body of your <code class="ph codeph">POST</code>
+        request:<pre class="pre codeblock"><code>{
+  "name": "small",
+  "rule": ["&lt;=", ["fact", "processorcount"], "2"],
+  "force": true
+}</code></pre></div><p class="p">This changes the rule of the given tag to the new rule. <span class="ph">Razor</span> then reevaluates the tag against all nodes and updates
+        each node's tag attribute to reflect whether the tag now matches or not.</p><p class="p">If the tag is used by any policies, the update is performed only if you set the
+        optional <code class="ph codeph">force</code> parameter to <code class="ph codeph">true</code>. Otherwise, the command returns status code
+        400.</p></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title10" id="policies_api">
+  <h2 class="title topictitle2" id="ariaid-title10">Policies API</h2>
+  
+  <div class="body refbody"><p class="shortdesc">Policies govern how nodes are provisioned depending on how
+    they are tagged. </p>
+    <section class="section">
+      <p class="p"><span class="ph">Razor</span> maintains an ordered table of
+        policies. When a node boots, <span class="ph">Razor</span> traverses this table to
+        find the first eligible policy for that node. A policy might be ineligible for binding to a
+        node if the node does not contain all of the tags on the policy, if the policy is disabled,
+        or if the policy has reached its maximum for the number of allowed nodes.</p>
+      <p class="p">When you list the <code class="ph codeph">policies</code> collection, the list is in the order in which <span class="ph">Razor</span> checks policies against nodes.</p>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Create policy (<code class="ph codeph">create-policy</code>) </h3>
+      
+      <div class="p"><pre class="pre codeblock"><code>{
+  "name": "a policy",
+  "repo": "some_repo",
+  "task": "redhat6",
+  "broker": "puppet",
+  "hostname": "host${id}.example.com",
+  "root_password": "secret",
+  "max_count": 20,
+  "before"|"after": "other policy",
+  "node_metadata": { "key1": "value1", "key2": "value2" },
+  "tags": ["existing_tag", "another_tag"]
+}</code></pre><div class="note note note_note"><span class="note__title">Note:</span> Because the policy contains many fields, you might want
+          to put it in a JSON file. If you do, then your <code class="ph codeph">create-policy</code> command would include the file name, like this: <code class="ph codeph">razor create-policy --json &lt;name of policy
+            file&gt;.json</code>.</div>Tags, repos, tasks, and brokers are referenced by name.
+        The <code class="ph codeph">tags</code> are optional. A policy with no
+        tags can be applied to a node. The <code class="ph codeph">task</code> is
+        also optional. If it is omitted, the <code class="ph codeph">repo</code>'s
+        task is used. The <code class="ph codeph">repo</code> and <code class="ph codeph">broker</code> entries are required.</div>
+      <p class="p">The <code class="ph codeph">hostname</code> parameter
+        defines a simple pattern for the hostnames of nodes bound to your policy. The <code class="ph codeph">${id}</code> references each node's DB id.</p>
+      <p class="p">The <code class="ph codeph">max_count</code> parameter
+        sets an upper limit on how many nodes can be bound to your policy at a time. You can specify
+        a positive integer, or make it unlimited by setting it to <code class="ph codeph">nil</code>.</p>
+      <p class="p"><span class="ph">Razor</span> considers each policy sequentially,
+        based on its order in a table. By default, new policies go at the end of the table. To
+        override the default order, include a <code class="ph codeph">before</code> or <code class="ph codeph">after</code> argument
+        referencing an existing policy by name.</p>
+      <p class="p">The <code class="ph codeph">node_metadata</code>
+        parameter lets your policy apply metadata to a node when it binds. This does not overwrite
+        existing metadata; it only adds keys that are missing. To install <span class="ph">Windows</span> on non-English systems, specify the <code class="ph codeph">win_language</code> using the culture code for the appropriate
+          <a class="xref" href="https://technet.microsoft.com/en-us/library/cc722435(v=ws.10).aspx" target="_blank">Microsoft language pack</a>). For example, <code class="ph codeph">--node-metadata win_language=es-ES</code>.</p>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Move policy (<code class="ph codeph">move-policy</code>) </h3>
+      
+      <p class="p">This command lets you change the order in which <span class="ph">Razor</span> considers your policies for matching against nodes. </p>
+      <div class="p">To move an existing policy into a different place in the order, use the
+          <code class="ph codeph">move-policy</code> command with a body
+        like:<pre class="pre codeblock"><code>{
+  "name": "a policy",
+  "before"|"after": "other policy"
+}</code></pre>This
+        changes the policy table so that "a policy" appears before or after "other policy".</div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Enable/disable policy (<code class="ph codeph">enable-policy/disable-policy</code>) </h3>
+      
+      <p class="p">To keep a policy from being matched against any nodes, disable it with
+        the <code class="ph codeph">disable-policy</code> command. </p>
+      <div class="p">To enable a disabled policy, use the <code class="ph codeph">enable-policy</code> command. Both commands use a body
+        like:<pre class="pre codeblock"><code>{
+  "name": "a policy"
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Modify the <code class="ph codeph">max_count</code> for a policy (<code class="ph codeph">modify-policy-max-count</code>) </h3>
+      
+      <p class="p">The command <code class="ph codeph">modify-policy-max-count</code> lets you set the maximum number of nodes that can be
+        bound to a specific policy. </p>
+      <div class="p">Form the body of the request like
+          this:<pre class="pre codeblock"><code>{
+  "name": "a policy"
+  "max_count": new-count
+}</code></pre><code class="ph codeph">new-count</code> can be an integer, which must be
+        greater than the number of nodes that are currently bound to the policy. Alternatively, the
+          <code class="ph codeph">no_max_count</code> argument makes the policy
+        unbounded:<pre class="pre codeblock"><code>{
+  "name": "a policy"
+  "no_max_count": true
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Add tags to policy (<code class="ph codeph">add-policy-tag</code>)</h3>
+      
+      <div class="p">To add tags to a policy, supply the name of a policy and of the
+        tag:<pre class="pre codeblock"><code>{
+  "name": "a-policy-name",
+  "tag" : "a-tag-name",
+}</code></pre>To
+        create the tag in addition to adding it to the policy, supply the <code class="ph codeph">rule</code>
+        argument:<pre class="pre codeblock"><code>{
+  "name": "a-policy-name",
+  "tag" : "a-new-tag-name",
+  "rule": "new-match-expression"
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Remove tags from policy (<code class="ph codeph">remove-policy-tag</code>) </h3>
+      
+      <p class="p">To remove tags from a policy, supply the name of a policy and the name
+        of the tag.</p>
+      <div class="p"><pre class="pre codeblock"><code>{
+  "name": "a-policy-name",
+  "tag" : "a-tag-name",
+}</code></pre>A
+        policy with no tags can still be applied to any node.</div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Update a policy's specified repository (<code class="ph codeph">update-policy-repo</code>)</h3>
+      
+      <p class="p">Ensures that a policy uses the repository this command specifies. If
+        necessary, <code class="ph codeph">update-policy-repo</code> sets the
+        repository, for example if a policy has already been created and you want to add a
+        repository to it.</p>
+      <div class="p">The following shows how to update a policy's repository to a repository
+        called
+        "fedora21":<pre class="pre codeblock"><code>{
+  "node": "node1",
+  "policy": "my_policy",
+  "repo": "fedora21"
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Update a policy's specified task (<code class="ph codeph">update-policy-task</code>)</h3>
+      
+      <p class="p">Ensures that a policy uses the task this command specifies. If
+        necessary, <code class="ph codeph">update-policy-task</code> sets the
+        task, for example if a policy has already been created and you want to add a task to it. </p>
+      <p class="p">If a node is currently provisioning against the policy when you run this
+        command, provisioning can fail.</p>
+      <div class="p">The following shows how to update a policy's task to a task called
+        "other_task".<pre class="pre codeblock"><code>{
+  "node": "node1",
+  "policy": "my_policy",
+  "task": "other_task"
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Update a policy's specified broker (<code class="ph codeph">update-policy-broker</code>)</h3>
+      
+      <p class="p">Ensures that a policy uses the broker this command specifies. If
+        necessary, <code class="ph codeph">update-policy-broker</code> sets the
+        broker, for example if a policy has already been created and you want to add a broker to it. </p>
+      <p class="p">If a node is currently provisioning against the policy when you run this
+        command, provisioning can fail.</p>
+      <div class="p">The following shows how to update a policy's broker to a broker called
+        "legacy-puppet":<pre class="pre codeblock"><code>{
+  "node": "node1",
+  "policy": "my_policy",
+  "broker": "legacy-puppet"
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Update a policy's node metadata (<code class="ph codeph">update-policy-node-metadata</code>) </h3>
+      
+      <p class="p">Ensures that a policy uses the node metadata this command specifies. If
+        necessary, <code class="ph codeph">update-policy-node-metadata</code> sets
+        the node metadata, for example if a policy has already been created and you want to add node
+        metadata to it.</p>
+      <div class="p">The following shows how to update a policy's node metadata for the
+        "my_key"
+        value:<pre class="pre codeblock"><code>{
+  "node": "node1",
+  "policy": "my_policy",
+  "key": "my_key"
+  "value": "my_value"
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Delete policy (<code class="ph codeph">delete-policy</code>)</h3>
+      
+      <div class="p">To delete a policy, supply the name of a single
+        policy:<pre class="pre codeblock"><code>{
+  "name": "my-policy"
+}</code></pre>Note
+        that this does not affect the <code class="ph codeph">installed</code>
+        status of a node, and therefore can't, by itself, make a node bind to another policy upon
+        reboot.</div>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title11" id="brokers_api">
+  <h2 class="title topictitle2" id="ariaid-title11">Brokers API</h2>
+  
+  <div class="body refbody"><p class="shortdesc">A broker is responsible for configuring a newly installed
+    node for a specific configuration management system. For <span class="ph">Puppet Enterprise</span>,
+    you generally use brokers only with the type <code class="ph codeph">puppet-pe</code>.</p>
+    <section class="section"><h3 class="title sectiontitle">Create broker (<code class="ph codeph">create-broker</code>)</h3><div class="p">To create a
+        broker, post the following to the <code class="ph codeph">create-broker</code>
+        URL:<pre class="pre codeblock"><code>{
+  "name": "puppet",
+  "configuration": {
+     "server": "puppet.example.org"
+  },
+  "broker-type": "puppet-pe"
+}</code></pre></div><p class="p">The <code class="ph codeph">broker-type</code> must
+        correspond to a broker that is present in a valid broker directory. Broker directories are
+        specified in the <code class="ph codeph">broker_path</code> class
+        parameter of the <code class="ph codeph">pe_razor</code> class. By
+        default, the broker path for custom brokers is <code class="ph codeph">/etc/puppetlabs/razor-server/brokers:brokers</code>.</p><p class="p">The
+        permissible settings for the <code class="ph codeph">configuration</code>
+        hash depend on the broker type and are declared in the broker type's <code class="ph codeph">configuration.yaml</code>. For the <code class="ph codeph">puppet-pe</code> broker type, these are:</p><ul class="ul">
+        <li class="li"><code class="ph codeph">server</code> — The
+          hostname of the master.</li>
+        <li class="li"><code class="ph codeph">version</code> — The agent
+          version to install; this defaults to <code class="ph codeph">current</code> and must be used only in exceptional circumstances.</li>
+        <li class="li"><code class="ph codeph">ntpdate_server</code> —
+          URL for an NTP server, such as us.pool.ntp.org, used to synchronize the date and time
+          before installing the agent.</li>
+      </ul></section>
+    <section class="section"><h3 class="title sectiontitle">Update broker configuration
+          (<code class="ph codeph">update-broker-configuration</code>) </h3><p class="p">To set or clear a specified key value for a broker, use <code class="ph codeph">update-broker-configuration</code>.</p><div class="p">This
+        argument changes the key "some_key" to
+        "new_value":<pre class="pre codeblock"><code>{
+  "broker": "mybroker",
+  "key": "some_key",
+  "value": "new_value"
+}</code></pre>This
+        argument clears the value for
+        "some_key":<pre class="pre codeblock"><code>{
+  "broker": "mybroker",
+  "key": "some_key",
+  "clear": true
+}</code></pre>The
+          <code class="ph codeph">update-broker-configuration</code> command can
+        be useful to update the <span class="ph">Puppet Enterprise</span> version of a <code class="ph codeph">puppet-pe</code> broker. For example, if you created a <code class="ph codeph">puppet-pe</code> broker for version 2015.2.0, you can
+        update it
+        with:<pre class="pre codeblock"><code>{
+  "broker": "puppet-pe",
+  "key": "version",
+  "value": "2015.3.0"
+}</code></pre></div></section>
+    <section class="section"><h3 class="title sectiontitle">Delete broker (<code class="ph codeph">delete-broker</code>) </h3><p class="p">The <code class="ph codeph">delete-broker</code> command requires only the name of
+        the broker:</p><div class="p"><pre class="pre codeblock"><code>{
+  "name": "small",
+}</code></pre>It
+        is not possible to delete a broker that is used by a policy.</div></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title12" id="hooks_api">
+  <h2 class="title topictitle2" id="ariaid-title12">Hooks API</h2>
+  
+  <div class="body refbody"><p class="shortdesc">Hooks are custom, executable scripts that are triggered to
+    run when a node hits certain phases in its lifecycle. A hook script receives several properties
+    as input, and can make changes in the node’s metadata or the hook’s internal
+    configuration.</p>
+    <section class="section">
+      <p class="p">Hooks can be useful for:</p>
+      <ul class="ul">
+        <li class="li">Notifying an external system about the stage of a node’s
+          installation.</li>
+        <li class="li">Querying external systems for information that modifies how a node
+          gets installed.</li>
+        <li class="li">Calculating complex values for use in a node’s installation
+          configuration.</li>
+      </ul>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Create hook (<code class="ph codeph">create-hook</code>) </h3>
+      
+      <div class="p">To create a new hook, use the <code class="ph codeph">create-hook</code> command with a body like
+        this:<pre class="pre codeblock"><code>{
+  "name": "myhook",
+  "hook_type": "some_hook",
+  "configuration": {"foo": 7, "bar": "rhubarb"}
+}</code></pre></div>
+      <p class="p">The <code class="ph codeph">hook_type</code> must
+        correspond to a hook with the specified name in a valid hook directory. Hook directories are
+        specified in the <code class="ph codeph">hook_path</code> class parameter
+        of the <code class="ph codeph">pe_razor</code> class. By default, the hook
+        directory for custom hooks is <code class="ph codeph">/etc/puppetlabs/razor-server/hooks:hooks</code>.</p>
+      <p class="p">The optional <code class="ph codeph">configuration</code> parameter lets you provide a starting configuration corresponding
+        to that <code class="ph codeph">hook_type</code>.</p>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Update hook configuration (<code class="ph codeph">update-hook-configuration</code>)</h3>
+      
+      <p class="p">To set or clear a specified key value for a hook, use <code class="ph codeph">update-hook-configuration</code>. </p>
+      <div class="p">This argument changes the key "some_key" to
+        "new_value":<pre class="pre codeblock"><code>{
+  "hook": "myhook",
+  "key": "some_key",
+  "value": "new_value"
+}</code></pre></div>
+      <div class="p">This argument clears the value for
+        "some_key":<pre class="pre codeblock"><code>{
+  "hook": "myhook",
+  "key": "some_key",
+  "clear": true
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Delete hook (<code class="ph codeph">delete-hook</code>)</h3>
+      
+      <div class="p">To delete a single hook, provide its
+        name:<pre class="pre codeblock"><code>{
+  "name": "my-hook"
+}</code></pre></div>
+    </section>
+  </div>
+</article></article></article></main></body></html>

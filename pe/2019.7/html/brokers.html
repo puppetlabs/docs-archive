@@ -1,0 +1,125 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Brokers hand off nodes to configuration management systems like Puppet Enterprise. Brokers consist of two parts: a broker type and information specific to the broker type."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="brokers"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Brokers</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="brokers">
+   <h1 class="title topictitle1" id="ariaid-title1">Brokers</h1>
+   
+   
+   <div class="body conbody"><p class="shortdesc">Brokers hand off nodes to configuration management systems
+      like <span class="ph">Puppet Enterprise</span>. Brokers consist of two parts: a broker type and
+      information specific to the broker type.</p>
+      <div class="p"><span class="ph">Razor</span> ships with three default broker
+         types: <ul class="ul">
+            <li class="li"><code class="ph codeph">puppet-pe</code> —
+               Hands off node management to <span class="ph">Puppet Enterprise</span>. This broker
+               specifies the address of the <span class="ph">Puppet</span> server, the <span class="ph">Puppet Enterprise</span> version, and for <span class="ph">Windows</span>, the location of the <span class="ph">Windows</span> agent installer. </li>
+            <li class="li"><code class="ph codeph">puppet</code> — Hands
+               off management to open source <span class="ph">Puppet</span>. This broker
+               specifies the address of the <span class="ph">Puppet</span> server, the node
+               certname, and the environment. </li>
+            <li class="li"><code class="ph codeph">noop</code> — Doesn't
+               hand off management. A no-op broker can be useful for getting started quickly or
+               doing a basic installation without configuration management. </li>
+         </ul></div>
+      <p class="p">You can create brokers using the <code class="ph codeph">create-broker</code> command. You can also update configuration details for the
+         broker and delete brokers.</p>
+      <p class="p">Writing new broker types is necessary only when using <span class="ph">Razor</span> with other configuration management systems.</p>
+      <section class="section"><h2 class="title sectiontitle">Broker storage
+            directories</h2><p class="p">There are two directories that store
+            brokers:</p><div class="p">
+            <ul class="ul">
+               <li class="li"><code class="ph codeph">/opt/puppetlabs/server/apps/razor-server/share/razor-server/brokers</code>
+                  stores default brokers shipped with the product.</li>
+               <li class="li"><code class="ph codeph">/etc/puppetlabs/razor-server/brokers</code> stores custom brokers that you
+                  create.</li>
+            </ul>
+         </div><div class="p">
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> We recommend not modifying the directory or
+               brokers at <code class="ph codeph">/opt...</code>, but you can copy
+               brokers from there to the custom broker directory and modify them as needed.</div>
+         </div></section>
+   </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" lang="en-us" id="creating_a_pe_broker">
+    <h2 class="title topictitle2" id="ariaid-title2">Creating a <span class="ph">PE</span> broker</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">To create a <span class="ph">PE</span> broker that
+        enrolls nodes with the master at <code class="ph codeph">puppet-master.example.com</code>:</p>
+        <div class="p"><pre class="pre codeblock"><code> razor create-broker --name=my_puppet --broker-type=puppet-pe \
+    --configuration server=puppet.example.org \
+    --configuration version=2015.3</code></pre></div>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" lang="en-us" id="writing_the_broker_install_script">
+    <h2 class="title topictitle2" id="ariaid-title3">Writing the broker install script</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">The broker install script is generated from the <code class="ph codeph">install.erb</code> (<span class="ph">*nix</span>) or <code class="ph codeph">install.ps1.erb</code> (<span class="ph">Windows</span>) template of your broker. </p>
+        <p class="p">The template returns a valid shell script because tasks generally
+            perform the handoff to the broker by running a command like <code class="ph codeph">curl -s &lt;%= broker_install_url %&gt; | /bin/bash</code>. The
+                <code class="ph codeph">GET</code> request to <code class="ph codeph">broker_install_url</code> (<span class="ph">*nix</span>) or <code class="ph codeph">broker_install_url('install.ps1')</code> (<span class="ph">Windows</span>)
+            returns the broker’s install script after interpolating the template.</p>
+        <p class="p">In the install template, you have access to two objects: <code class="ph codeph">node</code> and <code class="ph codeph">broker</code>. </p>
+        <p class="p">The <code class="ph codeph">node</code> object gives
+            you access to node facts (<code class="ph codeph">node.facts["example"]</code>), tags (<code class="ph codeph">node.tags</code>), and metadata (<code class="ph codeph">node.metadata['key']</code>).</p>
+        <p class="p">The <code class="ph codeph">broker</code> object
+            gives you access to the configuration settings. For example, if your <code class="ph codeph">configuration.yaml</code> specifies that a setting <code class="ph codeph">version</code> must be provided when creating a
+            broker from this broker type, you can access the value of <code class="ph codeph">version</code> for the current broker as <code class="ph codeph">broker.version</code>.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" lang="en-us" id="writing_the_broker_configuration_file">
+    <h2 class="title topictitle2" id="ariaid-title4">Writing the broker configuration file</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">configuration.yaml</code> file indicates what parameters can be supplied for any
+        given broker type. </p>
+        <p class="p">For each parameter, you can supply these attributes:</p>
+        <ul class="ul">
+            <li class="li">
+                <p class="p"><code class="ph codeph">description</code> —
+                    Human-readable description of the parameter.</p>
+            </li>
+            <li class="li">
+                <p class="p"><code class="ph codeph">required</code> —
+                        <code class="ph codeph">true</code> to indicate that the
+                    parameter must be supplied. Parameters that aren’t required are optional.</p>
+            </li>
+            <li class="li">
+                <code class="ph codeph">default</code> — Value for the parameter
+                if one isn’t supplied.</li>
+        </ul>
+        <div class="p">As an example, here's the configuration.yaml for the <span class="ph">PE</span> broker
+            type:<pre class="pre codeblock"><code>server:
+    description: "The puppet master to load configurations and installation packages from."
+version:
+    description: "Override the PE version to install; defaults to `current`."
+windows_agent_download_url:
+    description: "The download URL for a Windows PE agent installer; defaults to a URL derived from the `version` config."</code></pre></div>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="create_a_new_broker_type">
+               <h2 class="title topictitle2" id="ariaid-title5">Create a new broker type</h2>
+               
+               
+               <div class="body taskbody"><p class="shortdesc">To create a broker called <code class="ph codeph">sample</code>:</p>
+                              <section class="section context"><p class="p"></p></section>
+                              <section><ol class="ol steps"><li class="li step stepexpand">
+                                                  <span class="ph cmd">From the command
+                                                  line, create a <code class="ph codeph">sample.broker</code> directory
+                                                  anywhere on the <code class="ph codeph">broker_path</code>. </span>
+                                                  <div class="itemgroup info">
+                                                  <p class="p">The <code class="ph codeph">broker_path</code> is
+                                                  specified in the <code class="ph codeph">broker_path</code> class parameter
+                                                  of the <code class="ph codeph">pe_razor</code> class. By default, the broker
+                                                  directory for custom brokers is <code class="ph codeph">/etc/puppetlabs/razor-server/brokers</code>.
+                                                  </p>
+                                                  </div>
+                                             </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">Write the broker
+                                                  install script and place it in the <code class="ph codeph">install.erb</code> (<span class="ph">*nix</span>) or <code class="ph codeph">install.ps1.erb</code> (<span class="ph">Windows</span> PowerShell)
+                                                  template in the <code class="ph codeph">sample.broker</code>
+                                                  directory.</span>
+                                             </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">If the broker
+                                                  type requires configuration data, write the broker
+                                                  configuration file and save it in the <code class="ph codeph">sample.broker</code> directory.</span>
+                                             </li></ol></section>
+                              <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+               </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="provisioning_a_windows_node.html#create-broker" title="Brokers hand off nodes to configuration management systems like Puppet Enterprise.">(Optional) Create a broker</a></li><li class="linklist"><a class="link" href="using_the_razor_client.html#broker_commands" title="Broker commands enable you to create a new broker configuration, set or clear a specified key value for a broker, and delete a specified broker.">Broker commands</a></li><li class="linklist"><a class="link" href="api_reference.html#brokers_api" title="A broker is responsible for configuring a newly installed node for a specific configuration management system. For Puppet Enterprise, you generally use brokers only with the type puppet-pe.">Brokers API</a></li></ul></div></nav></article></article></article></main></body></html>

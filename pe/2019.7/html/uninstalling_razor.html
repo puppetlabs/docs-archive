@@ -1,0 +1,41 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="If you're permanently done provisioning nodes, you can uninstall Razor."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="uninstalling_razor"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Uninstalling Razor</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="uninstalling_razor">
+    <h1 class="title topictitle1" id="ariaid-title1">Uninstalling <span class="ph">Razor</span></h1>
+    <p class="shortdesc">If you're permanently done provisioning nodes, you can
+        uninstall <span class="ph">Razor</span>.</p>
+    
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="uninstall_the_razor_server">
+    <h2 class="title topictitle2" id="ariaid-title2">Uninstall the <span class="ph">Razor</span> server</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">To uninstall the <span class="ph">Razor</span>
+        server, erase <span class="ph">Razor</span> from the server node and update your
+        environment so that nodes continue to boot as expected. </p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the node with the <span class="ph">Razor</span> server, run <code class="ph codeph">yum erase pe-razor</code></span>
+            </li><li class="li step">
+                <span class="ph cmd">Drop the <span class="ph">PostgreSQL</span>
+                    database that the server used.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Change DHCP/TFTP so that the machines that have
+                    been installed continue to boot outside the scope of <span class="ph">Razor</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="uninstall_the_razor_client">
+    <h2 class="title topictitle2" id="ariaid-title3">Uninstall the <span class="ph">Razor</span> client</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Uninstall the <span class="ph">Razor</span> client
+        if you no longer wish to use it to interact with a <span class="ph">Razor</span>
+        server.</p>
+        <section class="section context"></section>
+        <section><div class="li step p">
+                <span class="ph cmd">Run <code class="ph codeph">gem
+                        uninstall razor-client</code>.</span>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article></article></article></main></body></html>

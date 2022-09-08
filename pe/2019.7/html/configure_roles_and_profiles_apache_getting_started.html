@@ -1,0 +1,203 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The roles and profiles method is a reliable way to build reusable, configurable, and refactorable system configurations."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="configure_roles_and_profiles_apache_getting_started"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Organize webserver configurations with roles and profiles</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="configure_roles_and_profiles_apache_getting_started">
+    <h1 class="title topictitle1" id="ariaid-title1">Organize webserver configurations with roles and profiles </h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">The <dfn class="term">roles and profiles</dfn> method is a reliable way to build reusable,
+        configurable, and refactorable system configurations. </p>
+        <p class="p">Roles and profiles help you pick out relevant pieces of code from modules and bundle them
+            together to create your own custom set of code for managing things.
+                <dfn class="term">Profiles</dfn> are the actual bundles of code. <dfn class="term">Roles</dfn> gather
+            profiles together so that you can assign them to nodes. This allows you to efficiently
+            organize your <span class="ph">Puppet</span> code.</p>
+        <p class="p">To learn about roles and profiles by example, follow these instructions to define a
+            profile that configures virtual webhost (vhost) to serve the
+                <code class="ph codeph">example.com</code> website and include a firewall rule. Then, you will
+            create a role to contain the profile, and you'll assign it to a the
+                <code class="ph codeph">apache</code> node group that you created earlier. This lays down a base
+            structure where, if you had additional websites to serve, you would create additional
+            profiles for them, and those profiles could be separated or combined inside the roles as
+            needed. </p>
+        <p class="p">Because you are adding a firewall rule, make sure you add the <code class="ph codeph"><a class="xref" href="https://forge.puppet.com/puppetlabs/firewall" target="_blank">puppetlabs/firewall</a></code> module to your <span class="ph">Puppetfile</span>, following the same process you used to add
+            the <code class="ph codeph">apache</code> module. Remember to add the firewall modules dependencies —
+                <code class="ph codeph">puppetlabs-stdlib</code>.</p>
+        <div class="p">
+            <pre class="pre codeblock"><code>mod 'puppetlabs/firewall', '2.3.2'
+mod 'puppetlabs/stdlib' , '4.0.0'</code></pre>
+        </div>
+        <p class="p">See <a class="xref" href="the_roles_and_profiles_method.html#the_roles_and_profiles_method" title="The roles and profiles method is the most reliable way to build reusable, configurable, and refactorable system configurations.">The roles and profiles method</a> for more context on how roles and
+            profiles work. </p>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="roles_and_profiles_prereq_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title2">Set up your prerequisites</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Before you begin writing content for roles and profiles, you need to create modules
+        to store them in. </p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Create one module for <code class="ph codeph">profile</code> and one for
+                        <code class="ph codeph">role</code> directly in your control repo. Do not put them in your
+                    Puppetfile.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Make a new directory in the repo named <code class="ph codeph">site</code>. For example,
+                        <code class="ph codeph">/etc/puppetlabs/code/environments/production/site</code>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Edit the <code class="ph codeph">environment.conf</code> file to add <code class="ph codeph">site</code> to
+                    the <code class="ph codeph">modulepath</code>. This is the place where <span class="ph">Puppet</span> looks for module information. For example:
+                        <code class="ph codeph">modulepath = site:modules:$basemodulepath</code>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Put the <code class="ph codeph">role</code> and <code class="ph codeph">profile</code> modules in the
+                        <code class="ph codeph">site</code> directory. </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="write_a_profile_for_apache_getting_started_guide">
+    <h2 class="title topictitle2" id="ariaid-title3">Write a profile for your <span class="ph">Apache</span> vhost</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Write a webserver profile that includes rules for your <span class="ph">Apache</span> vhost and firewall.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>Make sure you have already installed the <code class="ph codeph">puppetlabs/apache</code> module
+            and the <code class="ph codeph">puppetlabs/firewall</code> module from the forge. <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> We recommend writing your code in a code editor, such as VSCode, and then
+                    pushing to your Git server. <span class="ph">Puppet</span> has an <a class="xref" href="https://puppet-vscode.github.io/" target="_blank">extension</a> for VSCode that supports syntax highlighting of the <span class="ph">Puppet</span> language.</div>
+            </div></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the <code class="ph codeph">profile</code> module you added, create the following
+                    directory:</span>
+                <div class="itemgroup info">
+                    <ul class="ul">
+                        <li class="li"><code class="ph codeph">manifests/</code><ul class="ul">
+                                <li class="li"><code class="ph codeph">webserver/</code><ul class="ul">
+                                        <li class="li"><code class="ph codeph">example.pp</code></li>
+                                    </ul></li>
+                            </ul></li>
+                    </ul>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Paste the following <span class="ph">Puppet</span> code into the new
+                        <code class="ph codeph">example.pp</code> file:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code># /etc/puppetlabs/code/environments/production/site/profile/manifests/webserver/example.pp
+class profile::webserver::example (
+  String $content      = "Hello from vhost\\n",
+  Array[String] $ports = ['80']
+  Array[String] $ips   = ['127.0.0.1','127.0.0.2'],
+) 
+{
+  class { 'apache':
+    default_vhost =&gt; false,
+  }
+{
+  apache::vhost { 'example.com':
+    port     =&gt; $ports,
+    ip       =&gt; $ips,
+    ip_based =&gt; true,
+    docroot  =&gt; '/var/www/html',
+  }
+  file { '/var/www/html/index.html':
+    ensure  =&gt; file,
+    content =&gt; $content,
+  }
+ firewall { '100 allow http and https access':
+    dport  =&gt; $ports,
+    proto  =&gt; tcp,
+    action =&gt; accept
+  }
+}</code></pre>
+                    <p class="p">This profile applies custom rules for the <code class="ph codeph">apache::vhost</code>
+                        class that include arrays of <code class="ph codeph">$ports</code> and
+                            <code class="ph codeph">$ips</code>. The code uses <code class="ph codeph">file</code> to ensure
+                        there is content on the main page of your vhost. Finally, there is a
+                        firewall rule that only allows traffic from the port or ports set in the
+                            <code class="ph codeph">$ports</code> array. </p>
+                    <p class="p">You can add your own code to the profile as needed. Look at the readme and
+                        reference sections for the <code class="ph codeph">puppetlabs/apache</code> and
+                            <code class="ph codeph">puppetlabs/firewall</code> modules in the Forge for more
+                        content. </p>
+                </div>
+            </li></ol></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="set_data_for_apache_profile_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title4">Set data for the profile </h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc"><span class="ph">Hiera</span> is a configuration method that allows you to set
+        defaults in your code, or override those defaults in certain circumstances. Use it to
+        fine-tune data within your profile. </p>
+        <p class="p">Suppose you want to use the custom fact <code class="ph codeph">stage</code> to represent the
+            deployment stage of the node, which can be <code class="ph codeph">dev</code>, <code class="ph codeph">test</code>,
+            or <code class="ph codeph">prod</code>. For this example, use <code class="ph codeph">dev</code> and
+                <code class="ph codeph">prod</code>. </p>
+        <div class="p">With <span class="ph">Hiera</span> structured data, you can set up a four-layer
+            hierarchy that consists of the following: <ul class="ul">
+                <li class="li"><code class="ph codeph">console_data</code> for data defined in the console.</li>
+                <li class="li"><code class="ph codeph">nodes/%{trusted.certname}</code> for per-node overrides.</li>
+                <li class="li"><code class="ph codeph">stage/%{facts.stage}</code> for setting stage-specific data.</li>
+                <li class="li"><code class="ph codeph">common</code> for global fallback
+                    data.</li>
+            </ul></div>
+        <p class="p">This structure lets you tune the settings for ports and IPs in each stage. </p>
+        <p class="p">For example, to configure webservers in the development environment to have a custom
+            message and to use port 8080, you'd create a data file with the following name,
+            location, and code content:</p>
+        <div class="p">
+            <pre class="pre codeblock"><code># cat /etc/puppetlabs/code/environments/production/data/stage/dev.yaml
+---
+profile::webserver::example::content: "Hello from dev\n"
+profile::webserver::example::ports:
+ - '8080'</code></pre>
+        </div>
+        <p class="p">To have webservers in the production environment listen to all interfaces:</p>
+        <pre class="pre codeblock"><code># cat /etc/puppetlabs/code/environments/production/data/stage/prod.yaml
+---
+profile::webserver::example::ips:
+ - '0.0.0.0'
+ - '::'</code></pre>
+        <p class="p">This is the briefest of introductions to all the things you can do with structured data
+            in <span class="ph">Hiera</span>. To learn more about setting up hierarchical
+            data, see <a class="xref" href="https://puppet.com/docs/puppet/latest/hiera_quick.html#getting_started_with_hiera" target="_blank">Getting started with Hiera</a>.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="write_a_role_apache_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title5">Write a role for your <span class="ph">Apache</span> web server</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">To write roles, think about what machines you'll be managing and decide what else
+        they need in addition to the <code class="ph codeph">webserver</code> profile. </p>
+        <p class="p">Say you want all of the nodes in your <code class="ph codeph">apache</code> node group to use the
+            profile you just wrote. Suppose also that your organization assigns all machines,
+            including workstations, with a profile called <code class="ph codeph">profile::base</code>, which manages basic policies and uses some conditional
+            logic to include operating-system-specific configuration.</p>
+        <div class="p" dir="ltr">Inside the following file in your control
+            repo:<pre class="pre codeblock"><code>/etc/puppetlabs/code/environments/production/site/role/manifests/exampleserver.pp</code></pre></div>
+        <div class="p">Write a role that includes both the <code class="ph codeph">base</code> profile and your
+                <code class="ph codeph">webserver</code> profile:
+            <pre class="pre codeblock"><code>class role::exampleserver {
+  include profile::base
+  include profile::webserver
+}</code></pre></div>
+        <p class="p">You can add more profiles to this role, or create additional roles with more profile
+            configurations based on your needs. </p>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="assign_roles_to_nodes_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title6">Assign the role to nodes</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Assign the <code class="ph codeph">exampleserver</code> role to nodes where you want to manage the
+        configuration of the <span class="ph">Apache</span> vhost, based on what you wrote in
+        the <code class="ph codeph">webserver::example</code> profile. </p>
+        <section class="section context">
+            <p class="p">For this example, assume you want to add <code class="ph codeph">role::exampleserver</code> to all the nodes in the <code class="ph codeph">apache</code>
+                node group you created.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span> and select the
+                        <code class="ph codeph">apache</code> node group.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, under <span class="ph uicontrol">Add a new
+                        class</span>, select <code class="ph codeph">role::exampleserver</code> and click
+                        <span class="ph uicontrol">Add class</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Commit the change.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>Your <code class="ph codeph">apache</code> node group is managing your <span class="ph">Apache</span> vhost based on the rules you coded into your
+                <code class="ph codeph">webserver</code> profile. </section>
+    </div>
+</article></article></article></main></body></html>

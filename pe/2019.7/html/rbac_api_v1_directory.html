@@ -1,0 +1,116 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the ds (directory service) API endpoints to get information about the directory service, test your directory service connection, and replace directory service connection settings."><meta name="DC.relation" scheme="URI" content="rbac_ldap_intro.html#external_directory_settings"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="directory_service_endpoints_api_v1"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Directory service endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="directory_service_endpoints_api_v1">
+    <h1 class="title topictitle1" id="ariaid-title1">Directory service endpoints </h1>
+    
+    <div class="body conbody"><p class="shortdesc"> Use the <code class="ph codeph">ds</code> (directory service) API endpoints to get information about the directory
+        service, test your directory service connection, and replace directory service connection
+        settings.</p>
+        <p class="p">To connect to the directory service anonymously, specify <code class="ph codeph">null</code> for the lookup user and lookup
+            password or leave these fields blank.</p>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_ldap_intro.html#external_directory_settings" title="The table below provides examples of the settings used to connect to an Active Directory service and an OpenLDAP service to PE. Each setting is explained in more detail below the table.">External directory settings</a></li></ul></div></nav><article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_ds">
+    <h2 class="title topictitle2" id="ariaid-title2">GET /ds </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Get the connected directory service information.
+        Authentication is required.</p>
+        <section class="section" id="get_ds__return_format"><h3 class="title sectiontitle">Return
+                format </h3><p class="p">Returns a 200 OK response with an object
+                representing the connection.</p><p class="p">For
+                example:</p><pre class="pre codeblock"><code>{"display_name": "AD",
+"hostname": "ds.foobar.com",
+"port": 10379, ...}
+</code></pre><p class="p">If the connection settings have not been specified, returns a 200
+                OK response with an empty JSON object.</p><p class="p">For
+            example:</p><pre class="pre codeblock"><code>{ }</code></pre></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_ds_test">
+    <h2 class="title topictitle2" id="ariaid-title3">GET /ds/test </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Runs a connection test for the connected directory
+        service. Authentication is required.</p>
+        <section class="section" id="get_ds_test__return_format"><h3 class="title sectiontitle">Return
+                format </h3><p class="p">If the connection test is successful, returns a
+                200 OK response with information about the test run. </p><p class="p">For
+                example:</p><pre class="pre codeblock"><code>{"elapsed": 10}</code></pre></section>
+        <section class="section" id="get_ds_test__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><div class="p"><ul class="ul">
+                    <li class="li"><samp class="ph msgph">400 Bad
+                            Request</samp> if the request is malformed.</li>
+                    <li class="li"><samp class="ph msgph">401
+                            Unauthorized</samp> if no user is logged in.</li>
+                    <li class="li"><samp class="ph msgph">403
+                            Forbidden</samp> if the current user lacks the permissions to test the
+                        directory settings.</li>
+                </ul></div><pre class="pre codeblock"><code>{"elapsed": 20, "error": "..."} </code></pre></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="put_ds_test">
+    <h2 class="title topictitle2" id="ariaid-title4">PUT /ds/test </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Performs a connection test with the submitted settings.
+        Authentication is required.</p>
+        <section class="section" id="put_ds_test__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">Accepts the full set of directory settings keys
+                with values defined. </p></section>
+        <section class="section" id="put_ds_test__return_format"><h3 class="title sectiontitle">Return
+                format </h3><p class="p">If the connection test is successful, returns
+                information about the test run. </p><p class="p">For
+            example:</p><pre class="pre codeblock"><code>{"elapsed": 10}</code></pre></section>
+        <section class="section" id="put_ds_test__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">If the request times out or encounters an
+                error, returns information about the test run.</p><p class="p">For
+                example:</p><pre class="pre codeblock"><code>{"elapsed": 20, "error": "..."} </code></pre></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="put_ds">
+    <h2 class="title topictitle2" id="ariaid-title5">PUT /ds </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Replaces current directory service connection settings.
+        Authentication is required.</p>
+        <section class="section"><p class="p">When changing directory service
+                settings, you must specify all of the required directory service settings in the PUT
+                request, including the required settings that are remaining the same. You do not
+                need to specify optional settings unless you are changing them.</p></section>
+        <section class="section" id="put_ds__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">Accepts directory service connection settings.
+                To "disconnect" the DS, <code class="ph codeph">PUT</code> either
+                an empty object ("{}") or the settings structure with all values set to null. </p><p class="p">For
+            example:</p><pre class="pre codeblock"><code>{"hostname": "ds.somehost.com",
+"name"
+"port": 10389,
+"login": "frances", ...}</code></pre></section>
+        <section class="section" id="put_ds__working_with_nested_groups"><h3 class="title sectiontitle">Working with nested groups </h3><p class="p">When
+                authorizing users, the RBAC service has the ability to search nested groups. Nested
+                groups are groups that are members of external directory groups. For example, if
+                your external directory has a "System Administrators" group, and you've given that
+                group the "Superusers" user role in RBAC, then RBAC also searches any groups that
+                are members of the "System Administrators" group and assign the "Superusers" role to
+                users in those member groups.</p><p class="p">By default, RBAC does not
+                search nested groups.&nbsp;To enable nested group searches, specify the&nbsp;
+                    <code class="ph codeph">search_nested_groups</code> field and
+                give it a value of <code class="ph codeph">true</code>.</p><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> In PE 2015.3 and earlier
+                    versions, RBAC's default was to search nested groups. When <strong class="ph b">upgrading</strong> from one of these earlier versions, this default
+                    setting is preserved and RBAC continues to search nested groups. If you have a
+                    large number of nested groups, you might experience a slowdown in performance
+                    when users are logging in because RBAC is searching the entire hierarchy of
+                    groups. To avoid performance issues, change the <code class="ph codeph">search_nested_groups</code> field to <code class="ph codeph">false</code> for a more shallow search in which
+                    RBAC searches only the groups it has been configured to use for user
+                    roles.</div></div></section>
+        <section class="section" id="put_ds__using_starttls_connections"><h3 class="title sectiontitle">Using StartTLS connections </h3><p class="p">To use a
+                StartTLS connection, specify <code class="ph codeph">"start_tls":
+                    true</code>. When set to <code class="ph codeph">true</code>, StartTLS is used to secure your connection to the directory service,
+                and any certificates that you have configured through the DS trust chain setting is
+                used to verify the identity of the directory service. When specifying StartTLS, make
+                sure that you don't also have SSL set to true.</p></section>
+        <section class="section" id="put_ds__disabling_matching_rule_in_chain"><h3 class="title sectiontitle">Disabling matching rule in chain </h3><p class="p">When PE
+                detects an Active Directory that supports the LDAP_MATCHING_RULE_IN_CHAIN feature,
+                it automatically uses it. Under some specific circumstances, you might need to
+                disable this setting. To disable it, specify <code class="ph codeph">"disable_ldap_matching_rule_in_chain": true</code> in the <code class="ph codeph">PUT</code> request. This is an optional
+            setting.</p></section>
+        <section class="section" id="put_ds__return_format"><h3 class="title sectiontitle">Return
+                format </h3><p class="p">Returns a 200 OK response with an object
+                showing the updated connection settings. </p><p class="p">For
+            example:</p><pre class="pre codeblock"><code>{"hostname": "ds.somehost.com",
+"port": 10389,
+"login": "frances", ...}</code></pre></section>
+    </div>
+</article></article></article></main></body></html>

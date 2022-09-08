@@ -1,0 +1,187 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Troubleshoot Windows issues with failed installations and upgrades, and failed or incorrectly applied manifests. Use the error message reference to solve your issues. Enable debugging."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="troubleshooting_windows"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Troubleshooting Windows</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="troubleshooting_windows">
+    <h1 class="title topictitle1" id="ariaid-title1">Troubleshooting <span class="ph">Windows</span>
+    </h1>
+    <p class="shortdesc">Troubleshoot <span class="ph">Windows</span> issues
+        with failed installations and upgrades, and failed or incorrectly applied manifests. Use the
+        error message reference to solve your issues. Enable debugging. </p>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="installation_fails_windows">
+      <h2 class="title topictitle2" id="ariaid-title2">Installation fails </h2>
+      
+      <div class="body conbody"><p class="shortdesc">Check for these issues if <span class="ph">Windows</span> installation with <span class="ph">Puppet</span> fails.</p>
+            <section class="section" id="installation_fails_windows__the_installation_package_isn_t_accessible"><h3 class="title sectiontitle">The installation package isn't accessible </h3><p class="p">The source of an MSI or EXE package must be a file on
+                        either a local filesystem, a network mapped drive, or a UNC path.</p><p class="p">RI-based installation sources aren't supported, but you
+                        can achieve a similar result by defining a file whose source is the <span class="ph">Puppet</span> master and then defining a package
+                        whose source is the local file.</p></section>
+            <section class="section" id="installation_fails_windows__installation_wasn_t_attempted_with_admin_privileges"><h3 class="title sectiontitle">Installation wasn't attempted with admin privileges </h3><p class="p">
+                        <span class="ph">Puppet</span> fails to install when trying to
+                        perform an unattended installation from the command line. A "norestart"
+                        message is returned, and installation logs indicate that installation is
+                        forbidden by system policy.</p><p class="p">You must install as an
+                        administrator.</p></section>
+      </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="upgrade_fails">
+    <h2 class="title topictitle2" id="ariaid-title3">Upgrade fails </h2>
+    
+    <div class="body conbody"><p class="shortdesc">The <span class="ph">Puppet</span> MSI package
+        overwrites existing entries in the <code class="ph codeph">puppet.conf</code> file. If you upgrade or reinstall using a different master
+        hostname, <span class="ph">Puppet</span> applies the new value in <code class="ph codeph">$confdir\puppet.conf</code>. </p>
+        <p class="p">When you upgrade <span class="ph">Windows</span>, you must use
+            the same master hostname that you specified when you installed. </p>
+        <p class="p">For information on what settings are preserved during an upgrade, see
+            installing <a class="xref" href="installing_agents.html#installing_windows_agents" title="You can install Windows agents with PE package management, with a manually transferred certificate, or with the Windows .msi package.">Install Windows agents</a>. </p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="manifests_cant_be_applied">
+    <h2 class="title topictitle2" id="ariaid-title4">Errors when applying a manifest or doing a <span class="ph">Puppet</span> agent run</h2>
+    
+    <div class="body conbody"><p class="shortdesc">Check for the following issues if manifests cannot be
+        applied or are not applied correctly on <span class="ph">Windows</span> nodes. </p>
+        <section class="section" id="manifests_cant_be_applied__path_or_file_separators_are_incorrect"><h3 class="title sectiontitle">Path or file separators are incorrect </h3>
+            
+            <p class="p">For <span class="ph">Windows</span>, path separators must
+                use a semi-colon (;), while file separators must use forward or backslashes as
+                appropriate to the attribute.</p>
+            <p class="p">In most resource attributes, the <span class="ph">Puppet</span> language accepts either forward or backslashes
+                as the file separator. However, some attributes absolutely require forward slashes,
+                and some attributes absolutely require backslashes.</p>
+            <p class="p">When backslashes are double-quoted("), they must be escaped. When
+                single-quoted ('), they can be escaped. For example, these are valid file
+                resources:</p>
+            <pre class="pre codeblock"><code>file { 'c:\path\to\file.txt': }
+file { 'c:\\path\\to\\file.txt': }
+file { "c:\\path\\to\\file.txt": }</code></pre>
+            <p class="p">But this is an invalid path, because <code class="ph codeph">\p</code>, <code class="ph codeph">\t</code>,
+                and <code class="ph codeph">\f</code> are interpreted as escape
+                sequences:</p>
+            <pre class="pre codeblock"><code>file { "c:\path\to\file.txt": }</code></pre>
+            <p class="p">For more information, see the <a class="xref" href="https://puppet.com/docs/puppet/6.10/lang_windows_file_paths.html#using-backslashes-in-double-quoted-strings" target="_blank">language reference about backslashes on <span class="ph">Windows</span>.</a>
+            </p>
+        </section>
+        <section class="section" id="manifests_cant_be_applied__cases_are_inconsistent"><h3 class="title sectiontitle">Cases are inconsistent </h3>
+            
+            <p class="p">Several resources are case-insensitive on <span class="ph">Windows</span>, like files, users, groups. However, these
+                resources can be case sensitive in <span class="ph">Puppet</span>.</p>
+            <p class="p">When establishing dependencies among resources, make sure to
+                specify the case consistently. Otherwise, <span class="ph">Puppet</span>
+                can't resolve dependencies correctly. For example, applying this manifest fails,
+                because <span class="ph">Puppet</span> doesn't recognize that <code class="ph codeph">ALEX</code> and <code class="ph codeph">alex</code> are the same user:</p>
+            <pre class="pre codeblock"><code>file { 'c:\foo\bar':
+  ensure =&gt; directory,
+  owner  =&gt; 'ALEX'
+}
+user { 'alex':
+  ensure =&gt; present
+}
+...
+err: /Stage[main]//File[c:\foo\bar]: Could not evaluate: Could not find user ALEX</code></pre>
+        </section>
+        <section class="section" id="manifests_cant_be_applied__shell_built_ins_aren_t_executed"><h3 class="title sectiontitle">Shell built-ins are not executed </h3>
+            
+            <p class="p">
+                <span class="ph">Puppet</span> doesn't support a shell provider on <span class="ph">Windows</span>, so executing shell built-ins directly
+                fails.</p>
+            <p class="p">Wrap the built-in in <code class="ph codeph">cmd.exe</code>:</p>
+            <pre class="pre codeblock"><code>exec { 'cmd.exe /c echo foo':
+  path =&gt; 'c:\windows\system32;c:\windows'
+}</code></pre>
+            <p class="p">
+                <strong class="ph b">Tip:</strong> In the 32-bit versions of <span class="ph">Puppet</span>, you might encounter file system redirection,
+                where system32 is switched to sysWoW64 automatically.</p>
+        </section>
+        <section class="section" id="manifests_cant_be_applied__powershell_scripts_aren_t_executed"><h3 class="title sectiontitle"><span class="ph">PowerShell</span>
+                scripts are not executed </h3>
+            
+            <p class="p">By default, <span class="ph">PowerShell</span> enforces a restricted execution policy which prevents the
+                execution of scripts.</p>
+            <p class="p">Specify the appropriate execution policy in the <span class="ph">PowerShell</span> command, for example:</p>
+            <pre class="pre codeblock"><code>exec { 'test':
+  command =&gt; 'powershell.exe -executionpolicy remotesigned -file C:\test.ps1',
+  path    =&gt; $::path
+}</code></pre>
+            <p class="p">Or use the <span class="ph">Puppet</span>
+                supported <span class="ph">PowerShell</span>. </p>
+        </section>
+        <section class="section" id="manifests_cant_be_applied__services_are_referenced_with_display_names_instead_of_short_names"><h3 class="title sectiontitle">Services are referenced with display names instead of
+                short names </h3>
+            
+            <p class="p">
+                <span class="ph">Windows</span> services support a short name and a display
+                name, but <span class="ph">Puppet</span> uses only short names.</p>
+            <ol class="ol">
+                <li class="li">Verify that your <span class="ph">Puppet</span>
+                    manifests use short names, for example <code class="ph codeph">wuauserv</code>, not <code class="ph codeph">Automatic
+                        Updates</code>.</li>
+            </ol>
+        </section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="error_messages">
+  <h2 class="title topictitle2" id="ariaid-title5">Error messages </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Use this reference to troubleshoot error messages when using
+      <span class="ph">Windows</span> with <span class="ph">Puppet</span>.</p>
+    <section class="section"><ul class="ul">
+        <li class="li"><pre class="pre msgblock">Error: Could not connect via HTTPS to https://forge.puppet.com / Unable to verify the SSL certificate / The certificate may not be signed by a valid CA / The CA bundle included with OpenSSL may not be valid or up to date</pre><p class="p">This error occurs when you run the <code class="ph codeph">puppet module</code> subcommand on newly provisioned <span class="ph">Windows</span> nodes. The <span class="ph">Forge</span>
+            uses an SSL certificate signed by the GeoTrust Global CA certificate. Newly provisioned
+              <span class="ph">Windows</span> nodes might not have that CA in their root CA
+            store yet.</p><p class="p">Download the "GeoTrust Global CA" certificate from
+            GeoTrust's list of root certificates and manually install it by running <code class="ph codeph">certutil -addstore Root
+          GeoTrust_Global_CA.pem</code>.</p></li>
+        <li class="li"><pre class="pre msgblock">Service 'Puppet Agent' (puppet) failed to start. Verify that you have sufficient privileges to start system services.</pre><p class="p">This error occurs when installing <span class="ph">Puppet</span> on a UAC system from a non-elevated account. Although the installer displays the UAC
+            prompt to install <span class="ph">Puppet</span>, it does not elevate privileges
+            when trying to start the service.</p><p class="p">Run from an elevated <code class="ph codeph">cmd.exe</code> process when installing the
+          MSI.</p></li>
+        <li class="li"><pre class="pre msgblock">Cannot run on Microsoft Windows without the sys-admin, win32-process, win32-dir, win32-service and win32-taskscheduler gems.</pre><p class="p">This error occurs if you attempt to run <span class="ph">Windows</span> without required gems.</p><p class="p">Install specified gems: <code class="ph codeph">gem install
+              &lt;GEM_NAME&gt;</code>
+          </p></li>
+        <li class="li">
+          "<pre class="pre msgblock">err: /Stage[main]//Scheduled_task[task_system]: Could not evaluate: The operation completed successfully.</pre>"
+            <p class="p">This error occurs when using a the task scheduler gem earlier than
+            version 0.2.1.</p>
+          <p class="p">Update the task scheduling gem: <code class="ph codeph">gem update win32-taskscheduler</code>
+          </p>
+        </li>
+        <li class="li"><pre class="pre msgblock">err: /Stage[main]//Exec[C:/tmp/foo.exe]/returns: change from notrun to 0 failed: CreateProcess() failed: Access is denied.</pre><p class="p">This error occurs when requesting an executable from a remote <span class="ph">Puppet</span> master that cannot be executed.</p><p class="p">Set the user/group executable bits appropriately on the
+          master:</p><pre class="pre codeblock"><code>file { "C:/tmp/foo.exe":
+  source =&gt; "puppet:///modules/foo/foo.exe",
+}
+
+exec { 'C:/tmp/foo.exe':
+  logoutput =&gt; true
+}</code></pre></li>
+        <li class="li"><pre class="pre msgblock">err: getaddrinfo: The storage control blocks were destroyed.</pre><p class="p">This error occurs when the agent can't resolve a DNS name into an IP
+            address or if the reverse DNS entry for the agent is wrong.</p><p class="p">Verify that you can run <code class="ph codeph">nslookup
+              &lt;dns&gt;</code>. If this fails, there is a problem with the DNS settings on the
+              <span class="ph">Windows</span> agent, for example, the primary dns suffix is
+            not set. For more information, see <a class="xref" href="http://technet.microsoft.com/en-us/library/cc959322.aspx" target="_blank">Microsoft's documentation on Naming Hosts and Domains</a>.</p></li>
+        <li class="li"><pre class="pre msgblock">err: Could not request certificate: The certificate retrieved from the master does not match the agent's private key.</pre><p class="p">This error occurs if the agent's SSL directory is deleted after it
+            retrieves a certificate from the master, or when running the agent in two different
+            security contexts.</p><p class="p">Elevate privileges using <span class="ph uicontrol">Run as Administrator</span> when you select <span class="ph uicontrol">Start Command Prompt with
+          Puppet</span>.</p></li>
+        <li class="li"><pre class="pre msgblock">err: Could not send report: SSL_connect returned=1 errno=0 state=SSLv3 read server certificate B: certificate verify failed. This is often because the time is out of sync on the server or client.</pre><p class="p">This error occurs when <span class="ph">Windows</span> agents'
+            time isn't synched. <span class="ph">Windows</span> agents that are part of an
+            Active Directory domain automatically have their time synchronized with AD.</p><p class="p">For agents that are not part of an AD domain, enable and add the <span class="ph">Windows</span> time service
+          manually:</p><pre class="pre codeblock"><code>w32tm /register
+net start w32time
+w32tm /config /manualpeerlist:&lt;ntpserver&gt; /syncfromflags:manual /update
+w32tm /resync</code></pre></li>
+        <li class="li"><pre class="pre msgblock">Error: Could not parse for environment production: Syntax error at '='; expected '}'</pre><p class="p">This error occurs if <code class="ph codeph">puppet
+              apply -e</code> is used from the command line and the supplied command is surrounded
+            with single quotes ('), which causes <code class="ph codeph">cmd.exe</code> to interpret any <code class="ph codeph">=&gt;</code> in the command as a redirect.</p><p class="p">Surround the
+            command with double quotes (") instead.</p></li>
+      </ul></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="logging_and_debugging">
+        <h2 class="title topictitle2" id="ariaid-title6">Logging and debugging </h2>
+        
+        <div class="body conbody"><p class="shortdesc">The <span class="ph">Windows</span> Event Log
+                can be helpful when troubleshooting issues with <span class="ph">Windows</span>.</p>
+                <div class="p">Enable <span class="ph">Puppet</span> to emit <code class="ph codeph">--debug</code> and
+                                <code class="ph codeph">--trace</code> messages to the <span class="ph">Windows</span> Event Log by stopping the <span class="ph">Puppet</span> service and restarting it:
+                        <pre class="pre codeblock"><code>c:\&gt;sc stop puppet &amp;&amp; sc start puppet --debug --trace</code></pre>Note
+                        that this setting takes effect only until the next time the service is
+                        restarted, or until the system is rebooted.</div>
+                <p class="p">For more information on logging, see <a class="xref" href="https://puppet.com/docs/puppet/6.10/services_agent_windows.html#logging-for-puppet-agent-on-windows-systems" target="_blank">Configuring Puppet agent on Windows.</a>
+                </p>
+        </div>
+</article></article></article></main></body></html>

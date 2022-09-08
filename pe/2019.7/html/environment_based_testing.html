@@ -1,0 +1,77 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="An environment-based testing workflow is an effective approach for testing new code before pushing it to production."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="environment_based_testing"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Environment-based testing</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="environment_based_testing">
+    <h1 class="title topictitle1" id="ariaid-title1">Environment-based testing </h1>
+    
+    <div class="body conbody"><p class="shortdesc">An environment-based testing workflow is an effective
+        approach for testing new code before pushing it to production.</p>
+        <p class="p">Before testing and promoting data using an environment-based workflow,
+            you must have configured:</p>
+        <ul class="ul">
+            <li class="li">A test environment that's a child of the production environment </li>
+            <li class="li">Classification node groups that include nodes assigned
+                dynamically or statically</li>
+        </ul>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="test_and_promote_a_parameter">
+    <h2 class="title topictitle2" id="ariaid-title2">Test and promote a parameter </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Test and promote a parameter when using an
+        environment-based testing workflow.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Create a classification node group with the test
+                    environment that is a child of a classification group that uses the production
+                    environment.</span>
+            </li><li class="li step">
+                <span class="ph cmd">In the child group, set a test parameter. The test
+                    parameter overrides the value set by the parent group using the production
+                    environment.</span>
+            </li><li class="li step">
+                <span class="ph cmd">If you're satisfied with your test results,
+                    manually change the parameter in the parent group.</span>
+            </li><li class="li step">
+                <span class="ph cmd">(Optional) Delete the child test group.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="test_and_promote_a_class">
+    <h2 class="title topictitle2" id="ariaid-title3">Test and promote a class </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Test and promote a class when using an environment-based
+        testing workflow.</p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Create a classification node group with the test
+                    environment that is a child of a classification group that uses the production
+                    environment. </span>
+                <div class="itemgroup stepresult"><p class="p">The
+                        node classifier validates your parameters against the test
+                    environment.</p></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">If you're satisfied with your test results, change
+                    the environment for the node group from test to production.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="testing_code_with_canary_nodes_using_alternate_environments">
+    <h2 class="title topictitle2" id="ariaid-title4">Testing code with canary nodes using alternate environments </h2>
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">Puppet Enterprise</span> allows you to centrally manage which nodes are in
+        which environments.</p>
+        <p class="p">In most cases the environments are long-lived, such as development,
+            testing, and production, and nodes don't move between these environments after their
+            initial environment has been set.</p>
+        <p class="p">When an agent node matches the rules specified in environment node
+            groups, the agent is classified in that environment regardless of any environments
+            specified in the agent's own <code class="ph codeph">puppet.conf</code> file. Agents can't override this server-specified environment.
+            That's the desired behavior in most cases.</p>
+        <p class="p">A notable exception is when you want to test new <span class="ph">Puppet</span> code before deployment, and you have a code
+            promotion workflow based on environments. In this case, you can specify that certain
+            nodes are allowed to use an agent-specified environment. You map the agent-specified
+            environment to a feature branch in your version control system. This override enables
+            you to quickly test the code in your feature branch without permanently changing the
+            environment that the node is in.</p>
+        <p class="p">To apply an agent-specified environment for more than one run, specify
+            the environment in the node's <code class="ph codeph">puppet.conf</code> file. Doing this also sets the <code class="ph codeph">agent_specified_environment</code> fact to <code class="ph codeph">true</code>. The node will continue to get the agent-specified
+            environment until you remove the environment from its <code class="ph codeph">puppet.conf</code> file, or change the rules in the testing
+            environment group.</p>
+    </div>
+</article></article></article></main></body></html>

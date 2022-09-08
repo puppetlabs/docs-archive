@@ -1,0 +1,188 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the /inventory endpoint to discover which nodes can be reached by the orchestrator."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrator_api_inventory_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet orchestrator API: inventory endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="orchestrator_api_inventory_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">Puppet</span> orchestrator API: inventory
+        endpoint </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">/inventory</code> endpoint to discover which nodes can be reached by the
+        orchestrator.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_inventory">
+  <h2 class="title topictitle2" id="ariaid-title2">GET /inventory </h2>
+  
+  <div class="body refbody"><p class="shortdesc">List all nodes that are connected to the PCP
+    broker.</p>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><p class="p">The response is a JSON object containing a list of records for connected
+        nodes, using these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="get_inventory__entry__1">Key </th>
+              <th class="entry" id="get_inventory__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="get_inventory__entry__1">
+                <code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="get_inventory__entry__2">The name of the connected node.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_inventory__entry__1">
+                <code class="ph codeph">connected</code>
+              </td>
+              <td class="entry" headers="get_inventory__entry__2">The connection status is either <code class="ph codeph">true</code> or <code class="ph codeph">false</code>.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_inventory__entry__1">
+                <code class="ph codeph">broker</code>
+              </td>
+              <td class="entry" headers="get_inventory__entry__2">The PCP broker the node is connected
+                to.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_inventory__entry__1">
+                <code class="ph codeph">timestamp</code>
+              </td>
+              <td class="entry" headers="get_inventory__entry__2">The time when the connection was
+                made.</td>
+            </tr>
+          </tbody></table><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>{
+  "items" : [
+    {
+      "name" : "foo.example.com",
+      "connected" : true,
+      "broker" : "pcp://broker1.example.com/server",
+      "timestamp": "2016-010-22T13:36:41.449Z"
+    },
+    {
+      "name" : "bar.example.com",
+      "connected" : true,
+      "broker" : "pcp://broker2.example.com/server",
+      "timestamp" : "2016-010-22T13:39:16.377Z"
+    }
+  ]
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3><p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p><p class="p">The server
+        returns a 500 response if the PCP broker can't be reached.</p></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_inventory_node">
+   <h2 class="title topictitle2" id="ariaid-title3">GET /inventory/:node </h2>
+   
+   <div class="body refbody"><p class="shortdesc">Return information about whether the requested node is
+      connected to the PCP broker.</p>
+      <section class="section"><h3 class="title sectiontitle">Response format</h3><p class="p">The response is a JSON object indicating whether the queried node is
+            connected, using these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="get_inventory_node__entry__1">Key </th>
+                     <th class="entry" id="get_inventory_node__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="get_inventory_node__entry__1">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="get_inventory_node__entry__2">The name of the connected
+                        node.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_inventory_node__entry__1">
+                        <code class="ph codeph">connected</code>
+                     </td>
+                     <td class="entry" headers="get_inventory_node__entry__2">The connection status is either
+                           <code class="ph codeph">true</code> or <code class="ph codeph">false</code>.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_inventory_node__entry__1">
+                        <code class="ph codeph">broker</code>
+                     </td>
+                     <td class="entry" headers="get_inventory_node__entry__2">The PCP broker the node is
+                        connected to.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_inventory_node__entry__1">
+                        <code class="ph codeph">timestamp</code>
+                     </td>
+                     <td class="entry" headers="get_inventory_node__entry__2">The time when the connection was
+                        made.</td>
+                  </tr>
+               </tbody></table><p class="p">For
+         example:</p><pre class="pre codeblock json"><code>{
+  "name" : "foo.example.com",
+  "connected" : true,
+  "broker" : "pcp://broker.example.com/server",
+  "timestamp" : "2017-03-29T21:48:09.633Z"
+}</code></pre></section>
+      <section class="section"><h3 class="title sectiontitle">Error responses</h3><p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p><p class="p">The
+            server returns a 500 response if the PCP broker can't be reached.</p></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="orchestrator_api_post_inventory">
+  <h2 class="title topictitle2" id="ariaid-title4">POST /inventory </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Check if the given list of nodes is connected to the PCP
+    broker.</p>
+    <section class="section"><h3 class="title sectiontitle">Request format</h3><p class="p">The request body is a JSON object specifying a list of nodes to check.
+        For
+      example:</p><pre class="pre codeblock json"><code>{
+  "nodes" : [
+    "foo.example.com",
+    "bar.example.com",
+    "baz.example.com"
+  ]
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><p class="p">The response is a JSON object with a record for each node in the request,
+        using these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_inventory__entry__1">Key </th>
+              <th class="entry" id="orchestrator_api_post_inventory__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_inventory__entry__1">
+                <code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_inventory__entry__2">The name of the connected node.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_inventory__entry__1">
+                <code class="ph codeph">connected</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_inventory__entry__2">The connection status is either <code class="ph codeph">true</code> or <code class="ph codeph">false</code>.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_inventory__entry__1">
+                <code class="ph codeph">broker</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_inventory__entry__2">The PCP broker the node is connected
+                to.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_inventory__entry__1">
+                <code class="ph codeph">timestamp</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_inventory__entry__2">The time when the connection was
+                made.</td>
+            </tr>
+          </tbody></table><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>{
+  "items" : [
+    {
+      "name" : "foo.example.com",
+      "connected" : true,
+      "broker" : "pcp://broker.example.com/server",
+      "timestamp" : "2017-07-14T15:57:33.640Z"
+    },
+    {
+      "name" : "bar.example.com",
+      "connected" : false
+    },
+    {
+      "name" : "baz.example.com",
+      "connected" : true,
+      "broker" : "pcp://broker.example.com/server",
+      "timestamp" : "2017-07-14T15:41:19.242Z"
+    }
+  ]
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3><p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p><p class="p">The server
+        returns a 500 response if the PCP broker can't be reached.</p></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article></article></article></main></body></html>

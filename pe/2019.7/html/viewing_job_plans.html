@@ -1,0 +1,242 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The puppet job plan command allows you to preview a plan for a Puppet job without actually enforcing any change. Use this command to ensure your job runs as expected."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Isaac Eldridge <isaac.eldridge@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="viewing_job_plans"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Viewing job plans</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="viewing_job_plans">
+   <h1 class="title topictitle1" id="ariaid-title1">Viewing job plans</h1>
+   
+   
+   <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">puppet job
+         plan</code> command allows you to preview a plan for a <span class="ph">Puppet</span> job without actually enforcing any change. Use this
+      command to ensure your job runs as expected. </p>
+      <section class="section"><p class="p">You can preview plans for three types
+            of targets, but these targets cannot be combined:</p><ul class="ul">
+            <li class="li">
+               <p class="p">View a plan to enforce change on a list of nodes or a single
+                  node</p>
+            </li>
+            <li class="li">
+               <p class="p">View a plan to enforce change based on a PQL nodes query</p>
+            </li>
+            <li class="li">
+               <p class="p">View a plan to enforce change on an application or an
+                  application instance in an environment</p>
+            </li>
+         </ul><p class="p"></p></section>
+      <section class="section"><h2 class="title sectiontitle">Results from the job plan
+            command</h2><p class="p">The <code class="ph codeph">puppet
+               job plan</code> command returns the following about a job:</p><ul class="ul">
+            <li class="li">The environment the job runs in.</li>
+            <li class="li">The target for the job.</li>
+            <li class="li">The maximum concurrency setting for the job.</li>
+            <li class="li">The total number of nodes in the job run.</li>
+            <li class="li">A list of application instances included in the job, if
+               applicable.</li>
+            <li class="li">A list of nodes sorted topographically, with components and
+               application instances listed below each node. The node list is organized in levels by
+               dependencies. Nodes shown at the top, level 0, have no dependencies. Nodes in level 1
+               have dependencies in level 0. A node can run after <span class="ph">Puppet</span> has finished running on all its
+               dependencies.</li>
+         </ul><div class="note note note_note"><span class="note__title">Note:</span> The <code class="ph codeph">puppet job plan</code>
+            <strong class="ph b">does not</strong> generate a job ID. A job ID is created, and
+            shown in the job plan, only when you use <code class="ph codeph">puppet
+               job run</code>. Use the job ID to view jobs with the <code class="ph codeph">puppet job show</code> command.</div><p class="p">After you view the plan:</p><ul class="ul">
+            <li class="li">Use&nbsp;puppet job run &lt;SAME TARGET AND OPTIONS&gt;&nbsp;to
+               create and run a job like this.</li>
+            <li class="li">
+               <p class="p">Remember that node catalogs might have changed after this plan
+                  was generated.</p>
+            </li>
+            <li class="li">
+               <p class="p">Review and address any errors that the service reports. For
+                  example, it detects any dependency cycles or components that not properly mapped
+                  to nodes.</p>
+            </li>
+         </ul></section>
+      <section class="section"><h2 class="title sectiontitle">Example job plan</h2><p class="p">The following is an example plan summary for a job that runs on a
+            list of nodes that contain a partial application instance.</p><br><img class="image" src="orchestrator_job_plan.png" alt="Screen shot of puppet job plan run on the command line."><br></section>
+   </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="view_a_job_plan_for_a_list_of_nodes_or_a_single_node">
+   <h2 class="title topictitle2" id="ariaid-title2">View a job plan for a list of nodes or a single node </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">You can view a plan for enforcing change on a single node
+      or a comma-separated list of nodes.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div> The first time you run
+         a command, you need to authenticate. See the <a class="xref" href="configuring_puppet_orchestrator.html#setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator" title="Before you run any orchestrator jobs, you need to set the appropriate permissions in PE role-based access control (RBAC) and establish token-based authentication.">orchestrator installation instructions</a> for information about setting RBAC
+         permissions and token authorization. <p class="p"> If you're running this command
+            from a managed or non-managed <span class="ph">Windows</span> workstation, you
+            must specify the full path to the command. For example, <code class="ph codeph">c:\Program Files\Puppet Labs\Client\bin\puppet-task run</code>.</p><p class="p" id="view_a_job_plan_for_a_list_of_nodes_or_a_single_node__d83e39">Install the tasks you want to use.</p><p class="p" id="view_a_job_plan_for_a_list_of_nodes_or_a_single_node__d83e41">Make sure you have permission to run the tasks
+            on all nodes.</p><p class="p" id="view_a_job_plan_for_a_list_of_nodes_or_a_single_node__d83e43">Make sure you have
+            permission to run the tasks.</p><p class="p" id="view_a_job_plan_for_a_list_of_nodes_or_a_single_node__d83e45">Make sure you
+            have access to the nodes you want to target. </p>
+         <div class="note tip note_tip" id="view_a_job_plan_for_a_list_of_nodes_or_a_single_node__d83e48"><span class="note__title">Tip:</span> You can add network devices to
+            a node list when you have installed modules for device transports in your production
+            environment. You can find such modules in <a class="xref" href="https://forge.puppet.com/" target="_blank">Puppet Forge</a>.</div>
+         <p class="p" id="view_a_job_plan_for_a_list_of_nodes_or_a_single_node__d83e55">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p><p class="p" id="view_a_job_plan_for_a_list_of_nodes_or_a_single_node__d83e59">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p></section>
+      <section><div class="li step p">
+            <span class="ph cmd">Log into your Puppet master or client tools
+               workstation and run one of the following commands:</span>
+            <ul class="ul choices">
+               <li class="li choice">To view a plan for a single node: <code class="ph codeph"> puppet job plan --nodes &lt;NODE NAME&gt;
+                     &lt;OPTIONS&gt; </code></li>
+               <li class="li choice">To view a plan for a list of nodes, use a <strong class="ph b">comma-separated</strong> list of node names. <code class="ph codeph"> puppet job plan --nodes &lt;NODE NAME&gt;,
+                     &lt;NODE NAME&gt;, &lt;NODE NAME&gt;, &lt;NODE NAME&gt; &lt;OPTIONS&gt;
+                  </code></li>
+            </ul>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note tip note_tip"><span class="note__title">Tip:</span> You can use <code class="ph codeph">-n</code> in place of <code class="ph codeph">--nodes</code>.</div>
+               </div>
+            </div>
+         </div></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="view_a_job_plan_for_a_pql_nodes_query">
+   <h2 class="title topictitle2" id="ariaid-title3">View a job plan for a PQL nodes query </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Use a PQL nodes query as a job target. In this case, the
+      orchestrator presents a plan for a job that could run on a list of nodes returned from a PQL
+      nodes query.</p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Ensure you have the correct permissions to use PQL
+               queries.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Log into your Puppet master or client tools
+               workstation and run the following command: <code class="ph codeph">puppet job plan --query '&lt;QUERY&gt;' &lt;OPTIONS&gt;</code></span>
+            <div class="itemgroup info">
+               <div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> You can use <code class="ph codeph">-q</code> in place of <code class="ph codeph">--query</code>.</div></div>
+            </div>
+            <div class="itemgroup info">
+               <p class="p">The following table shows some example targets and the
+                  associated PQL queries you could run with the orchestrator.</p>
+               <p class="p">Be sure to wrap the entire query in single quotes and use
+                  double quotes inside the query.</p>
+               <div class="p">
+                  <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                           <tr class="row">
+                              <th class="entry" id="view_a_job_plan_for_a_pql_nodes_query__entry__1">Target </th>
+                              <th class="entry" id="view_a_job_plan_for_a_pql_nodes_query__entry__2">PQL query </th>
+                           </tr>
+                        </thead><tbody class="tbody">
+                           <tr class="row">
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__1">Single node by certname </td>
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__2">
+                                 <code class="ph codeph">--query 'nodes { certname =
+                                    "mynode" }'</code>
+                              </td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__1">All nodes with "web" in
+                                 certname </td>
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__2">
+                                 <code class="ph codeph">--query 'nodes { certname ~
+                                    "web" }'</code>
+                              </td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__1">All CentOS nodes </td>
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__2">
+                                 <code class="ph codeph">--query 'inventory {
+                                    facts.os.name = "CentOS" }'</code>
+                              </td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__1">All CentOS nodes with
+                                 httpd managed </td>
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__2">
+                                 <code class="ph codeph">--query 'inventory {
+                                    facts.operatingsystem = "CentOS" and resources { type =
+                                    "Service" and title = "httpd" } }'</code>
+                              </td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__1">All nodes with failed
+                                 reports </td>
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__2">
+                                 <code class="ph codeph">--query 'reports {
+                                    latest_report? = true and status = "failed" }'</code>
+                              </td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__1">All nodes matching the
+                                 environment for the last received catalog </td>
+                              <td class="entry" headers="view_a_job_plan_for_a_pql_nodes_query__entry__2">
+                                 <code class="ph codeph">--query 'nodes {
+                                    catalog_environment = "production" }'</code>
+                              </td>
+                           </tr>
+                        </tbody></table>
+               </div>
+            </div>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="view_a_job_plan_for_applications_or_application_instances">
+ <h2 class="title topictitle2" id="ariaid-title4">View a job plan for applications or application instances </h2>
+ 
+ <div class="body taskbody"><p class="shortdesc">You can view a plan for enforcing change on all instances of
+  an application or for a specific instance of an application.</p>
+  <section><div class="li step p">
+    <span class="ph cmd">Log into your Puppet master or client tools workstation and
+     run one of the following commands:</span>
+    <ul class="ul choices">
+     <li class="li choice">To view a job plan for all instances of an application:
+       <code class="ph codeph"> puppet job plan --application &lt;APPLICATION&gt;
+       &lt;OPTIONS&gt; </code>
+     </li>
+     <li class="li choice">To view a job plan for an application instance in an
+      environment: <code class="ph codeph"> puppet job plan --application
+       &lt;APPLICATION INSTANCE&gt; &lt;OPTIONS&gt; </code>
+     </li>
+    </ul>
+    <div class="itemgroup info"><div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> You can use <code class="ph codeph">-a</code> in place of
+        <code class="ph codeph">--application</code>.</div></div></div>
+   </div></section>
+ </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="puppet-job-plan-options">
+    <h2 class="title topictitle2" id="ariaid-title5">Puppet job plan command options</h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc">The following table shows common options for the <code class="ph codeph">puppet job plan</code> command. For a complete list of
+        options, run <code class="ph codeph">puppet job --help</code>.</p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="puppet-job-plan-options__entry__1">Option</th>
+                        <th class="entry" id="puppet-job-plan-options__entry__2">Value</th>
+                        <th class="entry" id="puppet-job-plan-options__entry__3">Description</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                  <td class="entry" headers="puppet-job-plan-options__entry__1"><code class="ph codeph">--environment</code>, <code class="ph codeph">-e</code></td>
+                  <td class="entry" headers="puppet-job-plan-options__entry__2">Environment name</td>
+                  <td class="entry" headers="puppet-job-plan-options__entry__3">Overrides the environment specified in the
+                     orchestrator configuration file. The orchestrator uses this option to: <ul class="ul">
+                        <li class="li">
+                           <div class="p">Instruct nodes what environment to run in. If any
+                              nodes can’t run in the environment, those node runs fail. A node runs
+                              in an environment if: <ul class="ul">
+                                 <li class="li">
+                                    <p class="p">The node is included in an application in
+                                       that environment. These runs may fail if the node is
+                                       classified into a different environment in the <span class="ph">PE</span> node classifier.</p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p">The node is classified into that
+                                       environment in the <span class="ph">PE</span> node
+                                       classifier.</p>
+                                 </li>
+                              </ul>
+                           </div>
+                        </li>
+                        <li class="li">
+                           <p class="p">Load the application code used to plan run
+                              order</p>
+                        </li>
+                     </ul></td>
+               </tr>
+                    <tr class="row">
+                  <td class="entry" headers="puppet-job-plan-options__entry__1">--<code class="ph codeph">concurrency</code></td>
+                  <td class="entry" headers="puppet-job-plan-options__entry__2">Integer</td>
+                  <td class="entry" headers="puppet-job-plan-options__entry__3">Limits how many nodes can run concurrently. Default
+                     is unlimited. You can tune concurrent compile requests in the console. </td>
+               </tr>
+                </tbody></table>
+    </div>
+</article></article></article></main></body></html>

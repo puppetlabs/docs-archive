@@ -1,0 +1,39 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Due to regulatory compliance or other security requirements, you may need to change which cipher suites your SSL-enabled PE services use to communicate with other PE components."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="configuring_cipher_suites"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configure cipher suites</title></head><body id="configuring_cipher_suites"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Configure cipher suites</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Due to regulatory compliance or other security requirements, you may need to change
+        which cipher suites your SSL-enabled <span class="ph">PE</span> services use to
+        communicate with other <span class="ph">PE</span> components.</p>
+        <section class="section"><h2 class="title sectiontitle">SSL ciphers for core Puppet services</h2>
+            
+            <div class="p">To add or remove cipher suites for <a class="xref" href="pe_architecture_overview.html#pe_architecture_overview" title="Puppet Enterprise (PE) is made up of various components and services including the master and compilers, the Puppet agent, console services, Code Manager and r10k, orchestration services, and databases.">core
+                        <span class="ph">Puppet</span> services</a>, use <span class="ph">Hiera</span> to add an array of SSL ciphers to the
+                    <code class="ph codeph">puppet_enterprise::ssl_cipher_suites</code> parameter. <div class="note note note_note"><span class="note__title">Note:</span> Changing this parameter overrides the default list of SSL
+                    cipher suites. </div></div>
+            <div class="p">The example <span class="ph">Hiera</span> data below replaces the default list
+                of cipher suites to only allow the four
+                specified.<pre class="pre codeblock"><code>puppet_enterprise::ssl_cipher_suites:
+- 'SSL_RSA_WITH_NULL_MD5'
+- 'SSL_RSA_WITH_NULL_SHA'
+- 'TLS_DH_anon_WITH_AES_128_CBC_SHA'
+- 'TLS_DH_anon_WITH_AES_128_CBC_SHA256'</code></pre></div>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> Cipher names are in <a class="xref" href="https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-4" target="_blank">IANA RFC naming format</a>. </div>
+            </div>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">SSL for console services</h2>
+            
+            <p class="p">To add or remove cipher suites for console services affecting traffic on port 443,
+                use <span class="ph">Hiera</span> or the console to change the
+                    <code class="ph codeph">puppet_enterprise::profile::console::proxy::ssl_ciphers</code>
+                parameter. </p>
+            <p class="p">For example, to change the parameter in the console, in the <span class="ph uicontrol">PE
+                    Console</span> node group, add an array of SSL ciphers to the
+                    <code class="ph codeph">ssl_ciphers</code> parameter in the
+                    <code class="ph codeph">puppet_enterprise::profile::console::proxy</code> class.</p>
+        </section>
+    </div>
+</article></main></body></html>

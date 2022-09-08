@@ -1,0 +1,239 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances."><meta name="DC.relation" scheme="URI" content="config_puppetserver.html#configuring_and_tuning_puppet_server"><meta name="DC.relation" scheme="URI" content="config_puppetdb.html#configuring_and_tuning_puppetdb"><meta name="DC.relation" scheme="URI" content="config_console.html#config_console"><meta name="DC.relation" scheme="URI" content="config_orchestration.html#config_orchestration"><meta name="DC.relation" scheme="URI" content="config_java_args.html#config_java_args"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="config_intro"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Methods for configuring Puppet Enterprise</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="config_intro">
+    <h1 class="title topictitle1" id="ariaid-title1">Methods for configuring <span class="ph">Puppet Enterprise</span>
+    </h1>
+    
+    <div class="body conbody"><p class="shortdesc">After you've installed <span class="ph">Puppet Enterprise (PE)</span>, optimize it for your environment by configuring
+        and tuning settings as needed. For example, you might want to add your own certificate to
+        the whitelist, increase the max-threads setting for <code class="ph codeph">http</code> and <code class="ph codeph">https</code> requests, or
+        configure the number of <span class="ph">JRuby</span> instances.</p>
+        <p class="p">
+            <span class="ph">PE</span> shares configuration settings
+            used in open source <span class="ph">Puppet</span> and documented in the <a class="xref" href="https://puppet.com/docs/puppet/latest/configuration.html" target="_blank">Configuration Reference</a>, however <span class="ph">PE</span> defaults
+            for certain settings might differ from the <span class="ph">Puppet</span>
+            defaults. Some examples of settings that have different <span class="ph">PE</span> defaults include <code class="ph codeph">disable18n</code>, <code class="ph codeph">environment_timeout</code>,<code class="ph codeph"> always_retry_plugins</code>, and the <span class="ph">Puppet Server</span>
+            <span class="ph">JRuby</span>
+            <code class="ph codeph">max-active-instances</code>
+            setting. To verify <span class="ph">PE</span> configuration defaults, check the
+                <code class="ph codeph">puppet.conf</code> file
+            after installation.</p>
+        <p class="p">There are three main methods for configuring <span class="ph">PE</span>: using the console, adding a key to <span class="ph">Hiera</span>, or editing <code class="ph codeph">pe.conf</code>. Be consistent with the method you choose, unless the situation
+            calls for you to use a specific method over the others. </p>
+        <div class="p">
+            <div class="note important note_important"><span class="note__title">Important:</span> When you enable disaster recovery, you
+                must use <span class="ph">Hiera</span> or <code class="ph codeph">pe.conf</code> only — not the console — to specify configuration parameters.
+                Using <code class="ph codeph">pe.conf</code> or <span class="ph">Hiera</span> ensures that configuration is applied to both your master and replica. </div>
+        </div>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_puppetserver.html#configuring_and_tuning_puppet_server" title="After you've installed Puppet Enterprise, optimize it for your environment by configuring and tuning Puppet Server settings as needed.">Configuring and tuning Puppet Server</a></li><li class="linklist"><a class="link" href="config_puppetdb.html#configuring_and_tuning_puppetdb" title="After you've installed Puppet Enterprise, optimize it for your environment by configuring and tuning PuppetDB configuration as needed.">Configuring and tuning PuppetDB</a></li><li class="linklist"><a class="link" href="config_console.html#config_console" title="After installing Puppet Enterprise, you can change product settings to customize the console's behavior, adjust to your team's needs, and improve performance. Many settings can be configured in the console itself.">Configuring and tuning the console</a></li><li class="linklist"><a class="link" href="config_orchestration.html#config_orchestration" title="After installing PE, you can change some default settings to further configure the orchestrator and pe-orchestration-services.">Configuring and tuning orchestration</a></li><li class="linklist"><a class="link" href="config_java_args.html#config_java_args" title="You might need to increase the Java Virtual Machine (JVM) memory allocated to Java services to improve performance in your Puppet Enterprise (PE) deployment.">Configuring Java arguments</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="configure_settings_using_the_console">
+    <h2 class="title topictitle2" id="ariaid-title2">Configure settings using the console </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The console allows you to use a graphical interface to configure <span class="ph">Puppet Enterprise (PE)</span>. </p>
+        <section class="section context">
+            <p dir="ltr" class="p">Changes in the console will override your <span class="ph">Hiera</span> data and data in <code class="ph codeph">pe.conf</code>. It
+                is usually best to use the console when you want to:</p>
+            <ul class="ul" id="configure_settings_using_the_console__ul_xs2_clr_23b">
+                <li dir="ltr" class="li">Change parameters in profile classes starting with
+                        <code class="ph codeph">puppet_enterprise::profile</code>.</li>
+                <li dir="ltr" class="li">Add any parameters in PE-managed configuration files.</li>
+                <li class="li">Set parameters that configure at runtime.</li>
+            </ul>
+            <p class="p">There are two ways to change settings in the console: setting configuration data and
+                editing parameters. </p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="preconfigured_node_groups.html#preconfigured_node_groups" title="Puppet Enterprise includes preconfigured node groups that are used to manage your configuration.">Preconfigured node groups</a></li></ul></div></nav><article class="topic task nested2" aria-labelledby="ariaid-title3" id="set-configuration-data">
+    <h3 class="title topictitle3" id="ariaid-title3">Set configuration data</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Configuration data set in the console is used for
+        automatic parameter lookup, the same way that <span class="ph">Hiera</span> data is
+        used. Console configuration data takes precedence over <span class="ph">Hiera</span>
+        data, but you can combine data from both sources to configure nodes. </p>
+        <section class="section context">
+            <div class="p">
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> In most cases, setting
+               configuration data in <span class="ph">Hiera</span> is the more scalable and
+               consistent method, but there are some cases where the console is preferable. Use the
+               console to set configuration data if: <ul class="ul">
+                  <li class="li">You want to override <span class="ph">Hiera</span>
+                     data. Data set in the console overrides <span class="ph">Hiera</span>
+                     data when configured as recommended. </li>
+                  <li class="li">You want to give someone access to set or change data and
+                     they don’t have the skill set to do it in <span class="ph">Hiera</span>. </li>
+                  <li class="li">
+                     <p class="p">You simply prefer the console user interface.</p>
+                  </li>
+               </ul></div>
+            </div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, then find the node group that
+                    you want to add configuration data to and select it.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab in the <span class="ph uicontrol">Data</span> section, specify a <span class="ph uicontrol">Class</span> and select a <span class="ph uicontrol">Parameter</span> to add.</span>
+                <div class="itemgroup info">
+                    <p class="p">You can select from existing classes and parameters in the
+                        node group's environment, or you can specify free-form values. Classes
+                        aren’t validated, but any class you specify must be present in the node’s
+                        catalog at runtime in order for the parameter value to be applied. </p>
+                    <p class="p">When you select a parameter, the <span class="ph uicontrol">Value</span> field is automatically
+                        populated with the inherited or default value.</p>
+                </div>
+            </li><li class="li step stepexpand"><strong>Optional: </strong>
+                <span class="ph cmd">Change the default parameter <span class="ph uicontrol">Value</span>. </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title4" id="set_parameters">
+            <h3 class="title topictitle3" id="ariaid-title4">Set parameters </h3>
+            
+            <div class="body taskbody"><p class="shortdesc">Parameters are declared resource-style, which
+                        means they can be used to override other data; however, this override
+                        capability can introduce class conflicts and declaration errors that cause
+                                    <span class="ph">Puppet</span> runs to fail. </p>
+                        <section><ol class="ol steps"><li class="li step stepexpand">
+                                                <span class="ph cmd">In the console,
+                                                  click <span class="ph uicontrol">Classification</span>, and then find the
+                                                  node group that you want to add a parameter to and
+                                                  select it.</span>
+                                    </li><li class="li step stepexpand">
+                                                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, in the <span class="ph uicontrol">Classes</span> section, select the class you
+                                                  want to modify and the <span class="ph uicontrol">Parameter</span> to
+                                                  add.</span>
+                                                <div class="itemgroup info"><p class="p">The <span class="ph uicontrol">Parameter</span>
+                                                  drop-down list shows all of the parameters that
+                                                  are available for that class in the node group’s
+                                                  environment. When you select a parameter, the
+                                                  <span class="ph uicontrol">Value</span> field is automatically
+                                                  populated with the inherited or default value.</p>
+                                                </div>
+                                    </li><li class="li step stepexpand">
+                                                <span class="ph cmd">(Optional) Change
+                                                  the default <span class="ph uicontrol">Value</span>. </span>
+                                    </li></ol></section>
+            </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="configure_settings_with_hiera">
+                <h2 class="title topictitle2" id="ariaid-title5">Configure settings with <span class="ph">Hiera</span>
+                </h2>
+                
+                <div class="body taskbody"><p class="shortdesc">
+                                <span class="ph">Hiera</span> is a hierarchy-based method of
+                                configuration management that relies on a “defaults, with overrides”
+                                system. When you add a parameter or setting to your Hiera data,
+                                Hiera searches through the data in the order it was written to find
+                                the value you want to change. Once found, it overrides the default
+                                value with the new parameter or setting. You can use <span class="ph">Hiera</span> to manage your <span class="ph">PE</span> configuration
+                                settings. </p>
+                                <section class="section prereq" id="configure_settings_with_hiera__prereq_wrc_3kx_23b"><div class="tasklabeltitle tasklabel">Before you begin</div> For more information on how to use <span class="ph">Hiera</span>, see the <a class="xref" href="https://puppet.com/docs/puppet/6.10/hiera.html" target="_blank">Hiera docs</a>.</section>
+                                <section class="section context" id="configure_settings_with_hiera__context_spp_lkx_23b">Changes
+                                                to <span class="ph">PE</span> configuration
+                                                in <span class="ph">Hiera</span> will
+                                                override configuration settings in <code class="ph codeph">pe.conf</code>, but not
+                                                those set in the console. It's
+                                                best to use <span class="ph">Hiera</span>
+                                                when you want to:<ul class="ul" id="configure_settings_with_hiera__ul_qgf_tkx_23b">
+                                                  <li class="li">Change parameters in
+                                                  non-profile classes.</li>
+                                                  <li class="li">Set parameters that are
+                                                  static and version controlled.</li>
+                                                  <li class="li">Configure for high
+                                                  availability. </li>
+                                                </ul>
+                                                <p class="p">To configure a setting using
+                                                  <span class="ph">Hiera</span>:
+                                                </p>
+                                </section>
+                                <section><ol class="ol steps"><li class="li step stepexpand">
+                                                  <span class="ph cmd">Open your
+                                                  default data file.</span>
+                                                  <div class="itemgroup info">The
+                                                  default location for <span class="ph">Hiera</span> data files is:
+                                                  <ul class="ul">
+                                                  <li class="li">
+                                                  <p class="p">
+                                                  <span class="ph">*nix</span>: <code class="ph codeph">/etc/puppetlabs/code/environments/&lt;ENVIRONMENT&gt;/data/common.yaml</code>
+                                                  </p>
+                                                  </li>
+                                                  <li class="li">
+                                                  <p class="p">
+                                                  <span class="ph">Windows</span>: <code class="ph codeph">%CommonAppData%\PuppetLabs\code\environments\&lt;ENVIRONMENT&gt;\data\common.yaml</code>
+                                                  </p>
+                                                  </li>
+                                                  </ul>If you customize the <code class="ph codeph">hiera.yaml</code>
+                                                  configuration to change location for data files
+                                                  (the <code class="ph codeph">datadir</code> setting) or the path of the
+                                                  common data file (in the <code class="ph codeph">hierarchy</code>
+                                                  section), look for the default <code class="ph codeph">.yaml</code> file in the
+                                                  customized location.</div>
+                                                </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">Add your new
+                                                  parameter to the file in editor.</span>
+                                                  <div class="itemgroup stepxmp">For example, to increase the number of seconds
+                                                  before a node is considered unresponsive from the
+                                                  default 3600 to 4000, add the following to your
+                                                  <code class="ph codeph">.yaml</code> default file and insert your new
+                                                  parameter at the
+                                                  end.<pre class="pre codeblock"><code>Puppet_enterprise::console_services::no_longer_reporting_cutoff: 4000</code></pre>
+                                                  </div>
+                                                </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">To compile
+                                                  changes, run <code class="ph codeph">puppet agent -t</code>
+                                                  </span>
+                                                </li></ol></section>
+                </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="preconfigured_node_groups.html#preconfigured_node_groups" title="Puppet Enterprise includes preconfigured node groups that are used to manage your configuration.">Preconfigured node groups</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="configure-settings-peconf">
+                            <h2 class="title topictitle2" id="ariaid-title6">Configure settings in <code class="ph codeph">pe.conf</code>
+                            </h2>
+                            
+                            
+                            <div class="body taskbody"><p class="shortdesc">
+                                                  <span class="ph">Puppet Enterprise (PE)</span>
+                                                  configuration data includes any data set in
+                                                  <code class="ph codeph">/etc/puppetlabs/enterprise/conf.d/</code> but
+                                                  <code class="ph codeph">pe.conf</code> is the file used for most
+                                                  configuration activities during
+                                                  installation.</p>
+                                                  <section class="section context">
+                                                  <span class="ph">PE</span> configuration
+                                                  settings made in <span class="ph">Hiera</span> and the console
+                                                  always override settings made in <code class="ph codeph">pe.conf</code>. Configure
+                                                  settings using <code class="ph codeph">pe.conf</code> when you want to:
+                                                  <ul class="ul" id="configure-settings-peconf__ul_kvj_yqr_23b">
+                                                  <li class="li">Access settings during
+                                                  installation.</li>
+                                                  <li class="li">Configure for high
+                                                  availability. </li>
+                                                  </ul>
+                                                  <p class="p"> To configure settings using
+                                                  <code class="ph codeph">pe.conf</code>:</p>
+                                                  </section>
+                                                  <section><ol class="ol steps"><li class="li step stepexpand">
+                                                  <span class="ph cmd">Open the <code class="ph codeph">pe.conf</code>
+                                                  file on your master: </span>
+                                                  <div class="itemgroup info">
+                                                  <div class="p">
+                                                  <pre class="pre codeblock"><code>/etc/puppetlabs/enterprise/conf.d/pe.conf</code></pre>
+                                                  </div>
+                                                  </div>
+                                                  </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">Add the
+                                                  parameter and new value you want to set. </span>
+                                                  <div class="itemgroup stepxmp">For example, to change the proxy in your repo,
+                                                  add the following and change the parameter to your
+                                                  new proxy
+                                                  location.<pre class="pre codeblock"><code>pe_repo::http_proxy_host: "proxy.example.vlan"</code></pre>
+                                                  </div>
+                                                  </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">Run <code class="ph codeph">puppet agent
+                                                  -t</code>
+                                                  </span>
+                                                  <div class="itemgroup info">
+                                                  <div class="note note note_note"><span class="note__title">Note:</span> If PE services are
+                                                  stopped, run <code class="ph codeph">puppet infrastructure configure</code> instead
+                                                  of <code class="ph codeph">puppet
+                                                  agent -t</code>.</div>
+                                                  </div>
+                                                  </li></ol></section>
+                            </div>
+</article></article></article></main></body></html>

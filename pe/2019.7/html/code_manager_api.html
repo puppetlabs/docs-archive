@@ -1,0 +1,984 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="reference"><meta name="description" content="Use Code Manager endpoints to deploy code and query environment deployment status on your masters without direct shell access."><meta name="DC.relation" scheme="URI" content="code_mgr_config.html#request_an_authentication_token"><meta name="DC.relation" scheme="URI" content="api_index.html#api_index"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Jean Bond <jean@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="code_manager_api"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Code Manager API</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="code_manager_api">
+        <h1 class="title topictitle1" id="ariaid-title1">
+                <span class="ph">Code Manager</span> API</h1>
+        
+        
+        <div class="body refbody"><p class="shortdesc">Use <span class="ph">Code Manager</span> endpoints
+                to deploy code and query environment deployment status on your masters without
+                direct shell access.</p>
+                <section class="section" id="code_manager_api__section_cwk_fhm_pkb"><h2 class="title sectiontitle">Authentication </h2>
+                        
+                        <p class="p">All <span class="ph">Code Manager</span> endpoint requests require
+                                token-based authentication. For <code class="ph codeph">/deploys</code> endpoints, you can pass this token as
+                                either an HTTP header or as a query parameter. For the <code class="ph codeph">/webhook</code> endpoint, you must attach
+                                the entire token with the <code class="ph codeph">token</code>
+                                query parameter.</p>
+                        <p class="p">To generate an authentication token, from the command line, run <code class="ph codeph">puppet-access login</code>. This command
+                                stores the token in <code class="ph codeph">~/.puppetlabs/token</code>. To learn more about
+                                authentication for <span class="ph">Code Manager</span> use, see
+                                the related topic about requesting an authentication token.</p>
+                        <p class="p">Pass this token as either an <code class="ph codeph">X-Authentication</code> HTTP header or as the <code class="ph codeph">token</code> query parameter with your
+                                request. If you pass the token as a query parameter, it might show
+                                up in access logs.</p>
+                        <p class="p">For example, an HTTP header for the <code class="ph codeph">/deploys</code> endpoint looks something like:</p>
+                        <p class="p">Bash</p>
+                        <pre class="pre codeblock"><code>curl --cacert $(puppet agent --configprint cacert) -X POST -H 'Content-Type: application/json' \-H "X-Authentication: `puppet access show`" \"https://localhost:8170/code-manager/v1/deploys" \-d '{"environments": ["production"]}'</code></pre>
+                </section>
+                <section class="section" id="code_manager_api__section_dwk_fhm_pkb">
+                        <p class="p">PowerShell</p>
+                        <pre class="pre codeblock c-mrkdwn__pre"><code>$pe_headers = @{
+        "X-Authentication" = "AMi1Wlel2Ybd2Lqu-hdhHaLWCkfvgSgl8AUgKdwzixwe" ; 
+}
+
+$pe_uri = "https://puppet.winops2019.automationdemos.com:8170/code-manager/v1/deploys"
+
+$pe_codemgr_hash = [ordered]@{ 
+        environments = @("production")
+}
+
+# Generate JSON object from pe_codemgr_hash
+$JSON = $pe_codemgr_hash | convertto-json -compress
+Invoke-RestMethod -SkipCertificateCheck -ContentType "application/json" -uri $pe_uri -Method POST -Body $JSON -Headers $pe_headers</code></pre>
+                        <p class="p">Passing the token with the <code class="ph codeph">token</code> query
+                                parameter might look like:</p>
+                        <p class="p">Bash</p>
+                        <pre class="pre codeblock"><code>curl --cacert $(puppet agent --configprint cacert) -X POST -H 'Content-Type: application/json' \"https://localhost:8170/code-manager/v1/webhook?type=github&amp;token=`cat ~/.puppetlabs/token`" \-d $GITHUB_PAYLOA</code></pre>
+                </section>
+                <section class="section" id="code_manager_api__section_sjw_ghm_pkb">
+                        <p class="p">PowerShell</p>
+                </section>
+                <section class="section" id="code_manager_api__section_zl5_ghm_pkb">
+                        <pre class="pre codeblock"><code># Common Data
+$token = "AMi1Wlel2Ybd2Lqu-hdhHaLWCkfvgSgl8AUgKdwzixwe"
+$pe_uri = "https://puppet.winops2019.automationdemos.com:8170/code-manager"
+
+# Example 1 - deploys
+
+$pe_headers = @{
+        "X-Authentication" = "$token" ; 
+}
+
+$pe_codemgr_hash = [ordered]@{ 
+        environments = @("production")
+}
+
+# Generate JSON object from pe_codemgr_hash
+$JSON = $pe_codemgr_hash | convertto-json -compress
+$pe_ex1_uri = "$pe_uri/v1/deploys"
+Invoke-RestMethod -SkipCertificateCheck -ContentType "application/json" -uri $pe_ex1_uri -Method POST -Body $JSON -Headers $pe_headers
+
+
+# Example 2 - Web hook
+
+$pe_ex2_uri = "$pe_uri/v1/webhook?token=$token&amp;type=github"
+Write-Output "PE Example 2 URI: $pe_ex2_uri"
+Invoke-RestMethod -SkipCertificateCheck -uri $pe_ex2_uri -Method POST -ContentType "application/json"</code></pre>
+                </section>
+        </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="code_mgr_config.html#request_an_authentication_token" title="Request an authentication token for the deployment user to enable secure deployment of your code.">Request an authentication token for deployments</a></li><li class="linklist"><a class="link" href="api_index.html#api_index" title="APIs allow you to interact with Puppet and Puppet Enterprise (PE) applications from your own code or application integration hooks.">API index</a></li></ul></div></nav><article class="topic reference nested1" aria-labelledby="ariaid-title2" id="code_mgr_post_deploys">
+   <h2 class="title topictitle2" id="ariaid-title2">POST <code class="ph codeph">/v1/deploys</code></h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Use the <span class="ph">Code Manager</span><code class="ph codeph">/deploys</code>
+      endpoint to queue code deployments.</p>
+      <section class="section"><h3 class="title sectiontitle">Request format</h3>
+         
+         <div class="p">The body of the <code class="ph codeph">POST /deploys</code> request must be a JSON object that includes the
+            authentication token and a URL containing: <ul class="ul">
+               <li class="li">
+                  <p class="p">The name of the master server, such as <code class="ph codeph">master.example.com</code>
+                  </p>
+               </li>
+               <li class="li">
+                  <p class="p">The <span class="ph">Code Manager</span> port, such as 8170. </p>
+               </li>
+               <li class="li">
+                  <p class="p">The endpoint.</p>
+               </li>
+            </ul>The request must also include either:</div>
+         <ul class="ul">
+            <li class="li">
+               <p class="p">The <code class="ph codeph">"environments"</code> key, with or without the <code class="ph codeph">"wait"</code> key.</p>
+            </li>
+            <li class="li">
+               <p class="p">The <code class="ph codeph">"deploy-all"</code> key, with or without the <code class="ph codeph">"wait"</code> key.</p>
+            </li>
+         </ul>
+         <div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="code_mgr_post_deploys__entry__1">Key</th>
+                        <th class="entry" id="code_mgr_post_deploys__entry__2">Definition</th>
+                        <th class="entry" id="code_mgr_post_deploys__entry__3">Values</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__1">
+                           <code class="ph codeph">"environments"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__2">Specifies the environments for which to queue
+                           code deployments. If not specified, the <code class="ph codeph">"deploy-all"</code> key must be
+                           specified.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__3">Accepts a comma- and space-separated list of
+                           strings specifying environments.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__1">
+                           <code class="ph codeph">"deploy-all"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__2">
+                           <p class="p">Specifies whether <span class="ph">Code Manager</span> deploys all
+                              environments or not. </p>
+                           <p class="p">If specified <code class="ph codeph">true</code>, <span class="ph">Code Manager</span> determines the most recent list
+                              of environments and queues a deploy for each one. If specified <code class="ph codeph">false</code> or not specified, the <code class="ph codeph">"environments"</code> key must be specified with a
+                              list of environments.</p>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__3"><code class="ph codeph">true</code>, <code class="ph codeph">false</code></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__1"><code class="ph codeph">"deploy-modules"</code></td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__2">Specifies whether <span class="ph">Code Manager</span> deploys
+                           modules from the Puppetfile.<div class="p">If specified <code class="ph codeph">true</code> or not specified, <span class="ph">Code Manager</span> deploys modules. If specified
+                                 <code class="ph codeph">false</code>, modules aren't
+                                 deployed.<div class="note note note_note"><span class="note__title">Note:</span> To ensure environments are populated before use,
+                                 modules are deployed on the first deployment of an environment,
+                                 even if you pass <code class="ph codeph">"deploy-modules": false</code>.
+                              </div></div></td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__3"><code class="ph codeph">true</code>, <code class="ph codeph">false</code></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__1"><code class="ph codeph">"modules"</code></td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__2">Specifies the modules to be deployed to the selected environments. </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__3">Accepts a comma- and space-separated list of modules to
+                           deploy.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__1">
+                           <code class="ph codeph">"wait"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__2">
+                           <p class="p">Specifies whether <span class="ph">Code Manager</span> must wait for
+                              all deploys to finish or error before it returns a response. </p>
+                           <p class="p">If specified <code class="ph codeph">true</code>, <span class="ph">Code Manager</span> returns a response after all
+                              deploys have either finished or errored. If specified <code class="ph codeph">false</code> or not specified, returns a response
+                              showing that deploys are queued. </p>
+                           <p class="p">Specify together with the <code class="ph codeph">"deploy-all"</code> or <code class="ph codeph">"environment"</code> keys.</p>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__3"><code class="ph codeph">true</code>, <code class="ph codeph">false</code></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__1">
+                           <code class="ph codeph">"dry-run"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__2">
+                           <p class="p">Tests the&nbsp; <span class="ph">Code Manager</span> connection to
+                              each of the configured remotes and attempts to fetch a list of
+                              environments from each, reporting any connection errors. </p>
+                           <p class="p">Specify together with the <code class="ph codeph">"deploy-all"</code> or <code class="ph codeph">"environment"</code> keys.</p>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__3"><code class="ph codeph">true</code>, <code class="ph codeph">false</code></td>
+                     </tr>
+                  </tbody></table>
+         </div>
+         <div class="p">For example, to deploy the production and testing environments and
+            return results after the deployments complete or fail, pass the <code class="ph codeph">"environments"</code> key with the <code class="ph codeph">"wait"</code>
+            key:<pre class="pre codeblock"><code>curl --cacert $(puppet agent --configprint cacert) -X POST -H 'Content-Type: application/json' \-H "X-Authentication: `cat ~/.puppetlabs/token`" \"https://localhost:8170/code-manager/v1/deploys" \-d '{"environments": ["production", "testing"], "wait": true}'</code></pre></div>
+         <p class="p">To deploy all configured environments and return only the queuing
+            results, pass the <code class="ph codeph">"deploy-all"</code> key without the <code class="ph codeph">"wait"</code> key:</p>
+         <div class="p">
+            <pre class="pre codeblock"><code>curl --cacert $(puppet agent --configprint cacert) -X POST -H 'Content-Type: application/json' \-H "X-Authentication: `cat ~/.puppetlabs/token`" \"https://localhost:8170/code-manager/v1/deploys" \-d '{"deploy-all": true}'</code></pre>
+         </div>
+      </section>
+      <section class="section"><h3 class="title sectiontitle">Response format</h3>
+         
+         <p class="p">The <code class="ph codeph">POST
+               /deploys</code> response contains a list of objects, each containing data about a
+            queued or deployed environment.</p>
+         <p class="p">If the request did not include a <code class="ph codeph">"wait"</code> key, the response returns each
+            environment's name and status.</p>
+         <p class="p">If the <code class="ph codeph">"wait"</code> key was included in the request, the
+            response returns information about each deployment. This information includes a <code class="ph codeph">deploy-signature</code>, which is the commit SHA of the control repo
+            that <span class="ph">Code Manager</span> used to deploy the environment. The output
+            also includes two other SHAs that indicate that file sync is aware that the environment
+            has been deployed to the code staging directory.</p>
+         <p class="p">The response shows any deployment failures, even after they have
+            successfully deployed. The failures remain in the response until cleaned up by garbage
+            collection.</p>
+         <div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="code_mgr_post_deploys__entry__22">Key</th>
+                        <th class="entry" id="code_mgr_post_deploys__entry__23">Description</th>
+                        <th class="entry" id="code_mgr_post_deploys__entry__24">Value</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__22">
+                           <code class="ph codeph">"environment"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__23">The name of the environment queued or
+                           deployed.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__24">A string specifying the name of an
+                           environment.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__22">
+                           <code class="ph codeph">"id"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__23">Identifies the queue order of the code deploy
+                           request. </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__24">An integer generated by <span class="ph">Code Manager</span>.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__22">
+                           <code class="ph codeph">"status"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__23">The status of the code deployment for that
+                           environment.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__24">
+                           <p class="p">Can be one of the following:</p>
+                           <ul class="ul">
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">"new"</code>: The deploy request has been
+                                    accepted but not yet queued.</p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">"complete"</code>: The deploy is complete
+                                    and has been synced to the live code directory on masters.</p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">"failed"</code>: The deploy failed.</p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">"queued"</code>: The deploy is queued and
+                                    waiting.</p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__22">
+                           <code class="ph codeph">"deploy-signature"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__23">The commit SHA of the control repo that <span class="ph">Code Manager</span> used to deploy code in that
+                           environment.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__24">A <span class="ph">Git</span> SHA.&nbsp;</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__22">
+                           <code class="ph codeph">"file-sync"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__23">Commit SHAs used internally by file sync to
+                           identify the code synced to the code staging directory</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__24">
+                           <span class="ph">Git</span> SHAs for the <code class="ph codeph">"environment-commit"</code> and <code class="ph codeph">"code-commit"</code> keys.&nbsp;</td>
+                     </tr>
+                  </tbody></table>
+         </div>
+         <div class="p">For example, for a <code class="ph codeph">/deploys</code> request without the <code class="ph codeph">"wait"</code> key, &nbsp;the response shows only <code class="ph codeph">"new"</code> or <code class="ph codeph">"queued"</code> status,
+            because this response is returned as soon as <span class="ph">Code Manager</span>
+            accepts the
+            request.<pre class="pre codeblock"><code>[
+ &nbsp;{
+ &nbsp;&nbsp;&nbsp;"environment": "production",
+ &nbsp;&nbsp;&nbsp;"id": 1,
+ &nbsp;&nbsp;&nbsp;"status": "queued"
+ &nbsp;},
+ &nbsp;{
+ &nbsp;&nbsp;&nbsp;"environment": "testing",
+ &nbsp;&nbsp;&nbsp;"id": 2,
+ &nbsp;&nbsp;&nbsp;"status": "queued"
+ &nbsp;}
+]</code></pre></div>
+         <p class="p">If you pass the <code class="ph codeph">"wait"</code> key with your request, <span class="ph">Code Manager</span> doesn't return any response until the environment
+            deployments have either failed or completed. For example:</p>
+         <div class="p">
+            <pre class="pre codeblock"><code>[
+ &nbsp;{
+ &nbsp;&nbsp;&nbsp;"deploy-signature":"482f8d3adc76b5197306c5d4c8aa32aa8315694b",
+ &nbsp;&nbsp;&nbsp;"file-sync":{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"environment-commit":"6939889b679fdb1449545c44f26aa06174d25c21",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"code-commit":"ce5f7158615759151f77391c7b2b8b497aaebce1"},
+ &nbsp;&nbsp;&nbsp;"environment":"production",
+ &nbsp;&nbsp;&nbsp;"id":3,Code Manager
+ &nbsp;&nbsp;&nbsp;"status":"complete"
+ &nbsp;}
+]</code></pre>
+         </div>
+      </section>
+      <section class="section"><h3 class="title sectiontitle">Error responses</h3>
+         
+         <p class="p">If any deployments fail, the response includes an error object for each failed
+            environment. <span class="ph">Code Manager</span> returns deployment results only if
+            you passed the <code class="ph codeph">"wait"</code> key; otherwise, it returns queue
+            information. </p>
+         <div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="code_mgr_post_deploys__entry__40">Key</th>
+                        <th class="entry" id="code_mgr_post_deploys__entry__41">Definition</th>
+                        <th class="entry" id="code_mgr_post_deploys__entry__42">Value</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__40">
+                           <code class="ph codeph">"environment"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__41">The name of the environment queued or
+                           deployed.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__42">A string specifying the name of an
+                           environment.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__40">
+                           <code class="ph codeph">"error"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__41">Information about the deployment
+                           failure.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__42">Contains keys with error details.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__40">
+                           <code class="ph codeph">"corrected-env-name"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__41">The name of the environment.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__42">A string specifying the name.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__40">
+                           <code class="ph codeph">"kind"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__41">The kind of error encountered.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__42">An error type.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__40">
+                           <code class="ph codeph">"msg"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__41">The error message.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__42">An error message.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__40">
+                           <code class="ph codeph">"id"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__41">Identifies the queue order of the code deploy
+                           request.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__42">An integer generated by <span class="ph">Code Manager</span>. </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_deploys__entry__40">
+                           <code class="ph codeph">"status"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__41">The status of the requested code
+                           deployment.</td>
+                        <td class="entry" headers="code_mgr_post_deploys__entry__42">For errors, status is <code class="ph codeph">"failed"</code>. </td>
+                     </tr>
+                  </tbody></table>For example, information for a failed deploy of an environment might look
+            like:</div>
+         <pre class="pre codeblock"><code>    {
+         "environment": "test14",
+         "error": {
+             "details": {
+                 "corrected-env-name": "test14"
+             },
+             "kind": "puppetlabs.code-manager/deploy-failure",
+             "msg": "Errors while deploying environment 'test14' (exit code: 1):\nERROR\t -&gt; Authentication failed for Git remote \"https://github.com/puppetlabs/puffppetlabs-apache\".\n"
+         },
+         "id": 52,
+         "status": "failed"
+     }</code></pre>
+      </section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="code_mgr_post_webhook">
+   <h2 class="title topictitle2" id="ariaid-title3">POST <code class="ph codeph">/v1/webhook</code></h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Use the <span class="ph">Code Manager</span><code class="ph codeph"> /webhook</code> endpoint to trigger code
+      deploys based on your control repo updates.</p>
+      <section class="section"><h3 class="title sectiontitle">Request format</h3>
+         
+         <p class="p">The <code class="ph codeph">POST
+               /webhook</code> request consists of a specially formatted URL that specifies the
+            webhook type, an optional branch prefix, and a <span class="ph">PE</span>
+            authentication token.</p>
+         <p class="p"> You must pass the authentication token with the <code class="ph codeph">token</code> query parameter. To use a <span class="ph">GitHub</span> webhook with the <span class="ph">Puppet</span> signed certificate, you must disable SSL
+            verification.</p>
+         <div class="p">In your URL, include: <ul class="ul">
+               <li class="li">
+                  <p class="p">The name of the <span class="ph">Puppet</span> master
+                     server (for example, <code class="ph codeph">master.example.com</code>) </p>
+               </li>
+               <li class="li">
+                  <p class="p">The <span class="ph">Code Manager</span> port (for
+                     example, 8170) </p>
+               </li>
+               <li class="li">
+                  <p class="p"> The endpoint (<code class="ph codeph">/v1/webhook</code>) </p>
+               </li>
+               <li class="li">
+                  <p class="p">The <code class="ph codeph">type</code> parameter with a valid value, such as <code class="ph codeph">gitlab</code>. </p>
+               </li>
+               <li class="li">
+                  <p class="p">The <code class="ph codeph">prefix</code> parameter and value. </p>
+               </li>
+               <li class="li">
+                  <p class="p">The <code class="ph codeph">token</code> parameter with the complete token. </p>
+               </li>
+            </ul></div>
+         <div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="code_mgr_post_webhook__entry__1">Parameter</th>
+                        <th class="entry" id="code_mgr_post_webhook__entry__2">Definition</th>
+                        <th class="entry" id="code_mgr_post_webhook__entry__3">Values</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_webhook__entry__1">
+                           <code class="ph codeph">type</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_webhook__entry__2">Required. Specifies what type of POST body to
+                           expect. </td>
+                        <td class="entry" headers="code_mgr_post_webhook__entry__3">
+                           <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">github</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">gitlab</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">tfs-git</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">bitbucket</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">stash</code>
+                                 </p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_webhook__entry__1">
+                           <code class="ph codeph">prefix</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_webhook__entry__2">Optional. Specifies a prefix to use in
+                           translating branch names to environments.</td>
+                        <td class="entry" headers="code_mgr_post_webhook__entry__3">A string specifying a branch prefix.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_post_webhook__entry__1">
+                           <code class="ph codeph">token</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_post_webhook__entry__2">Specifies the <span class="ph">PE</span> authorization token to use. Required unless you disable <code class="ph codeph">webhook_authentication</code> in <span class="ph">Code Manager</span> configuration.</td>
+                        <td class="entry" headers="code_mgr_post_webhook__entry__3">The complete authentication token.</td>
+                     </tr>
+                  </tbody></table>
+         </div>
+         <p class="p">For example, a <span class="ph">GitHub</span> webhook might
+            look like this:</p>
+         <div class="p">
+            <pre class="pre codeblock"><code>https://master.example.com:8170/code-manager/v1/webhook?type=github&amp;token=$TOKEN
+</code></pre>
+         </div>
+         <div class="p">A Stash webhook with the optional <code class="ph codeph">prefix</code> parameter specifed might look like:
+            <pre class="pre codeblock"><code>https://master.example.com/code-manager/v1/webhook?type=stash&amp;prefix=dev&amp;token=$TOKEN</code></pre>You
+            must attach the complete authentication token to the request. A <span class="ph">GitHub</span> request with the entire token attached might look
+            like this:</div>
+         <div class="p">
+            <pre class="pre codeblock"><code>https://master.example.com:8170/code-manager/v1/webhook?type=github&amp;token=eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXBsb3kiLCJpYXQiOjE0NDY2NjQ1OTAsImV4cCI6MTQ3ODI4Njk5MCwic3ViIjp7ImlkIjoiZWNmOTJlYzYtMjg1Zi00NzExLWI0MDktMzFmMGYzMGIzOGUwIiwibG9naW4iOiJkZXBsb3kifX0.OdEIA-HGRC0r2J87Pj2sDsyz-EMK-7sZalBTswy2e3uSv1Z6ulXaIQQd69PQnSSBExQotExDgXZInyQa_le2gwTo4smjUaBd6_lnPYr6GJ4hjB4-fT8dNnVuvZaE5WPkKt-sNJKJwE9LiEd4W42aCYfse1KNgPuXR5m77SRsUy86ymthVPKHqqexEyuS7LGeQJvyQE1qEejSdbiLg6znlJXhglWic6ZEpHcYBrFFE4aNwuOYXM4yIL803yIMviBwXRtt9HxbtUBZ8D4ag14ELMefQTlqrKvepKXd29oJG06FwkKcWV9PWiQ0Q-NrE17oxrrNkU0ZxioUgDeqGycwvNIaMazztM9NyD-dWmZc4dKJsqm0su0CRkMSWcYPPaeIcsYFI7XSaeC65N4RLIKhUfwIxxE-uODEhcl3mTr9rwZGnVMu3WrY7t6wlbDM9FomPejGM2aJoZ05PinAIYvX3oH5QJ9fam0pVLb-mI3bvkKm2wKAgpc4Dh1ut9sqLWkG8-AwMA4r_oEvLwFzf8clzk34zNyPG7BvlnPle99HjQues690L-fknSdFiXyRZeRThvZop0SWJzvUSR49etmk-OxnMbQE4tCBWZr_khEG5jUDzeKt3PIiXdxmUaaEPHzo6Vl9XIY5</code></pre>
+         </div>
+      </section>
+      <section class="section"><h3 class="title sectiontitle">Response format</h3>
+         
+         <p class="p">When you trigger your webhook by pushing changes to your control
+            repository, you can see the response in your <span class="ph">Git</span> provider
+            interface.&nbsp; <span class="ph">Code Manager</span> does not give a command line
+            response to typical webhook usage. </p>
+         <p class="p"> If you hit the webhook endpoint directly using a curl command with a
+            properly formatted request, valid authentication token, and a valid value for the
+               <code class="ph codeph">"type"</code> parameter, <span class="ph">Code Manager</span> returns a <code class="ph codeph">{"status":"OK"}</code> response, whether or not code successfully
+            deployed.</p>
+      </section>
+      <section class="section"><h3 class="title sectiontitle">Error responses</h3>
+         
+         <p class="p">When you trigger your webhook by pushing changes to your control
+            repository, you can see any errors in your <span class="ph">Git</span> provider
+            interface. &nbsp; <span class="ph">Code Manager</span> does not give a command line
+            response to typical webhook usage. </p>
+         <div class="p"> If you hit the webhook endpoint directly using a curl command with a
+            request that has an incorrect <code class="ph codeph">"type"</code> value or no <code class="ph codeph">"type"</code> value, you get an error response such
+            as:<pre class="pre codeblock"><code>{"kind":"puppetlabs.code-manager/unrecognized-webhook-type","msg":"Unrecognized webhook type: 'githubby'","details":"Currently supported valid webhook types include: github gitlab stash tfs-git bitbucket"}</code></pre></div>
+      </section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="code_mgr_get_deploysstatus">
+   <h2 class="title topictitle2" id="ariaid-title4">GET <code class="ph codeph">/v1/deploys/status</code></h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Use the <span class="ph">Code Manager</span><code class="ph codeph"> /deploys/status</code> endpoint to return
+      the status of the code deployments that <span class="ph">Code Manager</span> is processing
+      for each environment.</p>
+      <section class="section"><h3 class="title sectiontitle">Request format</h3>
+         
+         <div class="p">The body of the <code class="ph codeph">GET /deploys/status</code> request must include the authentication
+            token and a URL containing: <ul class="ul">
+               <li class="li">
+                  <p class="p">The name of the master server, such as <code class="ph codeph">master.example.com</code>. </p>
+               </li>
+               <li class="li">
+                  <p class="p">The <span class="ph">Code Manager</span> port, such as
+                     8170. </p>
+               </li>
+               <li class="li">
+                  <p class="p">The endpoint.</p>
+               </li>
+            </ul></div>
+         <pre class="pre codeblock"><code>curl --cacert $(puppet agent --configprint cacert) -X GET -H 'Content-Type: application/json' \-H "X-Authentication: `cat ~/.puppetlabs/token`" \"https://localhost:8170/code-manager/v1/deploys/status"</code></pre>
+      </section>
+      <section class="section"><h3 class="title sectiontitle">Response format</h3>
+         
+         <p class="p">The <code class="ph codeph">/deploys/status</code> endpoint responds with a list of the code deployment
+            requests that <span class="ph">Code Manager</span> is processing.</p>
+         <p class="p">The response contains three sections:</p>
+         <ul class="ul">
+            <li class="li">
+               <p class="p"><code class="ph codeph">"deploys-status"</code>: Lists the status for each code deployment that <span class="ph">Code Manager</span> is processing, including failed deployments.
+                  Deployments can be <code class="ph codeph">"queued"</code>, <code class="ph codeph">"deploying"</code>, <code class="ph codeph">"new"</code>, or <code class="ph codeph">"failed"</code>. Environments that have been successfully deployed to either
+                  the code staging or live code directories are displayed in the <code class="ph codeph">"file-sync-storage-status"</code> or
+                     <code class="ph codeph">"file-sync-client-status"</code> sections, respectively.</p>
+            </li>
+            <li class="li">
+               <p class="p"><code class="ph codeph">"file-sync-storage-status"</code>: Lists all environments that <span class="ph">Code Manager</span> has successfully deployed to the code
+                  staging directory, but not yet synced to the live code directory.</p>
+            </li>
+            <li class="li">
+               <p class="p"><code class="ph codeph">"file-sync-client-status"</code>: Lists status for each master that <span class="ph">Code Manager</span> is deploying environments to, including
+                  whether the code in the master's staging directory has been synced to its live
+                  code directory. </p>
+            </li>
+         </ul>
+         <div class="p">The response can contain the following keys: <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="code_mgr_get_deploysstatus__entry__1">Key</th>
+                        <th class="entry" id="code_mgr_get_deploysstatus__entry__2">Definition</th>
+                        <th class="entry" id="code_mgr_get_deploysstatus__entry__3">Values</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"queued"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">The environment is queued for
+                           deployment.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">For each environment: <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"environment"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"queued-at"</code>
+                                 </p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"deploying"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">The environment is in the process of being
+                           deployed.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">For each environment: <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"environment"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"queued-at"</code>
+                                 </p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"new"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">
+                           <span class="ph">Code Manager</span> has accepted a request to deploy
+                           the environment, but has not yet queued it. </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">For each environment: <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"environment"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"queued-at"</code>
+                                 </p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"failed"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">The code deployment for the environment has
+                           failed.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">
+                           <p class="p">For each environment: </p>
+                           <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"environment"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"error"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"details"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"corrected-env-name"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"kind"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"msg"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"queued-at"</code>
+                                 </p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"environment"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">The name of the environment.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">A string that is the name of the
+                           environment.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"queued-at"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">The date and time when the environment was
+                           queued.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">A date and time stamp.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"deployed"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">Lists information for each deployed
+                           environment.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">For each environment: <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"environment"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"queued-at"</code>
+                                 </p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"date"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">The date and time the operation was
+                           completed.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">A date and time stamp.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"deploy-signature"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">The commit SHA of the control repo used to
+                           deploy the environment.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">A <span class="ph">Git</span> SHA.
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"all-synced"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">Whether all requested code deployments have
+                           been synced to the live code directories on their respective
+                           masters.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3"><code class="ph codeph">true</code>, <code class="ph codeph">false</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"file-sync-clients"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">List of all masters that <span class="ph">Code Manager</span> is deploying code to. </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">For each environment listed: <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"last_check_in_time"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"synced-with-file-sync-storage"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"deployed"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"environment"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"date"</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">"deploy-signature"</code>
+                                 </p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"last_check_in_time"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">The most recent time that the live code
+                           directory checked in for new code from the staging directory.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3">A date and time stamp.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__1">
+                           <code class="ph codeph">"synced-with-file-sync-storage"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__2">Whether the live code directory has been
+                           synced with the code staging directory on a given master.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__3"><code class="ph codeph">true</code>, <code class="ph codeph">false</code>
+                        </td>
+                     </tr>
+                  </tbody></table></div>
+         <p class="p">For example, a complete response to a request might look like:</p>
+         <div class="p">
+            <pre class="pre codeblock"><code>{
+ &nbsp;"deploys-status":{
+    "queued":[
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+         "environment":"dev",
+ &nbsp;       "queued-at":"2018-05-15T17:42:34.988Z"
+ &nbsp;      }
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"deploying":[
+ &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"environment":"test",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "queued-at":"2018-05-15T17:42:34.988Z"
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"environment":"prod",
+ &nbsp;         "queued-at":"2018-05-15T17:42:34.988Z"
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"new":[&nbsp;&nbsp;&nbsp;&nbsp;
+      
+      ],
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"failed":[
+
+      ]
+ &nbsp;   },
+     "file-sync-storage-status":{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "deployed":[
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  {
+ &nbsp;         "environment":"prod",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"date":"2018-05-10T21:44:24.000Z",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"deploy-signature":"66d620604c9465b464a3dac4884f96c43748b2c5"
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"environment":"test",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"date":"2018-05-10T21:44:25.000Z",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"deploy-signature":"24ecc7bac8a4d727d6a3a2350b6fda53812ee86f"
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"environment":"dev",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"date":"2018-05-10T21:44:21.000Z",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"deploy-signature":"503a335c99a190501456194d13ff722194e55613"
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+ &nbsp;&nbsp;},
+ &nbsp;&nbsp;"file-sync-client-status":{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"all-synced":false,
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"file-sync-clients":{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chihuahua":{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"last_check_in_time":null,
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"synced-with-file-sync-storage":false,
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"deployed":[
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"localhost":{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"last_check_in_time":"2018-05-11T22:41:20.270Z",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"synced-with-file-sync-storage":true,
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"deployed":[
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"environment":"prod",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"date":"2018-05-11T22:40:48.000Z",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"deploy-signature":"66d620604c9465b464a3dac4884f96c43748b2c5"
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"environment":"test",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"date":"2018-05-11T22:40:48.000Z",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"deploy-signature":"24ecc7bac8a4d727d6a3a2350b6fda53812ee86f"
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"environment":"dev",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"date":"2018-05-11T22:40:50.000Z",
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"deploy-signature":"503a335c99a190501456194d13ff722194e55613"
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ &nbsp;&nbsp;}
+}</code></pre>
+         </div>
+      </section>
+      <section class="section"><h3 class="title sectiontitle">Error responses</h3>
+         
+         <p class="p">If code deployment fails, the &nbsp;<code class="ph codeph">"deploys-status"</code> section of the response
+            provides an <code class="ph codeph">"error"</code> key
+            for the environment with the failure. The <code class="ph codeph">"error"</code> key contains information about the failure.</p>
+         <p class="p">Deployment failures can remain in the response even after the
+            environment in question is successfully deployed. Old failures are removed from the
+               <code class="ph codeph">"deploys-status"</code>
+            response during garbage collection.</p>
+         <div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="code_mgr_get_deploysstatus__entry__43">Key</th>
+                        <th class="entry" id="code_mgr_get_deploysstatus__entry__44">Definition</th>
+                        <th class="entry" id="code_mgr_get_deploysstatus__entry__45">Value</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__43">
+                           <code class="ph codeph">"environment"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__44">The name of the environment queued or
+                           deployed.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__45">A string specifying the name of an
+                           environment.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__43">
+                           <code class="ph codeph">"error"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__44">Information about the deployment
+                           failure.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__45">Contains keys with error details.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__43">
+                           <code class="ph codeph">"corrected-env-name"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__44">The name of the environment.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__45">A string specifying the name.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__43">
+                           <code class="ph codeph">"kind"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__44">The kind of error encountered.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__45">An error type.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__43">
+                           <code class="ph codeph">"msg"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__44">The error message.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__45">An error message.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__43">
+                           <code class="ph codeph">"queued-at"</code>
+                        </td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__44">The date and time when the environment was
+                           queued.</td>
+                        <td class="entry" headers="code_mgr_get_deploysstatus__entry__45">A date and time stamp.</td>
+                     </tr>
+                  </tbody></table>
+         </div>
+         <p class="p">For example, with a failure, the <code class="ph codeph">"deploys-status"</code> response section might look
+            something like:</p>
+         <div class="p">
+            <pre class="pre codeblock"><code>[
+    {
+        "deploys-status": {
+        "deploying": [],
+        "failed": [
+            {
+                "environment": "test14",
+                "error": {
+                    "details": {
+                        "corrected-env-name": "test14"
+                    },
+                    "kind": "puppetlabs.code-manager/deploy-failure",
+                    "msg": "Errors while deploying environment 'test14' (exit code: 1):\nERROR\t -&gt; Authentication failed for Git remote \"https://github.com/puppetlabs/puffppetlabs-apache\".\n"
+                },
+                "queued-at": "2018-06-01T21:28:18.292Z"
+            }
+        ],
+        "new": [],
+        "queued": []
+    },
+   ...
+  }
+]</code></pre>
+         </div>
+      </section>
+   </div>
+</article></article></article></main></body></html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="If you use Bolt tasks and plans to automate parts of your configuration management, you can move that Bolt content to a control repo and transform it into a PE environment. This lets you manage and run tasks and plans using PE and the console. PE environments and Bolt projects use the same default structure, and both use a Puppetfile to install content."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="bolt_to_pe_overview"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Migrating Bolt tasks and plans to PE</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="bolt_to_pe_overview">
+    <h1 class="title topictitle1" id="ariaid-title1">Migrating <span class="ph">Bolt</span> tasks and plans to <span class="ph">PE</span></h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc"> If you use <span class="ph">Bolt</span> tasks and plans to automate parts of
+        your configuration management, you can move that <span class="ph">Bolt</span> content
+        to a control repo and transform it into a <span class="ph">PE</span> environment.
+        This lets you manage and run tasks and plans using <span class="ph">PE</span> and the
+        console. <span class="ph">PE</span> environments and <span class="ph">Bolt</span> projects use the same default  structure, and both use a
+            <span class="ph">Puppetfile</span> to install content.</p>
+        <p class="p">The <dfn class="term">control repo</dfn> is a central <span class="ph">Git</span>
+            repository <span class="ph">PE</span> fetches content from. An
+                <dfn class="term">environment</dfn> is a space for <span class="ph">PE</span> authors to
+            write and install content, similar to a <span class="ph">Bolt</span> project. </p>
+        <p class="p">There are two ways to get your <span class="ph">Bolt</span> content into an
+            environment:</p>
+        <div class="p">
+            <ul class="ul">
+                <li class="li">Move your  <span class="ph">Bolt</span> code to a new control repo. Do
+                    this if you  have a <code class="ph codeph">Boltdir</code>, or an <a class="xref" href="https://puppet.com/docs/bolt/latest/bolt_project_directories.html#embedded-project-directory" target="_blank">embedded project directory</a>, in a repo
+                    that also contains other code that you do not wish to migrate to <span class="ph">PE</span>.</li>
+                <li class="li">Configure <span class="ph">PE</span> to point to the <span class="ph">Bolt</span> project. Do this is if you have a dedicated
+                    repo for <span class="ph">Bolt</span> code, or a <a class="xref" href="https://puppet.com/docs/bolt/latest/bolt_project_directories.html#local-project-directory" target="_blank">local project directory</a>, and don't
+                    want to duplicate it in <span class="ph">PE</span>.</li>
+            </ul>
+        </div>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="migrate_bolt_content_to_pe">
+    <h2 class="title topictitle2" id="ariaid-title2">Move <span class="ph">Bolt</span> content to a new <span class="ph">PE</span> repo</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Move your <span class="ph">Bolt</span> project content out of your
+            <code class="ph codeph">Boltdir</code> and into a fresh <span class="ph">PE</span> control
+        repo. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <ul class="ul">
+                <li class="li">Install <span class="ph">PE</span> on your machine. See <a class="xref" href="getting_started_pe_overview.html" title="Puppet Enterprise (PE) is automation software that helps you and your organization be productive and agile while managing your IT infrastructure.">Getting started with Puppet Enterprise</a>.</li>
+                <li class="li">Set up your <span class="ph">PE</span> control repo and environments. See
+                        <a class="xref" href="control_repo.html#managing_environments_with_a_control_repository" title="To manage your Puppet code and data with either Code Manager or r10k, you need a Git version control repository. This control repository is where code management stores code and data to deploy your environments.">Managing environments with a control repository</a>.</li>
+            </ul>
+        </section>
+        <section class="section context">To move <span class="ph">Bolt</span> content to a repo:</section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Commit the contents of your <span class="ph">Bolt</span> project to a
+                    branch of your <span class="ph">PE</span> control repo.</span>
+                <div class="itemgroup info">Your new structure is similar to the <a class="xref" href="https://puppet.com/docs/bolt/latest/bolt_project_directories.html" target="_blank">local project directory</a> in <span class="ph">Bolt</span>, for example:
+                    <pre class="pre codeblock"><code>project/
+├── Puppetfile
+├── bolt.yaml
+├── data
+│   └── common.yaml
+├── inventory.yaml
+└── site-modules
+    └── project
+        ├── manifests
+        │   └── my_class.pp
+        ├── plans
+        │   ├── deploy.pp
+        │   └── diagnose.pp
+        └── tasks
+            ├── init.json
+            └── init.py</code></pre></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Create a configuration file called <code class="ph codeph">environment.conf</code> and add it
+                    to the root directory of the branch. This file configures the environment in <span class="ph">PE</span>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Add the <code class="ph codeph">modulepath</code> setting to the
+                        <code class="ph codeph">environment.conf</code> file by adding the following line: </span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>modulepath = modules:site-modules:$basemodulepath</code></pre>
+                        <div class="note note note_note"><span class="note__title">Note:</span> 
+                            <span class="ph">PE</span>  picks up modules only from the
+                                <code class="ph codeph">modules</code> directory. It's important to add
+                                <code class="ph codeph">site-modules</code> to the <code class="ph codeph">modulepath</code>
+                            setting so it matches the defaults for your <span class="ph">Bolt</span> project. If you have a
+                                <code class="ph codeph">modulepath</code> setting in <code class="ph codeph">bolt.yaml</code>,
+                            match it to the <code class="ph codeph">modulepath</code> setting in
+                                <code class="ph codeph">environment.conf</code>.</div>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Publish the branch to the <span class="ph">PE</span> control repo.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Deploy code using <code class="ph codeph">puppet code deploy --&lt;ENVIRONMENT&gt;</code>, where
+                        <code class="ph codeph">&lt;ENVIRONMENT&gt;</code> is the name of your branch, to commit the
+                    new branch to <span class="ph">Git</span>.</span>
+                <div class="itemgroup info">
+                    <div class="note note note_note"><span class="note__title">Note:</span> You can also deploy code using a webhook. See <a class="xref" href="code_mgr_webhook.html#triggering_code_manager_with_a_webhook" title="To deploy your code, you can trigger Code Manager by hitting a web endpoint, either through a webhook or a custom script. The webhook is the simplest way to trigger Code Manager.">Triggering Code Manager with a webhook</a> for more information. </div>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>After you deploy code, modules, and the tasks and plans within them, listed in the
+            new environment's <span class="ph">Puppetfile</span> will be available to use in
+                <span class="ph">PE</span>.</section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="plans_limitations.html" title="Some plan language and features are not available in PE or have some caveats.">Plan caveats and limitations</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="point_pe_to_bolt_project">
+    <h2 class="title topictitle2" id="ariaid-title3">Point <span class="ph">PE</span> to a <span class="ph">Bolt</span>
+        project</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Allow <span class="ph">PE</span> to manage content in your dedicated <span class="ph">Bolt</span> repo.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <ul class="ul">
+                <li class="li">Install <span class="ph">PE</span> on your machine. See <a class="xref" href="getting_started_pe_overview.html" title="Puppet Enterprise (PE) is automation software that helps you and your organization be productive and agile while managing your IT infrastructure.">Getting started with Puppet Enterprise</a>.</li>
+                <li class="li">Ensure your <span class="ph">Bolt</span> project follows the <a class="xref" href="https://puppet.com/docs/bolt/latest/bolt_project_directories.html#local-project-directory" target="_blank">local project directory</a> structure. </li>
+            </ul>
+        </section>
+        <section class="section context">
+            <p class="p">To point <span class="ph">PE</span> to your <span class="ph">Bolt</span> content:</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Generate a private SSH key to allow access to the
+               control repository.</span>
+            <div class="itemgroup info">
+               <p class="p">This SSH key cannot require a password.</p>
+            </div>
+            <ol type="a" class="ol substeps">
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Generate the key pair:</span>
+                  <div class="itemgroup stepxmp">
+                     <pre class="pre codeblock"><code>ssh-keygen -t rsa -b 2048 -P '' -f /etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa</code></pre>
+                  </div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Set appropriate permissions so that the <code class="ph codeph">pe-puppet</code> user can access the
+                     key:</span>
+                  <div class="itemgroup stepxmp">
+                     <pre class="pre codeblock"><code>puppet infrastructure configure</code></pre>
+                  </div>
+               </li>
+            </ol>
+            <div class="itemgroup stepresult">
+               <p class="p">Your keys are now located in <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh</code>:</p>
+               <div class="p">
+                  <ul class="ul">
+                     <li class="li">
+                        <p class="p">Private key: <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa</code></p>
+                     </li>
+                     <li class="li">
+                        <p class="p">Public key: <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa.pub</code></p>
+                     </li>
+                  </ul>
+               </div>
+               <p class="p">Configure your <span class="ph">Git</span> host to use
+                  the SSH public key you generated. The process to do this is different for every
+                     <span class="ph">Git</span> host. Usually, you create a user or service
+                  account, and then assign the SSH public key to it. </p>
+               <p class="p">Code management needs read access to your control repository,
+                  as well as any module repositories referenced in the <span class="ph">Puppetfile</span>.</p>
+               <p class="p">See the your <span class="ph">Git</span> host docs for
+                  detailed instructions on adding SSH keys to your <span class="ph">Git</span> server. Commonly used <span class="ph">Git</span> hosts include:</p>
+               <ul class="ul">
+                  <li class="li">
+                     <p class="p">
+                        <a class="xref" href="https://developer.github.com/v3/guides/managing-deploy-keys/#machine-users" target="_blank">GitHub</a>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <a class="xref" href="https://confluence.atlassian.com/bitbucketserver/ssh-access-keys-for-system-use-776639781.html" target="_blank">BitBucket Server</a>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <a class="xref" href="https://docs.gitlab.com/ce/ssh/README.html#deploy-keys" target="_blank">GitLab</a>
+                     </p>
+                  </li>
+               </ul>
+            </div>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">Change the name of your branch to <code class="ph codeph">production</code>. <span class="ph">PE</span> uses branches in <span class="ph">Git</span> as environments and the default environment
+                    is <code class="ph codeph">production</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Create a configuration file called <code class="ph codeph">environment.conf</code> and add it
+                    to the root directory of the branch. This file configures the environment.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Add the <code class="ph codeph">modulepath</code> setting to the
+                        <code class="ph codeph">environment.conf</code> file by adding the following line: </span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>modulepath = modules:site-modules:$basemodulepath</code></pre>
+                        <div class="note note note_note"><span class="note__title">Note:</span> Without this setting, <span class="ph">PE</span>  picks up
+                            modules only from the <code class="ph codeph">modules</code> directory. It's important
+                            to add <code class="ph codeph">site-modules</code> to the <code class="ph codeph">modulepath</code>
+                            setting so it matches the defaults for your <span class="ph">Bolt</span> project. If you have a
+                                <code class="ph codeph">modulepath</code> setting in <code class="ph codeph">bolt.yaml</code>,
+                            match it to the <code class="ph codeph">modulepath</code> setting in
+                                <code class="ph codeph">environment.conf</code>.</div>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Publish the branch to the <span class="ph">PE</span> control repo.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Deploy code using <code class="ph codeph">puppet code deploy --&lt;ENVIRONMENT&gt;</code>, where
+                        <code class="ph codeph">&lt;ENVIRONMENT&gt;</code> is the name of your branch, to commit the
+                    new branch to git.</span>
+                <div class="itemgroup info">
+                    <div class="note note note_note"><span class="note__title">Note:</span> You can also deploy code using a webhook. See <a class="xref" href="code_mgr_webhook.html#triggering_code_manager_with_a_webhook" title="To deploy your code, you can trigger Code Manager by hitting a web endpoint, either through a webhook or a custom script. The webhook is the simplest way to trigger Code Manager.">Triggering Code Manager with a webhook</a> for more information. </div>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>After you deploy code, modules, and the tasks and plans within them, listed in the
+            new environment's <span class="ph">Puppetfile</span> will be available to use in
+                <span class="ph">PE</span>.</section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="plans_limitations.html" title="Some plan language and features are not available in PE or have some caveats.">Plan caveats and limitations</a></li></ul></div></nav></article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="bolt_to_pe_differences">
+    <h2 class="title topictitle2" id="ariaid-title4"><span class="ph">PE</span> workflows for <span class="ph">Bolt</span>
+        users</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Review these differences between <span class="ph">PE</span> and <span class="ph">Bolt</span> commands and workflows before
+        you start
+        running tasks and plans in <span class="ph">PE</span>.</p>
+        <section class="section"><h3 class="title sectiontitle">Connecting to nodes</h3>
+            
+            <p class="p">You must connect <span class="ph">PE</span> to each node you want to run tasks
+                on or include in a plan. See <a class="xref" href="add_inventory.html#add_inventory" title="Your inventory is the list of nodes managed by Puppet. Add nodes with agents, agentless nodes that connect over SSH or WinRM, or add network devices like network switches and firewalls. Agent nodes help keep your infrastructure in your desired state. Agentless nodes do not have an agent installed, but can do things like run tasks and plans.">Add nodes to the inventory</a> for instructions on
+                how to add agent or agentless nodes to your inventory. </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Installing tasks and plans</h3>
+            
+            <p class="p">In <span class="ph">PE</span>, as in <span class="ph">Bolt</span>, you
+                use the <code class="ph codeph">mod</code> command to download modules. But instead of running the
+                    <code class="ph codeph">bolt puppetfile install</code> command to install them, you trigger
+                    <span class="ph">Code Manager</span> and deploy code using the <code class="ph codeph">puppet
+                    code deploy</code> command. See <a class="xref" href="puppet_code.html#triggering_code_manager_on_the_command_line" title="The puppet-code command allows you to trigger Code Manager from the command line to deploy your environments.">Triggering Code Manager on the command line</a> for more
+                information. </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Running tasks and plans</h3>
+            
+            <p class="p"><span class="ph">PE</span> does not recognize the <code class="ph codeph">bolt</code>
+                command for running tasks and plans. Instead, use the <code class="ph codeph">puppet task
+                    run</code> and <code class="ph codeph">puppet plan run</code> commands, or use the console. </p>
+            <div class="p">To run tasks or plans from the command line, see: <ul class="ul">
+                    <li class="li"><a class="xref" href="running_tasks_from_the_command_line.html#running-tasks-cli" title="Use the puppet task run command to run tasks on agent nodes.">Running tasks from the command line</a></li>
+                    <li class="li"><a class="xref" href="running_plans_from_the_command_line.html#running_plans_from_the_command_line" title="Run a plan using the puppet plan run command.">Running plans from the command line</a></li>
+                </ul></div>
+            <div class="p">To run tasks or plans from the console, see:<ul class="ul">
+                    <li class="li"><a class="xref" href="running_tasks_in_the_console.html#running-tasks-console" title="Run ad-hoc tasks on target machines to upgrade packages, restart services, or perform any other type of single-action executions on your nodes.">Running tasks from the console</a></li>
+                    <li class="li"><a class="xref" href="running_plans_from_the_console_.html#running_plans_in_the_console" title="Run ad hoc plans from the console.">Running plans from the console</a></li>
+                </ul></div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Limitations in <span class="ph">PE</span></h3>
+            
+            <p class="p">Not everything in <span class="ph">Bolt</span> works in <span class="ph">PE</span>. For example, many pre-installed <span class="ph">Bolt</span> modules are not included in <span class="ph">PE</span>and many plan functions like
+                    <code class="ph codeph">file::exists</code> and <code class="ph codeph">set_feature</code> do not work. See
+                    <a class="xref" href="plans_limitations.html" title="Some plan language and features are not available in PE or have some caveats.">Plan caveats and limitations</a> for more information. </p>
+        </section>
+    </div>
+</article></article></article></main></body></html>

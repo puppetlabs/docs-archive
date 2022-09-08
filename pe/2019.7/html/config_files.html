@@ -1,0 +1,141 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet supports two formats for configuration files that configure settings: valid JSON and Human-Optimized Config Object Notation (HOCON), a JSON superset."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="writing_configuration_files"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Writing configuration files</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="writing_configuration_files">
+      <h1 class="title topictitle1" id="ariaid-title1">Writing configuration files </h1>
+      
+      <div class="body conbody"><p class="shortdesc">
+            <span class="ph">Puppet</span> supports two formats for configuration files that
+            configure settings: valid JSON and Human-Optimized Config Object Notation (HOCON), a
+            JSON superset.</p>
+            <p class="p">For more information about HOCON itself, see the <a class="xref" href="https://github.com/typesafehub/config#using-hocon-the-json-superset" target="_blank">HOCON documentation</a>.</p>
+      </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="configuration_file_syntax">
+    <h2 class="title topictitle2" id="ariaid-title2">Configuration file syntax </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Refer to these examples when you're writing configuration
+        files to identify correct JSON or HOCON syntax.</p>
+        <section class="section" id="configuration_file_syntax__brackets"><h3 class="title sectiontitle">Brackets </h3>
+            
+            <p class="p">In HOCON, you can omit the brackets (<code class="ph codeph"> { } </code>) around a root object.</p>
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="configuration_file_syntax__brackets__entry__1">JSON example</th>
+                            <th class="entry" id="configuration_file_syntax__brackets__entry__2">HOCON example</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="configuration_file_syntax__brackets__entry__1">
+                                <pre class="pre codeblock"><code>{
+   "authorization": {
+    	"version": 1
+    }
+}</code></pre>
+                            </td>
+                            <td class="entry" headers="configuration_file_syntax__brackets__entry__2">
+                                <pre class="pre codeblock"><code>"authorization": {
+    "version": 1
+}</code></pre>
+                            </td>
+                        </tr>
+                    </tbody></table>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Quotes</h3>
+            
+            <p class="p">In HOCON, double quotes around key and value strings are optional
+                in most cases. However, double quotes are required if the string contains the
+                    characters&nbsp;<code class="ph codeph">*</code>,&nbsp;<code class="ph codeph">^</code>,&nbsp;<code class="ph codeph">+</code>,&nbsp;<code class="ph codeph">:</code>, or&nbsp;<code class="ph codeph">=</code>.</p>
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="configuration_file_syntax__entry__5">JSON example</th>
+                            <th class="entry" id="configuration_file_syntax__entry__6">HOCON example</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="configuration_file_syntax__entry__5">
+                                <pre class="pre codeblock"><code>"authorization": {
+    "version": 1
+}</code></pre>
+                            </td>
+                            <td class="entry" headers="configuration_file_syntax__entry__6">
+                                <pre class="pre codeblock"><code>authorization: {
+    version: 1
+}</code></pre>
+                            </td>
+                        </tr>
+                    </tbody></table>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Commas</h3>
+            
+            <div class="p">When writing a map or array in HOCON, you can use a new line
+                instead of a comma. <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="configuration_file_syntax__entry__9"></th>
+                                <th class="entry" id="configuration_file_syntax__entry__10">JSON example</th>
+                                <th class="entry" id="configuration_file_syntax__entry__11">HOCON example</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="configuration_file_syntax__entry__9">Map</td>
+                                <td class="entry" headers="configuration_file_syntax__entry__10">
+                                    <pre class="pre codeblock"><code>rbac: {
+ password-reset-expiration: 24,
+ session-timeout: 60,
+ failed-attempts-lockout: 10,
+}</code></pre>
+                                </td>
+                                <td class="entry" headers="configuration_file_syntax__entry__11">
+                                    <pre class="pre codeblock"><code>rbac: {
+ password-reset-expiration: 24
+ session-timeout: 60
+ failed-attempts-lockout: 10
+}</code></pre>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="configuration_file_syntax__entry__9">Array</td>
+                                <td class="entry" headers="configuration_file_syntax__entry__10">
+                                    <pre class="pre codeblock"><code>http-client: {
+    ssl-protocols: [TLSv1, TLSv1.1, TLSv1.2]
+}</code></pre>
+                                </td>
+                                <td class="entry" headers="configuration_file_syntax__entry__11">
+                                    <pre class="pre codeblock"><code>http-client: {
+    ssl-protocols: [
+    TLSv1
+    TLSv1.1
+    TLSv1.2
+    ]
+}</code></pre>
+                                </td>
+                            </tr>
+                        </tbody></table></div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Comments</h3>
+            
+            <div class="p">Add comments using either <code class="ph codeph">//</code> or <code class="ph codeph">#</code>. Inline
+                comments are supported. <table class="table"><caption></caption><colgroup><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="configuration_file_syntax__entry__18">HOCON example</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="configuration_file_syntax__entry__18">
+                                    <pre class="pre codeblock"><code>authorization: {
+    version: 1
+    rules: [
+        {
+            # Allow nodes to retrieve their own catalog
+            match-request: {
+                path: "^/puppet/v3/catalog/([^/]+)$"
+                type: regex
+                method: [get, post]
+            }
+        }
+    ]
+}</code></pre>
+                                </td>
+                            </tr>
+                        </tbody></table></div>
+        </section>
+    </div>
+</article></article></article></main></body></html>

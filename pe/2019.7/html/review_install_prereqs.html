@@ -1,0 +1,46 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="Before getting started, review this checklist to make sure you're ready to install PE."><meta name="DC.relation" scheme="URI" content="hardware_requirements.html#hardware_requirements"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="review_install_prereqs_nix"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Step 1: Review installation prerequisites on your Linux server</title></head><body id="review_install_prereqs_nix"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Step 1: Review installation prerequisites on your <span class="ph">Linux</span> server</h1>
+    
+    <div class="body taskbody"><p class="shortdesc">Before getting started, review this checklist to make sure
+        you're ready to install <span class="ph">PE</span>.</p>
+        <section class="section context">
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> The examples in this guide use a <span class="ph">Linux</span> server running <span class="ph">Red Hat Enterprise Linux</span> (<span class="ph">RHEL</span>)
+                    6.</div>
+            </div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Be aware that you must work as the <code class="ph codeph">root</code> user on the command line
+                    throughout the installation process.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Make sure you meet the <a class="xref" href="https://puppet.com/docs/pe/2017.3/installing/hardware_requirements.html#hardware-requirements" target="_blank">hardware recommendations</a> for 10 or fewer nodes. </span>
+                <div class="itemgroup info">
+                    <p class="p">You can download and install <span class="ph">Puppet Enterprise</span> on up to 10 nodes at no charge.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Make sure that DNS is properly configured on the
+                    server you're installing on. </span>
+                <div class="itemgroup info">
+                    <ul class="ul">
+                        <li class="li">
+                            <p class="p">All nodes must know their own hostnames, which you
+                                can achieve by properly configuring reverse DNS on your local DNS
+                                server, or by setting the hostname explicitly. Setting the hostname
+                                usually involves the <code class="ph codeph">hostname</code> command and one or more
+                                configuration files, but the exact method varies by platform.</p>
+                        </li>
+                        <li class="li">
+                            <p class="p">All nodes must be able to reach each other by
+                                name, which you can achieve with a local DNS server.</p>
+                        </li>
+                    </ul>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Know the fully qualified domain name (FQDN) of the
+                    server you're installing <span class="ph">PE</span> on, for example,
+                        <code class="ph codeph">master.example.com</code>.</span>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="hardware_requirements.html#hardware_requirements" title="These hardware requirements are based on internal testing at Puppet and are meant only as guidelines to help you determine your hardware needs.">Hardware requirements</a></li></ul></div></nav></article></main></body></html>

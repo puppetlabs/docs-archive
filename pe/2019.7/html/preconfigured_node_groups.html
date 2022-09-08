@@ -1,0 +1,441 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise includes preconfigured node groups that are used to manage your configuration."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="preconfigured_node_groups"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Preconfigured node groups</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="preconfigured_node_groups">
+    <h1 class="title topictitle1" id="ariaid-title1">Preconfigured node groups </h1>
+    
+    <div class="body conbody"><p class="shortdesc"><span class="ph">Puppet Enterprise</span> includes
+        preconfigured node groups that are used to manage your configuration.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="all_nodes_node_group">
+    <h2 class="title topictitle2" id="ariaid-title2"><span class="ph uicontrol">All
+            Nodes</span> node group </h2>
+    
+    <div class="body refbody"><p class="shortdesc">This node group is at the top of the hierarchy tree. All
+        other node groups stem from this node group.</p>
+        <section class="section"><dl class="dl">
+                
+                    <dt class="dt dlterm">Classes</dt>
+                    <dd class="dd">No default classes. Avoid adding classes to this node
+                        group.</dd>
+                
+                
+                    <dt class="dt dlterm">Matching nodes</dt>
+                    <dd class="dd">All nodes.</dd>
+                
+                
+                    <dt class="dt dlterm">Notes</dt>
+                    <dd class="dd">You can't modify the preconfigured rule that matches all
+                        nodes.</dd>
+                
+            </dl></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="infrastructure_node_groups">
+    <h2 class="title topictitle2" id="ariaid-title3">Infrastructure node groups </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Infrastructure node groups are used to manage <span class="ph">PE</span>.</p>
+        <section class="section"><div class="p"><div class="note important note_important"><span class="note__title">Important:</span> Don't make changes to infrastructure node groups other than
+                    pinning new nodes for documented functions, like creating compilers. If you want
+                    to add custom classifications to infrastructure nodes, create new child groups
+                    and apply classification there.</div></div></section>
+    </div>
+<article class="topic reference nested2" aria-labelledby="ariaid-title4" id="pe_infrastructure_node_group">
+   <h3 class="title topictitle3" id="ariaid-title4"><span class="ph uicontrol">PE
+         Infrastructure</span> node group </h3>
+   
+   <div class="body refbody"><p class="shortdesc">This node group is the parent to all other infrastructure
+      node groups.</p>
+      <section class="section"><p class="p">The <span class="ph uicontrol">PE Infrastructure</span> node group contains data such as the
+            hostnames and ports of various services and database info (except for passwords).</p><p class="p">It's very important to correctly configure the <code class="ph codeph">puppet_enterprise</code> class in this node group. The
+            parameters set in this class affect the behavior of all other preconfigured node groups
+            that use classes starting with <code class="ph codeph">puppet_enterprise::profile</code>. Incorrect configuration of this class could
+            potentially cause a service outage.</p><div class="p">
+            <div class="note caution note_caution"><span class="note__title">CAUTION:</span> Never remove the <span class="ph uicontrol">PE Infrastructure</span> node group. Removing the <span class="ph uicontrol">PE Infrastructure</span> node group
+               disrupts communication between all of your <span class="ph uicontrol">PE Infrastructure</span> nodes.</div>
+         </div><div class="p">
+            <dl class="dl">
+               
+                  <dt class="dt dlterm">Classes</dt>
+                  <dd class="dd"><code class="ph codeph">puppet_enterprise</code> — sets the default parameters for child node
+                     groups</dd>
+               
+               
+                  <dt class="dt dlterm">Matching nodes</dt>
+                  <dd class="dd">Nodes are not pinned to this node group. The <span class="ph uicontrol">PE Infrastructure</span> node group
+                     is the parent to other infrastructure node groups, such as <span class="ph uicontrol">PE Master</span>, and is used only to set
+                     classification that all child node groups inherit. Never pin nodes directly to
+                     this node group.</dd>
+               
+            </dl>
+         </div></section>
+      <section class="section"><p class="p">These are the parameters for the
+               <code class="ph codeph">puppet_enterprise</code> class, where
+               <code class="ph codeph">&lt;YOUR HOST&gt;</code> is your master
+            certname. You can find the certname with <code class="ph codeph">puppet
+               config print certname</code>. </p><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="pe_infrastructure_node_group__entry__1">Parameter</th>
+                        <th class="entry" id="pe_infrastructure_node_group__entry__2">Value</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">database_host</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <code class="ph codeph">"&lt;YOUR HOST&gt;"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">puppetdb_host</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <code class="ph codeph">"&lt;YOUR HOST&gt;"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">database_port</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <p class="p">
+                              <code class="ph codeph">"&lt;YOUR PORT
+                                 NUMBER&gt;"</code>
+                           </p>
+                           <p class="p">Required only if you changed the port number from
+                              the default 5432.</p>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">database_ssl </code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2"><code class="ph codeph">true</code> if you're using the <span class="ph">PE</span>-installed <span class="ph">PostgreSQL</span>, and <code class="ph codeph">false</code> if you're using your
+                           own <span class="ph">PostgreSQL</span>.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">puppet_master_host </code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <code class="ph codeph">"&lt;YOUR HOST&gt;"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">certificate_authority_host</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <code class="ph codeph">"&lt;YOUR HOST&gt;"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">console_port</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <p class="p">
+                              <code class="ph codeph">"&lt;YOUR PORT
+                                 NUMBER&gt;"</code>
+                           </p>
+                           <p class="p">Required only if you changed the port number from
+                              the default 443.)</p>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">puppetdb_database_name</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <code class="ph codeph">"pe-puppetdb"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">puppetdb_database_user</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <code class="ph codeph">"pe-puppetdb"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">puppetdb_port</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <p class="p">
+                              <code class="ph codeph">"&lt;YOUR PORT
+                                 NUMBER&gt;"</code>
+                           </p>
+                           <p class="p">Required only if you changed the port number from
+                              the default 8081.)</p>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">console_host</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <code class="ph codeph">"&lt;YOUR HOST&gt;"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__1">
+                           <code class="ph codeph">pcp_broker_host</code>
+                        </td>
+                        <td class="entry" headers="pe_infrastructure_node_group__entry__2">
+                           <code class="ph codeph">"&lt;YOUR HOST&gt;"</code>
+                        </td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+   </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title5" id="pe_certificate_authority_node_group">
+   <h3 class="title topictitle3" id="ariaid-title5"><span class="ph uicontrol">PE Certificate
+         Authority</span> node group </h3>
+   
+   <div class="body refbody"><p class="shortdesc">This node group is used to manage the certificate
+      authority.</p>
+      <section class="section"><div class="p">
+            <dl class="dl">
+               
+                  <dt class="dt dlterm">Classes</dt>
+                  <dd class="dd"><code class="ph codeph">puppet_enterprise::profile::certificate_authority</code> — manages the
+                     certificate authority on the first master node</dd>
+               
+               
+                  <dt class="dt dlterm">Matching nodes</dt>
+                  <dd class="dd">On a new install, the master is
+                     pinned to this node group.</dd>
+               
+               
+                  <dt class="dt dlterm">Notes</dt>
+                  <dd class="dd">Don't add additional nodes to this
+                     node group.</dd>
+               
+            </dl>
+         </div></section>
+   </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title6" id="pe_master_node_group">
+   <h3 class="title topictitle3" id="ariaid-title6"><span class="ph uicontrol">PE Master</span>
+      node group </h3>
+   
+   <div class="body refbody"><p class="shortdesc">This node group is used to manage the <span class="ph">Puppet</span>
+      master.</p>
+      <section class="section"><dl class="dl">
+            
+               <dt class="dt dlterm">Classes</dt>
+               <dd class="dd">
+                  <ul class="ul">
+                     <li class="li"><code class="ph codeph">puppet_enterprise::profile::master</code> — manages the <span class="ph">Puppet</span> master service</li>
+                  </ul>
+               </dd>
+            
+            
+               <dt class="dt dlterm">Matching nodes</dt>
+               <dd class="dd">On a new install, the master is
+                     pinned to this node group.</dd>
+            
+         </dl></section>
+   </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title7" id="pe_compiler_node_group">
+        <h3 class="title topictitle3" id="ariaid-title7"><span class="ph uicontrol">PE
+                        Compiler</span> node group </h3>
+        
+        <div class="body refbody"><p class="shortdesc">This node group is a subset of the <span class="ph uicontrol">PE Master</span> node group
+                used to manage compilers running the <span class="ph">PuppetDB</span>
+                service.</p>
+                <section class="section">
+                        <p class="p"></p>
+                        <dl class="dl">
+                                
+                                        <dt class="dt dlterm">Classes</dt>
+                                        <dd class="dd">
+                                                <ul class="ul">
+                                                  <li class="li"><code class="ph codeph">puppet_enterprise::profile::master</code>
+                                                  — manages the <span class="ph">Puppet</span> master service</li>
+                                                  <li class="li">
+                                                  <p class="p"><code class="ph codeph">puppet_enterprise::profile::puppetdb</code>
+                                                  — manages the <span class="ph">PuppetDB</span> service</p>
+                                                  </li>
+                                                </ul>
+                                        </dd>
+                                
+                                
+                                        <dt class="dt dlterm">Matching nodes</dt>
+                                        <dd class="dd">Compilers running the <span class="ph">PuppetDB</span> service are
+                                                automatically added to this node group.</dd>
+                                
+                                
+                                        <dt class="dt dlterm">Notes</dt>
+                                        <dd class="dd">Don't add additional nodes to this
+                     node group.</dd>
+                                
+                        </dl>
+                </section>
+        </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title8" id="pe_orchestrator_node_group">
+    <h3 class="title topictitle3" id="ariaid-title8"><span class="ph uicontrol">PE
+            Orchestrator</span> node group </h3>
+    
+    <div class="body refbody"><p class="shortdesc">This node group is used to manage the application
+        orchestration service.</p>
+        <section class="section"><dl class="dl">
+                
+                    <dt class="dt dlterm">Classes</dt>
+                    <dd class="dd"><code class="ph codeph">puppet_enterprise::profile::orchestrator</code> — manages the
+                        application orchestration service</dd>
+                
+                
+                    <dt class="dt dlterm">Matching nodes</dt>
+                    <dd class="dd">On a new install, the master is
+                     pinned to this node group.</dd>
+                
+                
+                    <dt class="dt dlterm">Notes</dt>
+                    <dd class="dd">Don't add additional nodes to this
+                     node group.</dd>
+                
+            </dl></section>
+    </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title9" id="pe_puppetdb_node_group">
+    <h3 class="title topictitle3" id="ariaid-title9"><span class="ph uicontrol">PE
+            PuppetDB</span> node group </h3>
+    
+    <div class="body refbody"><p class="shortdesc">This node group is used to manage nodes running the <span class="ph">PuppetDB</span> service. If the node is also serving as a compiler,
+        it's instead classified in the <span class="ph uicontrol">PE
+            Compiler</span> node group. </p>
+        <section class="section">
+            <dl class="dl">
+                
+                    <dt class="dt dlterm">Classes</dt>
+                    <dd class="dd"><code class="ph codeph">puppet_enterprise::profile::puppetdb</code> — manages the <span class="ph">PuppetDB</span> service</dd>
+                
+                
+                    <dt class="dt dlterm">Matching nodes</dt>
+                    <dd class="dd"><span class="ph">PuppetDB</span> nodes that
+                        aren't functioning as compilers are pinned to this node group.</dd>
+                
+                
+                    <dt class="dt dlterm">Notes</dt>
+                    <dd class="dd">Don't add additional nodes to this
+                     node group.</dd>
+                
+            </dl>
+        </section>
+    </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title10" id="pe_console_node_group">
+   <h3 class="title topictitle3" id="ariaid-title10"><span class="ph uicontrol">PE
+         Console</span> node group </h3>
+   
+   <div class="body refbody"><p class="shortdesc">This node group is used to manage the console.</p>
+      <section class="section"><dl class="dl">
+            
+               <dt class="dt dlterm">Classes</dt>
+               <dd class="dd">
+                  <ul class="ul">
+                     <li class="li"><code class="ph codeph">puppet_enterprise::profile::console</code> — manages the console, node
+                        classifier, and RBAC</li>
+                     <li class="li"><code class="ph codeph">puppet_enterprise::license</code> — manages the <span class="ph">PE</span> license file for the status indicator</li>
+                  </ul>
+               </dd>
+            
+            
+               <dt class="dt dlterm">Matching nodes</dt>
+               <dd class="dd">On a new install, the console server node is pinned to this
+                  node group.</dd>
+            
+            
+               <dt class="dt dlterm">Notes</dt>
+               <dd class="dd">Don't add additional nodes to this
+                     node group.</dd>
+            
+         </dl></section>
+   </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title11" id="pe_agent_node_group">
+    <h3 class="title topictitle3" id="ariaid-title11"><span class="ph uicontrol">PE Agent</span>
+        node group </h3>
+    
+    <div class="body refbody"><p class="shortdesc">This node group is used to manage the configuration of
+        agents.</p>
+        <section class="section"><dl class="dl">
+                
+                    <dt class="dt dlterm">Classes</dt>
+                    <dd class="dd"><code class="ph codeph">puppet_enterprise::profile::agent</code> — manages your agent
+                        configuration</dd>
+                
+                
+                    <dt class="dt dlterm">Matching nodes</dt>
+                    <dd class="dd">All managed nodes are pinned to this node group by
+                        default.</dd>
+                
+            </dl></section>
+    </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title12" id="pe_infrastructure_agent_node_group">
+    <h3 class="title topictitle3" id="ariaid-title12"><span class="ph uicontrol">PE Infrastructure
+            Agent</span> node group </h3>
+    
+    <div class="body refbody"><p class="shortdesc">This node group is a subset of the <span class="ph uicontrol">PE Agent</span> node group used to manage
+        infrastructure-specific overrides.</p>
+        <section class="section"><dl class="dl">
+                
+                    <dt class="dt dlterm">Classes</dt>
+                    <dd class="dd"><code class="ph codeph">puppet_enterprise::profile::agent</code> — manages your agent
+                        configuration</dd>
+                
+                
+                    <dt class="dt dlterm">Matching nodes</dt>
+                    <dd class="dd">All nodes used to run your <span class="ph">Puppet</span> infrastructure and managed by the <span class="ph">PE</span> installer are pinned to this node group by
+                        default, including the master, <span class="ph">PuppetDB</span>,
+                        console, and compilers.</dd>
+                
+                
+                    <dt class="dt dlterm">Notes</dt>
+                    <dd class="dd">You might want to manually pin to this group any
+                        additional nodes used to run your infrastructure, such as compiler load
+                        balancer nodes. Pinning a compiler load balancer node to this group allows
+                        it to receive its catalog from the master, rather than the compiler, which
+                        helps ensure availability.</dd>
+                
+            </dl></section>
+    </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title13" id="pe-database-node-group">
+    <h3 class="title topictitle3" id="ariaid-title13"><span class="ph uicontrol">PE
+            Database</span> node group</h3>
+    
+    
+    <div class="body refbody"><p class="shortdesc">This node group is used to manage the <span class="ph">PostgreSQL</span> service.</p>
+        <section class="section">
+            <dl class="dl">
+                
+                    <dt class="dt dlterm">Classes</dt>
+                    <dd class="dd">
+                        <ul class="ul">
+                            <li class="li"><code class="ph codeph">puppet_enterprise::profile::database</code> — manages the
+                                PE-PostgreSQL service </li>
+                        </ul>
+                    </dd>
+                
+                
+                    <dt class="dt dlterm">Matching nodes</dt>
+                    <dd class="dd">The node specified as <code class="ph codeph">puppet_enterprise::database_host</code>
+                        is pinned to this group. By default, the database host is the <span class="ph">PuppetDB</span>&nbsp;server node.</dd>
+                
+                
+                    <dt class="dt dlterm">Notes</dt>
+                    <dd class="dd">Don't add additional nodes to this
+                     node group.</dd>
+                
+            </dl>
+        </section>
+    </div>
+</article></article><article class="topic reference nested1" aria-labelledby="ariaid-title14" id="environment_node_groups">
+        <h2 class="title topictitle2" id="ariaid-title14">Environment node groups </h2>
+        
+        <div class="body refbody"><p class="shortdesc">Environment node groups are used only to set
+                environments. They cannot contain any classification.</p>
+                <section class="section"><p class="p">Preconfigured environment
+                                node groups differ depending on your version of <span class="ph">PE</span>, and you can customize
+                                environment groups as needed for your ecosystem. </p><p class="p"></p></section>
+        </div>
+</article></article></article></main></body></html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise (PE) complies with Federal Information Processing Standard (FIPS) 140-2 standards and is fully operable on select FIPS-compliant platforms."><meta name="DC.relation" scheme="URI" content="supported_operating_systems.html#supported_operating_systems_and_devices"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Mindy Moreland <mindy.moreland@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="fips_compliance"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>PE and FIPS compliance</title></head><body id="fips_compliance"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+ <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">PE</span> and FIPS compliance</h1>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc"><span class="ph">Puppet Enterprise (PE)</span> complies with Federal Information Processing
+    Standard (FIPS) 140-2 standards and is fully operable on select FIPS-compliant platforms. </p>
+    <p class="p">To install FIPS-compliant <span class="ph">PE</span>, simply install your master and
+      agents on a supported platform with FIPS mode enabled. Master and compiler nodes must be
+      configured with sufficient available entropy or the installation process fails.</p>
+  <section class="section"><h2 class="title sectiontitle">Changes in FIPS-compliant installations</h2><div class="p">In order to operate on FIPS platforms in compliance mode, <span class="ph">PE</span>
+        includes the following changes:<ul class="ul">
+          <li class="li">All components are built and packaged against system OpenSSL for the master, or
+            against OpenSSL built in FIPS mode for agents.</li>
+          <li class="li">All use of MD5 hashes for security has been eliminated and replaced. </li>
+          <li class="li"><span class="ph">Forge</span> and module tooling use SHA-256 hashes to verify
+            the identity of modules. </li>
+          <li class="li">Proper random number generation devices are used on all platforms.</li>
+          <li class="li">All Java and Clojure components use FIPS Bouncy Castle encryption providers on FIPS
+            platforms. </li>
+        </ul></div></section><section class="section"><h2 class="title sectiontitle">Limitations and cautions for FIPS-compliant installations</h2>
+        
+        <div class="p">Be aware of the following when installing FIPS-compliant <span class="ph">PE</span>.<ul class="ul">
+          <li class="li">Upgrading from non-FIPS-compliant versions of <span class="ph">PE</span> to
+            FIPS-compliant <span class="ph">PE</span> is not supported. </li>
+          <li class="li">High availability configurations are not supported for FIPS-compliant <span class="ph">PE</span>.</li>
+          <li class="li">FIPS-compliant installations don't support extensions that use the standard <span class="ph">Ruby</span> Open SSL library, such as heira-eyaml.</li>
+          <li class="li">FIPS-compliant <span class="ph">PE</span> does not support <span class="ph">Razor</span>, and the <code class="ph codeph">pe-razor-server</code> package is not included in the installation tarball for
+            FIPS-compliant <span class="ph">PE</span>. </li>
+          <li class="li">Due to a known issue with the <code class="ph codeph">pe-client-tools</code>
+            packages, <code class="ph codeph">puppet code</code> and <code class="ph codeph">puppet
+              db</code> commands fail with SSL handshake errors when run on FIPS-enabled hardware.
+            To use <code class="ph codeph">puppet db</code> commands on a FIPS-enabled machine,
+            install the <a class="xref" href="https://rubygems.org/gems/puppetdb_cli" target="_blank">puppetdb_cli</a>
+            <span class="ph">Ruby</span> gem. To use <code class="ph codeph">puppet
+              code</code> commands on a FIPS-enabled machine, use the <a class="xref" href="code_manager_api.html#code_manager_api" title="Use Code Manager endpoints to deploy code and query environment deployment status on your masters without direct shell access."><span class="ph">Code Manager</span> API</a>.
+              </li>
+        </ul></div>
+      </section>
+ </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="supported_operating_systems.html#supported_operating_systems_and_devices" title="When choosing an operating system, first consider the machine's role. Different roles support different operating systems and architectures.">Supported operating systems and devices</a></li></ul></div></nav></article></main></body></html>

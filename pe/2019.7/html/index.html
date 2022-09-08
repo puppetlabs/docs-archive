@@ -1,0 +1,1680 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta charset="UTF-8">
+      <meta name="copyright" content="(C) Copyright 2020">
+      <meta name="DC.rights.owner" content="(C) Copyright 2020">
+      <meta name="DC.type" content="map">
+      <meta name="DC.format" content="HTML5">
+      <meta name="DC.identifier" content="ditamap-3343"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet Enterprise 2019.7</title></head>
+   <body id="ditamap-3343">
+      <h1 class="title topictitle1">Puppet Enterprise 2019.7</h1>
+      <nav xmlns:dita="http://dita-ot.sourceforge.net">
+         <ul class="map">
+            <li class="topicref"><a href="pe_user_guide.html">Welcome to Puppet Enterprise® 2019.7</a><ul>
+                  <li class="topicref"><a href="pe_architecture_overview.html#pe_architecture_overview">PE architecture</a><ul>
+                        <li class="topicref"><a href="pe_architecture_overview.html#the_master_and_compilers">The master and compilers</a></li>
+                        <li class="topicref"><a href="pe_architecture_overview.html#the_puppet_agent">The Puppet agent </a></li>
+                        <li class="topicref"><a href="pe_architecture_overview.html#console_services">Console services</a></li>
+                        <li class="topicref"><a href="pe_architecture_overview.html#code_manager_and_r10k">Code Manager and r10k  </a></li>
+                        <li class="topicref"><a href="pe_architecture_overview.html#orchestration_services">Orchestration services </a></li>
+                        <li class="topicref"><a href="pe_architecture_overview.html#pe_databases">  PE databases </a></li>
+                        <li class="topicref"><a href="pe_architecture_overview.html#security_and_communications">Security and communications </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="component_versions_in_recent_pe_releases.html#component_versions_in_recent_pe_releases">Component versions in recent PE releases </a><ul>
+                        <li class="topicref"><a href="component_versions_in_recent_pe_releases.html#master-agent-compatibility">Master and agent compatibility</a></li>
+                        <li class="topicref"><a href="component_versions_in_recent_pe_releases.html#task_compatibility">Task compatibility</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="fips_compliance.html">PE and FIPS compliance</a></li>
+                  <li class="topicref"><a href="getting_support_for_pe.html#getting_support_for_pe">Getting support </a><ul>
+                        <li class="topicref"><a href="getting_support_for_pe.html#pe_support_lifecycle">Puppet Enterprise support life cycle </a></li>
+                        <li class="topicref"><a href="getting_support_for_pe.html#the_customer_support_portal">Support portal</a></li>
+                        <li class="topicref"><a href="getting_support_for_pe.html#puppet_metrics_collector">Puppet metrics collector</a></li>
+                        <li class="topicref"><a href="getting_support_for_pe.html#pe_support_script">PE support script</a></li>
+                        <li class="topicref"><a href="getting_support_for_pe.html#getting_support_from_the_puppet_community">Community support</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="api_index.html#api_index">API index </a></li>
+                  <li class="topicref"><a href="archived_pe_docs.html#archived_pe_docs">Archived PE docs</a></li>
+                  <li class="topicref"><a href="puppet_overview.html#osp_documentation_for_pe">  Puppet platform documentation for PE</a></li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="release_notes_pe_index.html">Release notes</a><ul>
+                  <li class="topicref"><a href="release_notes_pe.html#release_notes_pe">PE release notes</a><ul>
+                        <li class="topicref"><a href="release_notes_pe.html#release_notes_pe_x-7">PE  2019.7</a><ul>
+                              <li class="topicref"><a href="release_notes_pe.html#new_features_pe_x-7">New features</a></li>
+                              <li class="topicref"><a href="release_notes_pe.html#enhancements_pe_x-7">Enhancements</a></li>
+                              <li class="topicref"><a href="release_notes_pe.html#deprecations_and_removals_pe_x-7">Deprecations and removals</a></li>
+                              <li class="topicref"><a href="release_notes_pe.html#resolved_issues_pe_x-7">Resolved issues</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="release_notes_pe.html#release_notes_pe_x-6">PE  2019.6</a></li>
+                        <li class="topicref"><a href="release_notes_pe.html#release_notes_pe_x-5">PE  2019.5</a><ul>
+                              <li class="topicref"><a href="release_notes_pe.html#resolved_issues_pe_x-5">Resolved issues</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="release_notes_pe.html#release_notes_pe_x-4">PE  2019.4</a><ul>
+                              <li class="topicref"><a href="release_notes_pe.html#enhancements_pe_x-4">Enhancements</a></li>
+                              <li class="topicref"><a href="release_notes_pe.html#resolved_issues_pe_x-4">Resolved issues</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="release_notes_pe.html#release_notes_pe_x-3">PE  2019.3</a><ul>
+                              <li class="topicref"><a href="release_notes_pe.html#enhancements_pe_x-3">Enhancements</a></li>
+                              <li class="topicref"><a href="release_notes_pe.html#deprecations_and_removals_pe_x-3">Deprecations and removals</a></li>
+                              <li class="topicref"><a href="release_notes_pe.html#resolved_issues_pe_x-3">Resolved issues</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="known_issues_pe.html#known_issues_pe">PE known issues</a><ul>
+                        <li class="topicref"><a href="known_issues_pe.html#known_issues_installation_and_upgrade">Installation and upgrade known issues </a></li>
+                        <li class="topicref"><a href="known_issues_pe.html#high_availability_known_issues">High availability known issues </a></li>
+                        <li class="topicref"><a href="known_issues_pe.html#fips_known_issues">FIPS known issues </a></li>
+                        <li class="topicref"><a href="known_issues_pe.html#supported_platforms_known_issues">Supported platforms known issues </a></li>
+                        <li class="topicref"><a href="known_issues_pe.html#known_issues_configuration_and_maintenance">Configuration and maintenance known issues</a></li>
+                        <li class="topicref"><a href="known_issues_pe.html#known_issues_orchestration">Orchestration services known issues </a></li>
+                        <li class="topicref"><a href="known_issues_pe.html#known_issues_certs">SSL and certificate known issues</a></li>
+                        <li class="topicref"><a href="known_issues_pe.html#known_issues_code_management">Code management known issues </a></li>
+                        <li class="topicref"><a href="known_issues_pe.html#known_issues_utf8">Internationalization known issues </a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="getting_started_pe_overview.html">Getting started with Puppet Enterprise</a><ul>
+                  <li class="topicref"><a href="install_pe_getting_started.html#install_pe_getting_started">Install PE</a><ul>
+                        <li class="topicref"><a href="install_pe_getting_started.html#install_pe">Install PE</a></li>
+                        <li class="topicref"><a href="install_pe_getting_started.html#complete_install_log_in">Log into the PE console </a></li>
+                        <li class="topicref"><a href="install_pe_getting_started.html#check_the_status_in_the_console">Check the status of your master </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="add_inventory.html#add_inventory">Add nodes to the inventory</a><ul>
+                        <li class="topicref"><a href="add_inventory.html#install_agent_nodes_getting_started">Add agent nodes </a></li>
+                        <li class="topicref"><a href="add_inventory.html#install_agentless_nodes_getting_started">Add agentless nodes</a></li>
+                        <li class="topicref"><a href="add_inventory.html#managing_certificate_signing_requests_console">Managing certificate signing requests in the console</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="add_content.html#add_content">Add code and set up Code Manager</a><ul>
+                        <li class="topicref"><a href="add_content.html#create-control-repo-from-template">Create a control repo from the Puppet template</a></li>
+                        <li class="topicref"><a href="add_content.html#config_code_mgr_getting_started">Configure Code Manager</a><ul>
+                              <li class="topicref"><a href="add_content.html#enable_code_manager_getting_started">Enable Code Manager</a></li>
+                              <li class="topicref"><a href="add_content.html#set_up_authentication_for_code_manager">Set up authentication for Code Manager  </a><ul>
+                                    <li class="topicref"><a href="add_content.html#assign_a_user_to_the_deployment_role">Assign a user to the deployment role </a></li>
+                                    <li class="topicref"><a href="add_content.html#request_an_authentication_token">Request an authentication token for deployments</a></li>
+                                 </ul>
+                              </li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="add_content.html#deploy_code_getting_started">Deploy your code</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="manage_apach_configuration.html">Manage Apache configuration on *nix targets</a><ul>
+                        <li class="topicref"><a href="add_modules.html#add_modules">Add a module</a><ul>
+                              <li class="topicref"><a href="add_modules.html#install_forge_module">Install the apache module </a></li>
+                              <li class="topicref"><a href="add_modules.html#view_apache_task_getting_started">View the apache task in the console</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="configure_desired_state.html#configure_desired_state">Configure your desired state</a><ul>
+                              <li class="topicref"><a href="configure_desired_state.html#create_classification_group_getting_started">Create your classification group</a></li>
+                              <li class="topicref"><a href="configure_desired_state.html#classify_apache_getting_started">Create your apache node group</a></li>
+                              <li class="topicref"><a href="configure_desired_state.html#add_nodes_to_apache_node_group_getting_started">Add nodes to the apache node group</a></li>
+                              <li class="topicref"><a href="configure_desired_state.html#run_puppet_on_apache_node_group_getting_started">Run Puppet on your Apache nodes</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="configure_roles_and_profiles_apache_getting_started.html#configure_roles_and_profiles_apache_getting_started">Organize webserver configurations with roles and profiles </a><ul>
+                              <li class="topicref"><a href="configure_roles_and_profiles_apache_getting_started.html#roles_and_profiles_prereq_getting_started">Set up your prerequisites</a></li>
+                              <li class="topicref"><a href="configure_roles_and_profiles_apache_getting_started.html#write_a_profile_for_apache_getting_started_guide">Write a profile for your Apache vhost</a></li>
+                              <li class="topicref"><a href="configure_roles_and_profiles_apache_getting_started.html#set_data_for_apache_profile_getting_started">Set data for the profile </a></li>
+                              <li class="topicref"><a href="configure_roles_and_profiles_apache_getting_started.html#write_a_role_apache_getting_started">Write a role for your Apache web server</a></li>
+                              <li class="topicref"><a href="configure_roles_and_profiles_apache_getting_started.html#assign_roles_to_nodes_getting_started">Assign the role to nodes</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="manage_iis_configuration.html">Manage IIS configuration on Windows targets</a><ul>
+                        <li class="topicref"><a href="Chunk1562500954.html#add_modules">Add a module</a><ul>
+                              <li class="topicref"><a href="Chunk1562500954.html#task_mgj_v5d_hjb">Install the IIS module </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="configure_desired_state_iis.html#configure_desired_state">Configure your desired state</a><ul>
+                              <li class="topicref"><a href="configure_desired_state_iis.html#create_classification_group_getting_started">Create your classification group</a></li>
+                              <li class="topicref"><a href="configure_desired_state_iis.html#classify_apache_getting_started">Create your iis node group</a></li>
+                              <li class="topicref"><a href="configure_desired_state_iis.html#add_nodes_to_apache_node_group_getting_started">Add nodes to the iis node group</a></li>
+                              <li class="topicref"><a href="configure_desired_state_iis.html#run_puppet_on_apache_node_group_getting_started">Run Puppet on your IIS nodes</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="configure_roles_and_profiles_iis_getting_started.html#configure_roles_and_profiles_apache_getting_started">Organize webserver configurations with roles and profiles </a><ul>
+                              <li class="topicref"><a href="configure_roles_and_profiles_iis_getting_started.html#roles_and_profiles_prereq_getting_started">Set up your prerequisites</a></li>
+                              <li class="topicref"><a href="configure_roles_and_profiles_iis_getting_started.html#write_a_profile_for_apache_getting_started_guide">Write a profile for your IIS website</a></li>
+                              <li class="topicref"><a href="configure_roles_and_profiles_iis_getting_started.html#set_data_for_apache_profile_getting_started">Set data for the profile </a></li>
+                              <li class="topicref"><a href="configure_roles_and_profiles_iis_getting_started.html#write_a_role_apache_getting_started">Write a role for your IIS website</a></li>
+                              <li class="topicref"><a href="configure_roles_and_profiles_iis_getting_started.html#assign_roles_to_nodes_getting_started">Assign the role to nodes</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="next_steps_getting_started_pe.html">Next steps </a></li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="installing.html">Installing</a><ul>
+                  <li class="topicref"><a href="choosing_an_architecture.html">Choosing an architecture </a></li>
+                  <li class="topicref"><a href="system_requirements.html">System requirements </a><ul>
+                        <li class="topicref"><a href="hardware_requirements.html#hardware_requirements">Hardware requirements </a><ul>
+                              <li class="topicref"><a href="hardware_requirements.html#hardware_requirements_standard">Hardware requirements for standard installations </a></li>
+                              <li class="topicref"><a href="hardware_requirements.html#hardware_requirements_large">Hardware requirements for large installations</a></li>
+                              <li class="topicref"><a href="hardware_requirements.html#hardware_requirements_xl">Hardware requirements for extra-large installations</a></li>
+                              <li class="topicref"><a href="hardware_requirements.html#hardware_requirements_test_methods">How we develop hardware requirements: Performance test methods</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="supported_operating_systems.html#supported_operating_systems">Supported operating systems </a><ul>
+                              <li class="topicref"><a href="supported_operating_systems.html#supported_operating_systems_and_devices">Supported operating systems and devices </a></li>
+                              <li class="topicref"><a href="supported_operating_systems.html#centos_dependencies">CentOS dependencies </a></li>
+                              <li class="topicref"><a href="supported_operating_systems.html#rhel_dependencies">RHEL dependencies </a></li>
+                              <li class="topicref"><a href="supported_operating_systems.html#sles_dependencies">SUSE Linux Enterprise Server dependencies </a></li>
+                              <li class="topicref"><a href="supported_operating_systems.html#ubuntu_dependencies">Ubuntu dependencies </a></li>
+                              <li class="topicref"><a href="supported_operating_systems.html#aix_dependencies_and_limitations">AIX dependencies and limitations </a></li>
+                              <li class="topicref"><a href="supported_operating_systems.html#solaris_dependencies_and_limitations">  Solaris dependencies and limitations </a></li>
+                              <li class="topicref"><a href="supported_operating_systems.html#upgrade_your_os_with_pe_installed">Upgrade your operating system with PE installed </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="supported_browsers.html#supported_browsers">Supported browsers </a></li>
+                        <li class="topicref"><a href="system_configuration.html#system_configuration">System configuration </a><ul>
+                              <li class="topicref"><a href="system_configuration.html#timekeeping_and_name_resolution">Timekeeping and name resolution </a></li>
+                              <li class="topicref"><a href="system_configuration.html#web_urls_used_for_deployment_and_management">Web URLs used for deployment and management</a></li>
+                              <li class="topicref"><a href="system_configuration.html#firewall_standard">Firewall configuration for standard installations </a></li>
+                              <li class="topicref"><a href="system_configuration.html#firewall_large">Firewall configuration for large installations with compilers </a></li>
+                              <li class="topicref"><a href="system_configuration.html#firewall_xl">Firewall configuration for extra-large installations with compilers and standalone
+                                    PE-PostgreSQL</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="what_gets_installed_and_where.html#what_gets_installed_and_where">What gets installed and where? </a><ul>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#software_components_installed">Software components installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#executable_binaries_and_symlinks_installed">Executable binaries and symlinks installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#modules_and_plugins_installed">Modules and plugins installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#configuration_files_installed">Configuration files installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#tools_installed">Tools installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#databases_installed">Databases installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#services_installed">Services installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#user_and_group_accounts_installed">User and group accounts installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#log_files_installed">Log files installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#certificates_installed">Certificates installed </a></li>
+                        <li class="topicref"><a href="what_gets_installed_and_where.html#secret_file_installed">Secret key file installed</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="installing_pe.html#installing_pe">Installing Puppet Enterprise  </a><ul>
+                        <li class="topicref"><a href="installing_pe.html#install_pe">Install PE</a></li>
+                        <li class="topicref"><a href="installing_pe.html#verify_the_installation_package">Verify the installation package </a></li>
+                        <li class="topicref"><a href="installing_pe.html#configuration_parameters_and_the_pe.conf_file">Configuration parameters and the pe.conf file</a><ul>
+                              <li class="topicref"><a href="installing_pe.html#installation_parameters">Installation parameters </a></li>
+                              <li class="topicref"><a href="installing_pe.html#database_configuration_parameters">Database configuration parameters </a></li>
+                              <li class="topicref"><a href="installing_pe.html#external_postgresql_parameters">External PostgreSQL parameters </a></li>
+                              <li class="topicref"><a href="installing_pe.html#puppet_master_parameters">Master parameters </a></li>
+                              <li class="topicref"><a href="installing_pe.html#console_and_console_services_parameters">Console and console-services parameters </a></li>
+                              <li class="topicref"><a href="installing_pe.html#orchestrator_and_orchestration_services_parameters">Orchestrator and orchestration services parameters </a></li>
+                              <li class="topicref"><a href="installing_pe.html#puppetdb_parameters">  PuppetDB parameters </a></li>
+                              <li class="topicref"><a href="installing_pe.html#java_parameters">Java parameters </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="purchasing_and_installing_a_license_key.html#purchasing_and_installing_a_license_key">Purchasing and installing a license key </a><ul>
+                        <li class="topicref"><a href="purchasing_and_installing_a_license_key.html#getting_licensed">Getting a license </a></li>
+                        <li class="topicref"><a href="purchasing_and_installing_a_license_key.html#install_a_license_key">Install a license key </a></li>
+                        <li class="topicref"><a href="purchasing_and_installing_a_license_key.html#verify_installed_licenses_and_active_nodes">View license details for your environment </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="installing_agents.html#installing_agents">Installing agents</a><ul>
+                        <li class="topicref"><a href="installing_agents.html#using_install_script">Using the install script&nbsp;</a></li>
+                        <li class="topicref"><a href="installing_agents.html#installing_nix_agents">Install *nix agents </a><ul>
+                              <li class="topicref"><a href="installing_agents.html#install_agent_console">Install agents from the console</a></li>
+                              <li class="topicref"><a href="installing_agents.html#install_nix_agents_pe_package_management">Install *nix agents with PE package management </a></li>
+                              <li class="topicref"><a href="installing_agents.html#install_nix_agents_with_your_own_package_management">Install *nix agents with your own package management </a></li>
+                              <li class="topicref"><a href="installing_agents.html#install_nix_agents_using_a_manually_transferred_certificate">Install *nix agents using a manually transferred certificate </a></li>
+                              <li class="topicref"><a href="installing_agents.html#install_nix_agents_no_internet">Install *nix agents without internet access </a><ul>
+                                    <li class="topicref"><a href="installing_agents.html#install_nix_agents_pe_package_management_no_internet">Install *nix agents with PE package management without internet access </a></li>
+                                    <li class="topicref"><a href="installing_agents.html#install_nix_agents_with_your_own_package_management_no_internet">Install *nix agents with your own package management without internet access </a></li>
+                                    <li class="topicref"><a href="installing_agents.html#set_compilers_to_install_agents_from_your_own_package_management">Install *nix agents from compilers using your own package management without internet
+                                          access</a></li>
+                                 </ul>
+                              </li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="installing_agents.html#installing_windows_agents">Install Windows agents </a><ul>
+                              <li class="topicref"><a href="installing_agents.html#unique_485118496">Install agents from the console</a></li>
+                              <li class="topicref"><a href="installing_agents.html#install_windows_agents_with_pe_package_management">Install Windows agents with PE package management </a></li>
+                              <li class="topicref"><a href="installing_agents.html#install_windows_agents_using_a_manually_transferred_certificate">Install Windows agents using a manually transferred certificate</a></li>
+                              <li class="topicref"><a href="installing_agents.html#install_windows_agents_with_the_msi_package">Install Windows agents with the .msi package</a><ul>
+                                    <li class="topicref"><a href="installing_agents.html#install_windows_agents_with_the_installer">Install Windows agents with the installer</a></li>
+                                    <li class="topicref"><a href="installing_agents.html#install_windows_msiexec_CLI">Install Windows agents using msiexec from the command line</a></li>
+                                    <li class="topicref"><a href="installing_agents.html#msi_properties">MSI properties </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="installing_agents.html#windows_agent_installation_details">Windows agent installation details </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="installing_agents.html#installing-mac-os-x-agents">Install macOS agents</a><ul>
+                              <li class="topicref"><a href="installing_agents.html#install_macosx_agents_from_finder">Install macOS agents from Finder </a></li>
+                              <li class="topicref"><a href="installing_agents.html#install_macosx_agents_from_the_command_line">Install macOS agents from the command line </a></li>
+                              <li class="topicref"><a href="installing_agents.html#macosx_agent_installation_details">  macOS agent installation details</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="installing_agents.html#installing_non_root_agents">Install non-root agents </a><ul>
+                              <li class="topicref"><a href="installing_agents.html#install_nonroot_nix_agents">Install non-root *nix agents</a></li>
+                              <li class="topicref"><a href="installing_agents.html#install_nonroot_windows_agents">Install non-root Windows agents</a></li>
+                              <li class="topicref"><a href="installing_agents.html#non-root_user_functionality">Non-root user functionality </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="installing_agents.html#managing_CSRs">Managing certificate signing requests</a><ul>
+                              <li class="topicref"><a href="installing_agents.html#managing_certificate_signing_requests_console">Managing certificate signing requests in the console</a></li>
+                              <li class="topicref"><a href="installing_agents.html#managing_certificate_signing_requests_cli">Managing certificate signing requests on the command line</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="installing_agents.html#configuring_agents">Configuring agents </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="installing_compile_masters.html#compiler_installation">Installing compilers </a><ul>
+                        <li class="topicref"><a href="installing_compile_masters.html#how_compilers_work">How compilers work</a></li>
+                        <li class="topicref"><a href="installing_compile_masters.html#using_load_balancers_with_compilers">Using load balancers with compilers </a></li>
+                        <li class="topicref"><a href="installing_compile_masters.html#install_compilers">Install compilers </a></li>
+                        <li class="topicref"><a href="installing_compile_masters.html#convert-compiler">Convert existing compilers</a></li>
+                        <li class="topicref"><a href="installing_compile_masters.html#configure_compilers_for_orchestrator_scale">Configure compilers</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="installing_pe_client_tools.html#installing_pe_client_tools">Installing PE client tools</a><ul>
+                        <li class="topicref"><a href="installing_pe_client_tools.html#supported_pe_client_tools_operating_systems">Supported PE client tools operating systems </a></li>
+                        <li class="topicref"><a href="installing_pe_client_tools.html#install_pe_client_tools_on_a_managed_workstation">Install PE client tools on a managed workstation </a></li>
+                        <li class="topicref"><a href="installing_pe_client_tools.html#install_pe_client_tools_on_an_unmanaged_nix_workstation">Install PE client tools on an unmanaged workstation </a><ul>
+                              <li class="topicref"><a href="installing_pe_client_tools.html#install_on_a_linux_workstation">Install PE client tools on an unmanaged Linux workstation </a></li>
+                              <li class="topicref"><a href="installing_pe_client_tools.html#install_pe_client_tools_on_an_unmanaged_windows_workstation">Install PE client tools on an unmanaged Windows workstation </a></li>
+                              <li class="topicref"><a href="installing_pe_client_tools.html#install_pe_client_tools_on_an_unmanaged_macos_workstation">Install PE client tools on an unmanaged macOS workstation </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="installing_pe_client_tools.html#configuring_and_using_pe_client_tools">Configuring and using PE client tools </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="installing_postgresql.html#installing_external_postgres">Installing external PostgreSQL  </a><ul>
+                        <li class="topicref"><a href="installing_postgresql.html#install_standalone_pe-postgresql">Install standalone PE-PostgreSQL</a></li>
+                        <li class="topicref"><a href="installing_postgresql.html#install_unmanaged_postgres">Install unmanaged PostgreSQL  </a><ul>
+                              <li class="topicref"><a href="installing_postgresql.html#create_the_external_postgresql_instance">Create the unmanaged PostgreSQL instance </a></li>
+                              <li class="topicref"><a href="installing_postgresql.html#create_pe_databases_on_the_postgresql_instance">Create PE databases on the unmanaged PostgreSQL instance </a></li>
+                              <li class="topicref"><a href="installing_postgresql.html#establish_ssl_between_pe_and_the_external_postgresql_instance">Establish SSL between PE and the unmanaged PostgreSQL instance </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="uninstalling.html#uninstalling">Uninstalling </a><ul>
+                        <li class="topicref"><a href="uninstalling.html#uninstall_infra_nodes">Uninstall infrastructure nodes </a></li>
+                        <li class="topicref"><a href="uninstalling.html#uninstall_agents">Uninstall agents</a><ul>
+                              <li class="topicref"><a href="uninstalling.html#uninstall_nix_agents">Uninstall *nix agents</a></li>
+                              <li class="topicref"><a href="uninstalling.html#uninstall_windows_agents">Uninstall Windows agents</a></li>
+                              <li class="topicref"><a href="uninstalling.html#uninstall_macosx_agents">Uninstall macOS agents</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="uninstalling.html#uninstaller_options">Uninstaller options </a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="upgrading.html">Upgrading</a><ul>
+                  <li class="topicref"><a href="upgrading_pe.html#upgrading_pe">Upgrading Puppet Enterprise  </a><ul>
+                        <li class="topicref"><a href="upgrading_pe.html#supported_upgrade_paths">Upgrade paths </a></li>
+                        <li class="topicref"><a href="upgrading_pe.html#upgrade_cautions">Upgrade cautions</a></li>
+                        <li class="topicref"><a href="upgrading_pe.html#test_modules_before_pe_upgrade">Test modules before upgrade</a></li>
+                        <li class="topicref"><a href="upgrading_pe.html#upgrade_standard">Upgrade a standard installation</a></li>
+                        <li class="topicref"><a href="upgrading_pe.html#migrate_split_mono">Migrate from a split to a standard installation</a></li>
+                        <li class="topicref"><a href="upgrading_pe.html#upgrading_postgresql">Upgrading PostgreSQL</a></li>
+                        <li class="topicref"><a href="upgrading_pe.html#checking_for_updates">Checking for updates </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="upgrading_agents.html#upgrading_agents">Upgrading agents </a><ul>
+                        <li class="topicref"><a href="upgrading_agents.html#upgrade_agents_using_the_puppet_agent_module">Upgrade agents using the puppet_agent module </a></li>
+                        <li class="topicref"><a href="upgrading_agents.html#upgrade_agents_script">Upgrade agents using a script</a><ul>
+                              <li class="topicref"><a href="upgrading_agents.html#upgrade_agents_installed_with_the_installation_script">Upgrade a *nix agent using a script </a></li>
+                              <li class="topicref"><a href="upgrading_agents.html#upgrade_windows_agent_script">Upgrade a Windows agent using a script </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="upgrading_agents.html#upgrade_agents_without_internet_access">Upgrade agents without internet access</a></li>
+                        <li class="topicref"><a href="upgrading_agents.html#upgrading-agent-independently">Upgrading the agent independent of PE</a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="configuring_pe.html">Configuring Puppet Enterprise  </a><ul>
+                  <li class="topicref"><a href="config_intro.html#config_intro">Methods for configuring Puppet Enterprise  </a><ul>
+                        <li class="topicref"><a href="config_intro.html#configure_settings_using_the_console">Configure settings using the console </a><ul>
+                              <li class="topicref"><a href="config_intro.html#set-configuration-data">Set configuration data</a></li>
+                              <li class="topicref"><a href="config_intro.html#set_parameters">Set parameters </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="config_intro.html#configure_settings_with_hiera">Configure settings with Hiera  </a></li>
+                        <li class="topicref"><a href="config_intro.html#configure-settings-peconf">Configure settings in pe.conf  </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="config_puppetserver.html#configuring_and_tuning_puppet_server">Configuring and tuning Puppet Server  </a><ul>
+                        <li class="topicref"><a href="config_puppetserver.html#tune_the_maximum_number_of_jruby_instances">Tune the maximum number of JRuby instances</a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#tune_max_requests_per_instance">Tune the maximum requests per JRuby instance</a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#config_code_cache">Tune the reserved_code_cache</a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#tune_ruby_load_path">Tune the Ruby load path </a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#config_multithread_setting_puppetserver">Tune the multithreaded server setting</a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#enable_or_disable_environment_class_cache_enabled">Enable or disable cached data when updating classes  </a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#config-puppetserver-environment-timeout">Change the environment_timeout setting</a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#add_certificates_to_the_puppet_admin_certificate_whitelist">Add certificates to the puppet-admin certificate whitelist </a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#disable_update_checking">Disable update checking </a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#puppet_server_configuration_files">  Puppet Server configuration files </a></li>
+                        <li class="topicref"><a href="config_puppetserver.html#pe_puppet_server_conf_settings">pe-puppet-server.conf settings </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="config_console.html#config_console">Configuring and tuning the console </a><ul>
+                        <li class="topicref"><a href="config_console.html#configure_the_pe_console_and_console_services">Configure the PE console and console-services </a><ul>
+                              <li class="topicref"><a href="config_console.html#console_and_console_services_parameters">Console and console-services parameters </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="config_console.html#manage_https_redirect">Manage the HTTPS redirect</a><ul>
+                              <li class="topicref"><a href="config_console.html#customize_the_https_redirect_target_url">Customize the HTTPS redirect target URL</a></li>
+                              <li class="topicref"><a href="config_console.html#disable_https_redirect">Disable the HTTPS redirect </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="config_console.html#tuning_the_postgresql_buffer_pool_size">Tuning the PostgreSQL buffer pool size </a></li>
+                        <li class="topicref"><a href="config_console.html#task-5039">Enable data editing in the console</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="configuring_security_settings.html">Configuring and tuning security settings</a><ul>
+                        <li class="topicref"><a href="configuring_cipher_suites.html">Configure cipher suites</a></li>
+                        <li class="topicref"><a href="configuring_ssl_protocols.html">Configure SSL protocols</a></li>
+                        <li class="topicref"><a href="configuring_rbac.html">Configure RBAC and token-based authentication settings</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="config_puppetdb.html#configuring_and_tuning_puppetdb">Configuring and tuning PuppetDB  </a><ul>
+                        <li class="topicref"><a href="config_puppetdb.html#configure_agent_run_reports_in_hiera">Configure agent run reports</a></li>
+                        <li class="topicref"><a href="config_puppetdb.html#configure_command_processing_threads">Configure command processing threads </a></li>
+                        <li class="topicref"><a href="config_puppetdb.html#configure_node_purge_ttl">Configure how long before PE stops managing deactivated nodes   </a></li>
+                        <li class="topicref"><a href="config_puppetdb.html#change_the_puppetdb_user_password">Change the PuppetDB user password </a></li>
+                        <li class="topicref"><a href="config_puppetdb.html#config_blacklisted_facts">Configure excluded facts</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="config_orchestration.html#config_orchestration">Configuring and tuning orchestration </a><ul>
+                        <li class="topicref"><a href="config_orchestration.html#configure_the_orchestrator_and_pe_orchestration_services">Configure the orchestrator and pe-orchestration-services </a></li>
+                        <li class="topicref"><a href="config_orchestration.html#configure_pxp_agent_log_file_location"> Configure the PXP agent</a></li>
+                        <li class="topicref"><a href="config_orchestration.html#correct_arp_table_overflow">Correct ARP table overflow </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="configuring_proxies.html#configuring_proxies">Configuring proxies</a><ul>
+                        <li class="topicref"><a href="configuring_proxies.html#installing_agents_through_a_proxy">Downloading agent installation packages through a proxy</a></li>
+                        <li class="topicref"><a href="configuring_proxies.html#proxying_agent_traffic">Setting a proxy for agent traffic</a></li>
+                        <li class="topicref"><a href="configuring_proxies.html#proxying_code_manager_traffic">Setting a proxy for Code Manager traffic</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="config_java_args.html#config_java_args">Configuring Java arguments</a><ul>
+                        <li class="topicref"><a href="config_java_args.html#increase_the_java_heap_size_for_pe_java_services">Increase the Java heap size for PE Java services </a></li>
+                        <li class="topicref"><a href="config_java_args.html#disable_java_garbage_collection_logging">Disable Java garbage collection logging </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="config_ulimit.html#configuring_ulimit_for_pe_services">Configuring ulimit for PE services </a><ul>
+                        <li class="topicref"><a href="config_ulimit.html#config_ulimit_for_pe_services">Configure ulimit for PE services</a><ul>
+                              <li class="topicref"><a href="config_ulimit.html#config_ulimit_systemd">Configure ulimit using systemd</a></li>
+                              <li class="topicref"><a href="config_ulimit.html#config_ulimit_upstart">Configure ulimit using upstart</a></li>
+                              <li class="topicref"><a href="config_ulimit.html#config_ulimit_other_init_systems">Configure ulimit on other init systems</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="tuning_standard.html#tuning_standard">Tuning standard installations </a><ul>
+                        <li class="topicref"><a href="tuning_standard.html#master_tuning">Master tuning</a></li>
+                        <li class="topicref"><a href="tuning_standard.html#compiler_tuning">Compiler tuning</a></li>
+                        <li class="topicref"><a href="tuning_standard.html#using_the_puppet_infrastructure_tune_command">Using the puppet infrastructure tune command</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="config_files.html#writing_configuration_files">Writing configuration files </a><ul>
+                        <li class="topicref"><a href="config_files.html#configuration_file_syntax">Configuration file syntax </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="analytics_overview.html#analytics_overview">Analytics data collection </a><ul>
+                        <li class="topicref"><a href="analytics_overview.html#what_data_does_pe_collect">What data does Puppet Enterprise collect? </a></li>
+                        <li class="topicref"><a href="analytics_overview.html#opt_out_during_the_installation_process">Opt out during the installation process </a></li>
+                        <li class="topicref"><a href="analytics_overview.html#analytics_opt_out_after_install">Opt out after installing </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="static_catalogs.html#static_catalogs">Static catalogs in Puppet Enterprise  </a><ul>
+                        <li class="topicref"><a href="static_catalogs.html#enabling_static_catalogs">Enabling static catalogs </a></li>
+                        <li class="topicref"><a href="static_catalogs.html#static_catalogs_global_disable_hiera">Disabling static catalogs globally with Hiera  </a></li>
+                        <li class="topicref"><a href="static_catalogs.html#using_static_catalogs_without_file_sync">Using static catalogs without file sync </a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="dr_configuring.html">Configuring disaster recovery</a><ul>
+                  <li class="topicref"><a href="dr_overview.html#dr-overview">Disaster recovery</a><ul>
+                        <li class="topicref"><a href="dr_overview.html#dr-architecture">Disaster recovery architecture </a></li>
+                        <li class="topicref"><a href="dr_overview.html#dr-failovers">What happens during failovers </a></li>
+                        <li class="topicref"><a href="dr_overview.html#dr-requirements">System and software requirements for disaster recovery</a></li>
+                        <li class="topicref"><a href="dr_overview.html#dr-classification-changes">Classification changes in disaster recovery installations </a></li>
+                        <li class="topicref"><a href="dr_overview.html#dr-load-balancer-timeout">Load balancer timeout in disaster recovery installations </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="dr_configure.html#dr-configure">Configure disaster recovery</a><ul>
+                        <li class="topicref"><a href="dr_configure.html#dr-provision-replica">Provision and enable a replica </a><ul>
+                              <li class="topicref"><a href="dr_configure.html#dr-geodiverse-agent-comms">Managing agent communication in geo-diverse installations</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="dr_configure.html#dr-promote-replica">Promote a replica </a></li>
+                        <li class="topicref"><a href="dr_configure.html#dr-provision-replica-using-failed-master">Enable a new replica using a failed master</a></li>
+                        <li class="topicref"><a href="dr_configure.html#dr-forget-replica">Forget a replica </a></li>
+                        <li class="topicref"><a href="dr_configure.html#dr-reinitialize-replica">Reinitialize a replica</a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="console_accessing.html#accessing_the_console">Accessing the console </a><ul>
+                  <li class="topicref"><a href="console_accessing.html#reaching_the_console">Reaching the console</a></li>
+                  <li class="topicref"><a href="console_accessing.html#accepting_console_certificate">Accepting the console's certificate</a></li>
+                  <li class="topicref"><a href="console_accessing.html#console_log_in">Logging in </a></li>
+                  <li class="topicref"><a href="console_accessing.html#generate_a_user_password_reset_token">Generate a user password reset token </a></li>
+                  <li class="topicref"><a href="console_accessing.html#reset_the_admin_password">Reset the console administrator password </a><ul>
+                        <li class="topicref"><a href="console_accessing.html#troubleshooting_the_pe_admin_account_is_unable_to_log_in">Troubleshooting login to the PE admin account</a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="managing_access.html">Managing access</a><ul>
+                  <li class="topicref"><a href="rbac_permissions_intro.html#about_rbac_permissions">User permissions and user roles</a><ul>
+                        <li class="topicref"><a href="rbac_permissions_intro.html#structure_of_user_permissions">Structure of user permissions </a></li>
+                        <li class="topicref"><a href="rbac_permissions_intro.html#user_permissions">User permissions </a></li>
+                        <li class="topicref"><a href="rbac_permissions_intro.html#working_with_node_group_permissions">Working with node group permissions </a></li>
+                        <li class="topicref"><a href="rbac_permissions_intro.html#best_practices_for_assigning_permissions">Best practices for assigning permissions </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="rbac_user_roles_intro.html#creating_and_managing_users_and_user_roles">Creating and managing local users and user roles </a><ul>
+                        <li class="topicref"><a href="rbac_user_roles_intro.html#create_a_new_user">Create a new user </a></li>
+                        <li class="topicref"><a href="rbac_user_roles_intro.html#give_the_user_access">Give a new user access to the console</a></li>
+                        <li class="topicref"><a href="rbac_user_roles_intro.html#create_a_new_user_role">Create a new user role </a></li>
+                        <li class="topicref"><a href="rbac_user_roles_intro.html#assign_permissions_to_a_user_role">Assign permissions to a user role </a></li>
+                        <li class="topicref"><a href="rbac_user_roles_intro.html#add_a_user_to_a_user_role">Add a user to a user role </a></li>
+                        <li class="topicref"><a href="rbac_user_roles_intro.html#remove_a_user_from_a_user_role">Remove a user from a user role </a></li>
+                        <li class="topicref"><a href="rbac_user_roles_intro.html#revoke_a_user_s_access">Revoke a user’s access </a></li>
+                        <li class="topicref"><a href="rbac_user_roles_intro.html#delete_a_user">Delete a user </a></li>
+                        <li class="topicref"><a href="rbac_user_roles_intro.html#delete-user-role">Delete a user role</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="rbac_ldap_intro.html#connecting_puppet_enterprise_with_external_directory_services">Connecting external directory services to PE</a><ul>
+                        <li class="topicref"><a href="rbac_ldap_intro.html#connect_to_an_external_directory_service">Connect to an external directory service </a></li>
+                        <li class="topicref"><a href="rbac_ldap_intro.html#external_directory_settings">External directory settings </a></li>
+                        <li class="topicref"><a href="rbac_ldap_intro.html#verify_directory_server_certificates">Verify directory server certificates </a></li>
+                        <li class="topicref"><a href="rbac_ldap_intro.html#rbac_ldap_revoke_admin_custom_password_policies">Enable custom password policies through LDAP</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="rbac_user_roles_user_groups_ex_dir.html#working_with_user_groups_from_an_external_directory_service">Working with user groups from an external directory service </a><ul>
+                        <li class="topicref"><a href="rbac_user_roles_user_groups_ex_dir.html#import_a_user_group_from_an_external_directory_service">Import a user group from an external directory service </a><ul>
+                              <li class="topicref"><a href="rbac_user_roles_user_groups_ex_dir.html#troubleshooting_a_pe_user_and_user_group_have_the_same_name">Troubleshooting: A PE user and user group have the same name </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_user_roles_user_groups_ex_dir.html#assign_a_user_group_to_a_user_role">Assign a user group to a user role </a></li>
+                        <li class="topicref"><a href="rbac_user_roles_user_groups_ex_dir.html#delete_a_user_group">Delete a user group </a></li>
+                        <li class="topicref"><a href="rbac_user_roles_user_groups_ex_dir.html#removing_a_remote_user_s_access_to_pe">Removing a remote user’s access to PE </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="rbac_token_auth_intro.html#token_based_authentication">Token-based authentication </a><ul>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#configuring_puppet_access">Configure puppet-access </a><ul>
+                              <li class="topicref"><a href="rbac_token_auth_intro.html#configuration_file_settings_for_puppet_access">Configuration file settings for puppet-access </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#generate_a_token_using_puppet_access">Generate a token using puppet-access </a></li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#generate_a_token_using_the_api_endpoint">Generate a token using the API endpoint </a><ul>
+                              <li class="topicref"><a href="rbac_token_auth_intro.html#use_a_token_with_the_pe_api_endpoints">Use a token with the PE API endpoints </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#generate_a_token_for_use_by_a_service_using_puppet_access">Generate a token for use by a service </a></li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#change_the_token_s_default_lifetime">Change the token's default lifetime </a></li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#setting_a_token_specific_lifetime">Setting a token-specific lifetime </a></li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#account_expiry_rbac">Change account expiration settings </a></li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#set_a_token_specific_label">Set a token-specific label </a></li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#view_token_activity">View token activity </a></li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#revoking_a_token">Revoking a token </a></li>
+                        <li class="topicref"><a href="rbac_token_auth_intro.html#delete_a_token_file">Delete a token file </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="rbac_api_v1.html">RBAC API v1</a><ul>
+                        <li class="topicref"><a href="rbac_api_v1_endpoints.html#role_based_access_control_v1_api_endpoints">Endpoints </a></li>
+                        <li class="topicref"><a href="rbac_api_v1_forming_requests.html#forming_rbac_requests_api_v1">Forming RBAC API requests </a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_forming_requests.html#content_type_headers_in_the_rbac_api">Content-type headers in the RBAC API </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_api_v1_user.html#user_endpoints_api_v1">Users endpoints</a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_user.html#user_keys">Users keys </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user.html#get_users">GET /users </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user.html#get_users_lt_sid_gt">GET /users/&lt;sid&gt;</a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user.html#get_users_current">GET /users/current </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user.html#post_users">POST /users </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user.html#put_users_lt_sid_gt">PUT /users/&lt;sid&gt; </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user.html#delete_users_lt_sid_gt">DELETE /users/&lt;sid&gt; </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_api_v1_user_group.html#user_group_endpoints_api_v1">User group endpoints </a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_user_group.html#user_group_keys">User group keys </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_group.html#get_groups">GET /groups </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_group.html#get_groups_lt_sid_gt">GET /groups/&lt;sid&gt; </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_group.html#post_groups">POST /groups </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_group.html#put_groups_lt_sid_gt">PUT /groups/&lt;sid&gt; </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_group.html#delete_groups_lt_sid_gt">DELETE /groups/&lt;sid&gt;</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_api_v1_user_role.html#user_role_endpoints_api_v1">User roles endpoints</a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_user_role.html#user_role_keys">User role keys </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_role.html#get_roles">GET /roles </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_role.html#get_roles_lt_rid_gt">GET /roles/&lt;rid&gt;</a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_role.html#post_roles">POST /roles </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_role.html#put_roles_lt_rid_gt">PUT /roles/&lt;rid&gt; </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_user_role.html#delete_roles_lt_rid_gt">DELETE /roles/&lt;rid&gt;</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_api_v1_permissions.html#permissions_endpoints_api_v1">Permissions endpoints </a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_permissions.html#permissions_keys">Permissions keys </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_permissions.html#get_types">GET /types </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_permissions.html#post_permitted">POST /permitted </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_permissions.html#rbac_api_v1_permissions_get_permitted_object_action">GET /permitted/&lt;object-type&gt;/&lt;action&gt;</a></li>
+                              <li class="topicref"><a href="rbac_api_v1_permissions.html#rbac_api_v1_permissions_get_permitted_object_action_uuid">GET /permitted/&lt;object-type&gt;/&lt;action&gt;/&lt;uuid&gt;</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_api_v1_token.html#token_endpoints_api_v1">Token endpoints</a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_token.html#user_role_keys">Token keys </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_token.html#post_auth_token">POST /auth/token </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_api_v1_directory.html#directory_service_endpoints_api_v1">Directory service endpoints </a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_directory.html#get_ds">GET /ds </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_directory.html#get_ds_test">GET /ds/test </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_directory.html#put_ds_test">PUT /ds/test </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_directory.html#put_ds">PUT /ds </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_api_v1_password.html#password_endpoints_api_v1">Password endpoints</a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_password.html#post_users_sid_password_reset">POST /users/:sid/password/reset</a></li>
+                              <li class="topicref"><a href="rbac_api_v1_password.html#post_auth_reset">POST /auth/reset </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_password.html#put_users_current_password">PUT /users/current/password </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_api_v1_service_errors.html#rbac_service_errors_api_v1">RBAC service errors </a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_service_errors.html#error_response_format">Error response format </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_service_errors.html#general_error_responses">General error responses </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rbac_api_v1_config.html#configuration_options_api_v1">Configuration options </a><ul>
+                              <li class="topicref"><a href="rbac_api_v1_config.html#rbac_service_configuration">RBAC service configuration </a></li>
+                              <li class="topicref"><a href="rbac_api_v1_config.html#rbac_database_configuration">RBAC database configuration </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="rbac_api_v2_endpoints.html">RBAC API v2 </a><ul>
+                        <li class="topicref"><a href="rbac_api_v2_tokens_endpoints.html#rbac_api_v2_tokens_endpoints">Tokens endpoints</a><ul>
+                              <li class="topicref"><a href="rbac_api_v2_tokens_endpoints.html#delete_tokens">DELETE /tokens </a></li>
+                              <li class="topicref"><a href="rbac_api_v2_tokens_endpoints.html#delete_tokens_lt_token_gt">DELETE /tokens/&lt;token&gt;</a></li>
+                              <li class="topicref"><a href="rbac_api_v2_tokens_endpoints.html#rbac_api_v2_auth_token_auth_post">POST /auth/token/authenticate</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="activity_api.html">Activity service API </a><ul>
+                        <li class="topicref"><a href="activity_api_forming_requests.html#forming_requests_to_the_activity_service_api">Forming activity service API requests</a></li>
+                        <li class="topicref"><a href="activity_api_event_types.html#event_types_reported_by_the_activity_service">Event types reported by the activity service </a></li>
+                        <li class="topicref"><a href="activity_api_events.html#activity_api_events">Events endpoints</a><ul>
+                              <li class="topicref"><a href="activity_api_events.html#get_v1_events">GET /v1/events </a></li>
+                              <li class="topicref"><a href="activity_api_events.html#get_v1_events_csv">GET /v1/events.csv </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="inspecting_your_infrastructure.html">Inspecting your infrastructure </a><ul>
+                  <li class="topicref"><a href="monitor_infrastructure_state.html#monitor_current_infrastructure_state">Monitoring current infrastructure state </a><ul>
+                        <li class="topicref"><a href="monitor_infrastructure_state.html#node_run_statuses">Node run statuses </a><ul>
+                              <li class="topicref"><a href="monitor_infrastructure_state.html#how_puppet_determines_node_run_statuses">How Puppet determines node run statuses </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="monitor_infrastructure_state.html#filtering_nodes_on_the_overview_page">Filtering nodes on the Status page </a><ul>
+                              <li class="topicref"><a href="monitor_infrastructure_state.html#filter_by_node_run_status">Filter by node run status </a></li>
+                              <li class="topicref"><a href="monitor_infrastructure_state.html#filter_by_node_fact">Filter by node fact </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="monitor_infrastructure_state.html#filter_nodes_in_your_node_list">Filtering nodes in your node list</a><ul>
+                              <li class="topicref"><a href="monitor_infrastructure_state.html#filter_your_node_list_by_node_name">Filter your node list by node name</a></li>
+                              <li class="topicref"><a href="monitor_infrastructure_state.html#filter-your-nodes-by-pql">Filter your nodes by PQL query</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="monitor_infrastructure_state.html#monitor_pe_services">Monitor PE services </a><ul>
+                              <li class="topicref"><a href="monitor_infrastructure_state.html#view_the_puppet_services_status_monitor">View the Puppet Services status monitor </a></li>
+                              <li class="topicref"><a href="monitor_infrastructure_state.html#puppet_infrastructure_status_command">puppet infrastructure status command </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="viewing_packages_in_use.html#viewing_all_packages_in_use">Viewing and managing all packages in use </a><ul>
+                        <li class="topicref"><a href="viewing_packages_in_use.html#enable_package_data_collection">Enable package data collection </a></li>
+                        <li class="topicref"><a href="viewing_packages_in_use.html#collect_filter_and_export_package_data">View and manage package inventory </a></li>
+                        <li class="topicref"><a href="viewing_packages_in_use.html#view_package_data_collection_metadata">View package data collection metadata </a></li>
+                        <li class="topicref"><a href="viewing_packages_in_use.html#disable_package_data_collection">Disable package data collection </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="infrastructure_reports.html#infrastructure_reports">Infrastructure reports </a><ul>
+                        <li class="topicref"><a href="infrastructure_reports.html#working_with_the_reports_table">Working with the reports table </a></li>
+                        <li class="topicref"><a href="infrastructure_reports.html#filtering_reports">Filtering reports </a><ul>
+                              <li class="topicref"><a href="infrastructure_reports.html#filter_by_node_run_status">Filter by node run status </a></li>
+                              <li class="topicref"><a href="infrastructure_reports.html#filter_by_node_fact">Filter by node fact </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="infrastructure_reports.html#working_with_individual_reports">Working with individual reports </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="analyze_changes_across_runs.html#analyze_changes_across_puppet_runs">Analyzing changes across Puppet runs </a><ul>
+                        <li class="topicref"><a href="analyze_changes_across_runs.html#what_is_an_event">What is an event? </a></li>
+                        <li class="topicref"><a href="analyze_changes_across_runs.html#event_types">Event types </a></li>
+                        <li class="topicref"><a href="analyze_changes_across_runs.html#working_with_the_events_page">Working with the Events page </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="puppet_server_metrics.html">Viewing and managing Puppet Server metrics</a><ul>
+                        <li class="topicref"><a href="getting_started_with_graphite.html#getting_started_with_graphite">Getting started with Graphite</a><ul>
+                              <li class="topicref"><a href="getting_started_with_graphite.html#using_the_grafanadash_module">Using the Grafanadash module</a><ul>
+                                    <li class="topicref"><a href="getting_started_with_graphite.html#installing_the_grafanadash_module">Installing the Grafanadash module</a></li>
+                                    <li class="topicref"><a href="getting_started_with_graphite.html#running_grafana">Running Grafana</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="getting_started_with_graphite.html#enabling_puppet_servers_graphite_support">Enabling Puppet Server's Graphite support</a></li>
+                              <li class="topicref"><a href="getting_started_with_graphite.html#sample_grafana_dashboard_graphs">Sample Grafana dashboard graphs</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="available_graphite_metrics.html#available_graphite_metrics">Available Graphite metrics</a><ul>
+                              <li class="topicref"><a href="available_graphite_metrics.html#modifying_exported_metrics">Modifying exported metrics </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="status_api.html">Status API </a><ul>
+                        <li class="topicref"><a href="status_api_authenticating.html">Authenticating to the status API </a></li>
+                        <li class="topicref"><a href="status_api_forming_requests.html">Forming requests to the status API </a></li>
+                        <li class="topicref"><a href="status_api_json_endpoints.html#status_api_json_endpoints">JSON endpoints</a><ul>
+                              <li class="topicref"><a href="status_api_json_endpoints.html#get_status_v1_services">GET /status/v1/services </a></li>
+                              <li class="topicref"><a href="status_api_json_endpoints.html#get_status_v1_services_lt_service_name_gt">GET /status/v1/services/&lt;SERVICE NAME&gt;</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="status_api_plaintext_endpoints.html#activity_service_plaintext_endpoints">Activity service plaintext endpoints </a><ul>
+                              <li class="topicref"><a href="status_api_plaintext_endpoints.html#get_status_v1_simple">GET /status/v1/simple </a></li>
+                              <li class="topicref"><a href="status_api_plaintext_endpoints.html#get_status_v1_simple_lt_service_name_gt">GET /status/v1/simple/&lt;SERVICE NAME&gt;</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="status_api_metrics_endpoints.html#metrics_endpoints">Metrics endpoints </a><ul>
+                              <li class="topicref"><a href="status_api_metrics_endpoints.html#get_status_v1_services_pe_jruby_metrics">GET /status/v1/services/pe-jruby-metrics </a></li>
+                              <li class="topicref"><a href="status_api_metrics_endpoints.html#get_status_v1_services_pe_master">GET /status/v1/services/pe-master </a></li>
+                              <li class="topicref"><a href="status_api_metrics_endpoints.html#get_status_v1_services_pe_puppet_profiler">GET /status/v1/services/pe-puppet-profiler </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="metrics_api.html#metrics_api">The metrics API </a><ul>
+                              <li class="topicref"><a href="metrics_api.html#get_metrics_v1_mbeans">GET /metrics/v1/mbeans </a></li>
+                              <li class="topicref"><a href="metrics_api.html#post_metrics_v1_mbeans">POST /metrics/v1/mbeans </a></li>
+                              <li class="topicref"><a href="metrics_api.html#get_metrics_v1_mbeans_name">GET /metrics/v1/mbeans/&lt;name&gt; </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="managing_nodes.html">Managing nodes</a><ul>
+                  <li class="topicref"><a href="adding_and_removing_nodes.html#adding_and_removing_nodes">Adding and removing agent nodes</a><ul>
+                        <li class="topicref"><a href="adding_and_removing_nodes.html#managing_CSRs">Managing certificate signing requests</a><ul>
+                              <li class="topicref"><a href="adding_and_removing_nodes.html#managing_certificate_signing_requests_console">Managing certificate signing requests in the console</a></li>
+                              <li class="topicref"><a href="adding_and_removing_nodes.html#managing_certificate_signing_requests_cli">Managing certificate signing requests on the command line</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="adding_and_removing_nodes.html#remove_nodes">Remove agent nodes</a><ul>
+                              <li class="topicref"><a href="adding_and_removing_nodes.html#uninstall_nix_agents">Uninstall *nix agents</a></li>
+                              <li class="topicref"><a href="adding_and_removing_nodes.html#uninstall_windows_agents">Uninstall Windows agents</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="adding_and_removing_nodes_inventory.html#adding_and_removing_nodes_inventory">Adding and removing agentless nodes</a><ul>
+                        <li class="topicref"><a href="adding_and_removing_nodes_inventory.html#add_nodes_to_inventory">Add agentless nodes to the inventory</a></li>
+                        <li class="topicref"><a href="adding_and_removing_nodes_inventory.html#transport_configuration_options">Transport configuration options</a></li>
+                        <li class="topicref"><a href="adding_and_removing_nodes_inventory.html#add-devices-to-inventory">Add devices to the inventory</a></li>
+                        <li class="topicref"><a href="adding_and_removing_nodes_inventory.html#remove_nodes_from_inventory">Remove agentless nodes and devices from the inventory</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="node_count.html">How nodes are counted</a></li>
+                  <li class="topicref"><a href="run_puppet_on_nodes.html#run_puppet_on_nodes">Running Puppet on nodes</a><ul>
+                        <li class="topicref"><a href="run_puppet_on_nodes.html#running_puppet_with_the_orchestrator">Running Puppet with the orchestrator</a></li>
+                        <li class="topicref"><a href="run_puppet_on_nodes.html#running_puppet_with_ssh">Running Puppet with SSH</a></li>
+                        <li class="topicref"><a href="run_puppet_on_nodes.html#running_puppet_from_the_console">Running Puppet from the console</a></li>
+                        <li class="topicref"><a href="run_puppet_on_nodes.html#activity_logging_on_console_puppet_runs">Activity logging on console Puppet runs</a></li>
+                        <li class="topicref"><a href="run_puppet_on_nodes.html#troubleshooting_puppet_run_failures">Troubleshooting Puppet run failures</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="grouping_and_classifying_nodes.html#grouping_and_classifying_nodes">Grouping and classifying nodes</a><ul>
+                        <li class="topicref"><a href="grouping_and_classifying_nodes.html#how_node_group_inheritance_works">How node group inheritance works</a></li>
+                        <li class="topicref"><a href="grouping_and_classifying_nodes.html#best_practices_for_classifying_node_groups">Best practices for classifying node groups</a></li>
+                        <li class="topicref"><a href="grouping_and_classifying_nodes.html#creating_node_groups">Create node groups</a><ul>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#create_environment_node_groups">Create environment node groups</a></li>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#create_classification_node_groups">Create classification node groups </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="grouping_and_classifying_nodes.html#adding_nodes_to_a_node_group">Add nodes to a node group</a><ul>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#statically_add_nodes_to_a_node_group">Statically add nodes to a node group</a></li>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#dynamically_add_nodes">Dynamically add nodes to a node group</a></li>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#writing_node_group_rules">Writing node group rules</a></li>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#using_structured_and_trusted_facts_for_node_group_rules">Using structured and trusted facts for node group rules</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="grouping_and_classifying_nodes.html#declare_classes">Declare classes</a></li>
+                        <li class="topicref"><a href="grouping_and_classifying_nodes.html#task-5039">Enable data editing in the console</a></li>
+                        <li class="topicref"><a href="grouping_and_classifying_nodes.html#define_data_used_by_node_groups">Define data used by node groups </a><ul>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#set-configuration-data">Set configuration data</a></li>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#set_parameters">Set parameters </a></li>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#set_variables">Set variables </a></li>
+                              <li class="topicref"><a href="grouping_and_classifying_nodes.html#tips_for_specifying_parameter_and_variable_values">Tips for specifying parameter and variable values </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="grouping_and_classifying_nodes.html#view_nodes_in_a_node_group">View nodes in a node group </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="making_changes_to_node_groups.html#making_changes_to_node_groups">Making changes to node groups</a><ul>
+                        <li class="topicref"><a href="making_changes_to_node_groups.html#edit_node_groups">Edit or remove node groups </a></li>
+                        <li class="topicref"><a href="making_changes_to_node_groups.html#remove_dynamically_assigned_nodes_from_a_node_group">Remove nodes from a node group </a></li>
+                        <li class="topicref"><a href="making_changes_to_node_groups.html#remove_classes_from_a_node_group">Remove classes from a node group </a></li>
+                        <li class="topicref"><a href="making_changes_to_node_groups.html#edit_parameters">Edit or remove parameters </a></li>
+                        <li class="topicref"><a href="making_changes_to_node_groups.html#edit_variables">Edit or remove variables </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="environment_based_testing.html#environment_based_testing">Environment-based testing </a><ul>
+                        <li class="topicref"><a href="environment_based_testing.html#test_and_promote_a_parameter">Test and promote a parameter </a></li>
+                        <li class="topicref"><a href="environment_based_testing.html#test_and_promote_a_class">Test and promote a class </a></li>
+                        <li class="topicref"><a href="environment_based_testing.html#testing_code_with_canary_nodes_using_alternate_environments">Testing code with canary nodes using alternate environments </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="preconfigured_node_groups.html#preconfigured_node_groups">Preconfigured node groups </a><ul>
+                        <li class="topicref"><a href="preconfigured_node_groups.html#all_nodes_node_group">All Nodes node group </a></li>
+                        <li class="topicref"><a href="preconfigured_node_groups.html#infrastructure_node_groups">Infrastructure node groups </a><ul>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe_infrastructure_node_group">PE Infrastructure node group </a></li>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe_certificate_authority_node_group">PE Certificate Authority node group </a></li>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe_master_node_group">PE Master node group </a></li>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe_compiler_node_group">PE Compiler node group </a></li>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe_orchestrator_node_group">PE Orchestrator node group </a></li>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe_puppetdb_node_group">PE PuppetDB node group </a></li>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe_console_node_group">PE Console node group </a></li>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe_agent_node_group">PE Agent node group </a></li>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe_infrastructure_agent_node_group">PE Infrastructure Agent node group </a></li>
+                              <li class="topicref"><a href="preconfigured_node_groups.html#pe-database-node-group">PE Database node group</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="preconfigured_node_groups.html#environment_node_groups">Environment node groups </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="manage_windows_infrastructure.html">Managing Windows nodes</a><ul>
+                        <li class="topicref"><a href="installing_and_using_windows_modules.html#installing_and_using_windows_modules">Using the Windows module pack</a><ul>
+                              <li class="topicref"><a href="installing_and_using_windows_modules.html#windows_module_pack">  Windows module pack </a></li>
+                              <li class="topicref"><a href="installing_and_using_windows_modules.html#install_windows_module_pack">Install the Windows module pack </a></li>
+                              <li class="topicref"><a href="installing_and_using_windows_modules.html#manage_permissions_with_acl">Manage permissions with acl  </a><ul>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#view_file_permissions_with_acl">View file permissions with ACL </a></li>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#create_puppet_managed_permission">Create a Puppet managed permission </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="installing_and_using_windows_modules.html#create_puppet_managed_registry_keys">Create Puppet managed registry keys with registry </a><ul>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#view_registry_keys_and_values_puppet_resource">View registry keys and values with puppet resource  </a></li>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#create_managed_keys">Create managed keys </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="installing_and_using_windows_modules.html#create_install_repackage_with_chocolatey">Create, install and repackage packages with the chocolatey module</a><ul>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#view_existing_packages">View existing packages </a></li>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#install_chocolatey">Install Chocolatey </a></li>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#install_a_package_with_chocolatey">Install a package with chocolatey</a></li>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#repackage_packages">Copy an existing package and make it internal (repackaging packages) </a></li>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#create_package_with_chocolatey">Create a package with chocolatey  </a></li>
+                                    <li class="topicref"><a href="installing_and_using_windows_modules.html#uninstall_packages_with_chocolatey">Uninstall packages with Chocolatey</a></li>
+                                 </ul>
+                              </li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="managing_windows_configurations.html#managing_windows_configurations">Managing Windows configurations </a><ul>
+                              <li class="topicref"><a href="managing_windows_configurations.html#basic_tasks_and_concepts_in_windows">Basic tasks and concepts in Windows</a><ul>
+                                    <li class="topicref"><a href="managing_windows_configurations.html#practice_windows_tasks">Practice tasks</a><ul>
+                                          <li class="topicref"><a href="managing_windows_configurations.html#write_a_simple_manifest">Write a simple manifest </a></li>
+                                          <li class="topicref"><a href="managing_windows_configurations.html#validate_manifest_with_puppet_parser_validate">Validate your manifest with  puppet parser validate </a></li>
+                                          <li class="topicref"><a href="managing_windows_configurations.html#launch_the_puppet_command_prompt">Launch the Puppet command prompt </a></li>
+                                          <li class="topicref"><a href="managing_windows_configurations.html#simulate_a_run_with_noop">Simulate a Puppet run with --noop</a></li>
+                                          <li class="topicref"><a href="managing_windows_configurations.html#enforce_desired_state_puppet_apply">Enforce the desired state with puppet apply</a></li>
+                                       </ul>
+                                    </li>
+                                    <li class="topicref"><a href="managing_windows_configurations.html#understanding_idempotency">Understanding idempotency </a></li>
+                                    <li class="topicref"><a href="managing_windows_configurations.html#additional_command_line_tools">Additional command line tools</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="managing_windows_configurations.html#managing_windows_services">Manage Windows services </a><ul>
+                                    <li class="topicref"><a href="managing_windows_configurations.html#ensure_a_windows_service_is_running">Ensure a Windows service is running</a></li>
+                                    <li class="topicref"><a href="managing_windows_configurations.html#stop_a_windows_service">Stop a Windows service </a></li>
+                                    <li class="topicref"><a href="managing_windows_configurations.html#schedule_recurring_windows_task">Schedule a recurring task </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="managing_windows_configurations.html#manage_windows_users_and_groups">Manage Windows users and groups</a><ul>
+                                    <li class="topicref"><a href="managing_windows_configurations.html#manage_windows_administrator_accounts">Manage administrator accounts </a></li>
+                                    <li class="topicref"><a href="managing_windows_configurations.html#configure_apps_to_use_different_account">Configure an app to use a different account </a></li>
+                                    <li class="topicref"><a href="managing_windows_configurations.html#manage_local_groups">Manage local groups </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="managing_windows_configurations.html#executing_powershell_code">Executing PowerShell code </a></li>
+                              <li class="topicref"><a href="managing_windows_configurations.html#using_templates_to_manage_puppet_code">Using templates to better manage Puppet code </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="designing_system_configs_roles_and_profiles.html">Designing system configs: roles and profiles</a><ul>
+                        <li class="topicref"><a href="the_roles_and_profiles_method.html#the_roles_and_profiles_method">The roles and profiles method </a><ul>
+                              <li class="topicref"><a href="the_roles_and_profiles_method.html#configuring_roles_and_profiles">Configuring roles and profiles </a></li>
+                              <li class="topicref"><a href="the_roles_and_profiles_method.html#rules_for_profile_classes">Rules for profile classes </a></li>
+                              <li class="topicref"><a href="the_roles_and_profiles_method.html#rules_for_role_classes">Rules for role classes </a></li>
+                              <li class="topicref"><a href="the_roles_and_profiles_method.html#methods_for_data_lookup">Methods for data lookup </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="roles_and_profiles_example.html#roles_and_profiles_example">Roles and profiles example </a><ul>
+                              <li class="topicref"><a href="roles_and_profiles_example.html#configure_jenkins_master_servers_with_roles_and_profiles">Configure Jenkins master servers with roles and profiles </a><ul>
+                                    <li class="topicref"><a href="roles_and_profiles_example.html#set_up_your_prerequisites">Set up your prerequisites </a></li>
+                                    <li class="topicref"><a href="roles_and_profiles_example.html#choose_component_modules">Choose component modules </a></li>
+                                    <li class="topicref"><a href="roles_and_profiles_example.html#write_a_profile">Write a profile </a></li>
+                                    <li class="topicref"><a href="roles_and_profiles_example.html#set-data-for-profile">Set data for the profile</a></li>
+                                    <li class="topicref"><a href="roles_and_profiles_example.html#write_a_role">Write a role</a></li>
+                                    <li class="topicref"><a href="roles_and_profiles_example.html#assigning_the_role_to_nodes">Assign the role to nodes</a></li>
+                                 </ul>
+                              </li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="designing_advanced_profiles.html#designing_advanced_profiles">Designing advanced profiles </a><ul>
+                              <li class="topicref"><a href="designing_advanced_profiles.html#first_refactor_split_out_java">First refactor: Split out Java </a></li>
+                              <li class="topicref"><a href="designing_advanced_profiles.html#second_refactor_manage_the_heap">Second refactor: Manage the heap </a></li>
+                              <li class="topicref"><a href="designing_advanced_profiles.html#third_refactor_pin_the_version">Third refactor: Pin the version </a></li>
+                              <li class="topicref"><a href="designing_advanced_profiles.html#fourth_refactor_manually_manage_the_user_account">Fourth refactor: Manually manage the user account </a></li>
+                              <li class="topicref"><a href="designing_advanced_profiles.html#fifth_refactor_manage_more_dependencies">Fifth refactor: Manage more dependencies </a></li>
+                              <li class="topicref"><a href="designing_advanced_profiles.html#sixth_refactor_manage_logging_and_backups">Sixth refactor: Manage logging and backups </a></li>
+                              <li class="topicref"><a href="designing_advanced_profiles.html#seventh_refactor_use_a_reverse_proxy_for_https">Seventh refactor: Use a reverse proxy for HTTPS </a></li>
+                              <li class="topicref"><a href="designing_advanced_profiles.html#the_final_profile_code">The final profile code</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="designing_convenient_roles.html#designing_convenient_roles">Designing convenient roles </a><ul>
+                              <li class="topicref"><a href="designing_convenient_roles.html#first_approach_granular_roles">First approach: Granular roles </a></li>
+                              <li class="topicref"><a href="designing_convenient_roles.html#second_approach_conditional_logic">Second approach: Conditional logic </a></li>
+                              <li class="topicref"><a href="designing_convenient_roles.html#third_approach_nested_roles">Third approach: Nested roles </a></li>
+                              <li class="topicref"><a href="designing_convenient_roles.html#fourth_approach_multiple_roles_per_node">Fourth approach: Multiple roles per node </a></li>
+                              <li class="topicref"><a href="designing_convenient_roles.html#fifth_approach_super_profiles">Fifth approach: Super profiles </a></li>
+                              <li class="topicref"><a href="designing_convenient_roles.html#sixth_approach_building_roles_in_the_node_classifier">Sixth approach: Building roles in the node classifier </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="node_classifier_service_api.html">Node classifier API v1</a><ul>
+                        <li class="topicref"><a href="forming_node_classifier_requests.html#forming_node_classifier_requests">Forming node classifier requests </a><ul>
+                              <li class="topicref"><a href="forming_node_classifier_requests.html#authenticating_to_the_node_classifier_api">Authenticating to the node classifier API </a></li>
+                              <li class="topicref"><a href="forming_node_classifier_requests.html#using_pagination_parameters">Using pagination parameters </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="groups_endpoint.html#groups_endpoint">Groups endpoint</a><ul>
+                              <li class="topicref"><a href="groups_endpoint.html#get_v1_groups">GET /v1/groups </a></li>
+                              <li class="topicref"><a href="groups_endpoint.html#post_v1_groups">POST /v1/groups </a></li>
+                              <li class="topicref"><a href="groups_endpoint.html#get_v1_groups_id">GET /v1/groups/&lt;id&gt; </a></li>
+                              <li class="topicref"><a href="groups_endpoint.html#put_v1_groups_id">PUT /v1/groups/&lt;id&gt; </a></li>
+                              <li class="topicref"><a href="groups_endpoint.html#post_v1_groups_id">POST /v1/groups/&lt;id&gt;</a></li>
+                              <li class="topicref"><a href="groups_endpoint.html#delete_v1_groups_id">DELETE /v1/groups/&lt;id&gt;</a></li>
+                              <li class="topicref"><a href="groups_endpoint.html#post_v1_groups_id_pin">POST /v1/groups/&lt;id&gt;/pin </a></li>
+                              <li class="topicref"><a href="groups_endpoint.html#post_v1_groups_id_unpin">POST /v1/groups/&lt;id&gt;/unpin </a></li>
+                              <li class="topicref"><a href="groups_endpoint.html#get-v1-groups-id-rules">GET /v1/groups/:id/rules</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="groups_endpoint_examples.html#groups_endpoint_examples">Groups endpoint examples </a><ul>
+                              <li class="topicref"><a href="groups_endpoint_examples.html#create_a_group_called_my_nodes">Create a group called My Nodes </a></li>
+                              <li class="topicref"><a href="groups_endpoint_examples.html#get_the_group_id_of_my_nodes">Get the group ID of My Nodes </a></li>
+                              <li class="topicref"><a href="groups_endpoint_examples.html#pin_a_node_to_the_my_nodes_group">Pin a node to the My Nodes group </a></li>
+                              <li class="topicref"><a href="groups_endpoint_examples.html#pin_a_second_node_to_the_my_nodes_group">Pin a second node to the My Nodes group </a></li>
+                              <li class="topicref"><a href="groups_endpoint_examples.html#unpin_a_node_from_the_my_nodes_group">Unpin a node from the My Nodes group</a></li>
+                              <li class="topicref"><a href="groups_endpoint_examples.html#add_a_class_and_parameters_to_the_my_nodes_group">Add a class and parameters to the My Nodes group </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="classes_endpoint.html#classes_endpoint">Classes endpoint</a><ul>
+                              <li class="topicref"><a href="classes_endpoint.html#get_v1_classes">GET /v1/classes </a></li>
+                              <li class="topicref"><a href="classes_endpoint.html#get_v1_environments_environment_classes">GET /v1/environments/&lt;environment&gt;/classes </a></li>
+                              <li class="topicref"><a href="classes_endpoint.html#get_v1_environments_environment_classes_name">GET /v1/environments/&lt;environment&gt;/classes/&lt;name&gt; </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="classification_endpoint.html#classification_endpoint">Classification endpoint</a><ul>
+                              <li class="topicref"><a href="classification_endpoint.html#post_v1_classified_nodes_name">POST /v1/classified/nodes/&lt;name&gt; </a></li>
+                              <li class="topicref"><a href="classification_endpoint.html#post_v1_classified_nodes_name_explanation">POST /v1/classified/nodes/&lt;name&gt;/explanation </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="commands_endpoint.html#commands_endpoint">Commands endpoint</a><ul>
+                              <li class="topicref"><a href="commands_endpoint.html#post_v1_commands_unpin_from_all">POST /v1/commands/unpin-from-all </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="environments_endpoint.html#environments_endpoint">Environments endpoint </a><ul>
+                              <li class="topicref"><a href="environments_endpoint.html#get_v1_environments">GET /v1/environments </a></li>
+                              <li class="topicref"><a href="environments_endpoint.html#get_v1_environments_name">GET /v1/environments/&lt;name&gt; </a></li>
+                              <li class="topicref"><a href="environments_endpoint.html#put_v1_environments_name">PUT /v1/environments/&lt;name&gt; </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="nodes_endpoint.html#nodes_endpoint">Nodes check-in history endpoint </a><ul>
+                              <li class="topicref"><a href="nodes_endpoint.html#get_v1_nodes">GET /v1/nodes </a></li>
+                              <li class="topicref"><a href="nodes_endpoint.html#get_v1_nodes_node">GET /v1/nodes/&lt;node&gt; </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="group_children_endpoint.html#group_children_endpoint">Group children endpoint </a><ul>
+                              <li class="topicref"><a href="group_children_endpoint.html#get_v1_group_children_id">GET /v1/group-children/:id </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="rules_endpoint.html#rules_endpoint">Rules endpoint </a><ul>
+                              <li class="topicref"><a href="rules_endpoint.html#post_v1_rules_translate">POST /v1/rules/translate </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="import_hierarchy_endpoint.html#import_hierarchy_endpoint">Import hierarchy endpoint </a><ul>
+                              <li class="topicref"><a href="import_hierarchy_endpoint.html#post_v1_import_hierarchy">POST /v1/import-hierarchy </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="last_class_update_endpoint.html#last_class_update_endpoint">Last class update endpoint </a><ul>
+                              <li class="topicref"><a href="last_class_update_endpoint.html#get_v1_last_class_update">GET /v1/last-class-update </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="update_classes_endpoint.html#update_classes_endpoint">Update classes endpoint </a><ul>
+                              <li class="topicref"><a href="update_classes_endpoint.html#post_v1_update_classes">POST /v1/update-classes </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="validation_endpoints.html#validation_endpoints">Validation endpoints </a><ul>
+                              <li class="topicref"><a href="validation_endpoints.html#post_v1_validate_group">POST /v1/validate/group </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="node_classifier_errors.html#node_classifier_errors">Node classifier errors </a><ul>
+                              <li class="topicref"><a href="node_classifier_errors.html#error_response_description">Error response description </a></li>
+                              <li class="topicref"><a href="node_classifier_errors.html#internal_server_errors">Internal server errors </a></li>
+                              <li class="topicref"><a href="node_classifier_errors.html#not_found_errors">Not found errors </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="node_classifier_service_api_v2.html">Node classifier API v2</a><ul>
+                        <li class="topicref"><a href="classification_endpoint_v2.html#classification_endpoint">Classification endpoint</a><ul>
+                              <li class="topicref"><a href="post_v2_classified_nodes_name.html">POST /v2/classified/nodes/&lt;name&gt; </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="node_inventory_api.html#node_inventory_api">Node inventory API</a><ul>
+                        <li class="topicref"><a href="node_inventory_api.html#node_inventory_api_forming_requests">Node inventory API: forming requests</a></li>
+                        <li class="topicref"><a href="node_inventory_api.html#post_command_create-connection">POST /command/create-connection</a></li>
+                        <li class="topicref"><a href="node_inventory_api.html#inventory_api_post_command_delete-connection">POST /command/delete-connection</a></li>
+                        <li class="topicref"><a href="node_inventory_api.html#inventory_api_errors">Command endpoint error responses</a></li>
+                        <li class="topicref"><a href="node_inventory_api.html#get_query_connections">GET /query/connections</a></li>
+                        <li class="topicref"><a href="node_inventory_api.html#inventory_api_post_query_connections">POST /query/connections</a></li>
+                        <li class="topicref"><a href="node_inventory_api.html#inventory_api_query_errors">Query endpoint error responses</a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="orchestrating_puppet_and_tasks.html">Orchestrating Puppet, tasks, and plans</a><ul>
+                  <li class="topicref"><a href="running_jobs_with_puppet_orchestrator_overview.html#running_jobs_with_puppet_orchestrator_overview">Running jobs with Puppet orchestrator</a><ul>
+                        <li class="topicref"><a href="running_jobs_with_puppet_orchestrator_overview.html#puppet_orchestrator_technical_overview">  Puppet orchestrator technical overview </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="configuring_puppet_orchestrator.html#configuring_puppet_orchestrator">Configuring Puppet orchestrator </a><ul>
+                        <li class="topicref"><a href="configuring_puppet_orchestrator.html#pe-orchestration-settings">Orchestration services settings </a></li>
+                        <li class="topicref"><a href="configuring_puppet_orchestrator.html#setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator">Setting PE RBAC permissions and token authentication for orchestrator </a></li>
+                        <li class="topicref"><a href="configuring_puppet_orchestrator.html#enable_cached_catalogs_for_use_with_the_orchestrator">Enable cached catalogs for use with the orchestrator (optional) </a></li>
+                        <li class="topicref"><a href="configuring_puppet_orchestrator.html#puppet_orchestrator_configuration_files">Orchestrator configuration files </a></li>
+                        <li class="topicref"><a href="configuring_puppet_orchestrator.html#configuring-pe-bolt-services">PE  Bolt services configuration</a><ul>
+                              <li class="topicref"><a href="configuring_puppet_orchestrator.html#pe-bolt-server-configuration">  PE  Bolt server configuration</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="configuring_puppet_orchestrator.html#pe_ace_services_configuration">PE ACE services configuration</a><ul>
+                              <li class="topicref"><a href="configuring_puppet_orchestrator.html#pe_ace_server_configuration">  PE ACE server configuration</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="configuring_puppet_orchestrator.html#disabling_application_management_or_orchestration_services">Disabling application management or orchestration services </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="bolt_configure_orchestrator.html">Using Bolt with orchestrator</a></li>
+                  <li class="topicref"><a href="direct_puppet_a_workflow_for_controlling_change.html#direct_puppet_a_workflow_for_controlling_change">Direct Puppet: a workflow for controlling change </a><ul>
+                        <li class="topicref"><a href="direct_puppet_a_workflow_for_controlling_change.html#direct_puppet_workflow">Direct Puppet workflow</a><ul>
+                              <li class="topicref"><a href="direct_puppet_a_workflow_for_controlling_change.html#set_up_a_node_group_for_testing_new_features">Set up node groups for testing new features </a></li>
+                              <li class="topicref"><a href="direct_puppet_a_workflow_for_controlling_change.html#create_a_feature_branch">Create a feature branch </a></li>
+                              <li class="topicref"><a href="direct_puppet_a_workflow_for_controlling_change.html#deploy_code_to_the_puppet_master_and_test_it">Deploy code to the Puppet master and test it </a></li>
+                              <li class="topicref"><a href="direct_puppet_a_workflow_for_controlling_change.html#merge_and_promote_your_code">Merge and promote your code </a></li>
+                              <li class="topicref"><a href="direct_puppet_a_workflow_for_controlling_change.html#preview_the_job">Preview the job </a></li>
+                              <li class="topicref"><a href="direct_puppet_a_workflow_for_controlling_change.html#run_the_job_on_the_production_environment">Run the job on the production environment </a></li>
+                              <li class="topicref"><a href="direct_puppet_a_workflow_for_controlling_change.html#validate_your_production_changes">Validate your production changes </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="running_puppet_on_demand_with_orch.html">Running Puppet on demand</a><ul>
+                        <li class="topicref"><a href="running_puppet_on_demand_in_the_console.html#running_puppet_on_demand_in_the_console">Running Puppet on demand from the console</a><ul>
+                              <li class="topicref"><a href="running_puppet_on_demand_in_the_console.html#run_a_job_on_a_node_list">Run Puppet on a node list </a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_in_the_console.html#run_a_job_on_a_pql_query_console">Run Puppet on a PQL query </a><ul>
+                                    <li class="topicref"><a href="running_puppet_on_demand_in_the_console.html#add_custom_pql_queries">Add custom PQL queries to the console</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="running_puppet_on_demand_in_the_console.html#run-puppet-node-group-console">Run Puppet on a node group</a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_in_the_console.html#run_jobs_throughout_the_console">Run jobs throughout the console </a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_in_the_console.html#schedule-run">Schedule a Puppet run</a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_in_the_console.html#stop_a_job">Stop a job in progress</a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_in_the_console.html#delete_scheduled_job">Delete a scheduled job</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="running_puppet_on_demand_from_the_cli.html#running_puppet_on_demand_from_the_cli">Running Puppet on demand from the CLI</a><ul>
+                              <li class="topicref"><a href="running_puppet_on_demand_from_the_cli.html#run_a_job_on_on_a_pql_query">Run Puppet on a PQL query </a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_from_the_cli.html#run_a_job_on_a_list_of_nodes_or_a_single_node">Run Puppet on a list of nodes or a single node </a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_from_the_cli.html#run-puppet-on-node-group">Run Puppet on a node group</a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_from_the_cli.html#run_a_job_on_an_application_or_an_application_instance_in_an_environment">Run Puppet on an application or an application instance in an environment </a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_from_the_cli.html#puppet-job-run-options">puppet job run command options</a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_from_the_cli.html#post-run_node_status">Post-run node status</a></li>
+                              <li class="topicref"><a href="running_puppet_on_demand_from_the_cli.html#stop_a_job">Stop a job in progress</a></li>
+                              <li class="topicref"><a href="viewing_job_plans.html#viewing_job_plans">Viewing job plans</a><ul>
+                                    <li class="topicref"><a href="viewing_job_plans.html#view_a_job_plan_for_a_list_of_nodes_or_a_single_node">View a job plan for a list of nodes or a single node </a></li>
+                                    <li class="topicref"><a href="viewing_job_plans.html#view_a_job_plan_for_a_pql_nodes_query">View a job plan for a PQL nodes query </a></li>
+                                    <li class="topicref"><a href="viewing_job_plans.html#view_a_job_plan_for_applications_or_application_instances">View a job plan for applications or application instances </a></li>
+                                    <li class="topicref"><a href="viewing_job_plans.html#puppet-job-plan-options">Puppet job plan command options</a></li>
+                                 </ul>
+                              </li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_commands_endpoint.html#orchestrator_api_post_command_deploy">Running Puppet on demand with the API</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="bolt_to_pe_overview.html#bolt_to_pe_overview">Migrating Bolt tasks and plans to PE</a><ul>
+                        <li class="topicref"><a href="bolt_to_pe_overview.html#migrate_bolt_content_to_pe">Move Bolt content to a new PE repo</a></li>
+                        <li class="topicref"><a href="bolt_to_pe_overview.html#point_pe_to_bolt_project">Point PE to a Bolt project</a></li>
+                        <li class="topicref"><a href="bolt_to_pe_overview.html#bolt_to_pe_differences">PE workflows for Bolt users</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="running_tasks_and_plans_pe.html">Tasks and plans in PE</a><ul>
+                        <li class="topicref"><a href="installing_tasks.html#installing_tasks">Installing tasks and plans</a></li>
+                        <li class="topicref"><a href="running_tasks.html">Running tasks in PE</a><ul>
+                              <li class="topicref"><a href="running_tasks_in_the_console.html#running-tasks-console">Running tasks from the console</a><ul>
+                                    <li class="topicref"><a href="running_tasks_in_the_console.html#run-task-node-list">Run a task on a node list</a></li>
+                                    <li class="topicref"><a href="running_tasks_in_the_console.html#run-task-ssh">Run a task over SSH</a></li>
+                                    <li class="topicref"><a href="running_tasks_in_the_console.html#run-task-winrm">Run a task over WinRM</a></li>
+                                    <li class="topicref"><a href="running_tasks_in_the_console.html#run-task-pql-query-console">Run a task on a PQL query</a><ul>
+                                          <li class="topicref"><a href="running_tasks_in_the_console.html#add_custom_pql_queries">Add custom PQL queries to the console</a></li>
+                                       </ul>
+                                    </li>
+                                    <li class="topicref"><a href="running_tasks_in_the_console.html#run-task-node-group-console">Run a task on a node group</a></li>
+                                    <li class="topicref"><a href="running_tasks_in_the_console.html#schedule-task">Schedule a task</a></li>
+                                    <li class="topicref"><a href="running_tasks_in_the_console.html#stop_a_job">Stop a job in progress</a></li>
+                                    <li class="topicref"><a href="running_tasks_in_the_console.html#delete_scheduled_job">Delete a scheduled job</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="running_tasks_from_the_command_line.html#running-tasks-cli">Running tasks from the command line</a><ul>
+                                    <li class="topicref"><a href="running_tasks_from_the_command_line.html#run-task-pql-query">Run a task on a PQL query</a></li>
+                                    <li class="topicref"><a href="running_tasks_from_the_command_line.html#run-task-on-list-or-single-node">Run a task on a list of nodes or a single node</a></li>
+                                    <li class="topicref"><a href="running_tasks_from_the_command_line.html#run-task-node-group">Run a task on a node group</a></li>
+                                    <li class="topicref"><a href="running_tasks_from_the_command_line.html#puppet-task-run-options">puppet task run command options</a></li>
+                                    <li class="topicref"><a href="running_tasks_from_the_command_line.html#reviewing_task_job_output">Reviewing task job output</a></li>
+                                    <li class="topicref"><a href="running_tasks_from_the_command_line.html#inspect-tasks">Inspect tasks</a></li>
+                                    <li class="topicref"><a href="running_tasks_from_the_command_line.html#stop_a_job">Stop a job in progress</a></li>
+                                 </ul>
+                              </li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="running_plans_in_pe.html">Running plans in PE </a><ul>
+                              <li class="topicref"><a href="running_plans_from_the_console_.html#running_plans_in_the_console">Running plans from the console </a></li>
+                              <li class="topicref"><a href="running_plans_from_the_command_line.html#running_plans_from_the_command_line">Running plans from the command line</a><ul>
+                                    <li class="topicref"><a href="running_plans_from_the_command_line.html#puppet_plan_run_command_options">Plan command options</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="plans_limitations.html">Plan caveats and limitations</a></li>
+                              <li class="topicref"><a href="inspecting_plans.html">Inspecting plans</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="writing_tasks.html#writing_tasks">Writing tasks</a><ul>
+                        <li class="topicref"><a href="writing_tasks.html#secure_coding_practices_for_tasks">Secure coding practices for tasks</a></li>
+                        <li class="topicref"><a href="writing_tasks.html#naming_tasks">Naming tasks</a><ul>
+                              <li class="topicref"><a href="writing_tasks.html#single-platform-tasks">Single-platform tasks</a></li>
+                              <li class="topicref"><a href="writing_tasks.html#cross-platform-tasks">Cross-platform tasks</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="writing_tasks.html#sharing-executables">Sharing executables</a></li>
+                        <li class="topicref"><a href="writing_tasks.html#sharing_task_code">Sharing task code</a></li>
+                        <li class="topicref"><a href="writing_tasks.html#writing-remote-tasks">Writing remote tasks</a></li>
+                        <li class="topicref"><a href="writing_tasks.html#defining_task_parameters">Defining parameters in tasks</a></li>
+                        <li class="topicref"><a href="writing_tasks.html#returning_errors_in_tasks">Returning errors in tasks</a></li>
+                        <li class="topicref"><a href="writing_tasks.html#structured_input_and_output">Structured input and output</a><ul>
+                              <li class="topicref"><a href="writing_tasks.html#task_structured_input">Structured input</a></li>
+                              <li class="topicref"><a href="writing_tasks.html#returning_structured_output">Returning structured output</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="writing_tasks.html#converting-scripts-to-tasks">Converting scripts to tasks</a><ul>
+                              <li class="topicref"><a href="writing_tasks.html#wrapping-existing-script">Wrapping an existing script</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="writing_tasks.html#supporting_no-op_in_tasks">Supporting no-op in tasks</a></li>
+                        <li class="topicref"><a href="writing_tasks.html#task_metadata">Task metadata</a><ul>
+                              <li class="topicref"><a href="writing_tasks.html#adding_parameters_to_metadata">Adding parameters to metadata</a></li>
+                              <li class="topicref"><a href="writing_tasks.html#task-metadata-reference"> Task metadata reference </a></li>
+                              <li class="topicref"><a href="writing_tasks.html#task_metadata_types">Task metadata types</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="writing_tasks.html#bolt_specifying_parameters">Specifying parameters</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="writing_plans.html">Writing plans</a><ul>
+                        <li class="topicref"><a href="writing_plans_in_yaml_pe.html#writing_plans_in_yaml_pe">Writing plans in YAML</a><ul>
+                              <li class="topicref"><a href="writing_plans_in_yaml_pe.html#naming_plans_pe">Naming plans</a></li>
+                              <li class="topicref"><a href="writing_plans_in_yaml_pe.html#rbac_writing_plans">RBAC considerations for writing plans</a></li>
+                              <li class="topicref"><a href="plan_structure_yaml_pe.html#plan_structure_yaml_pe">Plan structure </a><ul>
+                                    <li class="topicref"><a href="plan_structure_yaml_pe.html#plans_steps_key_pe">Steps key</a></li>
+                                    <li class="topicref"><a href="plan_structure_yaml_pe.html#plans_parameters_key_pe">Parameters key</a></li>
+                                    <li class="topicref"><a href="plan_structure_yaml_pe.html#plans_how_strings_are_evaluated_pe">How strings are evaluated</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="writing_plans_in_yaml_pe.html#using_variables_and_simple_expressions_pe">Using variables and simple expressions</a></li>
+                              <li class="topicref"><a href="writing_plans_in_yaml_pe.html#connecting_steps_pe">Connecting steps</a></li>
+                              <li class="topicref"><a href="writing_plans_in_yaml_pe.html#returning_results_yaml_plans_pe">Returning results</a></li>
+                              <li class="topicref"><a href="writing_plans_in_yaml_pe.html#computing_complex_values_pe">Computing complex values</a></li>
+                              <li class="topicref"><a href="writing_plans_in_yaml_pe.html#convert_yaml_plans_to_puppet_pe">Converting YAML plans to Puppet language plans</a></li>
+                              <li class="topicref"><a href="writing_plans_in_yaml_pe.html#quirks_convert_yaml_plans_to_puppet_pe">Quirks when converting YAML plans to Puppet language</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#writing_plans_in_puppet_language_pe">Writing plans in Puppet Language</a><ul>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#naming_plans_pe">Naming plans</a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#rbac_writing_plans">RBAC considerations for writing plans</a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#defining_plan_parameters_pe">Defining plan parameters</a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#returning_results_from_plans_pe">Returning results from plans</a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#returning_errors_in_plans_pe">Returning errors in plans </a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#plan_success_and_failure_pe">Plan success and failure</a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#puppet_ruby_functions_plans_pe">Puppet and Ruby functions in plans</a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#handling_plan_function_results_pe">Handling plan function results </a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#passing_sensitive_data_to_tasks_pe">Passing sensitive data to tasks</a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#target_objects_plans_pe">Target objects</a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#plan_logging_plans_pe">Plan logging</a></li>
+                              <li class="topicref"><a href="writing_plans_in_puppet_language_pe.html#example_plans_pe">Example plans</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="orchestrator_api_v1_endpoints.html">Puppet orchestrator API v1 endpoints </a><ul>
+                        <li class="topicref"><a href="orchestrator_api_forming_requests.html">Puppet orchestrator API: forming requests </a></li>
+                        <li class="topicref"><a href="orchestrator_api_commands_endpoint.html#orchestrator_api_commands_endpoint">Puppet orchestrator API: command endpoint </a><ul>
+                              <li class="topicref"><a href="orchestrator_api_commands_endpoint.html#orchestrator_api_post_command_deploy">Running Puppet on demand with the API</a></li>
+                              <li class="topicref"><a href="orchestrator_api_commands_endpoint.html#orchestrator_api_post_command_stop">POST /command/stop </a></li>
+                              <li class="topicref"><a href="orchestrator_api_commands_endpoint.html#orchestrator_api_post_command_task">POST /command/task</a></li>
+                              <li class="topicref"><a href="orchestrator_api_commands_endpoint.html#post__command_task_target">POST /command/task_target</a></li>
+                              <li class="topicref"><a href="orchestrator_api_commands_endpoint.html#orchestrator_api_post_command_schedule_task">POST /command/schedule_task</a></li>
+                              <li class="topicref"><a href="orchestrator_api_commands_endpoint.html#orchestrator_api_post_command_plan_run">POST /command/plan_run </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_events.endpoint.html#orchestrator_api_events.endpoint">Puppet orchestrator API: events endpoint </a><ul>
+                              <li class="topicref"><a href="orchestrator_api_events.endpoint.html#get_jobs_job_id_events">GET /jobs/:job-id/events </a></li>
+                              <li class="topicref"><a href="orchestrator_api_events.endpoint.html#orchestrator_api_get_plan_jobs_job_id_events">GET /plan_jobs/:job-id/events</a></li>
+                              <li class="topicref"><a href="orchestrator_api_events.endpoint.html#orchestrator_api_get_plan_jobs_job_id_event_id">GET /plan_jobs/:job-id/event/:event-id</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_inventory.endpoint.html#orchestrator_api_inventory_endpoint">Puppet orchestrator API: inventory endpoint </a><ul>
+                              <li class="topicref"><a href="orchestrator_api_inventory.endpoint.html#get_inventory">GET /inventory </a></li>
+                              <li class="topicref"><a href="orchestrator_api_inventory.endpoint.html#get_inventory_node">GET /inventory/:node </a></li>
+                              <li class="topicref"><a href="orchestrator_api_inventory.endpoint.html#orchestrator_api_post_inventory">POST /inventory </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_jobs_endpoint.html#orchestrator_api_jobs_endpoint">Puppet orchestrator API: jobs endpoint </a><ul>
+                              <li class="topicref"><a href="orchestrator_api_jobs_endpoint.html#get_jobs">GET /jobs </a></li>
+                              <li class="topicref"><a href="orchestrator_api_jobs_endpoint.html#get_jobs_job_id">GET /jobs/:job-id </a></li>
+                              <li class="topicref"><a href="orchestrator_api_jobs_endpoint.html#get_jobs_job_id_nodes">GET /jobs/:job-id/nodes </a></li>
+                              <li class="topicref"><a href="orchestrator_api_jobs_endpoint.html#get_jobs_job_id_report">GET /jobs/:job-id/report </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_scheduled_jobs_endpoint.html#orchestrator_api_scheduled_jobs_endpoint">Puppet orchestrator API: scheduled jobs endpoint</a><ul>
+                              <li class="topicref"><a href="orchestrator_api_scheduled_jobs_endpoint.html#orchestrator_api_get_schedule_jobs">GET /scheduled_jobs</a></li>
+                              <li class="topicref"><a href="orchestrator_api_scheduled_jobs_endpoint.html#orchestrator_api_delete_schedule_jobs">DELETE /scheduled_jobs/:job-id</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_plans_endpoint.html#orchestrator_api_plans_endpoint">Puppet orchestrator API: plans endpoint</a><ul>
+                              <li class="topicref"><a href="orchestrator_api_plans_endpoint.html#orchestrator_api_get_plans">GET /plans</a></li>
+                              <li class="topicref"><a href="orchestrator_api_plans_endpoint.html#orchestrator_api_get_plans_module_planname">GET /plans/:module/:planname </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_plan_jobs_endpoint.html#orchestrator_api_plan_jobs_endpoint">Puppet orchestrator API: plan jobs endpoint</a><ul>
+                              <li class="topicref"><a href="orchestrator_api_plan_jobs_endpoint.html#orchestrator_api_get_plan_jobs">GET /plan_jobs</a></li>
+                              <li class="topicref"><a href="orchestrator_api_plan_jobs_endpoint.html#orchestrator_api_get_plan_jobs_id">GET /plan_jobs/:job-id</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_tasks_endpoint.html#orchestrator_api_tasks_endpoint">Puppet orchestrator API: tasks endpoint</a><ul>
+                              <li class="topicref"><a href="orchestrator_api_tasks_endpoint.html#orchestrator_api_get_tasks">GET /tasks</a></li>
+                              <li class="topicref"><a href="orchestrator_api_tasks_endpoint.html#orchestrator_api_get_tasks_module_taskname">GET /tasks/:module/:taskname</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_root.endpoint.html#orchestrator_api_root_endpoint">Puppet orchestrator API: root endpoint</a><ul>
+                              <li class="topicref"><a href="orchestrator_api_root.endpoint.html#get_orchestrator">GET /orchestrator </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_usage_endpoint.html#orchestrator_api_usage_endpoint">  Puppet orchestrator API: usage endpoint</a><ul>
+                              <li class="topicref"><a href="orchestrator_api_usage_endpoint.html#orchestrator-api-get-usage">GET /usage</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_scopes_endpoint.html#orchestrator_api_scopes_endpoint">Puppet orchestrator API: scopes endpoint</a><ul>
+                              <li class="topicref"><a href="orchestrator_api_scopes_endpoint.html#orchestrator_api_get_scopes_task_targets">GET /scopes/task_targets</a></li>
+                              <li class="topicref"><a href="orchestrator_api_scopes_endpoint.html#orchestrator_api_get_scopes_task_targets_id">GET /scopes/task_targets/:id</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="orchestrator_api_error_responses.html">Puppet orchestrator API: error responses </a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="managing_puppet_code.html">Managing and deploying Puppet code </a><ul>
+                  <li class="topicref"><a href="control_repo.html#managing_environments_with_a_control_repository">Managing environments with a control repository</a><ul>
+                        <li class="topicref"><a href="control_repo.html#how_the_control_repository_works">How the control repository works </a></li>
+                        <li class="topicref"><a href="control_repo.html#create-control-repo-from-template">Create a control repo from the Puppet template</a></li>
+                        <li class="topicref"><a href="control_repo.html#create-empty-control-repo">Create an empty control repo</a></li>
+                        <li class="topicref"><a href="control_repo.html#add_an_environment">Add an environment </a></li>
+                        <li class="topicref"><a href="control_repo.html#delete_an_environment">Delete an environment with code management</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="puppetfile.html#managing_environment_content_with_puppetfiles">Managing environment content with a Puppetfile  </a><ul>
+                        <li class="topicref"><a href="puppetfile.html#about_puppetfiles">The Puppetfile</a></li>
+                        <li class="topicref"><a href="puppetfile.html#managing_modules_with_code_management">Managing modules with a Puppetfile</a></li>
+                        <li class="topicref"><a href="puppetfile.html#creating_a_puppetfile">Creating a Puppetfile  </a></li>
+                        <li class="topicref"><a href="puppetfile.html#create_a_puppetfile">Create a Puppetfile</a></li>
+                        <li class="topicref"><a href="puppetfile.html#puppetfile_change_moddir">Change the Puppetfile module installation directory </a></li>
+                        <li class="topicref"><a href="puppetfile.html#declare_puppet_forge_modules_in_the_puppetfile">Declare Forge modules in the Puppetfile  </a></li>
+                        <li class="topicref"><a href="puppetfile.html#declare_git_repositories_in_the_puppetfile">Declare Git repositories in the Puppetfile</a><ul>
+                              <li class="topicref"><a href="puppetfile.html#specify_installation_paths_for_repositories">Specify installation paths for repositories </a></li>
+                              <li class="topicref"><a href="puppetfile.html#declare_module_or_data_content_with_ssh_private_key_authentication">Declare module or data content with SSH private key authentication </a></li>
+                              <li class="topicref"><a href="puppetfile.html#keep_repository_content_at_a_specific_version">Keep repository content at a specific version </a></li>
+                              <li class="topicref"><a href="puppetfile.html#declare_content_from_a_relative_control_repo_branch">Declare content from a relative control repo branch </a></li>
+                              <li class="topicref"><a href="puppetfile.html#set_a_default_branch_for_content_deployment">Set a default branch for content deployment </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="code_mgr.html">Managing code with Code Manager</a><ul>
+                        <li class="topicref"><a href="code_mgr_how_it_works.html#how_code_manager_works">How Code Manager works </a><ul>
+                              <li class="topicref"><a href="code_mgr_how_it_works.html#understanding_file_sync_and_the_staging_directory">Understanding file sync and the staging directory </a></li>
+                              <li class="topicref"><a href="code_mgr_how_it_works.html#environment_isolation_metadata_and_code_manager">Environment isolation metadata and Code Manager</a></li>
+                              <li class="topicref"><a href="code_mgr_how_it_works.html#moving_from_r10k_to_code_manager">Moving from r10k to Code Manager  </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="code_mgr_config.html#configuring_code_manager">Configuring Code Manager</a><ul>
+                              <li class="topicref"><a href="code_mgr_config.html#upgrading_from_r10k_to_code_manager">Upgrading from r10k to Code Manager  </a></li>
+                              <li class="topicref"><a href="code_mgr_config.html#code_mgr_enable">Enable Code Manager</a></li>
+                              <li class="topicref"><a href="code_mgr_config.html#set_up_authentication_for_code_manager">Set up authentication for Code Manager  </a><ul>
+                                    <li class="topicref"><a href="code_mgr_config.html#assign_a_user_to_the_deployment_role">Assign a user to the deployment role </a></li>
+                                    <li class="topicref"><a href="code_mgr_config.html#request_an_authentication_token">Request an authentication token for deployments</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="code_mgr_config.html#test_the_control_repo">Test the control repo </a></li>
+                              <li class="topicref"><a href="code_mgr_config.html#test_code_manager">Test Code Manager  </a><ul>
+                                    <li class="topicref"><a href="code_mgr_config.html#deploy_a_single_environment">Deploy a single environment </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="code_mgr_config.html#code_mgr_settings">  Code Manager console settings </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="code_mgr_customizing.html#customize_code_manager_configuration_in_hiera">Customize Code Manager configuration in Hiera  </a><ul>
+                              <li class="topicref"><a href="code_mgr_customizing.html#add_code_manager_parameters_in_hiera">Add Code Manager parameters in Hiera  </a></li>
+                              <li class="topicref"><a href="code_mgr_customizing.html#config_post_env_hooks">Configuring post-environment hooks</a></li>
+                              <li class="topicref"><a href="code_mgr_customizing.html#config_garbage_collection">Configuring garbage collection</a></li>
+                              <li class="topicref"><a href="code_mgr_customizing.html#config_forge_settings">Configuring Forge settings</a></li>
+                              <li class="topicref"><a href="code_mgr_customizing.html#config_git_settings">Configuring Git settings</a></li>
+                              <li class="topicref"><a href="code_mgr_customizing.html#config_proxies">Configuring proxies</a></li>
+                              <li class="topicref"><a href="code_mgr_customizing.html#config_sources">Configuring sources</a></li>
+                              <li class="topicref"><a href="code_mgr_customizing.html#code_manager_parameters">  Code Manager parameters </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="puppet_code.html#triggering_code_manager_on_the_command_line">Triggering Code Manager on the command line </a><ul>
+                              <li class="topicref"><a href="puppet_code.html#installing_and_configuring_puppet_code">Installing and configuring puppet-code</a><ul>
+                                    <li class="topicref"><a href="puppet_code.html#configuration_precedence_and_puppet_code">Configuration precedence and puppet-code </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="puppet_code.html#deploying_environments_with_puppet_code">Deploying environments with puppet-code </a><ul>
+                                    <li class="topicref"><a href="puppet_code.html#deploy_environments">Deploy environments on the command line</a></li>
+                                    <li class="topicref"><a href="puppet_code.html#deploy_with_a_custom_configuration_file">Deploy with a custom configuration file </a></li>
+                                    <li class="topicref"><a href="puppet_code.html#deploy_with_command_line_configuration_settings">Deploy with command-line configuration settings </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="puppet_code.html#advanced_puppet_code_configuration">Advanced puppet-code configuration </a><ul>
+                                    <li class="topicref"><a href="puppet_code.html#configure_puppet_code_on_agents_and_workstations">Configure puppet-code on agents and workstations </a></li>
+                                    <li class="topicref"><a href="puppet_code.html#configure_puppet_code_for_different_users">Configure puppet-code for different users </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="puppet_code.html#reference_puppet_code_command">Reference: puppet-code command </a><ul>
+                                    <li class="topicref"><a href="puppet_code.html#global_puppet_code_options">Global puppet-code options </a></li>
+                                    <li class="topicref"><a href="puppet_code.html#puppet_code_actions">puppet-code actions </a><ul>
+                                          <li class="topicref"><a href="puppet_code.html#puppet_code_deploy_action_options">puppet-code deploy action options </a></li>
+                                       </ul>
+                                    </li>
+                                    <li class="topicref"><a href="puppet_code.html#puppet_code_conf_configuration_settings">puppet-code.conf configuration settings </a></li>
+                                 </ul>
+                              </li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="code_mgr_webhook.html#triggering_code_manager_with_a_webhook">Triggering Code Manager with a webhook </a><ul>
+                              <li class="topicref"><a href="code_mgr_webhook.html#creating_a_code_manager_webhook">Creating a Code Manager webhook </a><ul>
+                                    <li class="topicref"><a href="code_mgr_webhook.html#creating_a_custom_url_for_the_code_manager_webhook">Creating a custom URL for the Code Manager webhook </a></li>
+                                    <li class="topicref"><a href="code_mgr_webhook.html#code_manager_webhook_query_parameters">Code Manager webhook query parameters </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="code_mgr_webhook.html#setting_up_the_code_manager_webhook_on_your_git_host">Setting up the Code Manager webhook on your Git host </a></li>
+                              <li class="topicref"><a href="code_mgr_webhook.html#testing_and_troubleshooting_a_code_manager_webhook">Testing and troubleshooting a Code Manager webhook </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="code_mgr_scripts.html#triggering_code_manager_with_custom_scripts">Triggering Code Manager with custom scripts </a><ul>
+                              <li class="topicref"><a href="code_mgr_scripts.html#deploying_environments_with_the_puppet_code_command">Deploying environments with the puppet-code command </a></li>
+                              <li class="topicref"><a href="code_mgr_scripts.html#deploying_environments_with_a_curl_command">Deploying environments with a curl command </a></li>
+                              <li class="topicref"><a href="code_mgr_scripts.html#checking_deployment_status_with_a_curl_commmand">Checking deployment status with a curl commmand </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="code_mgr_troubleshoot.html#troubleshooting_code_manager">Troubleshooting Code Manager</a><ul>
+                              <li class="topicref"><a href="code_mgr_troubleshoot.html#code_deployments_time_out">Code deployments time out </a></li>
+                              <li class="topicref"><a href="code_mgr_troubleshoot.html#file_sync_stops_when_code_manager_tries_to_deploy_code">File sync stops when Code Manager tries to deploy code </a></li>
+                              <li class="topicref"><a href="code_mgr_troubleshoot.html#classes_are_missing_after_deployment">Classes are missing after deployment </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="code_manager_api.html#code_manager_api">  Code Manager API</a><ul>
+                              <li class="topicref"><a href="code_manager_api.html#code_mgr_post_deploys">POST /v1/deploys</a></li>
+                              <li class="topicref"><a href="code_manager_api.html#code_mgr_post_webhook">POST /v1/webhook</a></li>
+                              <li class="topicref"><a href="code_manager_api.html#code_mgr_get_deploysstatus">GET /v1/deploys/status</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="r10k.html">Managing code with r10k</a><ul>
+                        <li class="topicref"><a href="r10k_config.html#configuring_r10k">Configuring r10k  </a><ul>
+                              <li class="topicref"><a href="r10k_config.html#upgrading_from_previous_versions_of_r10k">Upgrading from previous versions of r10k</a></li>
+                              <li class="topicref"><a href="r10k_config.html#configure_r10k_during_pe_installation">Configure r10k during installation </a></li>
+                              <li class="topicref"><a href="r10k_config.html#configure_r10k_after_pe_installation">Configure r10k after PE installation </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="r10k_customize_config.html#customizing_r10k_configuration">Customizing r10k configuration </a><ul>
+                              <li class="topicref"><a href="r10k_customize_config.html#add_r10k_parameters_in_hiera">Add r10k parameters in Hiera  </a></li>
+                              <li class="topicref"><a href="r10k_customize_config.html#r10k_configuring_forge_settings">Configuring Forge settings</a></li>
+                              <li class="topicref"><a href="r10k_customize_config.html#r10k_configuring_purge_levels">Configuring purge levels</a></li>
+                              <li class="topicref"><a href="r10k_customize_config.html#r10k_locking_deployments">Locking r10k deployments</a></li>
+                              <li class="topicref"><a href="r10k_customize_config.html#r10k_configuring_sources">Configuring sources</a></li>
+                              <li class="topicref"><a href="r10k_customize_config.html#r10k_configuring_base_directory">Configuring the r10k base directory</a></li>
+                              <li class="topicref"><a href="r10k_customize_config.html#r10k_configuring_git_settings">Configuring r10k  Git settings</a></li>
+                              <li class="topicref"><a href="r10k_customize_config.html#r10k_configuring_proxies">Configuring proxies</a></li>
+                              <li class="topicref"><a href="r10k_customize_config.html#r10k_configuring_postrun_commands">Configuring postrun commands</a></li>
+                              <li class="topicref"><a href="r10k_customize_config.html#r10k_parameters">  r10k parameters </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="r10k_deploy_env.html#deploying_environments_with_r10k">Deploying environments with r10k</a><ul>
+                              <li class="topicref"><a href="r10k_deploy_env.html#updating_environments_with_r10k">Updating environments</a><ul>
+                                    <li class="topicref"><a href="r10k_deploy_env.html#updating_all_environments">Updating all environments </a></li>
+                                    <li class="topicref"><a href="r10k_deploy_env.html#updating_all_environments_and_modules">Updating all environments and modules </a></li>
+                                    <li class="topicref"><a href="r10k_deploy_env.html#updating_a_single_environment">Updating a single environment </a></li>
+                                    <li class="topicref"><a href="r10k_deploy_env.html#updating_a_single_environment_and_its_modules">Updating a single environment and its modules </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="r10k_deploy_env.html#installing_and_updating_modules_with_r10k">Installing and updating modules</a><ul>
+                                    <li class="topicref"><a href="r10k_deploy_env.html#updating_a_certain_module_across_all_environments">Updating specific modules across all environments </a></li>
+                                    <li class="topicref"><a href="r10k_deploy_env.html#updating_one_or_more_modules_in_a_single_environment">Updating one or more modules in a single environment </a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="r10k_deploy_env.html#viewing_environments_with_r10k">Viewing environments with r10k</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="r10k_commands.html#r10k_commands">r10k command reference</a><ul>
+                              <li class="topicref"><a href="r10k_commands.html#r10k_command_actions_ref">r10k command actions</a></li>
+                              <li class="topicref"><a href="r10k_commands.html#r10k_deploy_subcommands">r10k deploy subcommands </a></li>
+                              <li class="topicref"><a href="r10k_commands.html#r10k_puppetfile_subcommands">r10k puppetfile subcommands </a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="filesync_about.html#about_file_sync">About file sync </a><ul>
+                        <li class="topicref"><a href="filesync_about.html#filesync_terms">File sync terms</a></li>
+                        <li class="topicref"><a href="filesync_about.html#how_file_sync_works">How file sync works </a><ul>
+                              <li class="topicref"><a href="filesync_about.html#enabling_or_disabling_file_sync">Enabling or disabling file sync </a></li>
+                              <li class="topicref"><a href="filesync_about.html#filesync_resetting">Resetting file sync</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="filesync_about.html#checking_your_deployments">Checking your deployments </a></li>
+                        <li class="topicref"><a href="filesync_about.html#filesync_cautions">Cautions </a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="provisioning_with_razor.html">Provisioning with Razor  </a><ul>
+                  <li class="topicref"><a href="how_razor_works.html#how_razor_works">How Razor works</a><ul>
+                        <li class="topicref"><a href="how_razor_works.html#razor_system_requirements">Razor system requirements</a></li>
+                        <li class="topicref"><a href="how_razor_works.html#pre-requisites_for_machines_provisioned_with_razor">Pre-requisites for machines provisioned with Razor</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="setting_up_a_razor_environment.html#setting_up_a_razor_environment">Setting up a Razor environment</a><ul>
+                        <li class="topicref"><a href="setting_up_a_razor_environment.html#set_up_a_razor_environment">Set up a Razor environment</a><ul>
+                              <li class="topicref"><a href="setting_up_a_razor_environment.html#install_and_configure_dnsmasq_dhcp-tftp_service">Install and configure dnsmasq DHCP-TFTP service</a></li>
+                              <li class="topicref"><a href="setting_up_a_razor_environment.html#temporarily_disable_selinux">Temporarily disable SELinux</a></li>
+                              <li class="topicref"><a href="setting_up_a_razor_environment.html#edit_dnsmasq_to_enable_dhcp">Edit dnsmasq.conf to enable DHCP</a></li>
+                              <li class="topicref"><a href="setting_up_a_razor_environment.html#edit_the_dnsmasq_configuration_file_to_enable_pxe_boot">Edit the dnsmasq configuration file to enable PXE boot</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="installing_razor.html#installing_razor">Installing Razor</a><ul>
+                        <li class="topicref"><a href="installing_razor.html#install_razor">Install Razor</a><ul>
+                              <li class="topicref"><a href="installing_razor.html#install-razor-server">Install the Razor server</a><ul>
+                                    <li class="topicref"><a href="installing_razor.html#install-razor-server-offline">Install the Razor server while you're offline</a></li>
+                                    <li class="topicref"><a href="installing_razor.html#change_the_default_razor_port">Change the default Razor port</a></li>
+                                    <li class="topicref"><a href="installing_razor.html#parameters_for_the_pe_razor_class">Parameters for the pe_razor class</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="installing_razor.html#verify_the_razor_server">Verify the Razor server</a></li>
+                              <li class="topicref"><a href="installing_razor.html#install_the_razor_client">Install the Razor client</a><ul>
+                                    <li class="topicref"><a href="installing_razor.html#install_the_razor_client_on_nix_systems">Install the Razor client on *nix systems</a></li>
+                                    <li class="topicref"><a href="installing_razor.html#install_the_razor_client_on_windows_systems">Install the Razor client on Windows systems</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="installing_razor.html#enable_authentication_security">Enable authentication security</a><ul>
+                                    <li class="topicref"><a href="installing_razor.html#permissions_for_razor">Permissions for Razor</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="installing_razor.html#verify_razor_versions">Verify Razor versions</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="using_the_razor_client.html#using_the_razor_client">Using the Razor client</a><ul>
+                        <li class="topicref"><a href="using_the_razor_client.html#using_positional_arguments_with_razor_client_commands">Using positional arguments with Razor client commands</a><ul>
+                              <li class="topicref"><a href="using_the_razor_client.html#positional_arguments_for_client_commands">Positional arguments for client commands</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="using_the_razor_client.html#razor_client_commands">Razor client commands</a><ul>
+                              <li class="topicref"><a href="using_the_razor_client.html#configuration_commands">Configuration commands</a></li>
+                              <li class="topicref"><a href="using_the_razor_client.html#node_commands">Node commands</a></li>
+                              <li class="topicref"><a href="using_the_razor_client.html#ipmi_commands">IPMI commands</a></li>
+                              <li class="topicref"><a href="using_the_razor_client.html#node_metadata_commands">Node metadata commands</a></li>
+                              <li class="topicref"><a href="using_the_razor_client.html#repository-commands">Repository commands</a></li>
+                              <li class="topicref"><a href="using_the_razor_client.html#task-commands">Task commands</a></li>
+                              <li class="topicref"><a href="using_the_razor_client.html#tag_commands">Tag commands</a></li>
+                              <li class="topicref"><a href="using_the_razor_client.html#policy-commands">Policy commands</a></li>
+                              <li class="topicref"><a href="using_the_razor_client.html#broker_commands">Broker commands</a></li>
+                              <li class="topicref"><a href="using_the_razor_client.html#hook_commands">Hook commands</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="protecting_existing_nodes.html#protecting_existing_nodes">Protecting existing nodes</a><ul>
+                        <li class="topicref"><a href="protecting_existing_nodes.html#protecting_new_nodes">Protecting new nodes</a></li>
+                        <li class="topicref"><a href="protecting_existing_nodes.html#registering_nodes">Registering nodes</a></li>
+                        <li class="topicref"><a href="protecting_existing_nodes.html#limiting_the_number_of_nodes_a_policy_can_bind_to">Limiting the number of nodes a policy can bind to</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="provisioning_a_nix_node.html#provisioning_a_nix_node">Provisioning a *nix node</a><ul>
+                        <li class="topicref"><a href="provisioning_a_nix_node.html#what_triggers_provisioning">What triggers provisioning</a></li>
+                        <li class="topicref"><a href="provisioning_a_nix_node.html#provision-begin">Provision for new users</a><ul>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#load-ipxe-begin">Load iPXE software</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#register_a_node_with_the_microkernel">Register a node with the microkernel</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#create_a_repository">Create a repository</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#create-tags">(Optional) Create tags</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#create-broker">(Optional) Create a broker</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#add-perepo-class-to-pe-master-node-group">Add the pe_repo class to the PE Master node group</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#create_a_policy">Create a policy</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#reinstall_the_node">Reinstall the node</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="provisioning_a_nix_node.html#provision-advanced">Provision for advanced users</a><ul>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#unique_1898650142">Create a repository</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#unique_304345379">(Optional) Create tags</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#unique_784427827">(Optional) Create a broker</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#unique_37862828">Add the pe_repo class to the PE Master node group</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#unique_1039813762">Create a policy</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#register_existing_nodes_manually">Register existing nodes manually</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#change-protect-new-nodes-default">Change the protect_new_nodes default</a></li>
+                              <li class="topicref"><a href="provisioning_a_nix_node.html#load-ipxe-advanced">Load iPXE software</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="provisioning_a_nix_node.html#viewing_information_about_nodes">Viewing information about nodes</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="provisioning_a_windows_node.html#provisioning_a_windows_node">Provisioning a Windows node</a><ul>
+                        <li class="topicref"><a href="provisioning_a_windows_node.html#what_triggers_provisioning">What triggers provisioning</a></li>
+                        <li class="topicref"><a href="provisioning_a_windows_node.html#provision-windows-node">Provision a Windows node</a><ul>
+                              <li class="topicref"><a href="provisioning_a_windows_node.html#config_smb_share">Configure SMB share</a><ul>
+                                    <li class="topicref"><a href="provisioning_a_windows_node.html#auto-config-smb-share">Automatically configure SMB share</a></li>
+                                    <li class="topicref"><a href="provisioning_a_windows_node.html#manually_configure_smb_share">Manually configure SMB share</a></li>
+                                 </ul>
+                              </li>
+                              <li class="topicref"><a href="provisioning_a_windows_node.html#load-ipxe-begin">Load iPXE software</a></li>
+                              <li class="topicref"><a href="provisioning_a_windows_node.html#register_a_node_with_the_microkernel">Register a node with the microkernel</a></li>
+                              <li class="topicref"><a href="provisioning_a_windows_node.html#build_a_winpe_image">Build a WinPE image</a></li>
+                              <li class="topicref"><a href="provisioning_a_windows_node.html#create_a_repository_and_add_the_winpe_image">Create a repository and add the WinPE image</a></li>
+                              <li class="topicref"><a href="provisioning_a_windows_node.html#create-tags">(Optional) Create tags</a></li>
+                              <li class="topicref"><a href="provisioning_a_windows_node.html#create-broker">(Optional) Create a broker</a></li>
+                              <li class="topicref"><a href="provisioning_a_windows_node.html#create_a_policy">Create a policy</a></li>
+                              <li class="topicref"><a href="provisioning_a_windows_node.html#reinstall_the_node">Reinstall the node</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="provisioning_a_windows_node.html#viewing_information_about_nodes">Viewing information about nodes</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="provisioning_with_custom_facts.html#provisioning_with_custom_facts">Provisioning with custom facts</a><ul>
+                        <li class="topicref"><a href="provisioning_with_custom_facts.html#how_the_microkernel_extension_works">How the microkernel extension works</a></li>
+                        <li class="topicref"><a href="provisioning_with_custom_facts.html#microkernel_extension_configuration">Microkernel extension configuration</a></li>
+                        <li class="topicref"><a href="provisioning_with_custom_facts.html#create_the_microkernel_extension">Create the microkernel extension</a></li>
+                        <li class="topicref"><a href="provisioning_with_custom_facts.html#tips_and_limitations_of_the_microkernel_extension">Tips and limitations of the microkernel extension</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="working_with_razor_objects.html">Working with Razor objects</a><ul>
+                        <li class="topicref"><a href="repositories.html">Repositories</a></li>
+                        <li class="topicref"><a href="razor_tasks.html">Razor tasks</a></li>
+                        <li class="topicref"><a href="tags.html">Tags</a></li>
+                        <li class="topicref"><a href="policies.html">Policies</a></li>
+                        <li class="topicref"><a href="brokers.html#brokers">Brokers</a><ul>
+                              <li class="topicref"><a href="brokers.html#creating_a_pe_broker">Creating a PE broker</a></li>
+                              <li class="topicref"><a href="brokers.html#writing_the_broker_install_script">Writing the broker install script</a></li>
+                              <li class="topicref"><a href="brokers.html#writing_the_broker_configuration_file">Writing the broker configuration file</a></li>
+                              <li class="topicref"><a href="brokers.html#create_a_new_broker_type">Create a new broker type</a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="hooks.html#hooks">Hooks </a><ul>
+                              <li class="topicref"><a href="hooks.html#event_scripts">Event scripts </a></li>
+                              <li class="topicref"><a href="hooks.html#assign_dynamic_hostnames_using_hooks">Assign dynamic hostnames using hooks </a></li>
+                           </ul>
+                        </li>
+                        <li class="topicref"><a href="keeping_razor_scalable.html">Keeping Razor scalable</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="using_the_razor_api.html#using_the_razor_api">Using the Razor API </a><ul>
+                        <li class="topicref"><a href="using_the_razor_api.html#commands">Commands </a></li>
+                        <li class="topicref"><a href="using_the_razor_api.html#collections">Collections </a></li>
+                        <li class="topicref"><a href="api_reference.html#api_reference">  Razor API reference </a><ul>
+                              <li class="topicref"><a href="api_reference.html#the_default_bootstrap_ipxe_file">The default bootstrap iPXE file </a></li>
+                              <li class="topicref"><a href="api_reference.html#configuration">Configuration API</a></li>
+                              <li class="topicref"><a href="api_reference.html#nodes_api">Nodes API</a></li>
+                              <li class="topicref"><a href="api_reference.html#ipmi_api">IPMI API </a></li>
+                              <li class="topicref"><a href="api_reference.html#node_metadata">Node metadata API</a></li>
+                              <li class="topicref"><a href="api_reference.html#repositories_api">Repositories API</a></li>
+                              <li class="topicref"><a href="api_reference.html#tasks-api">Tasks API</a></li>
+                              <li class="topicref"><a href="api_reference.html#tags_api">Tags API</a></li>
+                              <li class="topicref"><a href="api_reference.html#policies_api">Policies API</a></li>
+                              <li class="topicref"><a href="api_reference.html#brokers_api">Brokers API</a></li>
+                              <li class="topicref"><a href="api_reference.html#hooks_api">Hooks API</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="upgrading_razor.html#upgrading_razor">Upgrading Razor</a><ul>
+                        <li class="topicref"><a href="upgrading_razor.html#upgrade_from_2015-2-x_or_later">Upgrade Razor from Puppet Enterprise 2015.2.x or later</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="uninstalling_razor.html#uninstalling_razor">Uninstalling Razor</a><ul>
+                        <li class="topicref"><a href="uninstalling_razor.html#uninstall_the_razor_server">Uninstall the Razor server</a></li>
+                        <li class="topicref"><a href="uninstalling_razor.html#uninstall_the_razor_client">Uninstall the Razor client</a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="ssl_and_certificates.html">SSL and certificates</a><ul>
+                  <li class="topicref"><a href="regenerate_console_cert.html">Regenerate the console certificate</a></li>
+                  <li class="topicref"><a href="regenerate_certificates.html#regenerate_certificates">Regenerate infrastructure certificates</a><ul>
+                        <li class="topicref"><a href="regenerate_certificates.html#delete_and_recreate_ca">Delete and recreate the certificate authority</a></li>
+                        <li class="topicref"><a href="regenerate_certificates.html#regenerate_compiler_certificates">Regenerate compiler certificates</a></li>
+                        <li class="topicref"><a href="regenerate_certificates.html#regenerate_agent_certs">Regenerate agent certificates</a></li>
+                        <li class="topicref"><a href="regenerate_certificates.html#regenerate_replica_certificates">Regenerate replica certificates</a></li>
+                        <li class="topicref"><a href="regenerate_certificates.html#regenerate_the_puppet_master_certificates">Regenerate master certificates </a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="use_an_independent_intermediate_ca.html">Use an independent intermediate certificate authority</a></li>
+                  <li class="topicref"><a href="use_a_custom_ssl_cert_for_the_console.html">Use a custom SSL certificate for the console </a></li>
+                  <li class="topicref"><a href="change_hostname_master.html">Change the hostname of a master</a></li>
+                  <li class="topicref"><a href="generate_custom_dh_parameter_file.html">Generate a custom Diffie-Hellman parameter file </a></li>
+                  <li class="topicref"><a href="enable_tlsv1.html">Enable TLSv1 </a></li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="maintenance.html">Maintenance</a><ul>
+                  <li class="topicref"><a href="backing_up_and_restoring_pe.html#concept-4797">Backing up and restoring Puppet Enterprise  </a><ul>
+                        <li class="topicref"><a href="backing_up_and_restoring_pe.html#back_up_pe_infrastructure">Back up your infrastructure</a></li>
+                        <li class="topicref"><a href="backing_up_and_restoring_pe.html#restore_pe_infrastructure">Restore your infrastructure</a></li>
+                        <li class="topicref"><a href="backing_up_and_restoring_pe.html#backup_and_restore_reference">Backup and restore reference</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="pe_database_maintenance.html#pe_database_maintenance">Database maintenance </a><ul>
+                        <li class="topicref"><a href="pe_database_maintenance.html#databases_in_pe">Databases in Puppet Enterprise  </a></li>
+                        <li class="topicref"><a href="pe_database_maintenance.html#optimize_a_database">Optimize a database</a></li>
+                        <li class="topicref"><a href="pe_database_maintenance.html#generate_a_list_of_database_names">List all database names</a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="topicref"><a href="troubleshooting.html">Troubleshooting</a><ul>
+                  <li class="topicref"><a href="troubleshooting_the_pe_installer.html#troubleshooting_the_installer">Troubleshooting installation</a></li>
+                  <li class="topicref"><a href="troubleshooting_ha.html">Troubleshooting high availability</a></li>
+                  <li class="topicref"><a href="troubleshooting_puppet_infra.html">Troubleshooting puppet infrastructure run commands</a></li>
+                  <li class="topicref"><a href="troubleshooting_communications_between_components.html#troubleshooting_communications_between_components">Troubleshooting connections between components </a><ul>
+                        <li class="topicref"><a href="troubleshooting_communications_between_components.html#agents_cant_reach_the_puppet_master">Agents can't reach the Puppet master</a></li>
+                        <li class="topicref"><a href="troubleshooting_communications_between_components.html#agents_dont_have_signed_certificates">Agents don't have signed certificates</a></li>
+                        <li class="topicref"><a href="troubleshooting_communications_between_components.html#agents_arent_using_the_masters_valid_dns_name">Agents aren't using the master's valid DNS name</a></li>
+                        <li class="topicref"><a href="troubleshooting_communications_between_components.html#time_is_out_of_sync_">Time is out of sync </a></li>
+                        <li class="topicref"><a href="troubleshooting_communications_between_components.html#node_certificates_have_invalid_dates">Node certificates have invalid dates</a></li>
+                        <li class="topicref"><a href="troubleshooting_communications_between_components.html#a_node_is_re-using_a_certname">A node is re-using a certname</a></li>
+                        <li class="topicref"><a href="troubleshooting_communications_between_components.html#task-4315">Agents can't reach the filebucket server</a></li>
+                        <li class="topicref"><a href="troubleshooting_communications_between_components.html#orchestrator_cant_connect_to_pe_bolt_server">Orchestrator can't connect to PE  Bolt server</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="troubleshooting_the_databases.html#troubleshooting_the_databases">Troubleshooting the databases </a><ul>
+                        <li class="topicref"><a href="troubleshooting_the_databases.html#postgresql_taking_up_too_much_space">PostgreSQL is taking up too much space</a></li>
+                        <li class="topicref"><a href="troubleshooting_the_databases.html#postgresql_buffer_memory_causes_installation_to_fail">PostgreSQL buffer memory causes installation to fail</a></li>
+                        <li class="topicref"><a href="troubleshooting_the_databases.html#default_port_for_puppetdb_conflicts_with_another_service_">The default port for PuppetDB conflicts with another service </a></li>
+                        <li class="topicref"><a href="troubleshooting_the_databases.html#puppet_resource_generates_ruby_errors">puppet resource generates Ruby errors after connecting puppet apply to PuppetDB</a></li>
+                     </ul>
+                  </li>
+                  <li class="topicref"><a href="troubleshooting_backup_restore.html">Troubleshooting backup and restore</a></li>
+                  <li class="topicref"><a href="code_mgr_troubleshoot.html" target="_blank">Troubleshooting Code Manager</a></li>
+                  <li class="topicref"><a href="troubleshooting_windows.html#troubleshooting_windows">Troubleshooting Windows  </a><ul>
+                        <li class="topicref"><a href="troubleshooting_windows.html#installation_fails_windows">Installation fails </a></li>
+                        <li class="topicref"><a href="troubleshooting_windows.html#upgrade_fails">Upgrade fails </a></li>
+                        <li class="topicref"><a href="troubleshooting_windows.html#manifests_cant_be_applied">Errors when applying a manifest or doing a Puppet agent run</a></li>
+                        <li class="topicref"><a href="troubleshooting_windows.html#error_messages">Error messages </a></li>
+                        <li class="topicref"><a href="troubleshooting_windows.html#logging_and_debugging">Logging and debugging </a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+         </ul>
+      </nav>
+   </body>
+</html>

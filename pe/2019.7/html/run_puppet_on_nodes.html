@@ -1,0 +1,151 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet."><meta name="DC.relation" scheme="URI" content="static_catalogs.html#static_catalogs"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="run_puppet_on_nodes"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Running Puppet on nodes</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="run_puppet_on_nodes">
+    <h1 class="title topictitle1" id="ariaid-title1">Running <span class="ph">Puppet</span> on nodes</h1>
+    
+    <div class="body taskbody"><p class="shortdesc"><span class="ph">Puppet</span> automatically
+        attempts to run on each of your nodes every 30 minutes. To trigger a <span class="ph">Puppet</span> run outside of the default 30-minute interval, you can
+        manually run <span class="ph">Puppet</span>.</p>
+        <section class="section context">
+            <p class="p">In a <span class="ph">Puppet</span> run, the master and
+                agent nodes perform the following actions:</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">The agent node sends facts to the master and
+                    requests a catalog.</span>
+            </li><li class="li step">
+                <span class="ph cmd">The master compiles and returns the agent’s
+                    catalog.</span>
+            </li><li class="li step">
+                <span class="ph cmd">The agent applies the catalog by checking each
+                    resource the catalog describes. If it finds any resources that are not in the
+                    desired state, it makes the necessary changes.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> <span class="ph">Puppet</span> run behavior differs
+                    slightly if static catalogs are enabled.</div></div></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="static_catalogs.html#static_catalogs" title="A catalog is a document that describes the desired state for each resource that Puppet manages on a node. A master typically compiles a catalog from manifests of Puppet code. A static catalog is a specific type of Puppet catalog that includes metadata that specifies the desired state of any file resources containing source attributes pointing to puppet:/// locations on a node.">Static catalogs in Puppet Enterprise</a></li></ul></div></nav><article class="topic concept nested1" aria-labelledby="ariaid-title2" id="running_puppet_with_the_orchestrator">
+    <h2 class="title topictitle2" id="ariaid-title2">Running <span class="ph">Puppet</span> with the
+        orchestrator</h2>
+    
+    <div class="body conbody"><p class="shortdesc">The <span class="ph">Puppet</span> orchestrator is
+        a set of interactive tools used to deploy configuration changes when and how you want them.
+        You can use the orchestrator to run <span class="ph">Puppet</span> from the console,
+        command line, or API.</p>
+        <div class="p">You can use the orchestrator to enforce change based on a: <ul class="ul">
+                <li class="li"><div class="p">selection of nodes – from the console
+                        or the command line:
+                        <pre class="pre codeblock no-highlight"><code>puppet job run --nodes &lt;COMMA-SEPARATED LIST OF NODE NAMES&gt;</code></pre>
+                    </div></li>
+                <li class="li"><div class="p">PQL nodes query – from the console or
+                        the command line, for example:
+                        <pre class="pre codeblock"><code>puppet job run --query 'nodes[certname] { facts {name = "operatingsystem" and value = "Debian" }}'</code></pre>
+                    </div></li>
+                <li class="li"><p class="p">application or application instance -
+                        from the command line.</p></li>
+            </ul>
+        </div>
+        <p class="p">If you're putting together your own tools for running <span class="ph">Puppet</span> or want to enable CI workflows across your
+            infrastructure, use the orchestrator API. </p>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="running_puppet_on_demand_in_the_console.html#running_puppet_on_demand_in_the_console" title="When you set up a job to run Puppet from the console, the orchestrator creates a job ID to track the job, shows you all nodes included in the job, and runs Puppet on those nodes in the appropriate order. Puppet compiles a new catalog for each node included in the job.">Running Puppet on demand from the console</a></li></ul></div></nav></article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="running_puppet_with_ssh">
+    <h2 class="title topictitle2" id="ariaid-title3">Running <span class="ph">Puppet</span> with SSH</h2>
+    
+    <div class="body conbody"><p class="shortdesc">Run <span class="ph">Puppet</span> with SSH from an
+        agent node.</p>
+        <p class="p">SSH into the node and run <code class="ph codeph">puppet agent --test</code> or <code class="ph codeph">puppet
+                agent -t</code>.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="running_puppet_from_the_console">
+    <h2 class="title topictitle2" id="ariaid-title4">Running <span class="ph">Puppet</span> from the console</h2>
+    
+    <div class="body conbody"><p class="shortdesc">In the console, you can run <span class="ph">Puppet</span> from the node
+        detail page for nodes that have an agent connection.</p>
+        <div class="p">Run options include: <ul class="ul">
+                <li class="li"><p class="p">
+                        <code class="ph codeph">No-op</code> – Simulates changes
+                        without actually enforcing a new catalog. Nodes with <code class="ph codeph">noop = true</code> in their <code class="ph codeph">puppet.conf</code> files always
+                        run in no-op mode. </p></li>
+                <li class="li"><p class="p">
+                        <code class="ph codeph">Debug</code> – Prints all messages
+                        available for use in debugging. </p></li>
+                <li class="li"><p class="p">
+                        <code class="ph codeph">Trace</code> – Prints stack traces
+                        on some errors. </p></li>
+                <li class="li"><p class="p">
+                        <code class="ph codeph">Evaltrace</code> – Shows a
+                        breakdown of the time taken for each step in the run. </p></li>
+            </ul>
+        </div>
+        <p class="p">When the run completes, the console displays the node’s run
+            status.</p>
+        <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> The <span class="ph uicontrol">Run Puppet</span> button is not available if an
+                agent does not have an active websocket session with the PCP broker, or if the
+                node's connection method is SSH, WinRM, or a network device transport.</div></div>
+        
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="monitor_infrastructure_state.html#node_run_statuses" title="The Status page displays the run status of each node following the most recent Puppet run. There are 10 possible run statuses.">Node run statuses</a></li></ul></div></nav></article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="activity_logging_on_console_puppet_runs">
+ <h2 class="title topictitle2" id="ariaid-title5">Activity logging on console <span class="ph">Puppet</span>
+  runs</h2>
+ 
+ <div class="body conbody"><p class="shortdesc">When you initiate a <span class="ph">Puppet</span> run
+  from the console, the Activity service logs the activity.</p>
+  <p class="p">You can view activity on a single node by selecting the node, then clicking
+   the <span class="ph uicontrol">Activity</span> tab.</p>
+  <p class="p">Alternatively, you can use the Activity Service API to retrieve activity
+   information.</p>
+ </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="activity_api.html" title="The activity service logs changes to role-based access control (RBAC) entities, such as users, directory groups, and user roles.">Activity service API</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="troubleshooting_puppet_run_failures">
+   <h2 class="title topictitle2" id="ariaid-title6">Troubleshooting <span class="ph">Puppet</span> run
+      failures</h2>
+   
+   <div class="body refbody"><p class="shortdesc">Puppet creates a <span class="ph uicontrol">View Report</span> link for most failed runs, which you can use to
+      access events and logs.</p>
+      <section class="section"><p class="p">This table shows some errors that can
+            occur when you attempt to run <span class="ph">Puppet</span>, and suggestions for
+            troubleshooting.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry">
+                        <strong class="ph b">Error</strong>
+                     </td>
+                     <td class="entry">
+                        <strong class="ph b">Possible Cause</strong>
+                     </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry"> Changes could not be applied </td>
+                     <td class="entry">Conflicting classes are a common cause. Check the
+                        log to get more detail.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry"> Noop, changes could not be applied </td>
+                     <td class="entry">Conflicting classes are a common cause. Check the
+                        log to get more detail.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry"> Run already in progress </td>
+                     <td class="entry">Occurs when a run is triggered in the command
+                        line or by another user, and you click <span class="ph uicontrol">Run</span>.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry"> Run request times out </td>
+                     <td class="entry">Occurs if you click <span class="ph uicontrol">Run</span> and the agent isn’t available.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry"> Report request times out </td>
+                     <td class="entry">Occurs when the report is not successfully stored
+                        in <span class="ph">PuppetDB</span> after the run completes.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry"> Invalid response (such as a 500 error) </td>
+                     <td class="entry">Your <span class="ph">Puppet</span> code
+                        might be have incorrect formatting.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry"> Button is disabled and a run is not allowed. </td>
+                     <td class="entry">The user has permission, but the agent is not
+                        responding.</td>
+                  </tr>
+               </tbody></table></section>
+   </div>
+</article></article></article></main></body></html>

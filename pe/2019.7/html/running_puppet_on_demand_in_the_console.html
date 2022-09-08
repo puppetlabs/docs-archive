@@ -1,0 +1,633 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="When you set up a job to run Puppet from the console, the orchestrator creates a job ID to track the job, shows you all nodes included in the job, and runs Puppet on those nodes in the appropriate order. Puppet compiles a new catalog for each node included in the job."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Isaac Eldridge <isaac.eldridge@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="running_puppet_on_demand_in_the_console"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Running Puppet on demand from the console</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="running_puppet_on_demand_in_the_console">
+   <h1 class="title topictitle1" id="ariaid-title1">Running Puppet on demand from the console</h1>
+   
+   
+   <div class="body conbody"><p class="shortdesc">When you set up a job to run Puppet from the console, the
+      orchestrator creates a job ID to track the job, shows you all nodes included in the job, and
+      runs <span class="ph">Puppet</span> on those nodes in the appropriate order. <span class="ph">Puppet</span> compiles a new catalog for each node included in the
+      job.</p>
+      <p class="p">There are two ways to specify the job target (the nodes you want to run
+         jobs on):</p>
+      <ul class="ul" id="running_puppet_on_demand_in_the_console__ul_gzd_5rm_tgb">
+         <li class="li">
+            <p class="p">A static node list</p>
+         </li>
+         <li class="li">
+            <p class="p">A <span class="ph">Puppet Query Language
+                                                  (PQL)</span> query</p>
+         </li>
+         <li class="li">
+            <p class="p">A node group</p>
+         </li>
+      </ul>
+      <p class="p">You can't combine these methods, and if you switch from one to the other
+         with the <span class="ph uicontrol">Inventory</span> drop-down
+         list, the target list clears and starts over. In other words, if you create a target list
+         by using a node list, switching to a PQL query clears the node list, and vice versa. You
+         can do a one-time conversion of a PQL query to a static node list if you want to add or
+         remove nodes from the query results.</p>
+      <p class="p">Before you start, be sure you have the correct permissions for running
+         jobs. To run jobs on PQL queries, you need the "View node data from <span class="ph">PuppetDB</span>" permission.</p>
+   </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="run_a_job_on_a_node_list">
+   <h2 class="title topictitle2" id="ariaid-title2">Run Puppet on a node list </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Create a node list target for a job when you need to run
+         <span class="ph">Puppet</span> on a specific set of nodes that isn't easily defined
+      by a PQL query.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+         <p class="p">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p>
+         <div class="note tip note_tip"><span class="note__title">Tip:</span> You can add network devices to
+            a node list when you have installed modules for device transports in your production
+            environment. You can find such modules in <a class="xref" href="https://forge.puppet.com/" target="_blank">Puppet Forge</a>.</div>
+      </section>
+      <section class="section context"> </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, on the <span class="ph uicontrol">Jobs</span> page, click <span class="ph uicontrol">Run
+                  Puppet</span>.&nbsp;</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd" id="run_a_job_on_a_node_list__d83e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="run_a_job_on_a_node_list__d83e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Select an environment:</span>
+            <ul class="ul choices" id="run_a_job_on_a_node_list__d83e205">
+               <li class="li choice"><span class="ph uicontrol">Run nodes in their own assigned environment</span>: Nodes run in the
+                  environment specified by the Node Manager or their <code class="ph codeph">puppet.conf</code> file.</li>
+               <li class="li choice"><span class="ph uicontrol">Select an environment for nodes to run in</span>: Select an environment
+                  from the list. Nodes can run in an environment if their environment is
+                  agent-specified, if they're included in an application in that environment, or if
+                  they're classified in that environment by the node manager.</li>
+            </ul>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If your job target includes application instances, the
+                  selected environment also determines the dependency order of your node
+                  runs.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd"> Select the run mode for the job. The default run mode
+               for a job always attempts to enforce new catalogs on nodes. To change the run mode,
+               use the following selections:</span>
+            <ul class="ul choices" id="run_a_job_on_a_node_list__d83e233">
+               <li class="li choice"><span class="ph uicontrol">No-op</span>: Simulate a <span class="ph">Puppet</span> run on all
+                  nodes in the job without enforcing a new catalog.</li>
+               <li class="li choice"><span class="ph uicontrol">Debug</span>: Print all debugging messages.</li>
+               <li class="li choice"><span class="ph uicontrol">Trace</span>: Print stack traces on some errors.</li>
+               <li class="li choice"><span class="ph uicontrol">Eval-trace</span>: Display how long it took for each step to
+                  run. </li>
+               <li class="li choice"><span class="ph uicontrol">Override noop = true configuration</span>: If any nodes in the job
+                     have&nbsp;<code class="ph codeph">noop = true</code>&nbsp;set
+                  in their&nbsp;<code class="ph codeph">puppet.conf</code>&nbsp;files, <span class="ph">Puppet</span> ignores
+                  that setting and enforce a new catalog on those nodes. This setting corresponds to
+                     the&nbsp;<code class="ph codeph">--no-noop</code>&nbsp;flag
+                  available on the orchestrator CLI.</li>
+            </ul>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Inventory</span> list, select <span class="ph uicontrol">Node list</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">To create a node list, in the search field, start
+               typing in the names of nodes to search for, and click <span class="ph uicontrol">Search</span>.</span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> The search does not handle regular
+                  expressions.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Select the nodes you want to add to the job. You can
+               select nodes from multiple searches to create the node list target.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run job</span>. </span>
+            <div class="itemgroup stepresult" id="run_a_job_on_a_node_list__d83e284">View the job status and a list of previous
+               Puppet jobs on the <span class="ph uicontrol">Jobs</span> page.</div>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="run_a_job_on_a_pql_query_console">
+    <h2 class="title topictitle2" id="ariaid-title3">Run Puppet on a PQL query </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">For some jobs, you might want to target nodes that meet
+        specific conditions. For such jobs, create a PQL query.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+            <p class="p">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p>
+        </section>
+        <section class="section context"> </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, on the <span class="ph uicontrol">Jobs</span> page, click <span class="ph uicontrol">Run
+                  Puppet</span>.&nbsp;</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd" id="run_a_job_on_a_pql_query_console__d83e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="run_a_job_on_a_pql_query_console__d83e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Select an environment:</span>
+            <ul class="ul choices" id="run_a_job_on_a_pql_query_console__d83e205">
+               <li class="li choice"><span class="ph uicontrol">Run nodes in their own assigned environment</span>: Nodes run in the
+                  environment specified by the Node Manager or their <code class="ph codeph">puppet.conf</code> file.</li>
+               <li class="li choice"><span class="ph uicontrol">Select an environment for nodes to run in</span>: Select an environment
+                  from the list. Nodes can run in an environment if their environment is
+                  agent-specified, if they're included in an application in that environment, or if
+                  they're classified in that environment by the node manager.</li>
+            </ul>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If your job target includes application instances, the
+                  selected environment also determines the dependency order of your node
+                  runs.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd"> Select the run mode for the job. The default run mode
+               for a job always attempts to enforce new catalogs on nodes. To change the run mode,
+               use the following selections:</span>
+            <ul class="ul choices" id="run_a_job_on_a_pql_query_console__d83e233">
+               <li class="li choice"><span class="ph uicontrol">No-op</span>: Simulate a <span class="ph">Puppet</span> run on all
+                  nodes in the job without enforcing a new catalog.</li>
+               <li class="li choice"><span class="ph uicontrol">Debug</span>: Print all debugging messages.</li>
+               <li class="li choice"><span class="ph uicontrol">Trace</span>: Print stack traces on some errors.</li>
+               <li class="li choice"><span class="ph uicontrol">Eval-trace</span>: Display how long it took for each step to
+                  run. </li>
+               <li class="li choice"><span class="ph uicontrol">Override noop = true configuration</span>: If any nodes in the job
+                     have&nbsp;<code class="ph codeph">noop = true</code>&nbsp;set
+                  in their&nbsp;<code class="ph codeph">puppet.conf</code>&nbsp;files, <span class="ph">Puppet</span> ignores
+                  that setting and enforce a new catalog on those nodes. This setting corresponds to
+                     the&nbsp;<code class="ph codeph">--no-noop</code>&nbsp;flag
+                  available on the orchestrator CLI.</li>
+            </ul>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select <span class="ph uicontrol">PQL query</span>.</span>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">Specify a target by doing one of the
+                    following:</span>
+                <ul class="ul choices">
+                    <li class="li choice">Enter a query that selects the target
+                        you want. See the <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/v4/pql.html" target="_blank">Puppet Query Language (PQL) reference</a> for more
+                        information.</li>
+                    <li class="li choice">Click <span class="ph uicontrol">Common queries</span>. Select one of the queries
+                        and replace the defaults in the braces (<code class="ph codeph">{ }</code>) with values that specify the target you
+                        want. <div class="p">
+                            <div class="note note note_note"><span class="note__title">Note:</span> These queries include <code class="ph codeph">[certname]</code> as <code class="ph codeph">[&lt;projection&gt;]</code> to restrict
+                                the output.</div>
+                        </div><div class="p">
+                            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                        <tr class="row">
+                                            <th class="entry" id="run_a_job_on_a_pql_query_console__entry__1">Target </th>
+                                            <th class="entry" id="run_a_job_on_a_pql_query_console__entry__2">PQL
+                                                query</th>
+                                        </tr>
+                                    </thead><tbody class="tbody">
+                                        <tr class="row">
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__1">All nodes </td>
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__2">
+                                                <code class="ph codeph">nodes[certname] { }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__1">Nodes with
+                                                a specific resource (example: httpd) </td>
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__2">
+                                                <code class="ph codeph">resources[certname] { type = "Service" and title
+                                                  = "httpd" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__1">Nodes with
+                                                a specific fact and value (example: OS name is <span class="ph">CentOS</span>) </td>
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__2">
+                                                <code class="ph codeph">inventory[certname] { facts.os.name =
+                                                  "&lt;OS&gt;" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__1">Nodes with
+                                                a specific report status (example: last run failed) </td>
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__2">
+                                                <code class="ph codeph">reports[certname] { latest_report_status =
+                                                  "failed" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__1">Nodes with
+                                                a specific class (example: <span class="ph">Apache</span>) </td>
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__2">
+                                                <code class="ph codeph">resources[certname] { type = "Class" and title =
+                                                  "Apache" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__1">Nodes
+                                                assigned to a specific environment (example:
+                                                production) </td>
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__2">
+                                                <code class="ph codeph">nodes[certname] { catalog_environment =
+                                                  "production" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__1">Nodes with
+                                                a specific version of a resource type (example:
+                                                OpenSSL is v1.1.0e) </td>
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__2">
+                                                <code class="ph codeph">resources[certname] {type = "Package" and
+                                                  title="openssl" and parameters.ensure =
+                                                  "1.0.1e-51.el7_2.7" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__1">Nodes with
+                                                a specific resource and operating system (example:
+                                                httpd and <span class="ph">CentOS</span>) </td>
+                                            <td class="entry" headers="run_a_job_on_a_pql_query_console__entry__2">
+                                                <code class="ph codeph">inventory[certname] { facts.operatingsystem =
+                                                  "CentOS" and resources { type = "Service" and
+                                                  title = "httpd" } }</code>
+                                            </td>
+                                        </tr>
+                                    </tbody></table>
+                        </div></li>
+                </ul>
+            </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Submit query</span> and click <span class="ph uicontrol">Refresh</span> to update the node results.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">If you change or edit the query after it runs, click
+                  <span class="ph uicontrol">Submit query</span>
+               again.</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd"> To convert the <span class="ph">PQL</span>
+               query target results to a node list, for use as a node list target, click <span class="ph uicontrol">Convert query to static node
+               list</span>.</span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If you select this option, the job target becomes a node
+                  list. You can add or remove nodes from the node list before running the job, but
+                  you cannot edit the query.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run job</span>. </span>
+            <div class="itemgroup stepresult" id="run_a_job_on_a_pql_query_console__d83e284">View the job status and a list of previous
+               Puppet jobs on the <span class="ph uicontrol">Jobs</span> page.</div>
+         </li></ol></section>
+        
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <div class="p">
+                <div class="note important note_important"><span class="note__title">Important:</span> When you run this job, the PQL query
+                    runs again, and the job might run on a different set of nodes than what is
+                    currently displayed. If you want the job to run only on the list as displayed,
+                    convert the query to a static node list before you run the job.</div>
+            </div>
+        </section>
+        
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title4" id="add_custom_pql_queries">
+    <h3 class="title topictitle3" id="ariaid-title4">Add custom PQL queries to the console</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Add your own PQL queries to the console and quickly access them when running jobs. </p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On your Master, as root, copy the
+                        <code class="ph codeph">custom_pql_queries.json.example</code> file and remove the
+                        <code class="ph codeph">example</code> suffix.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>cp
+/etc/puppetlabs/console-services/custom_pql_queries.json.example 
+/etc/puppetlabs/console-services/custom_pql_queries.json</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Edit the file contents to include your own PQL queries or remove any existing
+                    queries.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Refresh the console UI in your browser.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>You can now see your custom queries in the PQL drop down options when running
+            jobs.</section>
+    </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="run-puppet-node-group-console">
+    <h2 class="title topictitle2" id="ariaid-title5">Run Puppet on a node group</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Create a node target for a job when you need to run Puppet
+        on a specific set of nodes in a pre-defined group.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+            <div class="note note note_note"><span class="note__title">Note:</span> If you do not have permissions to view a
+                    node group, or the node group doesn't have any matching nodes, that node group
+                    won't be listed as an option for viewing. In addition, a node group does not
+                    appear if no rules have been specified for it. </div>
+        </section>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, on the <span class="ph uicontrol">Jobs</span> page, click <span class="ph uicontrol">Run
+                  Puppet</span>.&nbsp;</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd" id="run-puppet-node-group-console__d83e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="run-puppet-node-group-console__d83e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Select an environment:</span>
+            <ul class="ul choices" id="run-puppet-node-group-console__d83e205">
+               <li class="li choice"><span class="ph uicontrol">Run nodes in their own assigned environment</span>: Nodes run in the
+                  environment specified by the Node Manager or their <code class="ph codeph">puppet.conf</code> file.</li>
+               <li class="li choice"><span class="ph uicontrol">Select an environment for nodes to run in</span>: Select an environment
+                  from the list. Nodes can run in an environment if their environment is
+                  agent-specified, if they're included in an application in that environment, or if
+                  they're classified in that environment by the node manager.</li>
+            </ul>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If your job target includes application instances, the
+                  selected environment also determines the dependency order of your node
+                  runs.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd"> Select the run mode for the job. The default run mode
+               for a job always attempts to enforce new catalogs on nodes. To change the run mode,
+               use the following selections:</span>
+            <ul class="ul choices" id="run-puppet-node-group-console__d83e233">
+               <li class="li choice"><span class="ph uicontrol">No-op</span>: Simulate a <span class="ph">Puppet</span> run on all
+                  nodes in the job without enforcing a new catalog.</li>
+               <li class="li choice"><span class="ph uicontrol">Debug</span>: Print all debugging messages.</li>
+               <li class="li choice"><span class="ph uicontrol">Trace</span>: Print stack traces on some errors.</li>
+               <li class="li choice"><span class="ph uicontrol">Eval-trace</span>: Display how long it took for each step to
+                  run. </li>
+               <li class="li choice"><span class="ph uicontrol">Override noop = true configuration</span>: If any nodes in the job
+                     have&nbsp;<code class="ph codeph">noop = true</code>&nbsp;set
+                  in their&nbsp;<code class="ph codeph">puppet.conf</code>&nbsp;files, <span class="ph">Puppet</span> ignores
+                  that setting and enforce a new catalog on those nodes. This setting corresponds to
+                     the&nbsp;<code class="ph codeph">--no-noop</code>&nbsp;flag
+                  available on the orchestrator CLI.</li>
+            </ul>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select <span class="ph uicontrol">Node group</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Choose a node group </span> box, type or select a node group, and click
+                  <span class="ph uicontrol">Select</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run job</span>. </span>
+            <div class="itemgroup stepresult" id="run-puppet-node-group-console__d83e284">View the job status and a list of previous
+               Puppet jobs on the <span class="ph uicontrol">Jobs</span> page.</div>
+         </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p"></p>
+        </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="run_jobs_throughout_the_console">
+   <h2 class="title topictitle2" id="ariaid-title6">Run jobs throughout the console </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">You don't need to be in the Jobs section of the console to
+      run a Puppet job on your nodes. You might encounter situations where you want to run jobs on
+      lists of nodes derived from different pages in the console. </p>
+      <section class="section context">
+         <p class="p">You can create jobs from the following pages:</p>
+         <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="run_jobs_throughout_the_console__entry__1">Page </th>
+                     <th class="entry" id="run_jobs_throughout_the_console__entry__2">Description </th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="run_jobs_throughout_the_console__entry__1">
+                        <strong class="ph b">Overview</strong>
+                     </td>
+                     <td class="entry" headers="run_jobs_throughout_the_console__entry__2">This page shows a list of all your
+                        managed nodes, and gathers essential information about your infrastructure
+                        at a glance. </td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="run_jobs_throughout_the_console__entry__1">
+                        <strong class="ph b">Events</strong>
+                     </td>
+                     <td class="entry" headers="run_jobs_throughout_the_console__entry__2">Events let you view a summary of
+                        activity in your infrastructure, analyze the details of important changes,
+                        and investigate common causes behind related events. For instance, let's say
+                        you notice run failures because some nodes have out-of-date code. After you
+                        update the code, you can create a job target from the list of failed nodes
+                        to be sure you're directing the right fix to the right nodes. You can create
+                        new jobs from the <span class="keyword wintitle">Nodes
+                           with events</span> category.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="run_jobs_throughout_the_console__entry__1">
+                        <strong class="ph b">Classification node groups</strong>
+                     </td>
+                     <td class="entry" headers="run_jobs_throughout_the_console__entry__2">Node groups are used to automate
+                        classification of nodes with similar functions in your infrastructure. If
+                        you make a classification change to a node group, you can quickly create a
+                        job to run Puppet on all the nodes in that group, pushing the change to all
+                        nodes at one time.</td>
+                  </tr>
+               </tbody></table>
+         <p class="p">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, in the <span class="ph uicontrol">Run</span> section, click <span class="ph uicontrol">Puppet</span>.</span>
+            <div class="itemgroup info">At this point, the list of nodes is converted
+               to a new Puppet run job list target.</div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Select an environment:</span>
+            <ul class="ul choices" id="run_jobs_throughout_the_console__d83e205">
+               <li class="li choice"><span class="ph uicontrol">Run nodes in their own assigned environment</span>: Nodes run in the
+                  environment specified by the Node Manager or their <code class="ph codeph">puppet.conf</code> file.</li>
+               <li class="li choice"><span class="ph uicontrol">Select an environment for nodes to run in</span>: Select an environment
+                  from the list. Nodes can run in an environment if their environment is
+                  agent-specified, if they're included in an application in that environment, or if
+                  they're classified in that environment by the node manager.</li>
+            </ul>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If your job target includes application instances, the
+                  selected environment also determines the dependency order of your node
+                  runs.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd"> Select the run mode for the job. The default run mode
+               for a job always attempts to enforce new catalogs on nodes. To change the run mode,
+               use the following selections:</span>
+            <ul class="ul choices" id="run_jobs_throughout_the_console__d83e233">
+               <li class="li choice"><span class="ph uicontrol">No-op</span>: Simulate a <span class="ph">Puppet</span> run on all
+                  nodes in the job without enforcing a new catalog.</li>
+               <li class="li choice"><span class="ph uicontrol">Debug</span>: Print all debugging messages.</li>
+               <li class="li choice"><span class="ph uicontrol">Trace</span>: Print stack traces on some errors.</li>
+               <li class="li choice"><span class="ph uicontrol">Eval-trace</span>: Display how long it took for each step to
+                  run. </li>
+               <li class="li choice"><span class="ph uicontrol">Override noop = true configuration</span>: If any nodes in the job
+                     have&nbsp;<code class="ph codeph">noop = true</code>&nbsp;set
+                  in their&nbsp;<code class="ph codeph">puppet.conf</code>&nbsp;files, <span class="ph">Puppet</span> ignores
+                  that setting and enforce a new catalog on those nodes. This setting corresponds to
+                     the&nbsp;<code class="ph codeph">--no-noop</code>&nbsp;flag
+                  available on the orchestrator CLI.</li>
+            </ul>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd"><strong class="ph b">Important:</strong> Do not
+               change the Inventory from <span class="ph uicontrol">Node
+                  list</span> to <span class="ph uicontrol">PQL
+                  query</span>. This clears the node list target.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run job</span>. </span>
+            <div class="itemgroup stepresult" id="run_jobs_throughout_the_console__d83e284">View the job status and a list of previous
+               Puppet jobs on the <span class="ph uicontrol">Jobs</span> page.</div>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p"></p>
+      </section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="schedule-run">
+    <h2 class="title topictitle2" id="ariaid-title7">Schedule a <span class="ph">Puppet</span> run</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Schedule a job to deploy configuration changes at a
+        particular date and time. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+        </section>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, on the <span class="ph uicontrol">Jobs</span> page, click <span class="ph uicontrol">Run
+                  Puppet</span>.&nbsp;</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Select an environment:</span>
+            <ul class="ul choices" id="schedule-run__d83e205">
+               <li class="li choice"><span class="ph uicontrol">Run nodes in their own assigned environment</span>: Nodes run in the
+                  environment specified by the Node Manager or their <code class="ph codeph">puppet.conf</code> file.</li>
+               <li class="li choice"><span class="ph uicontrol">Select an environment for nodes to run in</span>: Select an environment
+                  from the list. Nodes can run in an environment if their environment is
+                  agent-specified, if they're included in an application in that environment, or if
+                  they're classified in that environment by the node manager.</li>
+            </ul>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If your job target includes application instances, the
+                  selected environment also determines the dependency order of your node
+                  runs.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd" id="schedule-run__d83e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="schedule-run__d83e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">To repeat the job on a regular schedule, change the
+               run frequency from <span class="ph uicontrol">Once</span> to
+                  <span class="ph uicontrol">Hourly</span>, <span class="ph uicontrol">Daily</span>, or <span class="ph uicontrol">Weekly</span>. </span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If a recurring job runs longer than the
+                  selected frequency, the following job waits to start until the next available time
+                  interval.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd"> Select the run mode for the job. The default run mode
+               for a job always attempts to enforce new catalogs on nodes. To change the run mode,
+               use the following selections:</span>
+            <ul class="ul choices" id="schedule-run__d83e233">
+               <li class="li choice"><span class="ph uicontrol">No-op</span>: Simulate a <span class="ph">Puppet</span> run on all
+                  nodes in the job without enforcing a new catalog.</li>
+               <li class="li choice"><span class="ph uicontrol">Debug</span>: Print all debugging messages.</li>
+               <li class="li choice"><span class="ph uicontrol">Trace</span>: Print stack traces on some errors.</li>
+               <li class="li choice"><span class="ph uicontrol">Eval-trace</span>: Display how long it took for each step to
+                  run. </li>
+               <li class="li choice"><span class="ph uicontrol">Override noop = true configuration</span>: If any nodes in the job
+                     have&nbsp;<code class="ph codeph">noop = true</code>&nbsp;set
+                  in their&nbsp;<code class="ph codeph">puppet.conf</code>&nbsp;files, <span class="ph">Puppet</span> ignores
+                  that setting and enforce a new catalog on those nodes. This setting corresponds to
+                     the&nbsp;<code class="ph codeph">--no-noop</code>&nbsp;flag
+                  available on the orchestrator CLI.</li>
+            </ul>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select the category of
+               nodes you want to target. </span>
+            <ul class="ul choices" id="schedule-run__d83e350">
+               <li class="li choice">
+                  <span class="ph uicontrol">Node list</span> Add individual
+                  nodes by name.</li>
+               <li class="li choice">
+                  <span class="ph uicontrol">PQL Query</span> Use the <span class="ph">Puppet</span> query language to retrieve a list of
+                  nodes.</li>
+               <li class="li choice">
+                  <span class="ph uicontrol">Node group</span> Select an
+                  existing node group.</li>
+            </ul>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Schedule job</span>. </span>
+                <div class="itemgroup stepresult">
+                    <p class="p">Your job appears on the <span class="ph uicontrol">Scheduled Puppet run</span> tab of
+                        the <span class="ph uicontrol">Jobs</span> page.</p>
+                </div>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="stop_a_job">
+                <h2 class="title topictitle2" id="ariaid-title8">Stop a job in progress</h2>
+                
+                <div class="body taskbody"><p class="shortdesc">You can stop a job if, for example, you
+                                realize you need to reconfigure a class or push a configuration
+                                change that the job needs.</p>
+                                <section class="section context"><p class="p">When you stop an on-demand <span class="ph">Puppet</span> run, runs that are underway
+        finish, and runs that have not started are canceled.</p></section>
+                                <section><div class="li step p">
+                                                  <span class="ph cmd">To stop a
+                                                  job:</span>
+                                                  <ul class="ul choices">
+                                                  <li class="li choice">In the console, go to the
+              <span class="ph uicontrol">Jobs</span> page and select the <span class="ph uicontrol">Puppet run</span> tab.
+            From the list of jobs, find the one you want and click <span class="ph uicontrol">Stop</span>. </li>
+                                                  <li class="li choice">On the
+                                                  command line, press <span class="ph uicontrol">CTRL + C</span>.</li>
+                                                  </ul>
+                                                </div></section>
+                </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title9" id="delete_scheduled_job">
+    <h2 class="title topictitle2" id="ariaid-title9">Delete a scheduled job</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Delete a job that is scheduled to run at a later time. </p>
+        <section class="section context">
+            <div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> You must have the
+                    appropriate role-based permissions to delete another user's scheduled job.
+                </div></div>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, open the <span class="ph uicontrol">Jobs</span> page. </span>
+            </li><li class="li step">
+                <span class="ph cmd">Click the <span class="ph uicontrol">Scheduled Puppet Run</span> tab.</span>
+            </li><li class="li step">
+                <span class="ph cmd">From the list of jobs, find the one you want to
+                    delete and click <span class="ph uicontrol">Remove</span>.</span>
+            </li></ol></section>
+    </div>
+</article></article></article></main></body></html>

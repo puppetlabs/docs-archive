@@ -1,0 +1,102 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Your inventory is the list of nodes managed by Puppet. Add nodes with agents, agentless nodes that connect over SSH or WinRM, or add network devices like network switches and firewalls. Agent nodes help keep your infrastructure in your desired state. Agentless nodes do not have an agent installed, but can do things like run tasks and plans."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="add_inventory"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Add nodes to the inventory</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="add_inventory">
+    <h1 class="title topictitle1" id="ariaid-title1">Add nodes to the inventory</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Your inventory is the list of nodes managed by <span class="ph">Puppet</span>.
+        Add nodes with agents, agentless nodes that connect over SSH or WinRM, or add network
+        devices like network switches and firewalls. Agent nodes help keep your infrastructure in
+        your desired state. Agentless nodes do not have an agent installed, but can do things like
+        run tasks and plans. </p>
+        <p class="p"></p>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="install_agent_nodes_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title2">Add agent nodes </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Use the console to add agent nodes to your inventory. Agents help with configuration
+        management by periodically correcting changes to resources and reporting information to the
+        master about your infrastructure. Note that adding an agent node installs the agent on the
+        node.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Inventory</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Install agents</span>.</span>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">Select the transport method. This connection is used to remotely install the
+                    agent on the target node.</span>
+                <ul class="ul choices">
+                    <li class="li choice"><span class="ph uicontrol">SSH</span> for <span class="ph">*nix</span>
+                        targets</li>
+                    <li class="li choice"><span class="ph uicontrol">WinRM</span> for <span class="ph">Windows</span>
+                        targets </li>
+                </ul>
+            </li><li class="li step stepexpand">
+            <span class="ph cmd">Enter the target host names and the credentials required to access them. If you use
+               an SSH key, include begin and end tags.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Add nodes</span>. </span>
+            <div class="itemgroup info">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Click <span class="ph uicontrol">Installation job started</span> to view the
+                  job details for the task. </div>
+            </div>
+            <div class="itemgroup stepresult">Agents are installed on the target nodes and then automatically submit
+               certificate signing requests (CSR) to the master. The list of unsigned certificates
+               is updated with new targets.</div>
+         </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="install_agentless_nodes_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title3">Add agentless nodes</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Add nodes that will not or cannot have an agent installed on them. Agentless
+        automation allows you to do things like update a package or restart a server on demand for
+        node targets that don't have software installed. </p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Inventory</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Connect over SSH or WinRM</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Select a transport method.</span>
+                <ul class="ul choices" id="install_agentless_nodes_getting_started__d404e71">
+                    <li class="li choice"><span class="ph uicontrol">SSH</span> for <span class="ph">*nix</span>
+                        targets</li>
+                    <li class="li choice"><span class="ph uicontrol">WinRM</span> for <span class="ph">Windows</span>
+                        targets</li>
+                </ul>
+            </li><li class="li step">
+                <span class="ph cmd">Enter target host names and the credentials required to access them. If you use
+                    an SSH key, include begin and end tags.</span>
+            </li><li class="li step"><strong>Optional: </strong>
+                <span class="ph cmd">Select additional target options. For example, to add a target port number,
+                    select <span class="ph uicontrol">Target Port </span> from the drop-down list, enter the
+                    number, and click <span class="ph uicontrol">Add</span>. For details, see <a class="xref" href="adding_and_removing_nodes_inventory.html#transport_configuration_options" title="A list of transport configuration options for SSH and WinRM transports.">Transport configuration options</a>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add nodes</span>. </span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>After the nodes have
+            been added to the inventory, they are added to <span class="ph">PuppetDB</span>,
+            and you can view them from the <span class="ph uicontrol">Nodes</span> page. Nodes in the inventory can be added to an inventory node
+            list when you set up a job to run tasks. To review each inventory node's connection
+            options, or to remove the node from inventory, go to the <span class="ph uicontrol">Connections</span> tab on the node's details page. </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="managing_certificate_signing_requests_console">
+  <h2 class="title topictitle2" id="ariaid-title4">Managing certificate signing requests in the console</h2>
+  
+  <div class="body conbody"><p class="shortdesc">A certificate signing request appears in the console on the <span class="ph uicontrol">Unsigned
+      certs</span> page after you add an agent node to inventory. Accept or reject submitted
+    requests individually or in a batch.</p>
+    <ul class="ul" id="managing_certificate_signing_requests_console__ul_cv3_l4z_hhb">
+      <li class="li">To manage requests individually, click <span class="ph uicontrol">Accept </span> or <span class="ph uicontrol">Reject</span>.</li>
+      <li class="li">To manage the entire list of requests, click <span class="ph uicontrol">Accept All</span> or <span class="ph uicontrol">Reject All</span>. Nodes are processed in batches. If you close the
+        browser window or navigate to another website while processing is in progress, only the
+        current batch is processed.</li>
+    </ul>
+    <p class="p">After you accept the certificate signing request, the node appears in the console after the
+      next <span class="ph">Puppet</span> run. To make a node available immediately after you
+      approve the request, run <span class="ph">Puppet</span> on demand.</p>
+  </div>
+</article></article></article></main></body></html>

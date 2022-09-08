@@ -1,0 +1,311 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Hooks are an optional but useful Razor object. Hooks provide a way to run arbitrary scripts when certain events occur during a node's lifecycle. The behavior and structure of a hook are defined by a hook type."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="hooks"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Hooks</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="hooks">
+  <h1 class="title topictitle1" id="ariaid-title1">Hooks </h1>
+  
+  
+  <div class="body conbody"><p class="shortdesc">Hooks are an optional but useful <span class="ph">Razor</span> object. Hooks provide a way to run arbitrary scripts when
+    certain events occur during a node's lifecycle. The behavior and structure of a hook are defined
+    by a <em class="ph i">hook type</em>.</p>
+    <p class="p">The two primary components for hooks are:</p>
+    <div class="p">
+      <ul class="ul">
+        <li class="li"><strong class="ph b">Configuration</strong> — A JSON document
+          for storing data on a hook. Configurations have an initial value and can be updated by
+          hook scripts.</li>
+        <li class="li"><strong class="ph b">Event scripts</strong> — Scripts that run
+          when a specified event occurs. Event scripts must be named according to the handled
+          event.</li>
+      </ul>
+    </div>
+    <section class="section"><h2 class="title sectiontitle">Hook storage
+        directories</h2><div class="p">There are two directories that store hooks: <ul class="ul">
+          <li class="li"><code class="ph codeph">/opt/puppetlabs/server/apps/razor-server/share/razor-server/hooks</code> stores
+            default hooks shipped with the product. </li>
+          <li class="li"><code class="ph codeph">/etc/puppetlabs/razor-server/hooks</code> stores custom hooks. </li>
+        </ul><div class="note note note_note"><span class="note__title">Note:</span> Don't modify the directory or hooks at <code class="ph codeph">/opt...</code>, but you can copy hooks from there to
+          the custom hook directory and modify them as needed.</div></div></section>
+    <section class="section"><h2 class="title sectiontitle">File layout for a hook
+        type</h2><p class="p">Similar to brokers and tasks, hook types are defined
+        through a <code class="ph codeph">.hook</code> directory and optional
+        event scripts within that directory.</p><div class="p">
+        <pre class="pre codeblock"><code>    hooks/
+      some.hook/
+        configuration.yaml
+        node-bind-policy
+        node-unbind-policy
+        ...</code></pre>
+      </div></section>
+    <section class="section"><h2 class="title sectiontitle">Available events</h2><div class="p">These are the events that you can create hooks for. <ul class="ul">
+          <li class="li"><code class="ph codeph">node-booted</code> —
+            Triggered every time a node boots via iPXE. </li>
+          <li class="li"><code class="ph codeph">node-registered</code> —
+            Triggered after a node has been registered. Limited hardware information is available
+            after registration. </li>
+          <li class="li"><code class="ph codeph">node-deleted</code> —
+            Triggered after a node has been deleted. </li>
+          <li class="li"><code class="ph codeph">node-bound-to-policy</code> — Triggered after a node has been bound to a policy.
+            The script input contains a <code class="ph codeph">policy</code>
+            property with the details of the policy that has been bound to the node. </li>
+          <li class="li"><code class="ph codeph">node-unbound-from-policy</code> — Triggered after a node has been marked as
+            uninstalled by the <code class="ph codeph">reinstall-node</code>
+            command and thus has been returned to the set of nodes available for installation. </li>
+          <li class="li"><code class="ph codeph">node-facts-changed
+            </code>— Triggered whenever a node changes its facts. </li>
+          <li class="li"><code class="ph codeph">node-install-finished</code> — Triggered when a policy finishes its last step.
+          </li>
+        </ul></div></section>
+    <section class="section"><h2 class="title sectiontitle">Creating hooks</h2><p class="p">The <code class="ph codeph">create-hook</code> command
+        is used to create a hook object from a hook type. For
+        example:</p><pre class="pre codeblock"><code>razor create-hook --name myhook --hook-type some_hook
+    --configuration example1=7 --configuration example2=rhubarb</code></pre><p class="p">The hook object created by this command sets its initial configuration to
+        the JSON
+        document:</p><pre class="pre codeblock"><code>{
+	"example1": 7,
+    "example2": "rhubarb"
+}</code></pre><p class="p">Each time an event script for a hook runs, it has an opportunity to
+        modify the hook's configuration. These changes to the configuration are preserved by the <span class="ph">Razor</span> server. The server also makes sure that hooks don't
+        modify their configurations concurrently in order to avoid data corruption.</p><p class="p">The <code class="ph codeph">delete-hook</code> command is used
+        to remove a hook.</p></section>
+    <section class="section"><h2 class="title sectiontitle">Hook configuration </h2><p class="p">Hook scripts can use the hook object's <code class="ph codeph">configuration</code>.</p><p class="p">The hook type specifies the
+        configuration data that it accepts in <code class="ph codeph">configuration.yaml</code>. That file must define a
+        hash:</p><pre class="pre codeblock"><code>example1:
+  description: "Explain what example1 is for"
+  default: 0
+example2:
+  description "Explain what example2 is for"
+  default: "Barbara"
+...</code></pre><p class="p">For each event that the hook type handles, it must contain a script with
+        the event's name. That script must be executable by the <span class="ph">Razor</span>
+        server. All hook scripts for a certain event are run in an indeterminate order when that
+        event occurs.</p></section>
+  </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="event_scripts">
+  <h2 class="title topictitle2" id="ariaid-title2">Event scripts </h2>
+  
+  <div class="body conbody"><p class="shortdesc">The general protocol is that hook event scripts receive a
+    JSON object on their <code class="ph codeph">stdin</code>, and might return a
+    result by printing a JSON object to their <code class="ph codeph">stdout</code>. </p>
+    <p class="p">The properties of the input object vary by event, but they always contain
+      a <code class="ph codeph">hook</code> property:</p>
+    <pre class="pre codeblock"><code>{
+  "hook": {
+    "name": hook name,
+    "configuration": ... operations to perform ...
+  }
+}</code></pre>
+    <p class="p">The <code class="ph codeph">configuration</code> object
+      is initialized from the hash described in the hook's <code class="ph codeph">configuration.yaml</code> and the properties set by the current values of the hook
+      object's <code class="ph codeph">configuration</code>. With the <code class="ph codeph">create-hook</code> command above, the input JSON would
+      be:</p>
+    <pre class="pre codeblock"><code>{
+  "hook": {
+    "name": "myhook",
+    "configuration": {
+      "update": {
+        "example1": 7,
+        "example2": "rhubarb"
+      }
+    }
+  }
+}</code></pre>
+    <p class="p">The script might return data by producing a JSON object on its <code class="ph codeph">stdout</code> to indicate changes that need to be made to
+      the hook's <code class="ph codeph">configuration</code>. The updated <code class="ph codeph">configuration</code> is used on subsequent invocations of
+      any event for that hook. The output must indicate which properties to update, and which ones
+      to remove:</p>
+    <pre class="pre codeblock"><code>{
+  "hook": {
+    "configuration": {
+      "update": {
+        "example1": 8
+      },
+      "remove": [ "frob" ]
+    }
+  }
+}</code></pre>
+    <p class="p">The <span class="ph">Razor</span> server ensures that invocations
+      of hook scripts are serialized. For any hook, events are processed one-by-one to allow for
+      transactional safety around the changes any event script might make.</p>
+    <section class="section"><h3 class="title sectiontitle">Node events </h3><p class="p">Most events are directly related to a node. The JSON input to the event script has
+        a <code class="ph codeph">node</code> property that contains the
+        representation of the node in the same format the API produces for node details.</p><p class="p">The JSON output of the event script can modify the node metadata:</p><div class="p">
+        <pre class="pre codeblock"><code>{
+  "node": {
+    "metadata": {
+      "update": {
+        "example1": 8
+      },
+      "remove": [ "frob" ]
+    }
+</code></pre>
+      </div></section>
+    <section class="section"><h3 class="title sectiontitle">Error handling</h3><p class="p">The hook script must exit with exit code 0 if it succeeds; any other exit
+        code is considered a failure of the script. </p><p class="p">Whether the failure of
+        a script has any other effects depends on the event. A failed execution can still make
+        updates to the hook and node objects by printing to <code class="ph codeph">stdout</code> in the same way as a successful execution.</p><p class="p">To
+        report error details, the script produces a JSON object with an <code class="ph codeph">error</code> property on its <code class="ph codeph">stdout</code> in addition to exiting with a non-zero exit code. If the script exits
+        with exit code 0, the <code class="ph codeph">error</code> property is
+        still recorded, but the event's severity isn't an error. The <code class="ph codeph">error</code> property itself contains an object whose <code class="ph codeph">message</code> property is a human-readable message; additional
+        properties can be set. For
+      example:</p><pre class="pre codeblock"><code>{
+  "error": {
+    "message": "connection refused by frobnicate.example.com",
+    "port": 2345,
+        ...
+    ...
+  }
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Sample input</h3><p class="p">The input to the hook script is in JSON, containing a structure like this:</p><div class="p"><pre class="pre codeblock"><code>{
+  "hook": {
+    "name": "counter",
+    "configuration": { "value": 0 }
+  },
+  "node": {
+    "name": "node10",
+    "hw_info": {
+      "mac": [ "52-54-00-30-8e-45" ],
+      ...
+    },
+    "dhcp_mac": "52-54-00-30-8e-45",
+    "tags": ["compute", "anything", "any", "new"],
+    "facts": {
+      "memorysize_mb": "995.05",
+      "facterversion": "2.0.1",
+      "architecture": "x86_64",
+      ...
+    },
+    "state": {
+      "installed": false
+      "physicalprocessorcount": "1",
+    },
+    "hostname": "client-l.watzmann.net",
+    "root_password": "secret",
+    "netmask_eth0": "255.255.255.0",
+    "ipaddress_lo": "127.0.0.1",
+    "last_checkin": "2014-05-21T03:45:47+02:00"
+  },
+  "policy": {
+    "name": "client-l",
+    "repo": "centos-6.7",
+    "task": "ubuntu",
+    "broker": "noop",
+    "enabled": true,
+    "hostname_pattern": "client-l.watzmann.net",
+    "root_password": "secret",
+    "tags": ["client-l"],
+    "nodes": { "count": 0 }
+  }
+}</code></pre></div></section>
+    <section class="section"><h3 class="title sectiontitle">Sample hook</h3><p class="p">Here is an example of a basic hook called <code class="ph codeph">counter</code> that counts the number of times <span class="ph">Razor</span>
+        registers a node. </p><p class="p">This example creates a corresponding directory
+        for the hook type, <code class="ph codeph">counter.hook</code>, inside the
+          <code class="ph codeph">hooks</code> directory. You can store the
+        current count as a configuration entry with the key <code class="ph codeph">count</code>. Thus the <code class="ph codeph">configuration.yaml</code> file might look like
+        this:</p><pre class="pre codeblock"><code>count:
+  description: "The current value of the counter"
+  default: 0</code></pre><p class="p">To make sure a script runs whenever a node is bound to a policy, create a
+        file called <code class="ph codeph">node-bound-to-policy</code> and place
+        it in the <code class="ph codeph">counter.hook</code> folder. Then write
+        this script, which reads in the current configuration value, increments it, then returns
+        some JSON to update the configuration on the hook
+        object:</p><pre class="pre codeblock"><code>
+#! /bin/bash
+
+json=$(&lt; /dev/stdin)
+
+name=$(jq '.hook.name' &lt;&lt;&lt; $json)
+value=$(( $(jq '.hook.config.count' &lt;&lt;&lt; $json) + 1 ))
+
+cat &lt;&lt;EOF
+{
+  "hook": {
+    "configuration": {
+      "update": {
+        "count": $value
+      }
+    }
+  },
+  "node": {
+    "metadata": {
+      $name: $value
+    }
+  }
+}
+EOF</code></pre><p class="p">Note that this script uses <code class="ph codeph">jq</code>, a bash JSON manipulation framework. This must be on the <code class="ph codeph">$PATH</code> in order for execution to succeed.</p><p class="p">Next, create the hook object, which stores the
+        configuration:</p><pre class="pre codeblock"><code>razor create-hook --name counter --hook-type counter</code></pre><p class="p">Because the configuration is absent from this creation call, the default
+        value of 0 in <code class="ph codeph">configuration.yaml</code> is used.
+        Alternatively, this could be set using <code class="ph codeph">--configuration count=0</code> or <code class="ph codeph">--c
+          count=0</code>.</p><p class="p">The hook is now ready to use. You can query the
+        existing hooks in a system via <code class="ph codeph">razor hooks</code>.
+        To query the current value of the hook's configuration, <code class="ph codeph">razor hooks counter</code> shows <code class="ph codeph">count</code> initially set to 0. When a node gets bound to a policy, the <code class="ph codeph">node-bound-to-policy</code> script is triggered,
+        yielding a new configuration value of 1.</p></section>
+  </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="assign_dynamic_hostnames_using_hooks">
+   <h2 class="title topictitle2" id="ariaid-title3">Assign dynamic hostnames using hooks </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">You can use a hook to create more advanced dynamic
+      hostnames than the simple incremented pattern — <code class="ph codeph">$\{id\}.example.com</code> — from the <code class="ph codeph">hostname</code> property on a policy. </p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <p class="p"><span class="ph">Ruby</span> must be installed in <code class="ph codeph">$PATH</code> for the hook script to succeed. By
+            default, <span class="ph">Ruby</span> is installed as required with <span class="ph">Puppet Enterprise</span>. If <span class="ph">Ruby</span> isn't
+            installed, add it to one of the paths specified in the <code class="ph codeph">hook_execution_path</code> class parameter of the <code class="ph codeph">pe_razor</code> class.</p>
+      </section>
+      <section class="section context">
+         <p class="p">This type of hook calculates the correct hostname and returns that
+            hostname as metadata on the node. To do so, it uses a basic counter system that stores
+            the number of nodes bound to a given policy.</p>
+         <p class="p">This hook is intended to be extended for cases where an external
+            system needs to be contacted to determine the correct hostname. In such a scenario, the
+            new value is still returned as metadata for the node.</p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Create an instance of a default hook:</span>
+            <div class="itemgroup info">
+               <pre class="pre codeblock"><code>razor create-hook --name some_policy_hook --hook-type hostname \
+    --configuration policy=some_policy \
+    --configuration hostname-pattern='${policy}${count}.example.com'</code></pre>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">(Optional) If multiple policies require their own
+               counter, create multiple instances of this hook with different <code class="ph codeph">policy</code> or <code class="ph codeph">hostname-pattern</code> hook configurations.</span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p">Running the <code class="ph codeph">create-hook</code> command kicks off this sequence of events:</p>
+         <div class="p">
+            <ol class="ol">
+               <li class="li">The counter for the policy starts at 1.</li>
+               <li class="li">When a node boots, the <code class="ph codeph">node-bound-to-policy</code> event is triggered.</li>
+               <li class="li">The policy's name from the event is then passed to the hook
+                  as input.</li>
+               <li class="li">The hook matches the node's policy name to the hook's policy
+                  name.</li>
+               <li class="li">If the policy matches, the hook calculates a rendered <code class="ph codeph">hostname-pattern</code>: <div class="p">
+                     <ul class="ul">
+                        <li class="li">It replaces <code class="ph codeph">${count}</code> with the current value of the <code class="ph codeph">counter</code> hook configuration. </li>
+                        <li class="li">It left-pads the <code class="ph codeph">${count}</code> with <code class="ph codeph">padding</code> zeroes. For example, if the hook
+                           configuration's <code class="ph codeph">padding</code>
+                           equals 3, a <code class="ph codeph">count</code> of 7
+                           is rendered as <code class="ph codeph">007</code>. </li>
+                        <li class="li">It replaces <code class="ph codeph">${policy}</code> with the name of its policy. </li>
+                     </ul>
+                  </div></li>
+               <li class="li">The hook returns the rendered <code class="ph codeph">hostname-pattern</code> as the node metadata of <code class="ph codeph">hostname</code> and returns the incremented
+                  value for the counter that was used, so that the next execution of the hook uses
+                  the next value.</li>
+            </ol>
+         </div>
+         <p class="p">
+            <strong class="ph b">Viewing the hook's activity log</strong>
+         </p>
+         <p class="p">To view the status of the hook's executions, see <code class="ph codeph">razor hooks $name log</code>:</p>
+         <div class="p">
+            <pre class="pre codeblock"><code>    timestamp: 2015-04-01T00:00:00-07:00
+       policy: policy_name
+        cause: node-bound-to-policy
+  exit_status: 0
+     severity: info
+      actions: updating hook configuration: {"update"=&gt;{"counter"=&gt;2}} and updating node metadata: {"update"=&gt;{"hostname"=&gt;"policy_name1.example.com"}}</code></pre>
+         </div>
+      </section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="using_the_razor_client.html#hook_commands" title="Hooks are custom, executable scripts that are triggered to run when a node hits certain phases in its lifecycle. A hook script receives several properties as input, and can make changes in the node's metadata or the hook's internal configuration.">Hook commands</a></li><li class="linklist"><a class="link" href="api_reference.html#hooks_api" title="Hooks are custom, executable scripts that are triggered to run when a node hits certain phases in its lifecycle. A hook script receives several properties as input, and can make changes in the node’s metadata or the hook’s internal configuration.">Hooks API</a></li></ul></div></nav></article></article></article></main></body></html>

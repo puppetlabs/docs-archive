@@ -1,0 +1,80 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Your node count is the number of nodes in your inventory. Your license limits you to a certain number of active nodes before you hit your bursting limit. If you hit your bursting limit on four days during a month, you must purchase a license for more nodes or remove some nodes from your inventory."><meta name="DC.relation" scheme="URI" content="purchasing_and_installing_a_license_key.html#purchasing_and_installing_a_license_key"><meta name="DC.relation" scheme="URI" content="purchasing_and_installing_a_license_key.html#purchasing_and_installing_a_license_key"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.date.created" content="2019/11/13"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="node_count"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>How nodes are counted</title></head><body id="node_count"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">How nodes are counted</h1>
+
+    
+
+    
+    
+    <div class="body conbody"><p class="shortdesc">Your <dfn class="term">node count</dfn> is the number of nodes in your inventory. Your license
+        limits you to a certain number of active nodes before you hit your <dfn class="term">bursting
+            limit</dfn>. If you hit your bursting limit on four days during a month, you must
+        purchase a license for more nodes or remove some nodes from your inventory.</p>
+        <div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> <dfn class="term">Node</dfn> in this context includes agent nodes, agentless nodes, masters,
+                compilers, nodes running in <code class="ph codeph">noop</code> mode, and nodes that have been
+                purged but had prior activity within the same calendar month.</div>
+        </div>
+        <section class="section"><h2 class="title sectiontitle">Nodes included in the node count</h2>
+            
+            <div class="p">The following nodes are included in your node count: <ul class="ul">
+                    <li class="li">Nodes with a report in <span class="ph">PuppetDB</span> during the
+                        calendar month. </li>
+                    <li class="li">Nodes that have executed a <span class="ph">Puppet</span> run, task,
+                        or plan in the orchestrator, even if they do not have a report during the
+                        calendar month. </li>
+                </ul></div>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">Nodes not included in the node count </h2>
+            
+            <div class="p">The following nodes are not included in your node count: <ul class="ul">
+                    <li class="li">Nodes that are in the inventory service but are not used with <span class="ph">Puppet</span> runs, tasks, or plans. </li>
+                    <li class="li">Nodes that have been purged and have no reports or activity within the
+                        calendar month.</li>
+                </ul></div>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">Reaching the bursting limit</h2>
+            
+            <p class="p">When you go above your node license's count limit, you enter what is called the
+                    <dfn class="term">bursting limit</dfn>. The bursting limit lets you to exceed the number of
+                nodes allowed under your license and enter a new threshold without extra charge. You
+                are allowed to use your bursting limit on four consecutive or non-consecutive days
+                per calendar month. Any higher usage beyond the four days will require you to either
+                purge nodes or buy a license for more nodes. </p>
+            <div class="p">The amount of time within your bursting limit does not matter for it to be counted as
+                one day. For example, assuming you are licensed to use 1000 nodes and your bursting
+                limit is 2000 nodes: <ul class="ul">
+                    <li class="li">If you use 1200 nodes for two hours one day, you have three days left to use
+                        your bursting limit that month. </li>
+                    <li class="li">If you use 1900 nodes for 23 hours one day, you have three days left to use
+                        your bursting limit that month. </li>
+                    <li class="li">If you use 1500 nodes for one hour each day for four days, you must contact
+                        your Puppet representative to buy a license for more nodes or purge some of
+                        your nodes until the next calendar month. </li>
+                </ul></div>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">When nodes are counted </h2>
+            
+            <p class="p">PE tracks node counts daily from 12:00 midnight UTC to 12:00 midnight UTC. </p>
+            <p class="p">The same time is used for the calendar month. For example, the month of September
+                would include activity from 12:00 midnight UTC 01 September until 12:00 midnight UTC
+                01 October. After that point, the bursting limit restarts with a fresh four days in
+                October.</p>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">Viewing your node count</h2>
+            
+            <p dir="ltr" class="p">View your daily node count in the console by navigating to the
+                    <span class="ph uicontrol">License</span> page and scrolling to the <span class="ph uicontrol">Calendar
+                    month usage</span> section. This section also contains information about
+                your subscription expiration date and license warnings, such as your license being
+                expired or out of compliance.</p>
+            <p dir="ltr" class="p">To see daily node usage information on the command line, use the <a class="xref" href="orchestrator_api_usage_endpoint.html#orchestrator_api_usage_endpoint" title="Use the /usage endpoint to view details about the active nodes in your deployment.">Puppet orchestrator API: usage endpoint</a>. </p>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">Removing nodes</h2>
+            
+            <p class="p">If you have unused nodes cluttering your inventory and are concerned about reaching
+                your limit, read about removing them in <a class="xref" href="adding_and_removing_nodes.html#adding_and_removing_nodes" title="After you install a Puppet agent on a node, accept its certificate signing request and begin managing it with Puppet Enterprise (PE). Or remove nodes that you no longer need.">Adding and removing agent nodes</a> and <a class="xref" href="adding_and_removing_nodes_inventory.html#adding_and_removing_nodes_inventory" title="Using the inventory, you can manage nodes, including devices such as network switches or firewalls, without installing the Puppet agent on them. The inventory stores node and device information securely.">Adding and removing agentless nodes</a>.</p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="purchasing_and_installing_a_license_key.html#purchasing_and_installing_a_license_key" title="Your license must support the number of nodes that you want to manage with Puppet Enterprise.">Purchasing and installing a license key</a></li></ul></div></nav></article></main></body></html>

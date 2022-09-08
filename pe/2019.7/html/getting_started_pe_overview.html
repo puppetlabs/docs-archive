@@ -1,0 +1,40 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise (PE) is automation software that helps you and your organization be productive and agile while managing your IT infrastructure."><meta name="DC.relation" scheme="URI" content="install_pe_getting_started.html#install_pe_getting_started"><meta name="DC.relation" scheme="URI" content="add_inventory.html#add_inventory"><meta name="DC.relation" scheme="URI" content="add_content.html#add_content"><meta name="DC.relation" scheme="URI" content="manage_apach_configuration.html"><meta name="DC.relation" scheme="URI" content="manage_iis_configuration.html"><meta name="DC.relation" scheme="URI" content="next_steps_getting_started_pe.html"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="getting_started_pe_overview"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Getting started with Puppet Enterprise</title></head><body id="getting_started_pe_overview"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Getting started with <span class="ph">Puppet Enterprise</span></h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc"><span class="ph">Puppet Enterprise (PE)</span> is automation software that helps you and
+        your organization be productive and agile while managing your IT infrastructure. </p>
+        <p class="p"><span class="ph">PE</span> is a commercial version of <span class="ph">Puppet</span>, our original open source product used by
+            individuals managing smaller infrastructures. It has all the power and control of <span class="ph">Puppet</span>, plus a graphical user interface, orchestration
+            services, role-based access control, reporting, and the capacity to manage thousands of
+            nodes. <span class="ph">PE</span> incorporates other Puppet-related tools and
+            products  to deliver comprehensive configuration management capabilities.</p>
+        <p class="p">There are two things you need to get started with <span class="ph">PE</span>: your
+            content and the <span class="ph">Puppet</span> platform. </p>
+        <section class="section"><h2 class="title sectiontitle">Content</h2>
+            
+            <p class="p">You develop and store your automation content in a Git repository and upload it onto
+                the <span class="ph">Puppet</span> platform. It consists of <span class="ph">Puppet</span> code, plan and task code, and <span class="ph">Hiera</span> data. You store content in a <dfn class="term">control
+                    repo</dfn>, which contains bundles of code called <dfn class="term">modules</dfn> and
+                references to additional content from external sources, like the <a class="xref" href="https://forge.puppet.com/" target="_blank"><span class="ph">Puppet</span> Forge</a> — a repository of thousands
+                of modules made by <span class="ph">Puppet</span> developers and the <span class="ph">Puppet</span> community. </p>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">Puppet platform</h2>
+            
+            <p class="p">The <span class="ph">Puppet</span> platform includes the master, compilers,
+                and agents. Use it to assign your desired state to managed systems, orchestrate
+                ad-hoc automation tasks on managed and unmanaged systems, and get reports about
+                configuration automation activity. </p>
+            <p class="p">In this guide, you will learn how to install <span class="ph">PE</span>, add
+                nodes to the console, set up your control repo, and run through an example task of
+                managing websever configurations — using either Apache to manage a <span class="ph">*nix</span> machine or IIS to manage
+                a <span class="ph">Windows</span> machine.</p>
+        </section>
+        <section class="section">
+            <p class="p">Before you begin, check out our video for more information about how <span class="ph">Puppet</span> works.</p>
+            <p class="p"><object data="https://www.youtube.com/embed/QFcqvBk1gNA" height="425" width="750"></object></p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><ul class="ullinks"><li class="link ulchildlink"><strong><a href="install_pe_getting_started.html#install_pe_getting_started">Install PE</a></strong><br>Installing PE sets up a standard installation, which you can use to try out <span class="ph">PE</span> with up to 10 nodes or to manage up to 4,000             nodes.</li><li class="link ulchildlink"><strong><a href="add_inventory.html#add_inventory">Add nodes to the inventory</a></strong><br>Your inventory is the list of nodes managed by <span class="ph">Puppet</span>.         Add nodes with agents, agentless nodes that connect over SSH or WinRM, or add network         devices like network switches and firewalls. Agent nodes help keep your infrastructure in         your desired state. Agentless nodes do not have an agent installed, but can do things like         run tasks and plans. </li><li class="link ulchildlink"><strong><a href="add_content.html#add_content">Add code and set up Code Manager</a></strong><br>Set up your control repo, create a <span class="ph">Puppetfile</span>, and         configure <span class="ph">Code Manager</span> so you can start adding content to your <span class="ph">PE</span> environments.</li><li class="link ulchildlink"><strong><a href="manage_apach_configuration.html">Manage Apache configuration on *nix targets</a></strong><br></li><li class="link ulchildlink"><strong><a href="manage_iis_configuration.html">Manage IIS configuration on Windows targets</a></strong><br></li><li class="link ulchildlink"><strong><a href="next_steps_getting_started_pe.html">Next steps</a></strong><br>Now that you have set up some basic automated configuration management with <span class="ph">PE</span>, here     are some things to do next:</li></ul></nav></article></main></body></html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the /events endpoint to learn about events that occurred during an orchestrator job."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrator_api_events.endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet orchestrator API: events endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="orchestrator_api_events.endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">Puppet</span> orchestrator API: events
+        endpoint </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">/events</code> endpoint to learn about events that occurred during an orchestrator
+        job.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_jobs_job_id_events">
+  <h2 class="title topictitle2" id="ariaid-title2">GET /jobs/:job-id/events </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Retrieve all of the events that occurred during a given
+    job.</p>
+    <section class="section"><h3 class="title sectiontitle">Parameters</h3><p class="p">The request accepts this query parameter:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="get_jobs_job_id_events__entry__1">Parameter </th>
+              <th class="entry" id="get_jobs_job_id_events__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__1">
+                <code class="ph codeph">start</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__2">Start the list of events with the <em class="ph i">nth</em> event.</td>
+            </tr>
+          </tbody></table><p class="p">For example:</p><div class="p"><pre class="pre codeblock"><code>https://orchestrator.example.com:8143/orchestrator/v1/jobs/352/events?start=1272</code></pre></div></section>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><p class="p">The response is a JSON object that details the events in a job, and uses
+        these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="get_jobs_job_id_events__entry__5">Key </th>
+              <th class="entry" id="get_jobs_job_id_events__entry__6">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__5">
+                <code class="ph codeph">next-events</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__6">A link to the next event in the
+                job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__5">
+                <code class="ph codeph">items</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__6">A list of all events related to the
+                job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__5">
+                <code class="ph codeph">id</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__6">The job ID.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__5">
+                <code class="ph codeph">type</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__6">The current status of the event. See
+                event-types.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__5">
+                <code class="ph codeph">timestamp</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__6">The time when the event was
+                created.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__5">
+                <code class="ph codeph">details</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__6">Information about the event.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__5">
+                <code class="ph codeph">message</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__6">A message about the given event.</td>
+            </tr>
+          </tbody></table><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>{
+  "next-events" : {
+    "id" : "https://orchestrator.example.com:8143/orchestrator/v1/jobs/352/events?start=1272"
+  },
+  "items" : [ {
+    "id" : "1267",
+    "type" : "node_running",
+    "timestamp" : "2016-05-05T19:50:08Z",
+    "details" : {
+      "node" : "puppet-agent.example.com",
+      "detail" : {
+        "noop" : false
+      }
+    },
+    "message" : "Started puppet run on puppet-agent.example.com ..."
+  }]
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Event types</h3><p class="p">The response format for each event contains one of these event types, which is
+        determined by the status of the event.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="get_jobs_job_id_events__entry__21">Event type </th>
+              <th class="entry" id="get_jobs_job_id_events__entry__22">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__21">
+                <code class="ph codeph">node_errored</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__22">Created when there was an error running
+                Puppet on a node.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__21">
+                <code class="ph codeph">node_failed</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__22">Created when Puppet failed to run on a
+                node.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__21">
+                <code class="ph codeph">node_finished</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__22">Created when puppet ran successfully on a
+                node.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__21">
+                <code class="ph codeph">node_running</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__22">Created when Puppet starts running on a
+                node.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__21">
+                <code class="ph codeph">node_skipped</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__22">Created when a Puppet run is skipped on a
+                node (for example, if a dependency fails).</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__21">
+                <code class="ph codeph">job_aborted</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__22">Created when a job is aborted without
+                completing.</td>
+            </tr>
+          </tbody></table></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3><p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="get_jobs_job_id_events__entry__35">Key </th>
+              <th class="entry" id="get_jobs_job_id_events__entry__36">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__35">
+                <code class="ph codeph">puppetlabs.orchestrator/validation-error</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__36">If the <code class="ph codeph">start</code> parameter or the <code class="ph codeph">job-id</code> in the request are not integers, the server returns
+                a <code class="ph codeph">400</code> response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_jobs_job_id_events__entry__35">
+                <code class="ph codeph">puppetlabs.orchestrator/unknown-job</code>
+              </td>
+              <td class="entry" headers="get_jobs_job_id_events__entry__36">If the job does not exist, the server
+                returns a <code class="ph codeph">404</code> response.</td>
+            </tr>
+          </tbody></table></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="orchestrator_api_get_plan_jobs_job_id_events">
+  <h2 class="title topictitle2" id="ariaid-title3">GET /plan_jobs/:job-id/events</h2>
+  
+  
+
+  <div class="body refbody"><p class="shortdesc">Retrieve all of the events that occurred during a given plan
+    job. </p>
+    <section class="section"><h3 class="title sectiontitle">Parameters</h3>
+      
+      <div class="p">The request accepts the following query parameter: <ul class="ul">
+          <li class="li"><code class="ph codeph">start</code>: The lowest
+            database ID of an event that should be shown. </li>
+        </ul></div>
+      <p class="p">For example:</p>
+      <p class="p">https://orchestrator.example.com:8143/orchestrator/v1/plan_jobs/352/events?start=1272</p>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3>
+      
+      <div class="p">The response is a JSON object that derails the events in a plan job. he
+        following keys are used: <ul class="ul">
+          <li class="li"><code class="ph codeph">next-events</code>: a
+            link to the next event in the job. <ul class="ul">
+              <li class="li"><code class="ph codeph">id</code>: the url
+                of the next event.</li>
+              <li class="li"><code class="ph codeph">event</code>: the
+                next event id.</li>
+            </ul></li>
+          <li class="li"><code class="ph codeph">items</code>: a list of
+            all events related to the job. <ul class="ul">
+              <li class="li"><code class="ph codeph">id</code>: the id of
+                the event. </li>
+              <li class="li"><code class="ph codeph">type</code>: the
+                type of event. See <code class="ph codeph">event-types</code>. </li>
+              <li class="li"><code class="ph codeph">timestamp</code>:
+                the time when the event was created. </li>
+              <li class="li"><code class="ph codeph">details</code>:
+                details of the event, differs based on the type of the event. See the potential
+                values section for more detailed information. </li>
+            </ul></li>
+        </ul></div>
+      <div class="p">For example:
+        <pre class="pre codeblock"><code>{
+  "next-events" : {
+    "id" : "https://orchestrator.example.com:8143/orchestrator/v1/plan_jobs/352/events?start=1272",
+    "event": "1272"
+  },
+  "items" : [ {
+    "id" : "1267",
+    "type" : "task_start",
+    "timestamp" : "2016-05-05T19:50:08Z",
+    "details" : {
+      "job-id" : "8765"
+    }
+  },
+  {
+    "id" : "1268",
+    "type" : "plan_finished",
+    "timestamp" : "2016-05-05T19:50:14Z",
+    "details" : {
+      "plan-id" : "1234",
+      "result" : {
+        "Plan output"
+      },
+    },
+  }]
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Event types</h3>
+      
+      <div class="p">The response format for each event will contain one of the following
+        event types, which is determined by the status of the event.<ul class="ul">
+          <li class="li"><code class="ph codeph">task_start</code>:
+            created when a task run is started</li>
+          <li class="li"><code class="ph codeph">script_start</code>:
+            created when a script run as part of a plan is started</li>
+          <li class="li"><code class="ph codeph">command_start</code>:
+            created when a command run as part of a plan is started</li>
+          <li class="li"><code class="ph codeph">upload_start</code>:
+            created when a file upload as part of a plan is started</li>
+          <li class="li"><code class="ph codeph">wait_start</code>:
+            created when a <code class="ph codeph">wait_until_available()</code>
+            call as part of a plan is started</li>
+          <li class="li"><code class="ph codeph">out_message</code>: created when <code class="ph codeph">out::message</code> is called as
+            part of a plan. <code class="ph codeph">details</code> will contain a <code class="ph codeph">message</code> key
+            with a value containing the message sent with <code class="ph codeph">out::message</code> truncated to
+            1,024 bytes. The full message content can be obtained using the <a class="xref" href="orchestrator_api_events.endpoint.html#orchestrator_api_get_plan_jobs_job_id_event_id" title="Fetch a specific event for a job.">GET /plan_jobs/:job-id/event/:event-id</a> endpoint. </li>
+          <li class="li"><code class="ph codeph">apply_start</code>: created when a puppet apply run as part of a plan is
+            started</li>
+          <li class="li"><code class="ph codeph">plan_finished</code>:
+            created when a plan job successfully finishes</li>
+          <li class="li"><code class="ph codeph">plan_failed</code>:
+            created when a plan job fails</li>
+        </ul></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">"Sub" plans</h3>
+      
+      <div class="p">If a plan contains the <code class="ph codeph">run_plan()</code> function it will begin execution of another "sub" plan during the
+        execution of the plan job. "Sub" plans will not receive their own plan job, they will
+        execute as part of the original plan job. There are specific events for "sub" plans that
+        indicate a plan within a plan has started or finished:<ul class="ul">
+          <li class="li"><code class="ph codeph">plan_start</code>:
+            created when a new plan was kicked off from the current plan job using the <code class="ph codeph">run_plan()</code> function</li>
+          <li class="li"><code class="ph codeph">plan_end</code>: created
+            when a plan started using <code class="ph codeph">run_plan()</code>
+            has finished<div class="note note note_note"><span class="note__title">Note:</span> <code class="ph codeph">plan_end</code> indicates the end of a "sub" plan (i.e. the plan job has not
+              finished yet, but the "sub" plan has), while <code class="ph codeph">plan_finished</code> indicates the end of a plan job.</div></li>
+        </ul></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Potential values in <code class="ph codeph">details</code></h3>
+      
+      <p class="p"><strong class="ph b">task and plan actions</strong></p>
+      <div class="p">Includes the job-id if the event is a plan action or task (i.e.
+        <code class="ph codeph">task_start</code>, <code class="ph codeph">command_start</code>, <code class="ph codeph">apply_start</code>,
+        etc).<pre class="pre codeblock"><code>{
+    "type" : "task_start",
+    "timestamp" : "2019-09-30T22:22:32Z",
+    "details" : {
+      "job-id" : 69
+    },
+    "id" : "80"
+  }</code></pre></div>
+      <p class="p"><code class="ph codeph">plan_finished</code>
+        <strong class="ph b">or</strong>
+        <code class="ph codeph">plan_failed</code></p>
+      <div class="p">If the event type is <code class="ph codeph">plan_finished</code> or <code class="ph codeph">plan_failed</code>,
+        details will include <code class="ph codeph">plan-id</code> and <code class="ph codeph">result</code>.<pre class="pre codeblock"><code>{
+  "type" : "plan_finished",
+  "timestamp" : "2019-09-30T22:22:33Z",
+  "details" : {
+    "result" : "plan result",
+    "plan-id" : "9"
+  },
+  "id" : "81"
+}</code></pre></div>
+      <p class="p"><code class="ph codeph">out_message</code></p>
+      <div class="p">If the event type is <code class="ph codeph">out_message</code>, <code class="ph codeph">details</code> will
+        include <code class="ph codeph">message</code>.
+        <pre class="pre codeblock"><code>{
+  "type" : "out_message",
+  "timestamp" : "2019-09-30T22:22:32Z",
+  "details" : {
+    "message" : "message sent from a plan"
+  }
+}</code></pre></div>
+      <p class="p"><code class="ph codeph">plan_start</code> or <code class="ph codeph">plan_end</code>
+      </p>
+      <p class="p">If the event type is <code class="ph codeph">plan_start</code> or <code class="ph codeph">plan_end</code>, <code class="ph codeph">details</code> will include the plan that ran (<code class="ph codeph">plan</code>) and <code class="ph codeph">plan_end</code> will include <code class="ph codeph">duration</code>.</p>
+      <div class="p"><code class="ph codeph">plan_start</code>:<pre class="pre codeblock"><code>{
+  "type" : "plan_start",
+  "timestamp" : "2019-09-30T22:22:31Z",
+  "details" : {
+    "plan" : "test::sub_plan"
+  },
+  "id" : "76"
+}</code></pre></div>
+      <div class="p"><code class="ph codeph">plan_end</code>:
+        <pre class="pre codeblock"><code>{
+  "type" : "plan_end",
+  "timestamp" : "2019-09-30T22:22:32Z",
+  "details" : {
+    "plan" : "test::sub_plan",
+    "duration" : 0.647551
+  }
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3>
+      
+      <div class="p">See the <a class="xref" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">error response documentation</a> for the
+        general format of error responses. For the endpoint, the kind key of the error displays the
+        conflict. <ul class="ul">
+          <li class="li"><code class="ph codeph">puppetlabs.orchestrator/validation-error</code>: if the <code class="ph codeph">start</code> parameter or the <code class="ph codeph">job-id</code> in the request are not integers, the server returns a <code class="ph codeph">400</code> response.</li>
+          <li class="li"><code class="ph codeph">puppetlabs.orchestrator/unknown-job</code>: if the plan job does not exist, the
+            server returns a <code class="ph codeph">404</code> response.</li>
+        </ul></div>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="orchestrator_api_get_plan_jobs_job_id_event_id">
+    <h2 class="title topictitle2" id="ariaid-title4">GET /plan_jobs/:job-id/event/:event-id</h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc">Fetch a specific event for a job. </p>
+        <section class="section"><h3 class="title sectiontitle">Response format </h3>
+            
+            <div class="p">The response is a JSON object of the event. <ul class="ul">
+                    <li class="li"><code class="ph codeph">id</code>: ID of this event</li>
+                    <li class="li"><code class="ph codeph">type</code>: event type </li>
+                    <li class="li"><code class="ph codeph">timestamp</code>: when the event occured</li>
+                    <li class="li"><code class="ph codeph">details</code>: hash of detail fields specific to the event
+                        type</li>
+                </ul></div>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> Unlike the <code class="ph codeph">/plan_jobs/:job-id/events</code> endpoint, no truncation
+                    of fields occurs. </div>
+            </div>
+            <div class="p">For example:
+                <pre class="pre codeblock"><code>{    
+    "id": "1265",
+    "type": "out_message",
+    "timestamp": "2016-05-05T19:50:06Z",
+    "details": {
+        "message": "this is an output message"
+    }
+}</code></pre></div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Error responses </h3>
+            
+            <div class="p">See the <a class="xref" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">error response
+                    documentation</a> for the general format of error responses. For this
+                endpoint, the kind key of the error displays the conflict. <ul class="ul">
+                    <li class="li"><code class="ph codeph">puppetlabs.orchestrator/validation-error</code>: if the
+                            <code class="ph codeph">job-id</code> in the request is not an integer, the server
+                        returns a <code class="ph codeph">400</code> response.</li>
+                    <li class="li"><code class="ph codeph">puppetlabs.orchestrator/unknown-job</code>: if the plan job does
+                        not exist, the server returns a <code class="ph codeph">404</code> response.</li>
+                    <li class="li"><code class="ph codeph">puppetlabs.orchestrator/mismatched-job-event-id</code>: if the
+                            <code class="ph codeph">event-id</code> specified does not belong to the
+                            <code class="ph codeph">job-id</code> specified, the server returns a
+                            <code class="ph codeph">404</code> response.</li>
+                </ul></div>
+        </section>
+    </div>
+</article></article></article></main></body></html>

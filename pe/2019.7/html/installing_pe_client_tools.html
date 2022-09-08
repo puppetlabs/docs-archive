@@ -1,0 +1,435 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="PE client tools are a set of command line tools that let you access Puppet Enterprise services from a workstation that might or might not be managed by Puppet."><meta name="DC.relation" scheme="URI" content="configuring_puppet_orchestrator.html#puppet_orchestrator_configuration_files"><meta name="DC.relation" scheme="URI" content="rbac_token_auth_intro.html#configuring_puppet_access"><meta name="DC.relation" scheme="URI" content="puppet_code.html#installing_and_configuring_puppet_code"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="installing_pe_client_tools"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Installing PE client tools</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="installing_pe_client_tools">
+   <h1 class="title topictitle1" id="ariaid-title1">Installing <span class="ph">PE</span> client tools</h1>
+   
+   <div class="body conbody"><p class="shortdesc"><span class="ph">PE</span> client tools are a set of
+      command line tools that let you access <span class="ph">Puppet Enterprise</span> services from a
+      workstation that might or might not be managed by <span class="ph">Puppet</span>.</p>
+      <p class="p">The <code class="ph codeph">pe-client-tools</code>
+         package is included in the <span class="ph">PE</span> installation tarball. When you
+         install, the client tools are automatically installed on the same node as the master. </p>
+      <p class="p">Client tools versions align with <span class="ph">PE</span>
+         versions. For example, if you're running <span class="ph">PE</span> 2017.3, use the
+         2017.3 client tools. In some cases, we might issue patch releases ("x.y.z") for <span class="ph">PE</span> or the client tools. You don't need to match patch numbers
+         between <span class="ph">PE</span> and the client tools. Only the "x.y" numbers need
+         to match.</p>
+      <div class="p">
+         <div class="note important note_important"><span class="note__title">Important:</span> When you upgrade <span class="ph">PE</span> to a new "x.y" version, install the appropriate "x.y"
+            version of <span class="ph">PE</span> client tools.</div>
+      </div>
+      <p class="p">The package includes client tools for these services:</p>
+      <ul class="ul">
+         <li class="li">Orchestrator — Allow you to control the rollout of changes in your
+            infrastructure, and provides the interface to the orchestration service. Tools include
+               <code class="ph codeph">puppet-job</code> and <code class="ph codeph">puppet-app</code>.</li>
+         <li class="li"><span class="ph">Puppet</span> access — Authenticates you to
+            the <span class="ph">PE</span> RBAC token-based authentication service so that
+            you can use other capabilities and APIs.</li>
+         <li class="li"><span class="ph">Code Manager</span> — Provides the interface for
+            the <span class="ph">Code Manager</span> and file sync services. Tools include <code class="ph codeph">puppet-code</code>.</li>
+         <li class="li"><span class="ph">PuppetDB</span> CLI — Enables certain
+            operations with <span class="ph">PuppetDB</span>, such as building queries and
+            handling exports.</li>
+      </ul>
+      <p class="p">Because you can safely run these tools remotely, you no longer need to
+         SSH into the master to execute commands. Your permissions to see information and to take
+         action are controlled by <span class="ph">PE</span> role-based access control. Your
+         activity is logged under your username rather than under <code class="ph codeph">root</code> or the <code class="ph codeph">pe-puppet</code> user.</p>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="configuring_puppet_orchestrator.html#puppet_orchestrator_configuration_files" title="The configuration file for the orchestrator allows you to run commands from the CLI without having to pass additional flags. Whether you are running the orchestrator from the Puppet master or from a separate work station, there are two types of configuration files: a global configuration file and a user-specified configuration file.">Orchestrator configuration files</a></li><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#configuring_puppet_access" title="The puppet-access command allows users to generate and manage authentication tokens from the command line of any workstation (Puppet-managed or not), without the need to SSH into the Puppet master. Ensure puppet-access is configured correctly before using it to generate authentication tokens.">Configure puppet-access</a></li><li class="linklist"><a class="link" href="puppet_code.html#installing_and_configuring_puppet_code" title="PE automatically installs and configures the puppet-code command on your masters as part of the included PE client tools package. You can also set up puppet-code on an agent node or on a workstation, customize configuration for different users, or change the configuration settings.">Installing and configuring puppet-code</a></li></ul></div></nav><article class="topic reference nested1" aria-labelledby="ariaid-title2" id="supported_pe_client_tools_operating_systems">
+    <h2 class="title topictitle2" id="ariaid-title2">Supported <span class="ph">PE</span> client tools operating
+        systems </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The <span class="ph">PE</span> client tools package
+        can be installed on these platforms.</p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="supported_pe_client_tools_operating_systems__entry__1">Operating system </th>
+                        <th class="entry" id="supported_pe_client_tools_operating_systems__entry__2">Versions</th>
+                        <th class="entry" id="supported_pe_client_tools_operating_systems__entry__3">Arch</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__1">
+                            <span class="ph">Red Hat Enterprise Linux</span>
+                        </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">6, 7 </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3">x86_64</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__1">
+                            <span class="ph">CentOS</span>
+                        </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">6, 7 </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3">x86_64</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__1">
+                            <span class="ph">Oracle Linux</span>
+                        </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">6, 7 </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3">x86_64</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__1">
+                            <span class="ph">Scientific Linux</span>
+                        </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">6, 7 </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3">x86_64</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__1">
+                            <span class="ph">SUSE Linux Enterprise Server</span>
+                        </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">11, 12 </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3">x86_64</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__1">
+                            <span class="ph">Ubuntu</span>
+                        </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">16.04 </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3">amd64</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__1">
+                            <span class="ph">Windows</span> (Consumer OS) </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">7, 8.1, 10 </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3">x86, x64</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__1" rowspan="3">
+                            <span class="ph">Windows</span> Server (Server OS) </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">
+                            <p class="p">2008</p>
+                        </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3">x86, x64</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">
+                            <p class="p">2008r, 22012, 2012r2, 2012r2 core</p>
+                        </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3">x64</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">2016</td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3"></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__1">
+                            <span class="ph">macOS</span>
+                        </td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__2">10.10, 10.11, 10.12,
+                            10.13</td>
+                        <td class="entry" headers="supported_pe_client_tools_operating_systems__entry__3"></td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="install_pe_client_tools_on_a_managed_workstation">
+    <h2 class="title topictitle2" id="ariaid-title3">Install <span class="ph">PE</span> client tools on a
+        managed workstation </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To use the client tools on a system other than the master,
+        where they're installed by default, you can install the tools on a <dfn class="term">controller node</dfn>.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>Controller nodes must be running the same OS as
+            your master and must have an agent installed.</section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, create a controller classification
+                    group, for example <kbd class="ph userinput">PE
+                        Controller</kbd>, and ensure that its <span class="ph uicontrol">Parent name</span> is set to <span class="ph uicontrol">All Nodes</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Select the controller group and add the <span class="ph uicontrol">puppet_enterprise::profile::controller</span> class.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Pin the node that you want to be a controller to
+                    the controller group. </span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">In the controller group, on the <span class="ph uicontrol">Rules</span> tab, in the
+                                <span class="ph uicontrol">Certname</span>
+                            field, enter the certname of the node.</span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">Click <span class="ph uicontrol">Pin node</span> and commit changes.</span>
+                    </li>
+                </ol>
+            </li><li class="li step">
+                <span class="ph cmd">Run <span class="ph">Puppet</span> on the
+                    controller machine.</span>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="grouping_and_classifying_nodes.html#create_classification_node_groups" title="Create classification node groups to assign classification data to nodes.">Create classification node groups</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="install_pe_client_tools_on_an_unmanaged_nix_workstation">
+    <h2 class="title topictitle2" id="ariaid-title4">Install <span class="ph">PE</span> client tools on an
+        unmanaged workstation </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">You can install the <code class="ph codeph">pe-client-tools</code> package on any workstation running a supported OS. The
+        workstation OS does not need to match the master OS.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>Review prerequisites for timekeeping, name
+            resolution, and firewall configuration, and ensure that these ports are available on the
+            workstation. <ul class="ul">
+                <li class="li"><strong class="ph b">8143</strong> — The orchestrator
+                    client uses this port to communicate with orchestration services running on the
+                    master.</li>
+                <li class="li"><strong class="ph b">4433 — </strong>The <span class="ph">Puppet</span> access client uses this port to
+                    communicate with the RBAC service running on the master.</li>
+                <li class="li"><strong class="ph b">8170 — </strong>If you use the <span class="ph">Code Manager</span> service, it requires this port.</li>
+            </ul>
+        </section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title5" id="install_on_a_linux_workstation">
+    <h3 class="title topictitle3" id="ariaid-title5">Install <span class="ph">PE</span> client tools on an
+        unmanaged <span class="ph">Linux</span> workstation </h3>
+    <div class="body taskbody">
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On the workstation, create the directory <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master, navigate to <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/</code> and copy
+                        <code class="ph codeph">ca.pem</code> to the directory you
+                    created on the workstation.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the workstation, make sure file permissions are
+                    correct: <code class="ph codeph">chmod 444
+                        /etc/puppetlabs/puppet/ssl/certs/ca.pem</code>
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Verify that the checksum of <code class="ph codeph">ca.pem</code> on the workstation matches the
+                    checksum of the same file on the master.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Download the <a class="xref" href="https://puppet.com/download-puppet-enterprise-client-tools" target="_blank">pe-client-tools package</a> for the platform appropriate
+                    to your workstation.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Use your workstation's package management tools to
+                    install the pe-client-tools.</span>
+                <div class="itemgroup stepxmp">For example,on <span class="ph">RHEL</span> platforms: <code class="ph codeph">rpm -Uvh
+                        pe-client-tools-&lt;VERSION-and-PLATFORM&gt;.rpm</code>
+                </div>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="install_pe_client_tools_on_an_unmanaged_windows_workstation">
+    <h3 class="title topictitle3" id="ariaid-title6">Install <span class="ph">PE</span> client tools on an
+        unmanaged <span class="ph">Windows</span> workstation </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">You can install the client tools on a <span class="ph">Windows</span> workstation using the setup wizard or the command
+        line.</p>
+        <section class="section context">
+            <p class="p">To start using the client tools on your <span class="ph">Windows</span> workstation, open the <span class="ph uicontrol">PE ClientTools Console</span> from the <span class="ph uicontrol">Start</span> menu.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On the workstation, create the directory <code class="ph codeph">C:\ProgramData\PuppetLabs\puppet\etc\ssl\certs</code>.</span>
+                <div class="itemgroup stepxmp">
+                    <p class="p">For example: <code class="ph codeph">mkdir
+                            C:\ProgramData\PuppetLabs\puppet\etc\ssl\certs</code>
+                    </p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master, navigate to <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/</code> and copy
+                        <code class="ph codeph">ca.pem</code> to the directory you
+                    created on the workstation.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the workstation, make sure the file permissions
+                    are set to read-only for <code class="ph codeph">C:\ProgramData\PuppetLabs\puppet\etc\ssl\certs\ca.pem</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Verify that the checksum of <code class="ph codeph">ca.pem</code> on the workstation matches the
+                    checksum of the same file on the master.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Install the client tools using guided setup or the
+                    command line.</span>
+                <ul class="ul choices">
+                    <li class="li choice">Guided setup <ol class="ol" type="a">
+                            <li class="li">
+                                <p class="p">Download the <span class="ph">Windows</span>
+                                    <a class="xref" href="https://puppet.com/download-puppet-enterprise-client-tools" target="_blank">pe-client-tools-package</a>. </p>
+                            </li>
+                            <li class="li">
+                                <p class="p">Double-click the <code class="ph codeph">pe-client-tools</code> .msi file. </p>
+                            </li>
+                            <li class="li">
+                                <p class="p">Follow prompts to accept the license agreement
+                                    and select the installation location.</p>
+                            </li>
+                            <li class="li">
+                                <p class="p">Click <span class="ph uicontrol">Install</span>. </p>
+                            </li>
+                        </ol>
+                    </li>
+                    <li class="li choice">Command line <ol class="ol" type="a">
+                            <li class="li">
+                                <p class="p">Download the <span class="ph">Windows</span>
+                                    <a class="xref" href="https://puppet.com/download-puppet-enterprise-client-tools" target="_blank">pe-client-tools-package</a>. </p>
+                            </li>
+                            <li class="li">
+                                <div class="p">From the command line, run the installer: <pre class="pre codeblock"><code>msiexec /i &lt;PATH TO PE-CLIENT-TOOLS.MSI&gt; TARGETDIR="&lt;INSTALLATION DIRECTORY&gt;"</code></pre>
+                                    <code class="ph codeph">TARGETDIR</code> is
+                                    optional. </div>
+                            </li>
+                        </ol>
+                    </li>
+                </ul>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title7" id="install_pe_client_tools_on_an_unmanaged_macos_workstation">
+    <h3 class="title topictitle3" id="ariaid-title7">Install <span class="ph">PE</span> client tools on an
+        unmanaged <span class="ph">macOS</span> workstation </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">You can install the client tools on a <span class="ph">macOS</span> workstation using Finder or the command
+        line.</p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the workstation, create the directory <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs</code>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the master, navigate to <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/</code> and copy
+                        <code class="ph codeph">ca.pem</code> to the directory you
+                    created on the workstation.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the workstation, make sure file permissions are
+                    correct: <code class="ph codeph">chmod 444
+                        /etc/puppetlabs/puppet/ssl/certs/ca.pem</code>
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">Verify that the checksum of <code class="ph codeph">ca.pem</code> on the workstation matches the
+                    checksum of the same file on the master.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Install the client tools using Finder or the
+                    command line.</span>
+                <ul class="ul choices">
+                    <li class="li choice">Finder <ol class="ol" type="a">
+                            <li class="li">
+                                <p class="p">Download the <span class="ph">macOS</span>
+                                    <a class="xref" href="https://puppet.com/download-puppet-enterprise-client-tools" target="_blank">pe-client-tools-package</a>. </p>
+                            </li>
+                            <li class="li">
+                                <p class="p">Open the <code class="ph codeph">pe-client-tools</code> .dmg and click the <code class="ph codeph">installer</code> .pkg.
+                                </p>
+                            </li>
+                            <li class="li">
+                                <p class="p">Follow the prompts to install the client
+                                    tools.</p>
+                            </li>
+                        </ol>
+                    </li>
+                    <li class="li choice">Command line <ol class="ol" type="a">
+                            <li class="li">
+                                <p class="p">Download the <span class="ph">macOS</span>
+                                    <a class="xref" href="https://puppet.com/download-puppet-enterprise-client-tools" target="_blank">pe-client-tools-package</a>. </p>
+                            </li>
+                            <li class="li">
+                                <p class="p">Mount the disk image: <code class="ph codeph">sudo hdiutil mount
+                                        &lt;DMGFILE&gt;</code>. </p>
+                                <p class="p">A line appears ending with <code class="ph codeph">/Volumes/puppet-agent-VERSION</code>. This directory
+                                    location is the mount point for the virtual volume created from
+                                    the disk image. </p>
+                            </li>
+                            <li class="li">Run <code class="ph codeph">cd
+                                    /Volumes/pe-client-tools-VERSION</code>. </li>
+                            <li class="li">Run <code class="ph codeph">sudo
+                                    installer -pkg pe-client-tools-&lt;VERSION&gt;-installer.pkg
+                                    -target /</code>. </li>
+                            <li class="li">Run <code class="ph codeph">cd
+                                    ~</code> and then run <code class="ph codeph">sudo umount /Volumes/pe-client-tools-VERSION</code>. </li>
+                        </ol>
+                    </li>
+                </ul>
+            </li></ol></section>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="configuring_and_using_pe_client_tools">
+    <h2 class="title topictitle2" id="ariaid-title8">Configuring and using <span class="ph">PE</span> client
+        tools </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Use configuration files to customize how client tools
+        communicate with the master. </p>
+        <p class="p">For each client tool, you can create config files for individual
+            machines (global) or for individual users. Configuration files are structured as
+            JSON.</p>
+        <div class="p">Save configuration files to these locations: <ul class="ul">
+                <li class="li">
+                    <div class="p">Global <ul class="ul">
+                            <li class="li">
+                                <p class="p"><span class="ph">*nix</span> — <code class="ph codeph">/etc/puppetlabs/client-tools/</code></p>
+                            </li>
+                            <li class="li">
+                                <p class="p"><span class="ph">Windows</span>
+                                        —<code class="ph codeph">%ProgramData%\puppetlabs\client-tools</code>
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="li">User <ul class="ul">
+                        <li class="li">
+                            <p class="p"><span class="ph">*nix</span> — <code class="ph codeph">~/.puppetlabs/client-tools/</code></p>
+                        </li>
+                        <li class="li">
+                            <p class="p"><span class="ph">Windows</span> —<code class="ph codeph">%USERPROFILE%\.puppetlabs\client-tools</code></p>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <p class="p">On managed client nodes where the operating system and architecture
+            match the master, you can have <span class="ph">PE</span> manage <span class="ph">Puppet</span> code and orchestrator global configuration files
+            using the <code class="ph codeph">puppet_enterprise::profile::controller</code> class. </p>
+        <div class="p">For example configuration files and details about using the various
+            client tools, see the documentation for each service. <table class="table frame-all"><caption></caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry align-left colsep-1 rowsep-1" id="configuring_and_using_pe_client_tools__entry__1">Client tool</th>
+                            <th class="entry align-left colsep-1 rowsep-1" id="configuring_and_using_pe_client_tools__entry__2">Documentation</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry align-left colsep-1 rowsep-1" headers="configuring_and_using_pe_client_tools__entry__1">Orchestrator</td>
+                            <td class="entry align-left colsep-1 rowsep-1" headers="configuring_and_using_pe_client_tools__entry__2">
+                                <ul class="ul">
+                                    <li class="li">
+                                        <a class="xref" href="running_jobs_with_puppet_orchestrator_overview.html#running_jobs_with_puppet_orchestrator_overview" title="With the Puppet orchestrator, you can run three types of &#34;jobs&#34;: on-demand Puppet jobs, task runs, and plan runs.">Running jobs with Puppet orchestrator</a>
+                                    </li>
+                                    <li class="li">
+                                        <a class="xref" href="running_puppet_on_demand_from_the_cli.html#running_puppet_on_demand_from_the_cli" title="Use the puppet job run command to enforce change on your agent nodes with on-demand Puppet runs.">Running Puppet on demand from the CLI</a>
+                                    </li>
+                                    <li class="li">
+                                        <a class="xref" href="running_tasks_from_the_command_line.html#running-tasks-cli" title="Use the puppet task run command to run tasks on agent nodes.">Running tasks from the command line</a>
+                                    </li>
+                                    <li class="li">
+                                        
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry align-left colsep-1 rowsep-1" headers="configuring_and_using_pe_client_tools__entry__1"><span class="ph">Puppet</span>
+                                access </td>
+                            <td class="entry align-left colsep-1 rowsep-1" headers="configuring_and_using_pe_client_tools__entry__2">
+                                <ul class="ul">
+                                    <li class="li">
+                                        <a class="xref" href="rbac_token_auth_intro.html#token_based_authentication" title="Authentication tokens allow a user to enter their credentials once, then receive an alphanumeric &#34;token&#34; to use to access different services or parts of the system infrastructure. Authentication tokens are tied to the permissions granted to the user through RBAC, and provide the user with the appropriate access to HTTP requests.">Token-based authentication</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry align-left colsep-1 rowsep-1" headers="configuring_and_using_pe_client_tools__entry__1"><span class="ph">Puppet</span>
+                                code </td>
+                            <td class="entry align-left colsep-1 rowsep-1" headers="configuring_and_using_pe_client_tools__entry__2">
+                                <ul class="ul">
+                                    <li class="li">
+                                        <a class="xref" href="puppet_code.html#triggering_code_manager_on_the_command_line" title="The puppet-code command allows you to trigger Code Manager from the command line to deploy your environments.">Triggering Code Manager on the command line</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry align-left colsep-1 rowsep-1" headers="configuring_and_using_pe_client_tools__entry__1">
+                                <span class="ph">PuppetDB</span>
+                            </td>
+                            <td class="entry align-left colsep-1 rowsep-1" headers="configuring_and_using_pe_client_tools__entry__2">
+                                <ul class="ul">
+                                    <li class="li">
+                                        <a class="xref" href="https://puppet.com/docs/puppetdb/latest/pdb_client_tools.html" target="_blank">PuppetDB CLI</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody></table></div>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="configuring_puppet_orchestrator.html#puppet_orchestrator_configuration_files" title="The configuration file for the orchestrator allows you to run commands from the CLI without having to pass additional flags. Whether you are running the orchestrator from the Puppet master or from a separate work station, there are two types of configuration files: a global configuration file and a user-specified configuration file.">Orchestrator configuration files</a></li><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#configuring_puppet_access" title="The puppet-access command allows users to generate and manage authentication tokens from the command line of any workstation (Puppet-managed or not), without the need to SSH into the Puppet master. Ensure puppet-access is configured correctly before using it to generate authentication tokens.">Configure puppet-access</a></li><li class="linklist"><a class="link" href="puppet_code.html#installing_and_configuring_puppet_code" title="PE automatically installs and configures the puppet-code command on your masters as part of the included PE client tools package. You can also set up puppet-code on an agent node or on a workstation, customize configuration for different users, or change the configuration settings.">Installing and configuring puppet-code</a></li></ul></div></nav></article></article></article></main></body></html>

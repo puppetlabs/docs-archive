@@ -1,0 +1,1106 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise installs several software components, configuration files, databases, services and users, and log files. It's useful to know the locations of these should you ever need to troubleshoot or manage your infrastructure."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="what_gets_installed_and_where"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>What gets installed and where?</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="what_gets_installed_and_where">
+    <h1 class="title topictitle1" id="ariaid-title1">What gets installed and where? </h1>
+    <p class="shortdesc"><span class="ph">Puppet Enterprise</span> installs several
+        software components, configuration files, databases, services and users, and log files. It's
+        useful to know the locations of these should you ever need to troubleshoot or manage your
+        infrastructure.</p>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="software_components_installed">
+   <h2 class="title topictitle2" id="ariaid-title2">Software components installed </h2>
+   
+   <div class="body refbody"><p class="shortdesc"><span class="ph">PE</span> installs several software
+      components and dependencies. These tables show which version of each component is installed
+      for releases dating back to the previous long term supported (LTS) release.</p>
+      <section class="section"><div class="p">The functional components of the
+            software are separated between those packaged with the agent and those packaged on the
+            server side (which also includes the agent). <div class="note note note_note"><span class="note__title">Note:</span> <span class="ph">PE</span> also installs other dependencies, as documented in
+               the system requirements.</div>
+         </div><div class="p">This table shows the components installed on all agent nodes. <div class="note note note_note"><span class="note__title">Note:</span> 
+                    <span class="ph">Hiera</span> 5 is a backwards-compatible evolution of
+                        <span class="ph">Hiera</span>, which is built into <span class="ph">Puppet</span> 4.9.0 and higher. To provide some
+                    backwards-compatible features, it uses the classic <span class="ph">Hiera</span> 3.x.x codebase version listed in this
+                    table.</div>
+                <table class="table" id="software_components_installed__d91e152"><caption></caption><colgroup><col><col><col><col><col><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="software_components_installed__d91e152__entry__1">
+                                    <span class="ph">PE</span> Version </th>
+                                <th class="entry" id="software_components_installed__d91e152__entry__2">
+                                    <span class="ph">Puppet</span> Agent </th>
+                                <th class="entry" id="software_components_installed__d91e152__entry__3">
+                                    <span class="ph">Puppet</span>
+                                </th>
+                                <th class="entry" id="software_components_installed__d91e152__entry__4">
+                                    <span class="ph">Facter</span>
+                                </th>
+                                <th class="entry" id="software_components_installed__d91e152__entry__5">
+                                    <span class="ph">Hiera</span>
+                                </th>
+                                <th class="entry" id="software_components_installed__d91e152__entry__6">Resource API</th>
+                                <th class="entry" id="software_components_installed__d91e152__entry__7">
+                                    <span class="ph">MCollective</span>
+                                </th>
+                                <th class="entry" id="software_components_installed__d91e152__entry__8">Ruby</th>
+                                <th class="entry" id="software_components_installed__d91e152__entry__9">OpenSSL</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2"><span class="ph" id="software_components_installed__d91e210">6.15.0</span></td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3"><span class="ph" id="software_components_installed__d91e214">6.15.0</span></td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.14.10</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.6.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.8.13</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.8</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1g</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.14.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.14.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.14.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.6.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.8.13</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1.d</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.14.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.14.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.14.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.6.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.8.13</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1.d</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.12.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.12.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.14.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.6.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.8.11</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1.d</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.2.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.10.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.10.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.14.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.6.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.8.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1d</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.2.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.10.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.10.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.14.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.6.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.8.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1d</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.1.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.4.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.4.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.13.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.5.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.8.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1d</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.1.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.4.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.4.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.13.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.5.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.8.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1a</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.1.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.4.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.4.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.13.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.5.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.8.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1a</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.0.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.1.10</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.0.10</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.12.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.6.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1a</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.0.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.0.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.0.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.12.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.6.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.1a</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.0.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.0.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.0.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.12.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.6.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2n</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.0.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.0.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.0.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.12.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.6.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2n</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2019.0.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">6.0.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">6.0.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.12.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">1.6.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.5.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.1.0h</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.15 (LTS)</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.20</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.20</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.13</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.10</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2u</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.13</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.19</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.19</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.12</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2u</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.12</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.18</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.18</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.11</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2t</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.11</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.17</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.17</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.10</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2t</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.16</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.16</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.9</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2r</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.8</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.14</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.14</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.8</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2r</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.10</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.10</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.7</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2n</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.8</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.8</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.6</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.5</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2n</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.4 </td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2"> 5.5.6 </td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3"> 5.5.6 </td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2n</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2"> 5.5.4 </td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3"> 5.5.3 </td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2n</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.2</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2n</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e152__entry__1">2018.1.0</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__2">5.5.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__3">5.5.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__4">3.11.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__5">3.4.3</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__7">2.12.1</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__8">2.4.4</td>
+                                <td class="entry" headers="software_components_installed__d91e152__entry__9">1.0.2n</td>
+                            </tr>
+                        </tbody></table>This table shows components installed on server nodes. <table class="table" id="software_components_installed__d91e1019"><caption></caption><colgroup><col><col><col><col><col><col><col><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="software_components_installed__d91e1019__entry__1">
+                                    <span class="ph">PE</span> Version </th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__2">
+                                    <span class="ph">Puppet Server</span>
+                                </th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__3">
+                                    <span class="ph">PuppetDB</span>
+                                </th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__4">
+                                    <span class="ph">r10k</span>
+                                </th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__5">
+                                    <span class="ph">Razor</span> Server </th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__6">
+                                    <span class="ph">Bolt</span> Services</th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__7">Agentless Catalog Executor (ACE) Services</th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__8">
+                                    <span class="ph">PostgreSQL</span>
+                                </th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__9">Java</th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__10">
+                                    <span class="ph">ActiveMQ</span>
+                                </th>
+                                <th class="entry" id="software_components_installed__d91e1019__entry__11">Nginx</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2"><span class="ph" id="software_components_installed__d91e1111">6.11.1</span></td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3"><span class="ph" id="software_components_installed__d91e1115">6.10.1</span></td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.5.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">2.6.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">1.1.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">11.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">11.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.9.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.9.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.4.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.49.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">1.1.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">11.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">11.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.4</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.9.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.9.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.4.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.49.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">1.1.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">11.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">11.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.8.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.4.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.45.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">1.0.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">11.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">11.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.2.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.7.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.7.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.3.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.33.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">1.0.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">11.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.2.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.7.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.7.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.3.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.33.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">1.0.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">11.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.1.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.3.2 </td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.3.6 </td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.2.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.34.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">1.0.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.15</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.1.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.3.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.3.4</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.2.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.26.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">0.9.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.13</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.2</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.1.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.3.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.3.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.2.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.17.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">0.9.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.12</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.2</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.0.4</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.0.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.0.4</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.0.4</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.4</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.26.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.13</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.2</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.0.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.0.4</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.0.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.0.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.4</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.15.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.12</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.2</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.0.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.0.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.0.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.0.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.10.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.10</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.0</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.0.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.0.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.0.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.0.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">1.1.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.10</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.0</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2019.0.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">6.0.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">6.0.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">3.0.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">0.24.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.10</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.0</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.15 (LTS)</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.13</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.15</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.8</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.17</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.13</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.12</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.13</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.8</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.17</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.12</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.11</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.12</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.16</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.11</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.10</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.11</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.15</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.16.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.9</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.9</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.9</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.13</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.2</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.8</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.8</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.8</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.12</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.2</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.7</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.10</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.0</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.6</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.10</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.5</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.0</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.4</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2"> 5.3.5 </td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3"> 5.2.4 </td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.10</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.0</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2"> 5.3.4 </td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3"> 5.2.4 </td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.8</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.14.0</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.9.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.8</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.12.1</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__1">2018.1.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__2">5.3.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__3">5.2.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__4">2.6.2</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__5">1.8.1</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__6">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__7">N/A</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__8">9.6.8</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__9">1.8.0</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__10">5.15.3</td>
+                                <td class="entry" headers="software_components_installed__d91e1019__entry__11">1.12.1</td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="executable_binaries_and_symlinks_installed">
+    <h2 class="title topictitle2" id="ariaid-title3">Executable binaries and symlinks installed </h2>
+    
+    <div class="body refbody"><p class="shortdesc">
+        <span class="ph">PE</span> installs executable binaries and symlinks for interacting
+        with tools and services.</p>
+        <section class="section"><p class="p">On <span class="ph">*nix</span> nodes, all software is installed under <code class="ph codeph">/opt/puppetlabs</code>. </p><p class="p">On <span class="ph">Windows</span> nodes, all software is installed in <code class="ph codeph">Program Files</code> at <code class="ph codeph">Puppet Labs\Puppet</code>.</p><div class="p">Executable binaries on <span class="ph">*nix</span> are in <code class="ph codeph">/opt/puppetlabs/bin</code> and <code class="ph codeph">/opt/puppetlabs/sbin</code>.<div class="note tip note_tip"><span class="note__title">Tip:</span> To include binaries in your default <code class="ph codeph">$PATH</code>, manually add them to your profile or export
+                    the
+                    path:<pre class="pre codeblock"><code>export PATH=$PATH:/opt/puppetlabs/bin</code></pre>
+                </div>
+            </div><p class="p">To make essential <span class="ph">Puppet</span> tools
+                available to all users, the installer automatically creates symlinks in <code class="ph codeph">/usr/local/bin</code> for the <code class="ph codeph">facter</code>, <code class="ph codeph">puppet</code>, <code class="ph codeph">pe-man</code>,
+                    <code class="ph codeph">r10k</code>, and <code class="ph codeph">hiera</code> binaries. Symlinks are created only if
+                    <code class="ph codeph">/usr/local/bin</code> is writeable.
+                Users of <span class="ph">AIX</span> and <span class="ph">Solaris</span> versions 10 and 11 must add <code class="ph codeph">/usr/local/bin</code> to their default path.</p><p class="p">For <span class="ph">macOS</span> agents, symlinks aren't created until the first
+                successful run that applies the agents' catalogs.</p><div class="p">
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> You can disable symlinks by changing the
+                        <code class="ph codeph">manage_symlinks</code> setting in
+                    your default <span class="ph">Hiera</span> file:
+                    <pre class="pre codeblock"><code>puppet_enterprise::manage_symlinks: false</code></pre>
+                </div>
+            </div><p class="p">Binaries provided by other software components, such as those
+                for interacting with the <span class="ph">PostgreSQL</span> server, <span class="ph">PuppetDB</span>, or <span class="ph">Ruby</span>
+                packages, do not have symlinks created.</p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="modules_and_plugins_installed">
+    <h2 class="title topictitle2" id="ariaid-title4">Modules and plugins installed </h2>
+    
+    <div class="body refbody"><p class="shortdesc"><span class="ph">PE</span> installs modules and
+        plugins for normal operations.</p>
+        <section class="section"><p class="p">Modules included with the software
+                are installed on the master in <code class="ph codeph">/opt/puppetlabs/puppet/modules</code>. Don't modify anything in this
+                directory or add modules of your own. Instead, install non-default modules in
+                    <code class="ph codeph">/etc/puppetlabs/code/environments/&lt;environment&gt;/modules</code>.</p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="configuration_files_installed">
+    <h2 class="title topictitle2" id="ariaid-title5">Configuration files installed </h2>
+    
+    <div class="body refbody"><p class="shortdesc"><span class="ph">PE</span> installs configuration
+        files that you might need to interact with from time to time.</p>
+        <section class="section"><p class="p">On <span class="ph">*nix</span> nodes, configuration files live at <code class="ph codeph">/etc/puppetlabs/puppet</code>.</p><p class="p">On <span class="ph">Windows</span> nodes, configuration files live at <code class="ph codeph">&lt;COMMON_APPDATA&gt;\PuppetLabs</code>. The
+                location of this folder varies by <span class="ph">Windows</span> version; in
+                2008 and 2012, its default location is <code class="ph codeph">C:\ProgramData\PuppetLabs\puppet\etc</code>.</p><p class="p">The
+                software's <code class="ph codeph">confdir</code> is in the
+                    <code class="ph codeph">puppet</code> subdirectory. This
+                directory contains the <code class="ph codeph">puppet.conf</code>
+                file, <code class="ph codeph">auth.conf</code>, and the SSL
+                directory.</p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="tools_installed">
+   <h2 class="title topictitle2" id="ariaid-title6">Tools installed </h2>
+   
+   <div class="body refbody"><p class="shortdesc"><span class="ph">PE</span> installs several suites
+      of tools to help you work with the major components of the software.</p>
+      <section class="section"><ul class="ul">
+            <li class="li"><strong class="ph b"><span class="ph">Puppet</span> tools</strong> — Tools that control basic
+               functions of the software such as <code class="ph codeph">puppet
+                  master</code> and <code class="ph codeph">puppet
+               cert</code>.</li>
+            <li class="li"><strong class="ph b">Client tools</strong> — The
+               pe-client-tools package collects a set of CLI tools that extend the ability for you
+               to access services from the master or a workstation. This package includes: <ul class="ul">
+                  <li class="li"><strong class="ph b">Orchestrator</strong> — The
+                     orchestrator is a set of interactive command line tools that provide the
+                     interface to the orchestration service. Orchestrator also enables you to
+                     enforce change on the environment level. Tools include <code class="ph codeph">puppet job</code> and <code class="ph codeph">puppet app</code>. </li>
+                  <li class="li">
+                     <strong class="ph b">
+                        <span class="ph">Puppet Access</span>
+                     </strong> — Users can generate tokens to authenticate their access to certain
+                     command line tools and API endpoints. </li>
+                  <li class="li"><strong class="ph b"><span class="ph">Code Manager</span> CLI</strong> — The <code class="ph codeph">puppet-code</code> command allows you to trigger
+                        <span class="ph">Code Manager</span> from the command line to deploy your
+                     environments. </li>
+                  <li class="li"><strong class="ph b"><span class="ph">PuppetDB</span> CLI</strong> — This a tool for working
+                     with <span class="ph">PuppetDB</span>, including building queries and
+                     handling exports. </li>
+               </ul></li>
+            <li class="li"><strong class="ph b">Module tool</strong> — The module tool
+               is used to access and create modules, which are reusable chunks of <span class="ph">Puppet</span> code users have written to automate
+               configuration and deployment tasks. For more information, and to access modules,
+               visit the <span class="ph">Forge</span>.</li>
+            <li class="li"><strong class="ph b">Console</strong> — The console is the
+               web user interface for <span class="ph">PE</span>. The console provides tools
+               to view and edit resources on your nodes, view reports and activity graphs, and more.
+            </li>
+         </ul></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="databases_installed">
+                <h2 class="title topictitle2" id="ariaid-title7">Databases installed </h2>
+                
+                <div class="body refbody"><p class="shortdesc"><span class="ph">PE</span> installs
+                                several default databases, all of which use <span class="ph">PostgreSQL</span> as a database
+                                backend.</p>
+                                <section class="section"><p class="p">The <span class="ph">PE</span>
+                                                  <span class="ph">PostgreSQL</span> database
+                                                  includes these following databases.</p></section>
+                                <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                                  <tr class="row">
+                                                  <th class="entry" id="databases_installed__entry__1">Database </th>
+                                                  <th class="entry" id="databases_installed__entry__2">Description</th>
+                                                  </tr>
+                                                  </thead><tbody class="tbody">
+                                                  <tr class="row">
+                                                  <td class="entry" headers="databases_installed__entry__1">pe-activity </td>
+                                                  <td class="entry" headers="databases_installed__entry__2">Activity data from the classifier, including who,
+                                                  what, and when.</td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="databases_installed__entry__1">pe-classifier </td>
+                                                  <td class="entry" headers="databases_installed__entry__2">Classification data, all node group
+                                                  information.</td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="databases_installed__entry__1">pe-puppetdb </td>
+                                                  <td class="entry" headers="databases_installed__entry__2">
+                                                  <span class="ph">PuppetDB</span> data,
+                                                  including exported resources, catalogs, facts, and
+                                                  reports.</td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="databases_installed__entry__1">pe-rbac </td>
+                                                  <td class="entry" headers="databases_installed__entry__2">RBAC
+                                                  data, including users, permissions, and AD/LDAP
+                                                  info.</td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="databases_installed__entry__1">pe-orchestrator </td>
+                                                  <td class="entry" headers="databases_installed__entry__2">Orchestrator data, including details about job
+                                                  runs.</td>
+                                                  </tr>
+                                                  </tbody></table>
+                                <section class="section"><p class="p">Use the
+                                                  native <span class="ph">PostgreSQL</span>
+                                                  tools to perform database exports and imports. At
+                                                  a minimum, perform backups to a remote system
+                                                  nightly, or as dictated by your company
+                                                  policy.</p></section>
+                </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title8" id="services_installed">
+   <h2 class="title topictitle2" id="ariaid-title8">Services installed </h2>
+   
+   <div class="body refbody"><p class="shortdesc"><span class="ph">PE</span> installs several services
+      used to interact with the software during normal operations.</p>
+      <section class="section"><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="services_installed__entry__1">Service</th>
+                        <th class="entry" id="services_installed__entry__2">Definition</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="services_installed__entry__1">pe-console-services</td>
+                        <td class="entry" headers="services_installed__entry__2">Manages and serves the console.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="services_installed__entry__1">pe-puppetserver</td>
+                        <td class="entry" headers="services_installed__entry__2">Runs the master server, which manages the
+                           master component.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="services_installed__entry__1">pe-nginx</td>
+                        <td class="entry" headers="services_installed__entry__2">Nginx, serves as a reverse-proxy to the
+                           console.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="services_installed__entry__1">puppet</td>
+                        <td class="entry" headers="services_installed__entry__2">(on <span class="ph">Enterprise Linux</span> and <span class="ph">Debian</span>-based platforms) Runs the agent
+                           daemon on every agent node.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="services_installed__entry__1">pe-puppetdb, pe-postgresql</td>
+                        <td class="entry" headers="services_installed__entry__2">Daemons that manage and serve the database
+                           components. The pe-postgresql service is created only if the software
+                           installs and manages <span class="ph">PostgreSQL</span>.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="services_installed__entry__1">pxp-agent</td>
+                        <td class="entry" headers="services_installed__entry__2">Runs the <span class="ph">Puppet Execution Protocol</span> agent process.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="services_installed__entry__1">pe-orchestration-services</td>
+                        <td class="entry" headers="services_installed__entry__2">Runs the orchestration process.</td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title9" id="user_and_group_accounts_installed">
+                        <h2 class="title topictitle2" id="ariaid-title9">User and group accounts installed </h2>
+                        
+                        <div class="body refbody"><p class="shortdesc">These are the user and group accounts
+                                                installed.</p>
+                                                <section class="section"><div class="p"><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                                  <tr class="row">
+                                                  <th class="entry" id="user_and_group_accounts_installed__entry__1">User</th>
+                                                  <th class="entry" id="user_and_group_accounts_installed__entry__2">Definition</th>
+                                                  </tr>
+                                                  </thead><tbody class="tbody">
+                                                  <tr class="row">
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__1">pe-puppet</td>
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__2">Runs the master
+                                                  processes spawned by <code class="ph codeph">pe-puppetserver</code>. </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__1">pe-webserver</td>
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__2">Runs Nginx.</td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__1">pe-puppetdb</td>
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__2">Has root access to
+                                                  the database.</td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__1">pe-postgres</td>
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__2">Has access to the
+                                                  <code class="ph codeph">pe-postgreSQL</code> instance. Created only if
+                                                  the software installs and manages <span class="ph">PostgreSQL</span>. </td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__1">pe-console-services</td>
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__2">Runs the console
+                                                  process.</td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__1">pe-orchestration-services</td>
+                                                  <td class="entry" headers="user_and_group_accounts_installed__entry__2">Runs the
+                                                  orchestration process.</td>
+                                                  </tr>
+                                                  </tbody></table></div></section>
+                        </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title10" id="log_files_installed">
+    <h2 class="title topictitle2" id="ariaid-title10">Log files installed </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The software distributed with <span class="ph">PE</span> generates log files that you can collect for compliance or
+        use for troubleshooting.</p>
+        <section class="section" id="log_files_installed__puppet_master_logs"><h3 class="title sectiontitle">Master logs </h3><p class="p">The master has these logs.</p><ul class="ul" id="log_files_installed__ul_spx_jmx_cgb">
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetserver/code-manager-access.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetserver/file-sync-access.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetserver/masterhttp.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetserver/pcp-broker.log</code> — The log file for
+                        <span class="ph">Puppet Communications
+                                                  Protocol</span> brokers on compilers.</li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetserver/puppetserver.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetserver/puppetserver.log</code> — The master
+                    application logs its activity, including compilation errors and deprecation
+                    warnings, here.</li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetserver/puppetserver-access.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetserver/puppetserver-daemon.log</code> — This is
+                    where fatal errors or crash reports can be found.</li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetserver/puppetserver-status.log</code>
+                </li>
+            </ul></section>
+        <section class="section" id="log_files_installed__puppet_agent_logs"><h3 class="title sectiontitle">Agent
+                logs </h3><p class="p">The locations of agent logs depend on the agent
+                operating system.</p><p class="p">On <span class="ph">*nix</span>
+                nodes, the agent service logs its activity to the syslog service. Your syslog
+                configuration dictates where these messages are saved, but the default location is
+                    <code class="ph codeph">/var/log/messages</code> on <span class="ph">Linux</span>, <code class="ph codeph">/var/log/system.log</code> on <span class="ph">macOS</span>, and
+                    <code class="ph codeph">/var/adm/messages</code> on <span class="ph">Solaris</span>.</p><p class="p">On <span class="ph">Windows</span> nodes, the agent service logs its activity to
+                the event log. You can view its logs by browsing the event viewer. </p></section>
+        <section class="section" id="log_files_installed__console_and_pe_console_services_logs"><h3 class="title sectiontitle">Console and console services logs </h3><p class="p">The
+                console and pe-console-services has these logs.</p><ul class="ul" id="log_files_installed__ul_sty_3mx_cgb">
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/console-services/console-services.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/console-services/console-services-api-access.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/console-services-access.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/console-services-daemon.log</code> — This is where
+                    fatal errors or crash reports can be found.</li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/nginx/access.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/nginx/error.log</code> — Contains errors related to
+                    nginx. Console errors that aren't logged elsewhere can be found in this log.
+                </li>
+            </ul></section>
+        <section class="section" id="log_files_installed__installer_logs"><h3 class="title sectiontitle">Installer logs </h3><p class="p">The installer has these logs.</p><ul class="ul" id="log_files_installed__ul_hw1_lmx_cgb">
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/installer/http.log</code> — Contains web requests
+                    sent to the installer. This log is present only on the machine from which a
+                    web-based installation was performed.</li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/installer/install_log.lastrun.&lt;hostname&gt;.log</code>
+                    — Contains the contents of the last installer run.</li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/installer/installer-&lt;timestamp&gt;.log</code> —
+                    Contains the operations performed and any errors that occurred during
+                    installation.</li>
+                <li class="li">
+                    <p class="p"><code class="ph codeph">/var/log/puppetlabs/installer/&lt;action_name&gt;_&lt;timestamp&gt;_&lt;run_description&gt;.log</code>
+                        —  Contains details about high availability command execution. Each action
+                        triggers multiple <span class="ph">Puppet</span> runs, some on the
+                        master, some on the replica, so there might be multiple log files for each
+                        command.</p>
+                </li>
+            </ul></section>
+        <section class="section" id="log_files_installed__pe_database_logs"><h3 class="title sectiontitle">
+                Database logs </h3><p class="p">The database has these logs.</p><ul class="ul" id="log_files_installed__ul_fk1_mmx_cgb">
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/postgresql/9.6/pgstartup.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/postgresql/9.6/postgresql-Mon.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/postgresql/9.6/postgresql-Tue.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/postgresql/9.6/postgresql-Wed.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/postgresql/9.6/postgresql-Thu.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/postgresql/9.6/postgresql-Fri.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/postgresql/9.6/postgresql-Sat.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/postgresql/9.6/postgresql-Sun.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetdb/puppetdb.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetdb/puppetdb-access.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/puppetdb/puppetdb-status.log</code>
+                </li>
+            </ul></section>
+        <section class="section" id="log_files_installed__pe_orchestration_services_logs"><h3 class="title sectiontitle">Orchestration logs </h3><p class="p">The orchestration
+                service and related components have these logs.</p><ul class="ul" id="log_files_installed__ul_vvw_mmx_cgb">
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/orchestration-services/aggregate-node-count.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/orchestration-services/pcp-broker.log</code> — The
+                    log file for <span class="ph">Puppet Communications
+                                                  Protocol</span> brokers on the master.</li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/orchestration-services/pcp-broker-access.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/orchestration-services/orchestration-services.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/orchestration-services/orchestration-services-access.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/orchestration-services/orchestration-services-daemon.log</code>
+                    — This is where fatal errors or crash reports can be found.</li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/orchestration-services/orchestration-services-status.log</code>
+                </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/pxp-agent/pxp-agent.log</code> (on <span class="ph">*nix</span>) or <code class="ph codeph">C:/ProgramData/PuppetLabs/pxp-agent/var/log/pxp-agent.log</code> (on <span class="ph">Windows</span>) — Contains the <span class="ph">Puppet Execution Protocol</span> agent log file. </li>
+                <li class="li">
+                    <code class="ph codeph">/var/log/puppetlabs/bolt-server/bolt-server.log</code> - Log file for <span class="ph">PE</span>
+                    <span class="ph">Bolt</span> server.</li>
+                <li class="li"><code class="ph codeph">/var/log/puppetlabs/orchestration-services/orchestration-services.log</code>
+                    — Log file for the node inventory service.</li>
+            </ul></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title11" id="certificates_installed">
+    <h2 class="title topictitle2" id="ariaid-title11">Certificates installed </h2>
+    
+    <div class="body refbody"><p class="shortdesc">During installation, the software generates and installs a
+        number of SSL certificates so that agents and services can authenticate
+        themselves.</p>
+        <section class="section"><p class="p">These certs can be found at <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs</code>.</p><p class="p">A certificate with the same name as the agent that runs on the
+                master is generated during installation. This certificate is used by <span class="ph">PuppetDB</span> and the console.</p><p class="p">Services that run on the master — for example, <code class="ph codeph">pe-orchestration-services</code> and <code class="ph codeph">pe-console-services</code> — use the agent certificate to
+                authenticate.</p></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title12" id="secret_file_installed">
+ <h2 class="title topictitle2" id="ariaid-title12">Secret key file installed</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">During installation, the software generates a secret key file
+  that is used to encrypt and decrypt sensitive data stored in the inventory service.</p>
+  <p class="p">The secret key is stored at: <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/secrets/keys.json</code></p>
+ </div>
+</article></article></article></main></body></html>

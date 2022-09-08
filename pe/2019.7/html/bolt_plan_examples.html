@@ -1,0 +1,118 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="View a plan that combines multiple tasks with one command."><meta name="DC.relation" scheme="URI" content="https://github.com/puppetlabs/tasks-hands-on-lab#puppet-tasks-hands-on-lab"><meta name="DC.creator" content="Kate Lopresti <kate.lopresti@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="bolt_plan_examples"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Bolt Plan example</title></head><body id="bolt_plan_examples"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+  <h1 class="title topictitle1" id="ariaid-title1">Bolt Plan example</h1>
+  
+  
+  <div class="body conbody"><p class="shortdesc">View a plan that combines multiple tasks with one
+    command.</p>
+    <p class="p"></p>
+    <section class="section"><h2 class="title sectiontitle">Plan that deploys an
+        application&nbsp;</h2><p class="p">In this example, the plan my_app runs the
+        tasks necessary to deploy an application to multiple nodes. It uses node information from an
+        inventory file and tasks written in Python and stored at <code class="ph codeph">my_app/tasks/</code>.</p><p class="p">You run the
+        plan with this command:
+        </p><pre class="pre codeblock"><code>bolt plan run my_app::deploy version=1.0.2 app_servers=app db_server=db lb_server=lb --inventoryfile ./inventory.yaml --modulepath=./modules</code></pre><p class="p">Using the sample code below, the plan validates that there is a single
+        load balancer server; queries the server load to determine availability, installs the
+        application, migrates the database, makes the new code available on each application server
+        and, finally, cleans up old versions of the application.</p><div class="note note note_note"><span class="note__title">Note:</span> This is sample code. To set up these tasks and run this plan in your
+        environment, try the Puppet Tasks Hands-on Lab. This GitHub repository contains sample
+        files, code examples, and exercises to help you interact with Bolt in a safe environment.
+        For more information, see the <a class="xref" href="https://github.com/puppetlabs/tasks-hands-on-lab#puppet-tasks-hands-on-lab" target="_blank">puppetlabs/tasks-hands-on-lab
+      repository</a>.</div><pre class="pre codeblock"><code>plan my_app::deploy(
+  Pattern[/\d+\.\d+\.\d+/] $version,
+  TargetSpec $app_servers,
+  TargetSpec $db_server,
+  TargetSpec $lb_server,
+  String[1] $instance = 'my_app',
+  Boolean $force = false
+) {
+  # Validate that there is only a single load balancer server to check
+  if get_targets($lb_server).length &gt; 1 {
+    fail_plan("${lb_server} did not resolve to a single target")
+  }
+
+  # First query the load balancer and make sure the app isn't under too much load to do a deploy.
+  unless $force {
+    $conns = run_task('my_app::lb', $lb_server,
+       "Check load before starting deploy",
+       action =&gt; 'stats',
+       backend =&gt; $instance,
+       server =&gt; 'FRONTEND',
+    ).first['connections']
+    if ($conns &gt; 8) {
+      fail_plan("The application has too many open connections: ${conns}")
+    } else {
+      # Info messages are displayed when the --verbose flag is used.
+      info("Application has ${conns} open connections.")
+    }
+  }
+
+  # Install the new version of the application and check what version was previously
+  # installed so it can be deleted after the deploy.
+  $old_versions = run_task('my_app::install', [$app_servers, $db_server],
+    "Install ${version} of the application",
+    version =&gt; $version
+  ).map |$r| { $r['previous_version'] }
+
+  run_task('my_app::migrate', $db_server)
+
+  # Don't log every action on each node, only log important messages
+  without_default_logging() || {
+    # Expand group references or globs before iterating
+    get_targets($app_servers).each |$server| {
+
+      # Check stats and print a message to the user
+      $stats = run_task('my_app::lb', $lb_server,
+        action =&gt; 'stats',
+        backend =&gt; $instance,
+        server =&gt; $server.name,
+        _catch_errors =&gt; $force
+      ).first
+      notice("Deploying to ${server.name}, currently ${stats["status"]} with ${stats["connections"]} open connections.")
+
+      run_task('my_app::lb', $lb_server,
+        "Drain connections from ${server.name}",
+        action =&gt; 'drain',
+        backend =&gt; $instance,
+        server =&gt; $server.name,
+        _catch_errors =&gt; $force
+      )
+
+      run_task('my_app::deploy', [$server],
+        "Update application for new version",
+      )
+
+      # Verify the app server is healthy before returning it to the load
+      # balancer.
+      $health = run_task('my_app::health_check', $lb_server,
+        "Run Healthcheck for ${server.name}",
+        target =&gt; "http://${server.name}:5000/",
+        '_catch_errors' =&gt; true).first
+
+      if $health['status'] == 'success' {
+        info("Upgrade Healthy, Returning ${server.name} to load balancer")
+      } else {
+        # Fail the plan unless the app server is healthy or this is a forced deploy
+        unless $force {
+          fail_plan("Deploy failed on app server ${server.name}: ${health.result}")
+        }
+      }
+
+      run_task('my_app::lb', $lb_server,
+        action =&gt; 'add',
+        backend =&gt; $instance,
+        server =&gt; $server.name,
+        _catch_errors =&gt; $force
+      )
+      notice("Deploy complete on ${server}.")
+    }
+  }
+
+  run_task('my_app::uninstall', [$db_server, $app_servers],
+    "Clean up old versions",
+    live_versions =&gt; $old_versions + $version,
+  )
+}</code></pre></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="https://github.com/puppetlabs/tasks-hands-on-lab#puppet-tasks-hands-on-lab" target="_blank">Puppet Tasks Hands-on Lab</a></li></ul></div></nav></article></main></body></html>

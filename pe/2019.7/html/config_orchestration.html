@@ -1,0 +1,210 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="After installing PE, you can change some default settings to further configure the orchestrator and pe-orchestration-services."><meta name="DC.relation" scheme="URI" content="config_intro.html#config_intro"><meta name="DC.relation" scheme="URI" content="tuning_standard.html#tuning_standard"><meta name="DC.relation" scheme="URI" content="config_ulimit.html#config_ulimit_for_pe_services"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="config_orchestration"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configuring and tuning orchestration</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="config_orchestration">
+    <h1 class="title topictitle1" id="ariaid-title1">Configuring and tuning orchestration </h1>
+    
+    <div class="body conbody"><p class="shortdesc">After installing <span class="ph">PE</span>, you
+        can change some default settings to further configure the orchestrator and
+        pe-orchestration-services.</p></div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#config_intro" title="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances.">Methods for configuring Puppet Enterprise</a></li><li class="linklist"><a class="link" href="tuning_standard.html#tuning_standard" title="Use these guidelines to configure your installation to maximize its use of available system (CPU and RAM) resources.">Tuning standard installations</a></li><li class="linklist"><a class="link" href="config_ulimit.html#config_ulimit_for_pe_services" title="The various services in PE require up to one file handle per connected client. On most operating system configurations, the defaults are not adequate for more than a couple hundred clients. To support more clients, you need to increase the number of allowed file handles.">Configure ulimit for PE services</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="configure_the_orchestrator_and_pe_orchestration_services">
+                  <h2 class="title topictitle2" id="ariaid-title2">Configure the orchestrator and
+                                    pe-orchestration-services </h2>
+                  
+                  <div class="body taskbody"><p class="shortdesc">There are several optional parameters you
+                                    can add to configure the behavior of the orchestrator and
+                                    pe-orchestration-services. Because they are profile classes, you
+                                    can change these in the console in the <span class="ph">PE</span> Orchestrator
+                                    group.</p>
+                                    <section class="section context">
+                                                  <dl class="dl">
+                                                  
+                                                  <dt class="dt dlterm"><code class="ph codeph">puppet_enterprise::profile::orchestrator::task_concurrency</code>
+                                                  </dt>
+                                                  <dd class="dd">Integer representing the number of
+                                                  simultaneous task or plan actions that can run at
+                                                  the same time in the orchestrator. All task and
+                                                  plan actions are limited by this concurrency limit
+                                                  regardless of transport type (WinRM, SSH, PCP). </dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">"250"</code> (actions)</dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::profile::bolt_server::concurrency</code>
+                                                  </dt>
+                                                  <dd class="dd">An integer that determines the maximum number
+                                                  of simultaneous task or plan requests orchestrator
+                                                  can make to bolt-server. Only task or plan
+                                                  executions on nodes with SSH or WinRM transport
+                                                  methods are limited by this setting because only
+                                                  they require requests to bolt-sever. </dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">"100"</code>
+                                                  (requests)</dd>
+                                                  <dd class="dd ddexpand">
+                                                  <div class="note caution note_caution"><span class="note__title">CAUTION:</span> Do not set a concurrency
+                                                  limit that is higher than the bolt-server limit.
+                                                  This can cause timeouts that lead to failed task
+                                                  runs.</div>
+                                                  </dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::profile::agent::pxp_enabled</code>
+                                                  </dt>
+                                                  <dd class="dd">Disable or enable the <span class="ph">PXP</span> service by setting
+                                                  it to <code class="ph codeph">true</code> or
+                                                  <code class="ph codeph">false</code>. If you disable this
+                                                  setting you can’t use the orchestrator or the
+                                                  <span class="ph uicontrol">Run Puppet</span> button in the
+                                                  console.</dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">true</code></dd>
+                                                  <dd class="dd ddexpand"></dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::profile::orchestrator::global_concurrent_compiles</code>
+                                                  </dt>
+                                                  <dd class="dd">An integer that determines how many concurrent
+                                                  compile requests can be outstanding to the master,
+                                                  across all orchestrator jobs.</dd>
+                                                  <dd class="dd ddexpand">Default:  <code class="ph codeph">"8"</code> (requests)</dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::profile::orchestrator::job_prune_threshold</code>
+                                                  </dt>
+                                                  <dd class="dd">Integer that represents the number of days
+                                                  before job reports are removed. </dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">"30"</code> (days)</dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::profile::orchestrator::pcp_timeout</code>
+                                                  </dt>
+                                                  <dd class="dd">An integer that represents how many seconds
+                                                  must pass while an agent attempts to connect to a
+                                                  <span class="ph">PCP</span> broker. If the
+                                                  agent can’t connect to the broker in that time
+                                                  frame, the run times out. </dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">"30"</code> (seconds)</dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::profile::orchestrator::run_service</code>
+                                                  </dt>
+                                                  <dd class="dd">Disable or enable orchestration services. Set
+                                                  to <code class="ph codeph">true</code> or
+                                                  <code class="ph codeph">false</code>.</dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">true</code>
+                                                  </dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::profile::orchestrator::use_application_services</code>
+                                                  </dt>
+                                                  <dd class="dd">Enable or disable application management. Set
+                                                  to <code class="ph codeph">true</code> or
+                                                  <code class="ph codeph">false</code>.</dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">false</code>
+                                                  </dd>
+                                                  
+                                                  </dl>
+                                    </section>
+                  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="configure_pxp_agent_log_file_location">
+                        <h2 class="title topictitle2" id="ariaid-title3"> Configure the <span class="ph">PXP</span> agent</h2>
+                        
+                        <div class="body taskbody"><p class="shortdesc">
+                                                <span class="ph">Puppet Execution
+                                                  Protocol (PXP)</span> is
+                                                a messaging system used to request tasks and
+                                                communicate task statuses. The
+                                                <span class="ph">PXP</span> agent runs the
+                                                  <span class="ph">PXP</span> service and you
+                                                can configure it using <span class="ph">Hiera</span>.</p>
+                                                <section class="section context"><dl class="dl">
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::pxp_agent::ping_interval</code>
+                                                  </dt>
+                                                  <dd class="dd">Controls how frequently
+                                                  (in seconds) PXP agents will ping PCP brokers.
+                                                  If
+                                                  the brokers don’t respond, the agents try to
+                                                  reconnect.
+                                                  </dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">120</code> (seconds)</dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::pxp_agent::pxp_logfile</code>
+                                                  </dt>
+                                                  <dd class="dd">A string that represents
+                                                  the path to the <span class="ph">PXP</span>
+                                                  agent log file and can be used to debug issues
+                                                  with orchestrator. </dd>
+                                                  <dd class="dd ddexpand">Default: <ul class="ul">
+                                                  <li class="li"><p class="p">
+                                                  <span class="ph">*nix</span>: <code class="ph codeph">/var/log/puppetlabs/pxp-agent/pxp-agent.log</code>
+                                                  </p></li>
+                                                  <li class="li"><p class="p">
+                                                  <span class="ph">Windows</span>: <code class="ph codeph">C:\Program
+                                                  Data\PuppetLabs\pxp-agent\var\log\pxp-agent.log</code>
+                                                  </p></li>
+                                                  </ul>
+                                                  </dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::pxp_agent::spool_dir_purge_ttl</code>
+                                                  </dt>
+                                                  <dd class="dd">The amount of time to keep
+                                                  records of old Puppet or task runs on agents. You
+                                                  can declare time in minutes (30m), hours (2h), and
+                                                  days (14d).</dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">14d</code>
+                                                  </dd>
+                                                  
+                                                  
+                                                  <dt class="dt dlterm">
+                                                  <code class="ph codeph">puppet_enterprise::pxp_agent::task_cache_dir_purge_ttl</code>
+                                                  </dt>
+                                                  <dd class="dd">Controls how long tasks
+                                                  are cached after use. You can declare time in
+                                                  minutes (30m), hours (2h), and days (14d).</dd>
+                                                  <dd class="dd ddexpand">Default: <code class="ph codeph">14d</code>
+                                                  </dd>
+                                                  
+                                                  </dl></section>
+                        </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="correct_arp_table_overflow">
+    <h2 class="title topictitle2" id="ariaid-title4">Correct ARP table overflow </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">In larger deployments that use the <span class="ph">PCP</span> broker, you
+        might
+        encounter ARP table overflows and need to adjust some system settings. </p>
+        <section class="section context"><p class="p">Overflows occur when
+                the ARP table—a local cache of IP address to MAC address resolutions—fills and
+                starts evicting old entries. When frequently used entries are evicted, network
+                traffic will increase to restore them, increasing network latency and CPU load on
+                the broker.</p><p class="p">A typical log message looks
+                like:</p><pre class="pre codeblock"><code>[root@s1 peadmin]# tail -f /var/log/messages
+Aug 10 22:42:36 s1 kernel: Neighbour table overflow.
+Aug 10 22:42:36 s1 kernel: Neighbour table overflow.
+Aug 10 22:42:36 s1 kernel: Neighbour table overflow.</code></pre><p class="p">To work around this issue:</p></section>
+        <section><div class="li step p">
+                <span class="ph cmd">Increase sysctl settings related to ARP tables. </span>
+                <div class="itemgroup stepxmp"><div class="p">For example,
+                        the following settings are appropriate for networks hosting up to 2000
+                        agents:<pre class="pre codeblock"><code># Set max table size
+net.ipv6.neigh.default.gc_thresh3=4096
+net.ipv4.neigh.default.gc_thresh3=4096
+# Start aggressively clearing the table at this threshold
+net.ipv6.neigh.default.gc_thresh2=2048
+net.ipv4.neigh.default.gc_thresh2=2048
+# Don't clear any entries until this threshold
+net.ipv6.neigh.default.gc_thresh1=1024
+net.ipv4.neigh.default.gc_thresh1=1024</code></pre>
+                    </div></div>
+            </div></section>
+    </div>
+</article></article></article></main></body></html>

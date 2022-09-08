@@ -1,0 +1,47 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="If high availability commands fail, check for these issues."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="troubleshooting-ha"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Troubleshooting high availability</title></head><body id="troubleshooting-ha"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Troubleshooting high availability</h1>
+    
+    <div class="body conbody"><p class="shortdesc">If high availability commands fail, check for these
+        issues.</p>
+        <section class="section" id="troubleshooting-ha__latency_over_wan_can_cause_failure"><h2 class="title sectiontitle">Latency over WAN</h2>
+            
+            <p class="p">If the master and replica communicate over a slow, high latency,
+                or lossy connection, the <code class="ph codeph">provision</code>
+                and <code class="ph codeph">enable</code> commands can fail. </p>
+            <p class="p">If this happens, try re-running the command. 
+            </p>
+        </section>
+        <section class="section" id="troubleshooting-ha__provisioning_a_replica_node_that_s_connected_to_a_compile_master_causes_puppet_runs_to_fail"><h2 class="title sectiontitle">Replica is connected to a compiler instead of a
+                master</h2>
+            
+            <p class="p">The <code class="ph codeph">provision</code> command triggers an error if you try to provision a replica
+                node that's connected to a compiler. The error is similar to the following:</p>
+            <pre class="pre codeblock"><code>Failure during provision command during the puppet agent run on replica 2:
+Failed to generate additional resources using 'eval_generate': Error 500 on SERVER: Server Error: Not authorized to call search on /file_metadata/pe_modules with {:rest=&gt;"pe_modules", :links=&gt;"manage", :recurse=&gt;true, :source_permissions=&gt;"ignore", :checksum_type=&gt;"md5"}
+Source: /Stage[main]/Puppet_enterprise::Profile::Primary_master_replica/File[/opt/puppetlabs/server/share/installer/modules]File: /opt/puppetlabs/puppet/modules/puppet_enterprise/manifests/profile/primary_master_replica.ppLine: 64</code></pre>
+            <p class="p">On the replica you want to provision, edit <code class="ph codeph">/etc/puppetlabs/puppet.conf</code> so that the <code class="ph codeph">server</code> and <code class="ph codeph">server_list</code> settings use a master, rather than a
+                compiler. 
+            </p>
+        </section>
+        <section class="section" id="troubleshooting-ha__after_ha_enablement_both_server_and_server_list_are_set"><h2 class="title sectiontitle">Both <code class="ph codeph">server</code> and <code class="ph codeph">server_list</code> are set in the agent configuration file</h2>
+            
+            <p class="p">When the agent configuration file contains settings for both
+                    <code class="ph codeph">server</code> and <code class="ph codeph">server_list</code>, a warning appears. This warning can
+                occur after enabling a replica in a high availability configuration. You can ignore
+                the warning, or hide it by removing the <code class="ph codeph">server</code> setting from the agent configuration, leaving only <code class="ph codeph">server_list</code>. 
+            </p>
+        </section>
+        <section class="section" id="troubleshooting-ha__running_enable_starts_an_orchestrator_run_that_fails"><h2 class="title sectiontitle">Node groups are empty</h2>
+            
+            <p class="p">When provisioning and enabling a replica, the orchestrator is used
+                to run <span class="ph">Puppet</span> on different groups of nodes. If a
+                group of nodes is empty, the tool reports that there's nothing for it to do and the
+                job is marked as <code class="ph codeph">failed</code> in the
+                output of <code class="ph codeph">puppet job show</code>. This is
+                expected, and doesn't indicate a problem. 
+            </p>
+        </section>
+    </div>
+</article></main></body></html>

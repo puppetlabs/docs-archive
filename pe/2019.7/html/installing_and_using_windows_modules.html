@@ -1,0 +1,898 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="This guide covers creating a managed permission with ACL, creating managed registry keys and values with registry, and installing and creating your own packages with chocolatey."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="installing_and_using_windows_modules"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Using the Windows module pack</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="installing_and_using_windows_modules">
+    <h1 class="title topictitle1" id="ariaid-title1">Using the <span class="ph">Windows</span> module
+        pack</h1>
+    
+    <div class="body conbody"><p class="shortdesc">This guide covers creating a managed permission with
+            <code class="ph codeph">ACL</code>, creating managed registry keys and
+        values with <code class="ph codeph">registry</code>, and installing and
+        creating your own packages with <code class="ph codeph">chocolatey</code>.</p></div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="windows_module_pack">
+   <h2 class="title topictitle2" id="ariaid-title2">
+      <span class="ph">Windows</span> module pack </h2>
+   
+   <div class="body conbody"><p class="shortdesc">The <span class="ph">Windows</span> module pack is a
+      group of modules available on the <span class="ph">Forge</span> curated to help you
+      complete common <span class="ph">Windows</span> tasks.</p>
+      <p class="p">The <span class="ph">Forge</span> is an online community of <span class="ph">Puppet</span> modules submitted by <span class="ph">Puppet</span> and community members. The <span class="ph">Forge</span> makes it easier for you to manage <span class="ph">Puppet</span> and can save you time by using pre-written modules,
+         rather than writing your own. In addition to being rated by the community, modules in the
+            <span class="ph">Forge</span> can be <span class="ph">Puppet</span>
+         Approved or <span class="ph">Puppet</span> Supported. The major difference is that
+         Approved modules are not available for <span class="ph">Puppet Enterprise</span> support
+         services, but are still tested and adhere to a standard for style and quality.</p>
+      <p class="p">The <span class="ph">Windows</span> module pack includes several
+            <span class="ph">Windows</span> compatible modules that help you complete common
+         specific tasks. You can find more <span class="ph">Windows</span> modules by
+         searching the <span class="ph">Forge</span>. While the module pack itself is not
+         supported, the modules by <span class="ph">Puppet</span> contained in the pack are
+         individually supported with <span class="ph">PE</span>. The rest have been reviewed
+         and recommended by <span class="ph">Puppet</span> but are not eligible for
+         commercial support.</p>
+      <p class="p">The <span class="ph">Windows</span> module pack enables you to do
+         the following:</p>
+      <ul class="ul">
+         <li class="li">Read, create, and write registry keys with <code class="ph codeph">registry</code>.</li>
+         <li class="li">Interact with PowerShell through the <span class="ph">Puppet</span> DSL with <code class="ph codeph">powershell</code>.</li>
+         <li class="li">Manage <span class="ph">Windows</span>
+            <span class="ph">PowerShell</span> DSC (Desired State
+            Configuration) resources using <code class="ph codeph">dsc</code> and
+               <code class="ph codeph">dsc_lite</code>.</li>
+         <li class="li">Reboot <span class="ph">Windows</span> as part of management
+            as necessary through <code class="ph codeph">reboot</code>.</li>
+         <li class="li">Enforce fine-grained access control permissions using <code class="ph codeph">acl</code>.</li>
+         <li class="li">Manage <span class="ph">Windows</span> Server Update Service
+            configs on client nodes <code class="ph codeph">wsus_client</code>.</li>
+         <li class="li">Install or remove <span class="ph">Windows</span> features
+            with <code class="ph codeph">windowsfeature</code>.</li>
+         <li class="li">Download files for use during management via <code class="ph codeph">download_file</code>.</li>
+         <li class="li">Build IIS sites and virtual applications with <code class="ph codeph">iis</code>.</li>
+         <li class="li">Install packages with <code class="ph codeph">chocolatey</code>.</li>
+         <li class="li">Manage environment variables with <code class="ph codeph">windows_env</code>.</li>
+      </ul>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="install_windows_module_pack">
+   <h2 class="title topictitle2" id="ariaid-title3">Install the <span class="ph">Windows</span> module pack </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">These steps show you how to install the module pack
+      locally, but you can also install it on the master and pluginsync pushes the module pack to
+      all of your nodes.</p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Open the <span class="ph">Puppet</span> command
+               prompt. If you haven't opened the command line interface before, enter <code class="ph codeph">Command Prompt Puppet</code> in your <span class="ph uicontrol">Start Menu</span>, and click <span class="ph uicontrol">Start Command Prompt with
+               Puppet</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">To list modules that you currently have installed,
+               enter <code class="ph codeph">puppet module list</code> in your
+                  <span class="ph uicontrol">Command Prompt</span> window.
+               If you're just getting started, you likely have no modules installed yet.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Next, to install the&nbsp;<code class="ph codeph">puppetlabs/windows</code>&nbsp;module pack, type&nbsp;<code class="ph codeph">puppet module install puppetlabs/windows</code>. </span>
+            <div class="itemgroup stepresult"><div class="p">Notice that
+                  you get a nice output of everything that’s
+                  installed.<pre class="pre codeblock"><code>C:\&gt;puppet module install puppetlabs/windows
+Notice: Preparing to install into
+C:/ProgramData/PuppetLabs/code/environments/production/modules ...
+Notice: Downloading from https://forgeapi.puppetlabs.com ...
+Notice: Installing -- do not interrupt ...
+C:/ProgramData/PuppetLabs/code/environments/production/modules
+└─┬ puppetlabs-windows (v2.1.0)
+├─┬ chocolatey-chocolatey (v1.2.0)
+│ └── badgerious-windows_env (v2.2.2)
+├── puppet-download_file (v1.2.1)
+├── puppet-iis (v1.4.1)
+├── puppet-windowsfeature (v1.1.0)
+├── puppetlabs-acl (v1.1.1)
+├── puppetlabs-powershell (v1.0.5)
+├── puppetlabs-reboot (v1.2.0)
+├─┬ puppetlabs-registry (v1.1.2)
+│ └── puppetlabs-stdlib (v4.9.0)
+└── puppetlabs-wsus_client (v1.0.0)</code></pre></div></div>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p"></p>
+      </section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="manage_permissions_with_acl">
+    <h2 class="title topictitle2" id="ariaid-title4">Manage permissions with <code class="ph codeph">acl</code>
+    </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">puppetlabs-acl</code> module helps you manage access control lists (ACLs), which
+        provide a way to interact with permissions for the <span class="ph">Windows</span>
+        file system. This module enables you to set basic permissions up to very advanced
+        permissions using SIDs (Security Identifiers) with an access mask, inheritance, and
+        propagation strategies. First, start with querying some existing permissions.</p></div>
+<article class="topic task nested2" aria-labelledby="ariaid-title5" id="view_file_permissions_with_acl">
+   <h3 class="title topictitle3" id="ariaid-title5">View file permissions with ACL </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">ACL is a custom type and provider, so you can use <code class="ph codeph">puppet resource</code> to look at existing file and
+      folder permissions.</p>
+      <section class="section context">
+         <p class="p">For some types, you can use the command <code class="ph codeph">puppet resource &lt;TYPE NAME&gt;</code> to get all instances of that
+            type. However, there could be thousands of ACLs on a <span class="ph">Windows</span> system, so it's best to specify the folder you
+            want to review the types in. Here, check <code class="ph codeph">c:\Users</code> to see what permissions it contains.</p>
+      </section>
+      <section><div class="li step p">
+            <span class="ph cmd">In the command prompt, enter <code class="ph codeph">puppet resource acl c:\Users</code></span>
+            <div class="itemgroup info">
+               <pre class="pre codeblock"><code>acl { 'c:\Users':
+  inherit_parent_permissions =&gt; 'false',
+  permissions                =&gt; [
+   {identity =&gt; 'SYSTEM', rights=&gt; ['full']},
+   {identity =&gt; 'Administrators', rights =&gt; ['full']},
+   {identity =&gt; 'Users', rights =&gt; ['read', 'execute'], affects =&gt; 'self_only'},
+   {identity =&gt; 'Users', rights =&gt; ['read', 'execute'], affects =&gt; 'children_only'},
+   {identity =&gt; 'Everyone', rights =&gt; ['read', 'execute'], affects =&gt; 'self_only'},
+   {identity =&gt; 'Everyone', rights =&gt; ['read', 'execute'], affects =&gt; 'children_only'}
+  ],
+}</code></pre>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p">As you can see, this particular folder does not inherit permissions
+            from its parent folder; instead, it sets its own permissions and determines how child
+            files and folders inherit the permissions set here. </p><ul class="ul">
+            <li class="li"><p class="p"><code class="ph codeph">{'identity' =&gt; 'SYSTEM', 'rights'=&gt; ['full']}</code>&nbsp;states that
+                  the “SYSTEM” user has full rights to this folder, and by default all children and
+                  grandchildren files and folders (as these are the same defaults when creating
+                  permissions in <span class="ph">Windows</span>).</p></li>
+            <li class="li"><p class="p"><code class="ph codeph">{'identity' =&gt; 'Users', 'rights' =&gt; ['read', 'execute'], 'affects' =&gt;
+                     'self_only'}</code> gives read and execute permissions to Users but only on
+                  the current directory.</p></li>
+            <li class="li"><p class="p"><code class="ph codeph">{'identity' =&gt; 'Everyone', 'rights' =&gt; ['read', 'execute'], 'affects'
+                     =&gt; 'children_only'}</code>&nbsp;gives read and execute permissions to
+                  everyone, but only on subfolders and files.</p></li>
+         </ul><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> You might see what
+               appears to be the same permission for a user/group twice (both "Users" and "Everyone"
+               above), where one affects only the folder itself and the other is about children
+               only. They are in fact different permissions. </div>
+         </div>
+      </section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="create_puppet_managed_permission">
+  <h3 class="title topictitle3" id="ariaid-title6">Create a <span class="ph">Puppet</span> managed permission </h3>
+  <div class="body taskbody">
+    <section><ol class="ol steps"><li class="li step stepexpand">
+        <span class="ph cmd">Run this code to create your first <span class="ph">Puppet</span> managed permission. Then, save it as <code class="ph codeph">perms.pp</code>
+        </span>
+        <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>file{'c:/tempperms':
+ ensure =&gt; directory,
+}
+
+# By default, the acl creates an implicit relationship to any
+# file resources it finds that match the location.
+acl {'c:/tempperms':
+ permissions =&gt; [
+   {identity =&gt; 'Administrators', rights =&gt; ['full']},
+   {identity =&gt; 'Users', rights =&gt; ['read','execute']}
+ ],
+}</code></pre></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">To validate your manifest, in the command prompt, run
+            <code class="ph codeph">puppet parser validate c:\&lt;FILE
+            PATH&gt;\perms.pp</code>. If the parser returns nothing, it means validation
+          passed.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">To apply the manifest, type <code class="ph codeph">puppet apply c:\&lt;FILE PATH&gt;\perms.pp</code>
+        </span>
+        <div class="itemgroup info"><p class="p">Your output should look
+            similar to:</p><div class="p"><pre class="pre codeblock"><code>Notice: Compiled catalog for win2012r2x64 in environment production in 0.12 seconds
+Notice: /Stage[main]/Main/File[c:/tempperms]/ensure: created
+Notice: /Stage[main]/Main/Acl[c:/tempperms]/permissions: permissions changed [
+] to [
+ { identity =&gt; 'BUILTIN\Administrators', rights =&gt; ["full"] },
+ { identity =&gt; 'BUILTIN\Users', rights =&gt; ["read", "execute"] }
+]
+Notice: Applied catalog in 0.05 seconds</code></pre></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Review the permissions in your <span class="ph">Windows</span> UI. In <span class="ph">Windows</span>
+          Explorer, right-click <span class="ph uicontrol">tempperms</span>
+          and click <span class="ph uicontrol">Properties</span>. Then,
+          click the <span class="ph uicontrol">Security</span> tab. It
+          should appear similar to the image below.</span>
+        <div class="itemgroup info"><div class="p"><br><img class="image" src="security_properties.png" alt="The tempperms window with the security tab highlighted."><br></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Optional: It might appear that you have more permissions
+          than you were hoping for here. This is because by default <span class="ph">Windows</span> inherits parent permissions. In this case, you might
+          not want to do that. Adjust the&nbsp;acl&nbsp;resource to not inherit parent permissions
+          by changing the&nbsp;<code class="ph codeph">perms.pp</code>&nbsp;file
+          to look like the below by adding&nbsp;<code class="ph codeph">inherit_parent_permissions =&gt; false</code>.</span>
+        <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>acl {'c:/tempperms':
+  inherit_parent_permissions =&gt; false,
+  permissions                =&gt; [
+    {identity =&gt; 'Administrators', rights =&gt; ['full']},
+    {identity =&gt; 'Users', rights =&gt; ['read','execute']}
+  ],
+}</code></pre></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Save the file, and return the command prompt to run
+            <code class="ph codeph">puppet parser validate c:\&lt;FILE
+            PATH&gt;\perms.pp</code> again.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">When it validates, run <code class="ph codeph">puppet apply c:\&lt;FILE PATH&gt;\perms.pp</code>
+        </span>
+        <div class="itemgroup info"><p class="p">You should get output
+            similar to the following:</p><div class="p"><pre class="pre codeblock"><code>C:\&gt;puppet apply c:\puppet_code\perms.pp
+Notice: Compiled catalog for win2012r2x64 in environment production in 0.08 seconds
+Notice: /Stage[main]/Main/Acl[c:/tempperms]/inherit_parent_permissions: inherit_
+parent_permissions changed 'true' to 'false'
+Notice: Applied catalog in 0.02 seconds</code></pre></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">To check the permissions again, enter <code class="ph codeph">icacls c:\tempperms</code> in the command prompt. The command,
+            <code class="ph codeph">icacls</code>, is specifically for displaying
+          and modifying ACLs. The output should be similar to the following:</span>
+        <div class="itemgroup info"><div class="p">
+            <pre class="pre codeblock"><code>C:\&gt;icacls c:\tempperms
+c:\tempperms BUILTIN\Administrators:(OI)(CI)(F)
+             BUILTIN\Users:(OI)(CI)(RX)
+             NT AUTHORITY\SYSTEM:(OI)(CI)(F)
+             BUILTIN\Users:(CI)(AD)
+             CREATOR OWNER:(OI)(CI)(IO)(F)
+Successfully processed 1 files; Failed processing 0 files</code></pre>The
+            output shows each permission, followed by a list of specific rights in parentheses. This
+            output shows there are more permissions than you specified in&nbsp;<code class="ph codeph">perms.pp</code>. <span class="ph">Puppet</span>
+            manages permissions next to unmanaged or existing permissions. In the case of removing
+            inheritance, by default <span class="ph">Windows</span> copies those existing
+            inherited permissions (or Access Control Entries, ACEs) over to the existing ACL so you
+            have some more permissions that you might not want.</div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Remove the extra permissions, so that only the permissions
+          you’ve specified are on the folder. To do this, in your&nbsp;perms.pp&nbsp;set&nbsp;purge
+          =&gt; true&nbsp;as follows:</span>
+        <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>acl {'c:/tempperms':
+  inherit_parent_permissions =&gt; false,
+  purge                      =&gt; true,
+  permissions                =&gt; [
+    {identity =&gt; 'Administrators', rights =&gt; ['full']},
+    {identity =&gt; 'Users', rights =&gt; ['read','execute']}
+  ],
+}</code></pre></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Run the parser command as you have before. If it still
+          returns no errors, then you can apply the change.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">To apply the change, run&nbsp;<code class="ph codeph">puppet apply c:\&lt;FILE PATH&gt;\perms.pp</code>. The output should be
+          similar to below:</span>
+        <div class="itemgroup info"><div class="p">
+            <pre class="pre codeblock"><code>C:\&gt;puppet apply c:\puppet_code\perms.pp
+Notice: Compiled catalog for win2012r2x64 in environment production in 0.08 seco
+nds
+Notice: /Stage[main]/Main/Acl[c:/tempperms]/permissions: permissions changed [
+{ identity =&gt; 'BUILTIN\Administrators', rights =&gt; ["full"] },
+{ identity =&gt; 'BUILTIN\Users', rights =&gt; ["read", "execute"] },
+{ identity =&gt; 'NT AUTHORITY\SYSTEM', rights =&gt; ["full"] },
+{ identity =&gt; 'BUILTIN\Users', rights =&gt; ["mask_specific"], mask =&gt; '4', child_types =&gt; 'containers' },
+{ identity =&gt; 'CREATOR OWNER', rights =&gt; ["full"], affects =&gt; 'children_only' }
+] to [
+{ identity =&gt; 'BUILTIN\Administrators', rights =&gt; ["full"] },
+{ identity =&gt; 'BUILTIN\Users', rights =&gt; ["read", "execute"] }
+]
+Notice: Applied catalog in 0.05 seconds</code></pre>Puppet
+            outputs a notice as it is removing each of the permissions.</div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Take a look at the output of&nbsp;<code class="ph codeph">icacls</code>&nbsp;again with <code class="ph codeph">icacls c:\tempperms</code>
+        </span>
+        <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>c:\&gt;icacls c:\tempperms
+c:\tempperms BUILTIN\Administrators:(OI)(CI)(F)
+            BUILTIN\Users:(OI)(CI)(RX)
+Successfully processed 1 files; Failed processing 0 files</code></pre></div></div>
+      </li></ol></section>
+    <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">Now the permissions have been
+        set up for this directory. You can get into more advanced permission scenarios if you read
+        the&nbsp;usage scenarios on this module’s <span class="ph">Forge</span>
+      page.</p></section>
+  </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="create_puppet_managed_registry_keys">
+    <h2 class="title topictitle2" id="ariaid-title7">Create <span class="ph">Puppet</span> managed registry keys
+        with registry </h2>
+    <p class="shortdesc">You might eventually need to use the registry to access
+        and set highly available settings, among other things. The <code class="ph codeph">puppetlabs-registry</code> module, which is also a <span class="ph">Puppet</span> Supported Module enables you to set both registry keys
+        and values.</p>
+<article class="topic task nested2" aria-labelledby="ariaid-title8" id="view_registry_keys_and_values_puppet_resource">
+  <h3 class="title topictitle3" id="ariaid-title8">View <code class="ph codeph">registry</code> keys
+    and values with <code class="ph codeph">puppet resource</code>
+  </h3>
+  
+  <div class="body taskbody"><p class="shortdesc">
+    <code class="ph codeph">puppetlabs-registry</code> is a custom type and
+    provider, so you can use <code class="ph codeph">puppet resource</code> to
+    look at existing registry settings.</p>
+    <section class="section context"><p class="p">It is also somewhat
+        limited, like the <code class="ph codeph">acl</code> module in that it is
+        restricted to only what is specified.</p></section>
+    <section><ol class="ol steps"><li class="li step stepexpand">
+        <span class="ph cmd">In your command prompt, run: <code class="ph codeph">puppet resource registry_key 'HKLM\Software\Microsoft\Windows'</code>
+        </span>
+        <div class="itemgroup info"><div class="p"><br><img class="image" src="cli_resource_registry.png" alt="Screenshot of the command with a result showing that the specified registry key is present."><br></div><p class="p">Not that interesting, but now take a look at a
+            registry value.</p></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Enter <code class="ph codeph">puppet
+            resource registry_value
+            'HKLM\SYSTEM\CurrentControlSet\Services\BITS\DisplayName'</code>
+        </span>
+        <div class="itemgroup info"><div class="p">
+            <pre class="pre codeblock"><code>registry_value { 'HKLM\SYSTEM\CurrentControlSet\Services\BITS\DisplayName':
+  ensure =&gt; 'present',
+  data   =&gt; ['Background Intelligent Transfer Service'],
+  type   =&gt; 'string',
+}</code></pre>That’s
+            a bit more interesting than a registry key.</div></div>
+      </li></ol></section>
+    <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">Keys are like file paths
+        (directories) and values are like files that can have data and be of different
+      types.</p></section>
+  </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title9" id="create_managed_keys">
+  <h3 class="title topictitle3" id="ariaid-title9">Create managed keys </h3>
+  
+  <div class="body taskbody"><p class="shortdesc">Learn how to make managed registry keys, and see <span class="ph">Puppet</span> correct configuration drift when you try and alter them in
+    Registry Editor.</p>
+    <section><ol class="ol steps"><li class="li step stepexpand">
+        <span class="ph cmd">Create your first <span class="ph">Puppet</span>
+          managed registry keys and values:</span>
+        <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>registry_key { 'HKLM\Software\zTemporaryPuppet':
+     ensure =&gt; present,
+}
+
+# By default the registry creates an implicit relationship to any file
+# resources it finds that match the location.
+registry_value {'HKLM\Software\zTemporaryPuppet\StringValue':
+  ensure =&gt; 'present',
+  data   =&gt; 'This is a custom value.',
+  type   =&gt; 'string',
+}
+
+#forcing a 32-bit registry view; watch where this is created:
+registry_key { '32:HKLM\Software\zTemporaryPuppet':
+  ensure =&gt; present,
+}
+
+registry_value {'32:HKLM\Software\zTemporaryPuppet\StringValue':
+  ensure =&gt; 'present',
+  data   =&gt; 'This is a custom 32-bit value.',
+  type   =&gt; 'expand',
+}</code></pre></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Save the file as <code class="ph codeph">registry.pp</code>.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Validate the manifest. In the command prompt, run <code class="ph codeph">puppet parser validate c:\&lt;FILE
+            PATH&gt;\registry.pp</code>
+        </span>
+        <div class="itemgroup info"><p class="p">If the parser returns
+            nothing, it means validation passed.</p></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Now, apply the manifest by running&nbsp;<code class="ph codeph">puppet apply c:\&lt;FILE PATH&gt;\registry.pp</code> in the
+          command prompt. Your output should look similar to below.</span>
+        <div class="itemgroup info"><pre class="pre codeblock"><code>Notice: Compiled catalog for win2012r2x64 in environment production in 0.11 seco
+nds
+Notice: /Stage[main]/Main/Registry_key[HKLM\Software\zTemporaryPuppet]/ensure: c
+reated
+Notice: /Stage[main]/Main/Registry_value[HKLM\Software\zTemporaryPuppet\StringVa
+lue]/ensure: created
+Notice: /Stage[main]/Main/Registry_key[32:HKLM\Software\zTemporaryPuppet]/ensure
+: created
+Notice: /Stage[main]/Main/Registry_value[32:HKLM\Software\zTemporaryPuppet\Strin
+gValue]/ensure: created
+Notice: Applied catalog in 0.03 seconds</code></pre></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Next, inspect the registry and see what you have.
+            Press&nbsp;<span class="ph uicontrol">Start + R</span>, then
+            type&nbsp;<code class="ph codeph">regedit</code>&nbsp;and
+            press&nbsp;<span class="ph uicontrol">Enter</span>. Once the
+            <span class="keyword wintitle">Registry Editor</span> opens, find
+          your keys under&nbsp;<span class="ph uicontrol">HKEY_LOCAL_MACHINE</span>.</span>
+        <div class="itemgroup info"><div class="p">
+            <br><img class="image" src="regedit_HKLM.png" alt="The Registry Editor window showing keys in the zTemporaryPuppet subfolder."><br>Note that the 32-bit keys were created under the 32-bit section of Wow6432Node
+            for Software.</div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Apply the manifest again by running <code class="ph codeph">puppet apply c:\&lt;FILE PATH&gt;\registry.pp</code>
+        </span>
+        <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>Notice: Compiled catalog for win2012r2x64 in environment production in 0.11 seconds
+Notice: Applied catalog in 0.02 seconds</code></pre></div><p class="p">Nothing changed, so there is no work for Puppet to do. </p></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">In <span class="keyword wintitle">Registry Editor</span>, change the data. Select <span class="ph uicontrol">HKLM\Software\zTemporaryPuppet</span> and in the right box,
+          double-click <span class="ph uicontrol">StringValue</span>. Edit
+          the value data, and click <span class="ph uicontrol">OK</span>.</span>
+        <div class="itemgroup info"><div class="p">
+            <br><img class="image" src="regedit_edit_value.png" alt="A screenshot of the Registry Editor with pointers showing where to select the key, double click on the StringValue, and edit the value data for that StringValue."><br>This time, changes have been made, so running <code class="ph codeph">puppet apply c:\path\to\registry.pp</code> results in a different
+            output.</div><div class="p"><pre class="pre codeblock"><code>Notice: Compiled catalog for win2012r2x64 in environment production
+in 0.11 seconds
+Notice: /Stage[main]/Main/Registry_value[HKLM\Software\zTemporaryPuppet\StringValue]/data:
+data changed 'This is a custom value. Edited' to 'This is a custom value.'
+Notice: Applied catalog in 0.03 seconds</code></pre></div><p class="p">
+            <span class="ph">Puppet</span> automatically corrects the configuration
+            drift.</p></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Next, clean up and remove the keys and values. Make
+            your&nbsp;<code class="ph codeph">registry.pp</code>&nbsp;file look
+          like the below:</span>
+        <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>registry_key { 'HKLM\Software\zTemporaryPuppet':
+  ensure =&gt; absent,
+}
+
+#forcing a 32 bit registry view, watch where this is created
+registry_key { '32:HKLM\Software\zTemporaryPuppet':
+  ensure =&gt; absent,
+}</code></pre></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Validate it with&nbsp;<code class="ph codeph">puppet parser validate c:\path\to\registry.pp</code>&nbsp;and apply it
+          again with&nbsp;puppet apply <code class="ph codeph">c:\path\to\registry.pp</code>
+        </span>
+        <div class="itemgroup info"><div class="p">
+            <pre class="pre codeblock"><code>Notice: Compiled catalog for win2012r2x64 in environment production in 0.06 seconds
+Notice: /Stage[main]/Main/Registry_key[HKLM\Software\zTemporaryPuppet]/ensure: removed
+Notice: /Stage[main]/Main/Registry_key[32:HKLM\Software\zTemporaryPuppet]/ensure
+: removed
+Notice: Applied catalog in 0.02 seconds</code></pre>Refresh
+            the view in your <span class="keyword wintitle">Registry
+              Editor</span>. The values are gone.</div><div class="p"><br><img class="image" src="regedit_absent.png" alt="Screenshot of the Registry Editor showing that the adjusted value is gone."><br></div></div>
+      </li></ol></section>
+    <section class="example"><div class="tasklabel"><h4 class="sectiontitle tasklabel">Example</h4></div>Here’s a real world example that disables error
+      reporting:<pre class="pre codeblock"><code>class puppetconf::disable_error_reporting {
+  registry_value { 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting\ForceQueue':
+    type =&gt; dword,
+    data =&gt; '1',
+  }
+
+  registry_value { 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting\DontShowUI':
+    type =&gt; dword,
+    data =&gt; '1',
+  }
+
+  registry_value { 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting\DontSendAdditionalData':
+    type =&gt; dword,
+    data =&gt; '1',
+  }
+
+  registry_key { 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting\Consent':
+    ensure       =&gt; present,
+  }
+
+  registry_value { 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting\Consent\DefaultConsent':
+   type =&gt; dword,
+   data =&gt; '2',
+  }
+}</code></pre>
+    </section>
+  </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title10" id="create_install_repackage_with_chocolatey">
+    <h2 class="title topictitle2" id="ariaid-title10">Create, install and repackage packages with the <code class="ph codeph">chocolatey</code> module</h2>
+    <p class="shortdesc">Chocolatey is a package manager for <span class="ph">Windows</span> that is similar in design and execution to package
+        managers on non-<span class="ph">Windows</span> systems. The <code class="ph codeph">chocolatey</code> module is a <span class="ph">Puppet</span> Approved Module, so it's not eligible for <span class="ph">Puppet Enterprise</span> support services. The module has the capability to
+        intall and configure Chocolatey itself, and then manage software on <span class="ph">Windows</span> with Chocolatey packages.</p>
+<article class="topic task nested2" aria-labelledby="ariaid-title11" id="view_existing_packages">
+    <h3 class="title topictitle3" id="ariaid-title11">View existing packages </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">Chocolatey has a custom provider for the package resource
+        type, so you can use <code class="ph codeph">puppet resource</code> to
+        view existing packages.</p>
+        <section><div class="li step p">
+                <span class="ph cmd">In the command prompt, run <code class="ph codeph">puppet resource package --param provider |
+                        more</code>
+                </span>
+                <div class="itemgroup info"><p class="p">The additional
+                        provider parameter in this command outputs all types of installed packages
+                        that are detected by multiple providers.</p></div>
+            </div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title12" id="install_chocolatey">
+  <h3 class="title topictitle3" id="ariaid-title12">Install Chocolatey </h3>
+  
+  <div class="body taskbody"><p class="shortdesc">These steps are to install Chocolatey (choco.exe) itself.
+    You use the module to ensure Chocolatey is installed.</p>
+    <section><ol class="ol steps"><li class="li step stepexpand">
+        <span class="ph cmd">Create a new manifest in the chocolatey module called
+            <code class="ph codeph">chocolatey.pp</code> with the following
+          contents:</span>
+        <div class="itemgroup info">
+          <pre class="pre codeblock"><code>include chocolatey</code></pre>
+        </div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Validate the manifest by running <code class="ph codeph">puppet parser validate c:\&lt;FILE PATH&gt;\chocolatey.pp</code> in the
+          command prompt. If the parser returns nothing, it means validation passed.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Apply the manifest by running <code class="ph codeph">puppet apply c:\&lt;FILE PATH&gt;\chocolatey.pp</code></span>
+        <div class="itemgroup info">
+          <p class="p">Your output should look similar to below:</p>
+          <pre class="pre codeblock"><code>Notice: Compiled catalog for win2012r2x64 in environment production in 0.58 seconds
+Notice: /Stage[main]/Chocolatey::Install/Windows_env[chocolatey_PATH_env]/ensure
+: created
+Notice: /Stage[main]/Chocolatey::Install/Windows_env[chocolatey_ChocolateyInstal
+l_env]/ensure: created
+Notice: /Stage[main]/Chocolatey::Install/Exec[install_chocolatey_official]/retur
+ns: executed successfully
+Notice: /Stage[main]/Chocolatey::Install/Exec[install_chocolatey_official]: Trig
+gered 'refresh' from 2 events
+Notice: Finished catalog run in 13.22 seconds</code></pre>
+          <p class="p">In a production scenario, you’re likely to have a Chocolatey.nupkg
+            file somewhere internal. In cases like that, you can use the internal nupkg for
+            Chocolatey installation:</p>
+          <pre class="pre codeblock"><code>class {'chocolatey':
+  chocolatey_download_url =&gt; 'https://internalurl/to/chocolatey.nupkg',
+  use_7zip                =&gt; false,
+  log_output              =&gt; true,
+}</code></pre>
+        </div>
+      </li></ol></section>
+  </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title13" id="install_a_package_with_chocolatey">
+  <h3 class="title topictitle3" id="ariaid-title13">Install a package with <code class="ph codeph">chocolatey</code></h3>
+  
+  <div class="body taskbody"><p class="shortdesc">Normally, when installing packages you copy them locally
+    first, make any required changes to bring everything they download to an internal location,
+    repackage the package with the edits, and build your own packages to host on your internal
+    package repository (feed). For this exercise, however, you directly install a portable Notepad++
+    from Chocolatey's community feed. The Notepad++ CommandLine package is portable and shouldn't
+    greatly affect an existing system.</p>
+    <section><ol class="ol steps"><li class="li step stepexpand">
+        <span class="ph cmd">Update the manifest chocolatey.pp with the following
+          contents:</span>
+        <div class="itemgroup info">
+          <pre class="pre codeblock"><code>package {'notepadplusplus.commandline':
+  ensure   =&gt; installed,
+  provider =&gt; chocolatey,
+}</code></pre>
+        </div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Validate the manifest by running <code class="ph codeph">puppet parser validate c:\&lt;FILE PATH&gt;\chocolatey.pp</code> in the
+          command prompt. If the parser returns nothing, it means validation passed.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Now, apply the manifest with <code class="ph codeph">puppet apply c:\&lt;FILE PATH&gt;\chocolatey.pp</code>. Your output
+          should look similar to below.</span>
+        <div class="itemgroup info">
+          <pre class="pre codeblock"><code>Notice: Compiled catalog for win2012r2x64 in environment production in 0.75 seconds
+Notice: /Stage[main]/Main/Package[notepadplusplus.commandline]/ensure: created
+Notice: Applied catalog in 15.51 seconds</code></pre>
+        </div>
+      </li></ol></section>
+    <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+      <p class="p">If you want to use this package for a production scenario, you need an
+        internal custom feed. This is simple to set up with the <code class="ph codeph">chocolatey_server</code> module. You could also use Sonatype Nexus,
+        Artifactory, or a CIFS share if you want to host packages with a non-<span class="ph">Windows</span> option, or you can use anything on <span class="ph">Windows</span> that exposes a NuGet OData feed (Nuget is the packaging
+        infrastructure that Chocolatey uses). See the <a class="xref" href="https://github.com/chocolatey/choco/wiki/How-To-Host-Feed" target="_blank">How To
+          Host Feed page of the <code class="ph codeph">chocolatey</code>
+          wiki</a> for more in-depth information. You could also store packages on your master
+        and use a file resource to verify they are in a specific local directory prior to ensuring
+        the packages.</p>
+    </section>
+    <section class="example"><div class="tasklabel"><h4 class="sectiontitle tasklabel">Example</h4></div>
+      <p class="p">The following example ensures that Chocolatey, the Chocolatey Simple
+        Server (an internal Chocolatey package repository), and some packages are installed. It
+        requires the additional&nbsp;<a class="xref" href="https://forge.puppetlabs.com/chocolatey/chocolatey_server" target="_blank">chocolatey/chocolatey_server&nbsp;module</a>.</p>
+      <p class="p">In&nbsp;<code class="ph codeph">c:\&lt;FILE
+          PATH&gt;\packages</code>&nbsp;you must have packages for&nbsp;<a class="xref" href="https://chocolatey.org/packages/chocolatey" target="_blank">Chocolatey</a>,&nbsp;<a class="xref" href="https://chocolatey.org/packages/chocolatey.server" target="_blank">Chocolatey.Server</a>,&nbsp;<a class="xref" href="https://chocolatey.org/packages/roundhouse" target="_blank">RoundhousE</a>,&nbsp;<a class="xref" href="https://chocolatey.org/packages/launchy" target="_blank">Launchy</a>,
+          and&nbsp;<a class="xref" href="https://chocolatey.org/packages/git" target="_blank">Git</a>, as well as any of their dependencies for this to work.</p>
+      <pre class="pre codeblock"><code>case $operatingsystem {
+  'windows':    {
+    Package {
+      provider =&gt; chocolatey,
+      source   =&gt; 'C:\packages',
+    }
+  }
+}
+
+# include chocolatey
+class {'chocolatey':
+  chocolatey_download_url =&gt; 'file:///C:/packages/chocolatey.0.9.9.11.nupkg',
+  use_7zip                =&gt; false,
+  log_output              =&gt; true,
+}
+
+# This contains the bits to install the custom server.
+# include chocolatey_server
+class {'chocolatey_server':
+  server_package_source =&gt; 'C:/packages',
+}
+
+package {'roundhouse':
+  ensure   =&gt; '0.8.5.0',
+}
+
+
+package {'launchy':
+  ensure          =&gt; installed,
+  install_options =&gt; ['-override', '-installArgs','"', '/VERYSILENT','/NORESTART','"'],
+}
+
+package {'git':
+  ensure =&gt; latest,
+}</code></pre>
+    </section>
+  </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title14" id="repackage_packages">
+    <h3 class="title topictitle3" id="ariaid-title14">Copy an existing package and make it internal (repackaging
+        packages) </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">To make the existing package local, use these
+        steps.</p>
+        <section class="section context">
+            <p class="p">Chocolatey's community feed has quite a few packages, but they are
+                geared towards community and use the internet for downloading from official
+                distribution sites. However, they are attractive as they have everything necessary
+                to install a piece of software on your machine. Through the repackaging process, by
+                which you take a community package and bring all of the bits internal or embed them
+                into the package, you can completely internalize a package to host on an internal
+                Chocolatey/NuGet repository. This gives you complete control over a package and
+                removes the aforementioned production trust and control issues.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Download the Notepad++ package from Chocolatey's
+                    community feed by going to the package page and clicking the download
+                    link.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Rename the downloaded file to end
+                        with&nbsp;<code class="ph codeph">.zip</code>&nbsp;and
+                    unpack the file as a regular archive.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Delete the&nbsp;<code class="ph codeph">_rels</code>&nbsp;and&nbsp;<code class="ph codeph">package</code>&nbsp;folders and the&nbsp;<code class="ph codeph">[Content_Types].xml</code>&nbsp;file. These are
+                    created during&nbsp;choco pack&nbsp;and should not be included, because they're
+                    regenerated (and their existence leads to issues).</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>notepadplusplus.commandline.6.8.7.nupkg     
+├───_rels   # DELETE
+├───package # DELETE
+│   └───services
+├───tools
+├── [Content_Types].xml	# DELETE
+└── notepadplusplus.commandline.nuspec</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Open <code class="ph codeph">tools\chocolateyInstall.ps1</code>.</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>Install-ChocolateyZipPackage 'notepadplusplus.commandline' 'https://notepad-plus-plus.org/repository/6.x/6.8.7/npp.6.8.7.bin.zip' "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Download the zip file and place it in the tools
+                    folder of the package.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Next, edit&nbsp;<code class="ph codeph">chocolateyInstall.ps1</code>&nbsp;to point to this embedded
+                    file instead of reaching out to the internet (if the size of the file is over
+                    50MB, you might want to put it on a file share somewhere internally for better
+                    performance).</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>$toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+Install-ChocolateyZipPackage 'notepadplusplus.commandline' "$toolsDir\npp.6.8.7.bin.zip" "$toolsDir"</code></pre>
+                    <p class="p">The double quotes allow for string interpolation (meaning
+                        variables get interpreted instead of taken literally).</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Next, open the&nbsp;<code class="ph codeph">*.nuspec</code>&nbsp;file to view its contents and make any
+                    necessary changes.</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>&lt;?xml version="1.0"?&gt;
+&lt;package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"&gt;
+  &lt;metadata&gt;
+    &lt;id&gt;notepadplusplus.commandline&lt;/id&gt;
+    &lt;version&gt;6.8.7&lt;/version&gt;
+    &lt;title&gt;Notepad++ (Portable, CommandLine)&lt;/title&gt;
+    &lt;authors&gt;Don Ho&lt;/authors&gt;
+    &lt;owners&gt;Rob Reynolds&lt;/owners&gt;
+    &lt;projectUrl&gt;https://notepad-plus-plus.org/&lt;/projectUrl&gt;
+    &lt;iconUrl&gt;https://cdn.rawgit.com/ferventcoder/chocolatey-packages/02c21bebe5abb495a56747cbb9b4b5415c933fc0/icons/notepadplusplus.png&lt;/iconUrl&gt;
+    &lt;requireLicenseAcceptance&gt;false&lt;/requireLicenseAcceptance&gt;
+    &lt;description&gt;Notepad++ is a ... &lt;/description&gt;
+    &lt;summary&gt;Notepad++ is a free (as in "free speech" and also as in "free beer") source code editor and Notepad replacement that supports several languages. &lt;/summary&gt;
+    &lt;tags&gt;notepad notepadplusplus notepad-plus-plus&lt;/tags&gt;
+  &lt;/metadata&gt;
+&lt;/package&gt;</code></pre>
+                    <p class="p">Some organizations change the version field to denote that
+                        this is an edited internal package, for example
+                        changing&nbsp;6.8.7&nbsp;to&nbsp;6.8.7.20151202. For now, this is not
+                        necessary.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Now you can navigate via the command prompt to the
+                    folder with the&nbsp;.nuspec&nbsp;file (from a <span class="ph">Windows</span> machine unless you’ve installed Mono and
+                    built <code class="ph codeph">choco.exe</code> from source)
+                    and use&nbsp;<code class="ph codeph">choco pack</code>. You
+                    can also be more specific and run&nbsp;<code class="ph codeph">choco pack &lt;FILE PATH&gt;\notepadplusplus.commandline.nuspec</code>.
+                    The output should be similar to below.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>Attempting to build package from 'notepadplusplus.commandline.nuspec'.
+Successfully created package 'notepadplusplus.commandline.6.8.7.nupkg'</code></pre>
+                    </div>
+                    <p class="p">Normally you test on a system to ensure that the package
+                        you just built is good prior to pushing the package (just the <code class="ph codeph">*.nupkg</code>) to your
+                        internal repository. This can be done by using&nbsp;<code class="ph codeph">choco.exe</code>&nbsp;on a test system to
+                        install (<code class="ph codeph">choco install
+                            notepadplusplus.commandline -source %cd%</code>&nbsp;-
+                            change&nbsp;<code class="ph codeph">%cd%</code>&nbsp;to&nbsp;<code class="ph codeph">$pwd</code>&nbsp;in PowerShell.exe) and uninstall (<code class="ph codeph">choco uninstall
+                            notepadplusplus.commandline</code>). Another method of testing is to
+                        run the manifest pointed to a local source folder, which is what you are
+                        going to do.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Create&nbsp;<code class="ph codeph">c:\packages</code>&nbsp;and copy the resulting package
+                        file&nbsp;(<code class="ph codeph">notepadplusplus.commandline.6.8.7.nupkg</code>) into it.</span>
+                <div class="itemgroup info">
+                    <div class="p">This won’t actually install on this system since you just
+                        installed the same version from Chocolatey’s community feed. So you need to
+                        remove the existing package first. To remove it, edit your&nbsp;<code class="ph codeph">chocolatey.pp</code>&nbsp;to set the
+                        package to absent.
+                        <pre class="pre codeblock"><code>package {'notepadplusplus.commandline':
+  ensure   =&gt; absent,
+  provider =&gt; chocolatey,
+}</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Validate the manifest with&nbsp;<code class="ph codeph">puppet parser validate
+                    path\to\chocolatey.pp</code>. Apply the manifest to ensure the
+                        change&nbsp;<code class="ph codeph">puppet apply
+                        c:\path\to\chocolatey.pp</code>.</span>
+                <div class="itemgroup info">
+                    <p class="p">You can validate that the package has been removed by
+                        checking for it in the package install location or by using&nbsp;<code class="ph codeph">choco list -lo</code>.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Update the manifest (<code class="ph codeph">chocolatey.pp</code>) to use the custom package.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>package {'notepadplusplus.commandline':
+  ensure   =&gt; latest,
+ provider =&gt; chocolatey,
+ source   =&gt; 'c:\packages',
+}</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Validate the manifest with the parser and then
+                    apply it again. You can see <span class="ph">Puppet</span> creating the
+                    new install in the output.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>Notice: Compiled catalog for win2012r2x64 in environment production in 0.79 seconds
+Notice: /Stage[main]/Main/Package[notepadplusplus.commandline]/ensure: created
+Notice: Applied catalog in 14.78 seconds</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">In an earlier step, you added a&nbsp;<code class="ph codeph">*.zip</code>&nbsp;file to the package, so
+                    that you can inspect it and be sure the custom package was installed. Navigate
+                        to&nbsp;<code class="ph codeph">C:\ProgramData\chocolatey\lib\notepadplusplus.commandline\tools</code>&nbsp;(if
+                    you have a default install location for Chocolatey) and see if you can find
+                        the&nbsp;<code class="ph codeph">*.zip</code>&nbsp;file.</span>
+                <div class="itemgroup info">
+                    <p class="p">You can also validate the&nbsp;<code class="ph codeph">chocolateyInstall.ps1</code>&nbsp;by opening and viewing
+                        it to see that it is the custom file you changed.</p>
+                </div>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title15" id="create_package_with_chocolatey">
+  <h3 class="title topictitle3" id="ariaid-title15">Create a package with <code class="ph codeph">chocolatey</code>
+  </h3>
+  
+  <div class="body taskbody"><p class="shortdesc">Creating your own packages is, for some system
+    administrators, surprisingly simple compared to other packaging standards.</p>
+    <section class="section context"><p class="p">Ensure you have at least
+        Chocolatey CLI (choco.exe) version <code class="ph codeph">0.9.9.11</code>
+        or newer for this next part.</p></section>
+    <section><ol class="ol steps"><li class="li step stepexpand">
+        <span class="ph cmd">From the command prompt, enter <code class="ph codeph">choco new -h</code> to see a help menu of what the available options
+          are.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Next, use <code class="ph codeph">choco
+            new vagrant</code> to create a package named 'vagrant'. The output should be similar
+          to the following:</span>
+        <div class="itemgroup info"><div class="p">
+            <pre class="pre codeblock"><code>Creating a new package specification at C:\temppackages\vagrant
+   Generating template to a file
+    at 'C:\temppackages\vagrant\vagrant.nuspec'
+   Generating template to a file
+    at 'C:\temppackages\vagrant\tools\chocolateyinstall.ps1'
+   Generating template to a file
+    at 'C:\temppackages\vagrant\tools\chocolateyuninstall.ps1'
+   Generating template to a file
+    at 'C:\temppackages\vagrant\tools\ReadMe.md'
+   Successfully generated vagrant package specification files
+    at 'C:\temppackages\vagrant'
+</code></pre>It
+            comes with some files already templated for you to fill out (you can also create your
+            own custom templates for later use).</div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Open&nbsp;<code class="ph codeph">vagrant.nuspec</code>, and edit it to look like this:</span>
+        <div class="itemgroup info"><pre class="pre codeblock"><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd"&gt;
+  &lt;metadata&gt;
+    &lt;id&gt;vagrant&lt;/id&gt;
+    &lt;title&gt;Vagrant (Install)&lt;/title&gt;
+    &lt;version&gt;1.8.4&lt;/version&gt;
+    &lt;authors&gt;HashiCorp&lt;/authors&gt;
+    &lt;owners&gt;my company&lt;/owners&gt;
+    &lt;description&gt;Vagrant - Development environments made easy.&lt;/description&gt;
+  &lt;/metadata&gt;
+  &lt;files&gt;
+    &lt;file src="tools\**" target="tools" /&gt;
+  &lt;/files&gt;
+&lt;/package&gt;
+</code></pre><p class="p">Unless you are sharing with the world, you don’t need most of what is
+            in the nuspec template file, so only required items are included above. Match the
+            version of the package in this nuspec file to the version of the underlying software as
+            closely as possible. In this example, Vagrant 1.8.4 is being packaged.&nbsp;</p></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Open&nbsp;<code class="ph codeph">chocolateyInstall.ps1</code>&nbsp;and edit it to look like the following:</span>
+        <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>$ErrorActionPreference = 'Stop';
+
+$packageName= 'vagrant'
+$toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+$fileLocation = Join-Path $toolsDir 'vagrant_1.8.4.msi'
+
+$packageArgs = @{
+  packageName   = $packageName
+  fileType      = 'msi'
+  file         = $fileLocation
+
+  silentArgs    = "/qn /norestart"
+  validExitCodes= @(0, 3010, 1641)
+}
+
+Install-ChocolateyInstallPackage @packageArgs</code></pre><div class="note note note_note"><span class="note__title">Note:</span> The above is&nbsp;<a class="xref" href="https://github.com/chocolatey/choco/wiki/HelpersInstallChocolateyInstallPackage" target="_blank">Install-ChocolateyINSTALLPackage</a>, not to be confused
+                with&nbsp;<a class="xref" href="https://github.com/chocolatey/choco/wiki/HelpersInstallChocolateyPackage" target="_blank">Install-ChocolateyPackage</a>. The names are very close to each
+              other, however the latter also downloads software from a URI (URL, ftp, file) which is
+              not necessary for this example.</div></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Delete the&nbsp;<code class="ph codeph">ReadMe.md</code>&nbsp;and&nbsp;<code class="ph codeph">chocolateyUninstall.ps1</code>&nbsp;files.&nbsp;<a class="xref" href="https://www.vagrantup.com/downloads.html" target="_blank">Download
+          Vagrant</a>&nbsp;and move it to the tools folder of the package.</span>
+        <div class="itemgroup info"><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Normally if a package is over 100MB, it is recommended to move the
+              software installer/archive to a share drive and point to it instead. For this example,
+              just bundle it as is.</div></div></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Now pack it up by using&nbsp;<code class="ph codeph">choco pack</code>. Copy the new&nbsp;<code class="ph codeph">vagrant.1.8.4.nupkg</code>&nbsp;file to&nbsp;<code class="ph codeph">c:\packages</code>.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Open the manifest, and add the new package you just
+          created. Your&nbsp;<code class="ph codeph">chocolatey.pp</code>&nbsp;file should look like the below.</span>
+        <div class="itemgroup info"><pre class="pre codeblock"><code>package {'vagrant':
+  ensure   =&gt; installed,
+  provider =&gt; chocolatey,
+  source   =&gt; 'c:\packages',
+}</code></pre></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Save the file and make sure to validate with the <span class="ph">Puppet</span> parser.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Use&nbsp;<code class="ph codeph">puppet
+            apply &lt;FILE PATH&gt;\chocolatey.pp</code>&nbsp;to run the manifest.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Open <span class="ph uicontrol">Control
+            Panel</span>, <span class="ph uicontrol">Programs and
+            Features</span> and take a look.</span>
+      </li></ol></section>
+    <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><div class="p"><br><img class="image" src="choco_vagrant_installed.png" alt="A screenshot of the Programs and Features window, with Vagrant listed as an installed program."><br></div><p class="p">Vagrant is installed!</p></section>
+  </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title16" id="uninstall_packages_with_chocolatey">
+  <h3 class="title topictitle3" id="ariaid-title16">Uninstall packages with Chocolatey</h3>
+  
+  <div class="body taskbody"><p class="shortdesc">In addition to installing and creating packages, Chocolatey
+    can also help you uninstall them.</p>
+    <section class="section context"><p class="p">To verify that the choco
+          <code class="ph codeph">autoUninstaller</code> feature is turned on, use
+          <code class="ph codeph">choco feature</code> to list the features and
+        their current state. If you're using <code class="ph codeph">include
+          chocolatey</code> or <code class="ph codeph">class chocolatey</code>
+        to ensure Chocolatey is installed, the configuration is applied automatically (unless you
+        have explicitly disabled it). Starting in Chocolatey version <code class="ph codeph">0.9.10</code>, it is enabled by default.</p></section>
+    <section><ol class="ol steps"><li class="li step stepexpand">
+        <span class="ph cmd">If you see&nbsp;<code class="ph codeph">autoUninstaller - [Disabled]</code>, you need to enable it. To do this, in the
+          command prompt, run&nbsp;<code class="ph codeph">choco feature enable -n
+            autoUninstaller</code> You should see a similar success message:</span>
+        <div class="itemgroup info"><p class="p">You should see a similar
+            success
+          message:</p><pre class="pre codeblock"><code>Enabled autoUninstaller</code></pre></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">To remove Vagrant, edit your&nbsp;<code class="ph codeph">chocolatey.pp</code>&nbsp;manifest to&nbsp;<code class="ph codeph">ensure =&gt; absent</code>. Then save and validate the
+          file.</span>
+        <div class="itemgroup info"><pre class="pre codeblock"><code>package {'vagrant':
+  ensure   =&gt; absent,
+  provider =&gt; chocolatey,
+  source   =&gt; 'c:\packages',
+}</code></pre></div>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Next, run&nbsp;<code class="ph codeph">puppet apply &lt;FILE PATH&gt;\chocolatey.pp</code>&nbsp;to apply the manifest.</span>
+        <div class="itemgroup info"><pre class="pre codeblock"><code>Notice: Compiled catalog for win2012r2x64 in environment production in 0.75 seconds
+Notice: /Stage[main]/Main/Package[vagrant]/ensure: removed
+Notice: Applied catalog in 40.85 seconds</code></pre></div>
+      </li></ol></section>
+    <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">You can look in the Control
+        Panel, Programs and Features to see that it’s no longer installed!</p><br><img class="image" src="choco_vagrant_uninstalled.png" alt="A screenshot of the Programs and Features windows showing that Vagrant is no longer in the list of installed programs."><br></section>
+  </div>
+</article></article></article></article></main></body></html>

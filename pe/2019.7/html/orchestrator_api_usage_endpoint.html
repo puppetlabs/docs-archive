@@ -1,0 +1,121 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the /usage endpoint to view details about the active nodes in your deployment."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Kate Lopresti <kate.lopresti@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrator_api_usage_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet orchestrator API: usage endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="orchestrator_api_usage_endpoint">
+   <h1 class="title topictitle1" id="ariaid-title1">
+      <span class="ph">Puppet</span> orchestrator API: usage endpoint</h1>
+   
+   
+   <div class="body conbody"><p class="shortdesc"> Use the <code class="ph codeph">/usage</code> endpoint to view details about the active nodes in your
+      deployment. </p>
+      <p class="p"></p>
+   </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="orchestrator-api-get-usage">
+    <h2 class="title topictitle2" id="ariaid-title2">GET /usage</h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc">List the daily node usage of the orchestrator and nodes
+        that are present in <span class="ph">PuppetDB</span>.</p>
+        <section class="section" id="orchestrator-api-get-usage__section_yvx_bhd_4gb"><h3 class="title sectiontitle">Parameters</h3>
+            
+            <dl class="dl">
+                
+                    <dt class="dt dlterm">start_date</dt>
+                    <dd class="dd">The first day to include in the query. Format as
+                        YYYY-MM-DD.</dd>
+                
+                
+                    <dt class="dt dlterm">end_date</dt>
+                    <dd class="dd">The last day to include in the query. This date must be
+                        on or after the start date and formatted as YYYY-MM-DD.</dd>
+                
+            </dl>
+        </section>
+        <section class="section" id="orchestrator-api-get-usage__section_tjl_dhd_4gb"><h3 class="title sectiontitle">Response format</h3>
+            
+            <p class="p">The response is a JSON object indicating the total number of
+                active nodes and subtotals of the nodes with and without an agent installed. </p>
+            <div class="p">The following keys are used: <dl class="dl">
+                    
+                        <dt class="dt dlterm">items</dt>
+                        <dd class="dd">Contains an array of entries from most recent to
+                            least recent. <dl class="dl">
+                                
+                                    <dt class="dt dlterm">date</dt>
+                                    <dd class="dd">The date in ISO 8601 date format
+                                        YYYY-MM-DD.</dd>
+                                
+                                
+                                    <dt class="dt dlterm">total_nodes</dt>
+                                    <dd class="dd">The total number of nodes used on the
+                                        given day.</dd>
+                                
+                                
+                                    <dt class="dt dlterm">nodes_with_agent</dt>
+                                    <dd class="dd">The number of active nodes in <span class="ph">PuppetDB</span> as of UTC
+                                        midnight.</dd>
+                                
+                                
+                                    <dt class="dt dlterm">nodes_without_agent</dt>
+                                    <dd class="dd">The number of unique nodes that don't
+                                        have an agent that were used since UTC midnight.</dd>
+                                
+                            </dl>
+                        </dd>
+                    
+                    
+                        <dt class="dt dlterm">pagination</dt>
+                        <dd class="dd">An optional object that includes information about
+                            the original query. <dl class="dl">
+                                
+                                    <dt class="dt dlterm">start_date</dt>
+                                    <dd class="dd">The starting day for the request (if
+                                        specified).</dd>
+                                
+                                
+                                    <dt class="dt dlterm">end_date</dt>
+                                    <dd class="dd">The last day requested (if
+                                        specified).</dd>
+                                
+                            </dl>
+                        </dd>
+                    
+                </dl>
+            </div>
+        </section>
+        <div class="example">
+            <pre class="pre codeblock json"><code>{
+  "items":[
+      {
+        "date": "2018-06-08",
+        "total_nodes": 100,
+        "nodes_with_agent": 95,
+        "nodes_without_agent": 5
+      }, {
+        "date": "2018-06-07",
+        "total_nodes": 100,
+        "nodes_with_agent": 95,
+        "nodes_without_agent": 5
+      }, {
+        "date": "2018-06-06",
+        "total_nodes": 100,
+        "nodes_with_agent": 95,
+        "nodes_without_agent": 5
+      }, {
+        "date": "2018-06-05",
+        "total_nodes": 100,
+        "nodes_with_agent": 95,
+        "nodes_without_agent": 5
+      }
+  ],
+  "pagination":{
+     "start_date": "2018-06-01",
+     "end_date": "2018-06-30"
+  }
+}</code></pre>
+        </div>
+        <section class="section" id="orchestrator-api-get-usage__section_vmg_2hd_4gb"><h3 class="title sectiontitle">Error Responses</h3>
+            
+            <p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article></article></article></main></body></html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="Regenerate Windows agent certificates to fix a compromised certificate or troubleshoot SSL errors on agents, or if you recreated your certificate authority."><meta name="DC.creator" content="Mindy Moreland <mindy.moreland@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="regenerate_windows_agent_certs"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Regenerate Windows agent certificates</title></head><body id="regenerate_windows_agent_certs"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Regenerate <span class="ph">Windows</span> agent
+        certificates</h1>
+    
+    
+
+    <div class="body taskbody"><p class="shortdesc">Regenerate <span class="ph">Windows</span> agent
+        certificates to fix a compromised certificate or troubleshoot SSL errors on agents, or if
+        you recreated your certificate authority. </p>
+        <section class="section context">
+            <p class="p">Unless otherwise indicated, perform these steps on the <span class="ph">Windows</span> agent node that you're regenerating
+                certificates for.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">If you did not recreate your certificate
+                    authority, you must log into your master and clear the cert for the agent
+                    node:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppetserver ca clean --certname &lt;CERTNAME&gt;</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the agent, back up the
+                        <code class="ph codeph">%PROGRAMDATA%/PuppetLabs/puppet/etc/ssl</code> directory.</span>
+                <div class="itemgroup info">If something goes wrong, you might need to restore these directories so your
+                    deployment remains functional. </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Stop the <span class="ph">Puppet</span>
+                    agent and PXP agent services.</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet resource service puppet ensure=stopped
+puppet resource service pxp-agent ensure=stopped</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Using the administrator account, delete the agent SSL directory located at
+                        <code class="ph codeph">%PROGRAMDATA%/PuppetLabs/puppet/etc/ssl</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Remove the agent's cached catalog. Use the Administrator confdir to delete
+                        <code class="ph codeph">%PROGRAMDATA%\PuppetLabs\puppet\cache\client_data\catalog\&lt;CERNAME&gt;.json</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Re-start the <span class="ph">Puppet</span>
+                    agent service: <code class="ph codeph">puppet
+                        resource service puppet ensure=running</code>
+                </span>
+                <div class="itemgroup info">After the agent starts, it automatically
+                    generates keys and request a new certificate from the <span class="ph">Puppet</span> CA.</div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">If you aren't using autosigning, sign each agent
+                    node's certificate request using the console's request manager, or from your
+                    master: </span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppetserver ca list 
+puppetserver ca sign --certname &lt;NAME&gt;</code></pre>
+                    <div class="note note note_note"><span class="note__title">Note:</span>  For more information about autosigning,
+                        see <a class="xref" href="https://puppet.com/docs/puppet/6.10/ssl_autosign.html" target="_blank">Autosigning certificate requests</a>.</div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">From the console or command line, run <span class="ph">Puppet</span> on the node.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>The <span class="ph">Windows</span>
+            agent performs a full catalog run, restarts the PXP agent service, and resumes its role
+            in your <span class="ph">PE</span> deployment.</section>
+    </div>
+</article></main></body></html>

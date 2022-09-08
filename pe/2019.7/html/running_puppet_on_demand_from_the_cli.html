@@ -1,0 +1,408 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="Use the puppet job run command to enforce change on your agent nodes with on-demand Puppet runs."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Isaac Eldridge <isaac.eldridge@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="running_puppet_on_demand_from_the_cli"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Running Puppet on demand from the CLI</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="running_puppet_on_demand_from_the_cli">
+   <h1 class="title topictitle1" id="ariaid-title1">Running Puppet on demand from the CLI</h1>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Use the <span class="ph uicontrol">puppet job run</span> command to enforce change on your agent nodes with on-demand
+      Puppet runs. </p>
+      <section class="section context">
+         <p class="p">Use the <span class="ph uicontrol">puppet
+               job</span> tool to enforce change across nodes. For example, when you add a new
+            class parameter to a set of nodes or deploy code to a new Puppet environment, use this
+            command to run Puppet across all the nodes in that environment.</p>
+         <p class="p">If you run a job on a node that has relationships outside of the
+            target (for example, it participates in an application that includes nodes not in the
+            job target) the job still runs only on the node in the target you specified. In such
+            cases, the orchestrator notifies you that external relationships exist. It prints the
+            node with relationships, and it prints the applications that might be affected. For
+            example:</p>
+         <pre class="pre codeblock"><code>**WARNING** target does not contain all nodes in this application.</code></pre>
+         <p class="p">You can run jobs on three types of targets, but these targets cannot
+            be combined:</p>
+         <ul class="ul">
+            <li class="li"> An application or an application instance in an environment </li>
+            <li class="li">A list of nodes or a single node</li>
+            <li class="li">A PQL nodes query</li>
+         </ul>
+         <p class="p">When you execute a <code class="ph codeph">puppet job
+               run</code> command, the orchestrator creates a new Job ID, shows you all nodes
+            included in the job, and proceeds to run Puppet on all nodes in the appropriate order.
+            Puppet compiles a new catalog for all nodes included in the job.</p>
+         <p class="p">The orchestrator command line tool includes the <code class="ph codeph">puppet job</code> and <code class="ph codeph">puppet app</code> commands.</p>
+         <ul class="ul">
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">puppet job</code>
+               </p>
+               <p class="p">The <code class="ph codeph">puppet job</code>
+                  command is the main mechanism to control <span class="ph">Puppet</span>
+                  jobs. For a complete reference of the <code class="ph codeph">puppet job</code> command, see:</p>
+               <ul class="ul">
+                  <li class="li">Checking job plans on the CLI</li>
+                  <li class="li">Running jobs on the CLI</li>
+                  <li class="li">Reviewing jobs on the CLI</li>
+               </ul>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">puppet app</code>
+               </p>
+               <p class="p">The <code class="ph codeph">puppet app</code>
+                  tool lets you view the application models and application instances you’ve written
+                  and stored on your Puppet master. For a complete reference of the <code class="ph codeph">puppet app</code> command, see Reviewing applications
+                  on the CLI.</p>
+            </li>
+         </ul>
+      </section>
+   </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="run_a_job_on_on_a_pql_query">
+   <h2 class="title topictitle2" id="ariaid-title2">Run Puppet on a PQL query </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Use a PQL nodes query as a target when you want to target
+      nodes that meet specific conditions. In this case, the orchestrator runs on a list of nodes
+      returned from a PQL nodes query.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div> The first time you run
+         a command, you need to authenticate. See the <a class="xref" href="configuring_puppet_orchestrator.html#setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator" title="Before you run any orchestrator jobs, you need to set the appropriate permissions in PE role-based access control (RBAC) and establish token-based authentication.">orchestrator installation instructions</a> for information about setting RBAC
+         permissions and token authorization. <p class="p"> If you're running this command
+            from a managed or non-managed <span class="ph">Windows</span> workstation, you
+            must specify the full path to the command. For example, <code class="ph codeph">c:\Program Files\Puppet Labs\Client\bin\puppet-task run</code>.</p><p class="p" id="run_a_job_on_on_a_pql_query__d765e39">Install the tasks you want to use.</p><p class="p" id="run_a_job_on_on_a_pql_query__d765e41">Make sure you have permission to run the tasks
+            on all nodes.</p><p class="p" id="run_a_job_on_on_a_pql_query__d765e43">Make sure you have
+            permission to run the tasks.</p><p class="p" id="run_a_job_on_on_a_pql_query__d765e45">Make sure you
+            have access to the nodes you want to target. </p>
+         <div class="note tip note_tip" id="run_a_job_on_on_a_pql_query__d765e48"><span class="note__title">Tip:</span> You can add network devices to
+            a node list when you have installed modules for device transports in your production
+            environment. You can find such modules in <a class="xref" href="https://forge.puppet.com/" target="_blank">Puppet Forge</a>.</div>
+         <p class="p" id="run_a_job_on_on_a_pql_query__d765e55">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p><p class="p" id="run_a_job_on_on_a_pql_query__d765e59">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p></section>
+      <section class="section context">
+         <p class="p">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p>
+      </section>
+      <section><div class="li step p">
+            <span class="ph cmd">Log into your Puppet master or client tools
+               workstation and run one of the following commands:</span>
+            <ul class="ul choices">
+               <li class="li choice">To specify the query on the command line:
+                     <code class="ph codeph">puppet job run --query '&lt;QUERY&gt;'
+                     &lt;OPTIONS&gt; </code></li>
+               <li class="li choice"> To pass the query in a text file: <code class="ph codeph">puppet job run --query
+                     @/path/to/file.txt</code></li>
+            </ul>
+            <div class="itemgroup info">
+               <p class="p">The following table shows some example targets and the
+                  associated <span class="ph">PQL</span> queries you could run with the
+                  orchestrator.</p>
+               <p class="p">Be sure to wrap the entire query in single quotes and use
+                  double quotes inside the query.</p>
+               <table class="table" id="run_a_job_on_on_a_pql_query__d765e398"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                           <th class="entry" id="run_a_job_on_on_a_pql_query__d765e398__entry__1">Target </th>
+                           <th class="entry" id="run_a_job_on_on_a_pql_query__d765e398__entry__2">PQL query </th>
+                        </tr>
+                     </thead><tbody class="tbody">
+                        <tr class="row">
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__1">Single node by certname </td>
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'nodes { certname =
+                                 "mynode" }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__1">All nodes with "web" in
+                              certname </td>
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'nodes { certname ~
+                                 "web" }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__1">All <span class="ph">CentOS</span> nodes </td>
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'inventory {
+                                 facts.os.name = "CentOS" }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__1">All <span class="ph">CentOS</span> nodes with httpd managed </td>
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'inventory {
+                                 facts.operatingsystem = "CentOS" and resources { type = "Service"
+                                 and title = "httpd" } }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__1">All nodes with failed
+                              reports </td>
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'reports {
+                                 latest_report? = true and status = "failed" }'</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__1">All nodes matching the
+                              environment for the last received catalog </td>
+                           <td class="entry" headers="run_a_job_on_on_a_pql_query__d765e398__entry__2">
+                              <code class="ph codeph">--query 'nodes {
+                                 catalog_environment = "production" }'</code>
+                           </td>
+                        </tr>
+                     </tbody></table>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>To view the status of the Puppet job, run <code class="ph codeph">puppet job show &lt;job
+            ID&gt;</code>. To view a list of the previous 50 running and complete Puppet jobs, run
+            <code class="ph codeph">puppet job show</code></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="run_a_job_on_a_list_of_nodes_or_a_single_node">
+   <h2 class="title topictitle2" id="ariaid-title3">Run Puppet on a list of nodes or a single node </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Use a node list target for an orchestrator job when you
+      need to run a job on a specific set of nodes that don't easily resolve to a PQL query. Use a
+      single node or a comma-separated list of nodes.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div> The first time you run
+         a command, you need to authenticate. See the <a class="xref" href="configuring_puppet_orchestrator.html#setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator" title="Before you run any orchestrator jobs, you need to set the appropriate permissions in PE role-based access control (RBAC) and establish token-based authentication.">orchestrator installation instructions</a> for information about setting RBAC
+         permissions and token authorization. <p class="p"> If you're running this command
+            from a managed or non-managed <span class="ph">Windows</span> workstation, you
+            must specify the full path to the command. For example, <code class="ph codeph">c:\Program Files\Puppet Labs\Client\bin\puppet-task run</code>.</p><p class="p" id="run_a_job_on_a_list_of_nodes_or_a_single_node__d83e39">Install the tasks you want to use.</p><p class="p" id="run_a_job_on_a_list_of_nodes_or_a_single_node__d83e41">Make sure you have permission to run the tasks
+            on all nodes.</p><p class="p" id="run_a_job_on_a_list_of_nodes_or_a_single_node__d83e43">Make sure you have
+            permission to run the tasks.</p><p class="p" id="run_a_job_on_a_list_of_nodes_or_a_single_node__d83e45">Make sure you
+            have access to the nodes you want to target. </p>
+         <div class="note tip note_tip" id="run_a_job_on_a_list_of_nodes_or_a_single_node__d83e48"><span class="note__title">Tip:</span> You can add network devices to
+            a node list when you have installed modules for device transports in your production
+            environment. You can find such modules in <a class="xref" href="https://forge.puppet.com/" target="_blank">Puppet Forge</a>.</div>
+         <p class="p" id="run_a_job_on_a_list_of_nodes_or_a_single_node__d83e55">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p><p class="p" id="run_a_job_on_a_list_of_nodes_or_a_single_node__d83e59">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p></section>
+      <section class="section context">
+         <p class="p">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p>
+      </section>
+      <section><div class="li step p">
+            <span class="ph cmd">Log into your Puppet master or client tools
+               workstation and run one of the following commands:</span>
+            <ul class="ul choices">
+               <li class="li choice"> To run a job on a single node: <p class="p">
+                     <code class="ph codeph"> puppet job run --nodes &lt;NODE
+                        NAME&gt; &lt;OPTIONS&gt; </code>
+                  </p></li>
+               <li class="li choice"> To run a job on a list of nodes, use a <strong class="ph b">comma-separated</strong> list of node names: <p class="p">
+                     <code class="ph codeph"> puppet job run --nodes &lt;NODE
+                        NAME&gt;,&lt;NODE NAME&gt;,&lt;NODE NAME&gt;,&lt;NODE NAME&gt;
+                        &lt;OPTIONS&gt; </code>
+                  </p><div class="note note note_note"><span class="note__title">Note:</span> Do not add spaces in the list of
+                  nodes.</div></li>
+               <li class="li choice">To run a job on a node list from a text file:
+                     <p class="p">
+                     <code class="ph codeph"> puppet job run --nodes
+                        @/path/to/file.txt </code>
+                  </p><div class="note note note_note"><span class="note__title">Note:</span> If passing a list of nodes in the text file, put
+                     each node on a separate line.</div></li>
+            </ul>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>To view the status of the Puppet job, run <code class="ph codeph">puppet job show &lt;job
+            ID&gt;</code>. To view a list of the previous 50 running and complete Puppet jobs, run
+            <code class="ph codeph">puppet job show</code></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="run-puppet-on-node-group">
+    <h2 class="title topictitle2" id="ariaid-title4">Run Puppet on a node group</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Similar to running Puppet on a list of nodes, you can run
+        it on a node group.. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+        </section>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Log into your master or client tools workstation.
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run the command: <code class="ph codeph">puppet job run --node-group &lt;node-group-id&gt;
+                    </code></span>
+                <div class="itemgroup info">
+                    <div class="note tip note_tip"><span class="note__title">Tip:</span>  Use the<code class="ph codeph"> /v1/groups</code> endpoint to retrieve a
+                        list node groups and their IDs. </div>
+                </div>
+            </li></ol></section>
+    </div>
+    
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="groups_endpoint.html#get_v1_groups" title="Use the /v1/groups endpoint to retrieve a list of all node groups in the node classifier.">GET /v1/groups</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="run_a_job_on_an_application_or_an_application_instance_in_an_environment">
+   <h2 class="title topictitle2" id="ariaid-title5">Run Puppet on an application or an application instance in an
+      environment </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Use applications as a job target to enforce <span class="ph">Puppet</span> runs in order on all nodes found in a specific
+      application instance, or to enforce Puppet runs in order on all nodes that are found in each
+      instance of an application.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div> The first time you run
+         a command, you need to authenticate. See the <a class="xref" href="configuring_puppet_orchestrator.html#setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator" title="Before you run any orchestrator jobs, you need to set the appropriate permissions in PE role-based access control (RBAC) and establish token-based authentication.">orchestrator installation instructions</a> for information about setting RBAC
+         permissions and token authorization. <p class="p"> If you're running this command
+            from a managed or non-managed <span class="ph">Windows</span> workstation, you
+            must specify the full path to the command. For example, <code class="ph codeph">c:\Program Files\Puppet Labs\Client\bin\puppet-task run</code>.</p><p class="p" id="run_a_job_on_an_application_or_an_application_instance_in_an_environment__d83e39">Install the tasks you want to use.</p><p class="p" id="run_a_job_on_an_application_or_an_application_instance_in_an_environment__d83e41">Make sure you have permission to run the tasks
+            on all nodes.</p><p class="p" id="run_a_job_on_an_application_or_an_application_instance_in_an_environment__d83e43">Make sure you have
+            permission to run the tasks.</p><p class="p" id="run_a_job_on_an_application_or_an_application_instance_in_an_environment__d83e45">Make sure you
+            have access to the nodes you want to target. </p>
+         <div class="note tip note_tip" id="run_a_job_on_an_application_or_an_application_instance_in_an_environment__d83e48"><span class="note__title">Tip:</span> You can add network devices to
+            a node list when you have installed modules for device transports in your production
+            environment. You can find such modules in <a class="xref" href="https://forge.puppet.com/" target="_blank">Puppet Forge</a>.</div>
+         <p class="p" id="run_a_job_on_an_application_or_an_application_instance_in_an_environment__d83e55">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p><p class="p" id="run_a_job_on_an_application_or_an_application_instance_in_an_environment__d83e59">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p></section>
+      <section class="section context">
+         <p class="p">Make sure you have permissions to run jobs and <span class="ph">PQL</span> queries.</p>
+      </section>
+      <section><div class="li step p">
+            <span class="ph cmd">Log into your Puppet master or client tools
+               workstation and run one of the following commands:</span>
+            <ul class="ul choices">
+               <li class="li choice">To run a job on all instances of an
+                  application: <code class="ph codeph"> puppet job run --application
+                     &lt;APPLICATION&gt; --environment &lt;ENVIRONMENT&gt; </code></li>
+               <li class="li choice">To run a job on an instance of an application
+                  in an environment: <code class="ph codeph"> puppet job run
+                     --application &lt;APPLICATION INSTANCE&gt; --environment &lt;ENVIRONMENT&gt;
+                  </code></li>
+            </ul>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note tip note_tip"><span class="note__title">Tip:</span> You can use <code class="ph codeph">-a</code> in place of <code class="ph codeph">--application</code>.</div>
+               </div>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>To view the status of the Puppet job, run <code class="ph codeph">puppet job show &lt;job
+            ID&gt;</code>. To view a list of the previous 50 running and complete Puppet jobs, run
+            <code class="ph codeph">puppet job show</code></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="puppet-job-run-options">
+    <h2 class="title topictitle2" id="ariaid-title6"><code class="ph codeph">puppet job
+            run</code> command options</h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc">The following are common options you can use with the
+            <code class="ph codeph">run</code> action. For a complete list of
+        global options run <code class="ph codeph">puppet job
+        --help</code>.</p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="puppet-job-run-options__entry__1">Option</th>
+                        <th class="entry" id="puppet-job-run-options__entry__2">Value</th>
+                        <th class="entry" id="puppet-job-run-options__entry__3">Description</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="puppet-job-run-options__entry__1">
+                            <code class="ph codeph"> --noop </code>
+                        </td>
+                        <td class="entry" headers="puppet-job-run-options__entry__2">Flag, default false</td>
+                        <td class="entry" headers="puppet-job-run-options__entry__3">Run a job on all nodes to simulate changes
+                            from a new catalog without actually enforcing a new catalog. Cannot be
+                            used in conjunction with&nbsp;-<code class="ph codeph">-no-noop</code>&nbsp;flag.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet-job-run-options__entry__1">
+                            <code class="ph codeph">--no-nopp</code>
+                        </td>
+                        <td class="entry" headers="puppet-job-run-options__entry__2">Flag</td>
+                        <td class="entry" headers="puppet-job-run-options__entry__3">All nodes run in enforcement mode, and a new
+                            catalog is enforced on all nodes. This flag overrides the agent<code class="ph codeph">&nbsp;noop =
+                                true</code>&nbsp;in&nbsp;<code class="ph codeph">puppet.conf</code>. Cannot be used in conjunction
+                                with&nbsp;<code class="ph codeph">--noop&nbsp;</code>flag.</td>
+                    </tr>
+                    <tr class="row">
+                  <td class="entry" headers="puppet-job-run-options__entry__1"><code class="ph codeph">--environment</code>, <code class="ph codeph">-e</code></td>
+                  <td class="entry" headers="puppet-job-run-options__entry__2">Environment name</td>
+                  <td class="entry" headers="puppet-job-run-options__entry__3">Overrides the environment specified in the
+                     orchestrator configuration file. The orchestrator uses this option to: <ul class="ul">
+                        <li class="li">
+                           <div class="p">Instruct nodes what environment to run in. If any
+                              nodes can’t run in the environment, those node runs fail. A node runs
+                              in an environment if: <ul class="ul">
+                                 <li class="li">
+                                    <p class="p">The node is included in an application in
+                                       that environment. These runs may fail if the node is
+                                       classified into a different environment in the <span class="ph">PE</span> node classifier.</p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p">The node is classified into that
+                                       environment in the <span class="ph">PE</span> node
+                                       classifier.</p>
+                                 </li>
+                              </ul>
+                           </div>
+                        </li>
+                        <li class="li">
+                           <p class="p">Load the application code used to plan run
+                              order</p>
+                        </li>
+                     </ul></td>
+               </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet-job-run-options__entry__1">
+                            <code class="ph codeph">--no-enforce-environment</code>
+                        </td>
+                        <td class="entry" headers="puppet-job-run-options__entry__2">Flag, default false</td>
+                        <td class="entry" headers="puppet-job-run-options__entry__3">Ignores the environment set by the <code class="ph codeph">--environment </code>flag for
+                            agent runs. When you use this flag, agents run in the environment
+                            specified by the PE Node Manager or their <code class="ph codeph">puppet.conf</code> files.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet-job-run-options__entry__1">
+                            <code class="ph codeph">--description</code>
+                        </td>
+                        <td class="entry" headers="puppet-job-run-options__entry__2">Flag, defaults to empty</td>
+                        <td class="entry" headers="puppet-job-run-options__entry__3">Provide a description for the job, to be shown
+                            on the job list and job details pages, and returned with the <code class="ph codeph">puppet job show</code>
+                            command.</td>
+                    </tr>
+                    <tr class="row">
+                  <td class="entry" headers="puppet-job-run-options__entry__1">--<code class="ph codeph">concurrency</code></td>
+                  <td class="entry" headers="puppet-job-run-options__entry__2">Integer</td>
+                  <td class="entry" headers="puppet-job-run-options__entry__3">Limits how many nodes can run concurrently. Default
+                     is unlimited. You can tune concurrent compile requests in the console. </td>
+               </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="post-run_node_status">
+    <h2 class="title topictitle2" id="ariaid-title7">Post-run node status</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">After Puppet runs, the orchestrator returns a list of
+        nodes and their run statuses. </p>
+        <section class="section"><p class="p">Node runs can be in progress,
+                completed, skipped, or failed.</p><ul class="ul">
+                <li class="li">For a completed node run, the orchestrator prints the
+                    configuration version, the transaction ID, a summary of resource events, and a
+                    link to the full node run report in the console.</li>
+                <li class="li"><p class="p">For an in progress node run, the
+                        orchestrator prints how many seconds ago the run started.</p></li>
+                <li class="li"><p class="p">For a failed node run, the
+                        orchestrator prints an error message indicating why the run failed. In this
+                        case, any additional runs are skipped.</p></li>
+            </ul><p class="p">When a run fails, the orchestrator also prints any
+                applications that were affected by the failure, as well as any applications that
+                were affected by skipped node runs.</p><p class="p">You can view the status
+                of all running, completed, and failed jobs with the <code class="ph codeph">puppet job show</code> command, or you can view them from the
+                    <span class="keyword wintitle">Job details</span> page in
+                the console.</p><p class="p">Additionally, on the <span class="ph uicontrol">Jobs</span> page in the console, you can review a list of
+                jobs or to view the details of jobs that have previously run or are in progress.</p></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="stop_a_job">
+                <h2 class="title topictitle2" id="ariaid-title8">Stop a job in progress</h2>
+                
+                <div class="body taskbody"><p class="shortdesc">You can stop a job if, for example, you
+                                realize you need to reconfigure a class or push a configuration
+                                change that the job needs.</p>
+                                <section class="section context"><p class="p">When you stop an on-demand <span class="ph">Puppet</span> run, runs that are underway
+        finish, and runs that have not started are canceled.</p></section>
+                                <section><div class="li step p">
+                                                  <span class="ph cmd">To stop a
+                                                  job:</span>
+                                                  <ul class="ul choices">
+                                                  <li class="li choice">In the console, go to the
+              <span class="ph uicontrol">Jobs</span> page and select the <span class="ph uicontrol">Puppet run</span> tab.
+            From the list of jobs, find the one you want and click <span class="ph uicontrol">Stop</span>. </li>
+                                                  <li class="li choice">On the
+                                                  command line, press <span class="ph uicontrol">CTRL + C</span>.</li>
+                                                  </ul>
+                                                </div></section>
+                </div>
+</article></article></article></main></body></html>

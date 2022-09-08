@@ -1,0 +1,505 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Server is capable of tracking advanced metrics to give you additional insight into its performance and health."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="metrics_endpoints"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Metrics endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="metrics_endpoints">
+    <h1 class="title topictitle1" id="ariaid-title1">Metrics endpoints </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Puppet Server is capable of tracking advanced metrics to
+        give you additional insight into its performance and health.</p>
+        <p class="p">The HTTPS metrics endpoints are available on port 8140 of the master
+            server:</p>
+        <pre class="pre codeblock"><code>curl -k https://&lt;DNS NAME OF YOUR MASTER&gt;:8140/status/v1/services?level=debug`</code></pre>
+        <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> These API endpoints are a tech
+                preview. The metrics described here are returned only when passing the <code class="ph codeph">level=debug</code> URL parameter, and the
+                structure of the returned data might change in future versions.</div></div>
+        <p class="p">These metrics fall into three categories:</p>
+        <ul class="ul">
+            <li class="li">JRuby metrics (<code class="ph codeph">/status/v1/services/pe-jruby-metrics</code>)</li>
+            <li class="li">HTTP route metrics (<code class="ph codeph">/status/v1/services/pe-master</code>)</li>
+            <li class="li">Catalog compilation profiler metrics (<code class="ph codeph">/status/v1/services/pe-puppet-profiler</code>)</li>
+        </ul>
+        <p class="p">All of these metrics reflect data for the lifetime of the current
+            Puppet Server process and reset whenever the service is restarted. Any time-related
+            metrics report milliseconds unless otherwise noted.</p>
+        <p class="p">Like the standard status endpoints, the metrics endpoints return
+            machine-consumable information about running services. This JSON response includes the
+            same keys returned by a standard status endpoint request (see JSON endpoints). Each
+            endpoint also returns additional keys in an <code class="ph codeph">experimental</code> section.</p>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_status_v1_services_pe_jruby_metrics">
+    <h2 class="title topictitle2" id="ariaid-title2">GET /status/v1/services/pe-jruby-metrics </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">/status/v1/services/pe-jruby-metrics</code> endpoint returns JSON containing
+        information about the JRuby pools from which Puppet Server fulfills agent requests. </p>
+        <section class="section"><p class="p">You must query it at port 8140 and
+                append the <code class="ph codeph">level=debug</code> URL
+                parameter.</p></section>
+        <section class="section" id="get_status_v1_services_pe_jruby_metrics__query_parameters"><h3 class="title sectiontitle">Query
+                parameters </h3><p class="p">No parameters are supported. Defaults to using the&nbsp;<code class="ph codeph">critical</code>&nbsp;status level.</p></section>
+        <section class="section" id="get_status_v1_services_pe_jruby_metrics__response_codes"><h3 class="title sectiontitle">Response
+                codes </h3><div class="p">The server uses the following response codes:
+                    <ul class="ul">
+                    <li class="li">200 if and only if all services
+                        report a status of&nbsp;<code class="ph codeph">running</code></li>
+                    <li class="li">503 if any service’s status
+                            is&nbsp;<code class="ph codeph">unknown</code>&nbsp;or&nbsp;<code class="ph codeph">error</code></li>
+                </ul>
+            </div></section>
+        <section class="section" id="get_status_v1_services_pe_jruby_metrics__response_keys"><h3 class="title sectiontitle">Response keys </h3>
+            <p class="p">The metrics
+                are returned in two subsections of the <code class="ph codeph">experimental</code> section: <code class="ph codeph">jruby-pool-lock-status</code> and <code class="ph codeph">metrics</code>.</p><p class="p">The response's <code class="ph codeph">experimental/jruby-pool-lock-status</code> section
+                contains the following keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="get_status_v1_services_pe_jruby_metrics__response_keys__entry__1">Key </th>
+                            <th class="entry" id="get_status_v1_services_pe_jruby_metrics__response_keys__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__response_keys__entry__1">
+                                <code class="ph codeph">current-state</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__response_keys__entry__2">The state of the JRuby pool
+                                lock, which should be either <code class="ph codeph">:not-in-use</code> (unlocked), <code class="ph codeph">:requested</code> (waiting for lock), or <code class="ph codeph">:acquired</code>
+                                (locked).</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__response_keys__entry__1">
+                                <code class="ph codeph">last-change-time</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__response_keys__entry__2">The date and time of the
+                                last <code class="ph codeph">current-state</code>
+                                update, formatted as an ISO 8601 combined date and time in
+                                UTC.</td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">The response's <code class="ph codeph">experimental/metrics</code> section contains the following keys:</p>
+            <table class="table" id="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">Key</th>
+                            <th class="entry" id="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">average-borrow-time</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The average amount of time a JRuby
+                                instance spends handling requests, calculated by dividing the total
+                                duration in milliseconds of the <code class="ph codeph">borrowed-instances</code> value by the <code class="ph codeph">borrow-count</code> value.
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">average-free-jrubies</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The average number of JRuby instances that
+                                are not in use over the Puppet Server process’s lifetime.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">average-lock-held-time</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The average time the JRuby pool held a
+                                lock, starting when the value of<code class="ph codeph"> jruby-pool-lock-status/current-state</code>
+                                changed to <code class="ph codeph">:acquired</code>. This time mostly represents file sync
+                                syncing code into the live codedir, and is calculated by dividing
+                                the total length of time that Puppet Server held the lock by the
+                                value of <code class="ph codeph">num-pool-locks</code>. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">average-lock-wait-time</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The average time Puppet Server spent
+                                waiting to lock the JRuby pool, starting when the value of <code class="ph codeph">jruby-pool-lock-status/current-state</code> changed to<code class="ph codeph">:requested</code>). This time
+                                mostly represents how long Puppet Server takes to fulfill agent
+                                requests, and is calculated by dividing the total length of time
+                                that Puppet Server waits for locks by the value of <code class="ph codeph">num-pool-locks</code>. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">average-requested-jrubies</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The average number of requests waiting on
+                                an available JRuby instance over the Puppet Server process’s
+                                lifetime.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">average-wait-time</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The average time Puppet Server spends
+                                waiting to reserve an instance from the JRuby pool, calculated by
+                                dividing the total duration in milliseconds of requested-instances
+                                by the requested-count value.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">borrow-count</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The total number of JRuby instances that
+                                have been used.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">borrow-retry-count</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The total number of times that a borrow
+                                attempt failed and was retried, such as when the JRuby pool is
+                                flushed while a borrow attempt is pending.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">borrow-timeout-count</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The number of requests that were not
+                                served because they timed out while waiting for a JRuby
+                                instance.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">borrowed-instances</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">A list of the JRuby instances currently in
+                                use, each reporting: <ul class="ul" id="get_status_v1_services_pe_jruby_metrics__ul_y1p_l34_phb">
+                                    <li class="li">
+                                        <code class="ph codeph">duration-millis</code>: The length of time that the
+                                        instance has been running. </li>
+                                    <li class="li">
+                                        <div class="p">
+                                            <code class="ph codeph">reason/request</code>: A hash of details about
+                                            the request being served. <ul class="ul" id="get_status_v1_services_pe_jruby_metrics__ul_z1p_l34_phb">
+                                                <li class="li">
+                                                  <code class="ph codeph">request-method</code>: The HTTP request method,
+                                                  such as POST, GET, PUT, or DELETE. </li>
+                                                <li class="li">
+                                                  <p class="p">
+                                                  <code class="ph codeph">route-id</code>: The route being served. For
+                                                  routing metrics, see the HTTP metrics endpoint.
+                                                  </p>
+                                                </li>
+                                                <li class="li">
+                                                  <p class="p">
+                                                  <code class="ph codeph">uri</code>: The request’s full URI. </p>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="li">
+                                        <code class="ph codeph">time</code>: The
+                                        time (in milliseconds since the Unix epoch) when the JRuby
+                                        instance was borrowed. </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">num-free-jrubies</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The number of JRuby instances in the pool
+                                that are ready to be used.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">num-jrubies</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The total number of JRuby
+                                instances.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">num-pool-locks</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The total number of times the JRuby pools
+                                have been locked.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">requested-count</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">The number of JRuby instances borrowed,
+                                waiting, or that have timed out.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">requested-instances</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">A list of the requests waiting to be
+                                served, each reporting: <ul class="ul" id="get_status_v1_services_pe_jruby_metrics__ul_abp_l34_phb">
+                                    <li class="li">
+                                        <p class="p">
+                                            <code class="ph codeph">duration-millis</code>: The length of time the
+                                            request has waited. </p>
+                                    </li>
+                                    <li class="li">
+                                        <div class="p">
+                                            <code class="ph codeph">reason/request</code>: A hash of details about
+                                            the waiting request. <ul class="ul" id="get_status_v1_services_pe_jruby_metrics__ul_bbp_l34_phb">
+                                                <li class="li">
+                                                  <p class="p">
+                                                  <code class="ph codeph">request-method</code>: The HTTP request method,
+                                                  such as POST, GET, PUT, or DELETE. </p>
+                                                </li>
+                                                <li class="li">
+                                                  <p class="p">
+                                                  <code class="ph codeph">route-id</code>: The route being served. For
+                                                  routing metrics, see the HTTP metrics endpoint.
+                                                  </p>
+                                                </li>
+                                                <li class="li">
+                                                  <p class="p">
+                                                  <code class="ph codeph">uri</code>: The request’s full URI. </p>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="li">
+                                        <p class="p">
+                                            <code class="ph codeph">time</code>:The time (in milliseconds since the Unix
+                                            epoch) when Puppet Server received the request. </p>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__1">
+                                <code class="ph codeph">return-count</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_jruby_metrics__table_x1p_l34_phb__entry__2">
+                                <p class="p">The total number of JRuby instances that have
+                                    been used.</p>
+                            </td>
+                        </tr>
+                    </tbody></table><p class="p">For example:
+            </p><pre class="pre codeblock json"><code>"pe-jruby-metrics": {
+    "detail_level": "debug",
+    "service_status_version": 1,
+    "service_version": "2.2.22",
+    "state": "running",
+    "status": {
+        "experimental": {
+            "jruby-pool-lock-status": {
+                "current-state": ":not-in-use",
+                "last-change-time": "2015-12-03T18:59:12.157Z"
+            },
+            "metrics": {
+                "average-borrow-time": 292,
+                "average-free-jrubies": 0.4716243097301104,
+                "average-lock-held-time": 1451,
+                "average-lock-wait-time": 0,
+                "average-requested-jrubies": 0.21324752542875958,
+                "average-wait-time": 156,
+                "borrow-count": 639,
+                "borrow-retry-count": 0,
+                "borrow-timeout-count": 0,
+                "borrowed-instances": [
+                    {
+                        "duration-millis": 3972,
+                        "reason": {
+                            "request": {
+                                "request-method": "post",
+                                "route-id": "puppet-v3-catalog-/*/",
+                                "uri": "/puppet/v3/catalog/hostname.example.com"
+                            }
+                        },
+                        "time": 1448478371406
+                    }
+                ],
+                "num-free-jrubies": 0,
+                "num-jrubies": 1,
+                "num-pool-locks": 2849,
+                "requested-count": 640,
+                "requested-instances": [
+                    {
+                        "duration-millis": 3663,
+                        "reason": {
+                            "request": {
+                                "request-method": "put",
+                                "route-id": "puppet-v3-report-/*/",
+                                "uri": "/puppet/v3/report/hostname.example.com"
+                            }
+                        },
+                        "time": 1448478371715
+                    }
+                ],
+                "return-count": 638
+            }
+        }
+    }
+}</code></pre></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_status_v1_services_pe_master">
+    <h2 class="title topictitle2" id="ariaid-title3">GET /status/v1/services/pe-master </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">/status/v1/services/pe-master</code> endpoint returns JSON containing information
+        about the routes that agents use to connect to this server.</p>
+        <section class="section"><p class="p">You must query it at port 8140 and
+                append the <code class="ph codeph">level=debug</code> URL
+                parameter.</p></section>
+        <section class="section" id="get_status_v1_services_pe_master__query_parameters"><h3 class="title sectiontitle">Query
+                parameters </h3><p class="p">No parameters are supported. Defaults to using the&nbsp;<code class="ph codeph">critical</code>&nbsp;status level.</p></section>
+        <section class="section" id="get_status_v1_services_pe_master__response_codes"><h3 class="title sectiontitle">Response
+                codes </h3><div class="p">The server uses the following response codes:
+                    <ul class="ul">
+                    <li class="li">200 if and only if all services
+                        report a status of&nbsp;<code class="ph codeph">running</code></li>
+                    <li class="li">503 if any service’s status
+                            is&nbsp;<code class="ph codeph">unknown</code>&nbsp;or&nbsp;<code class="ph codeph">error</code></li>
+                </ul></div></section>
+        <section class="section" id="get_status_v1_services_pe_master__response_keys"><h3 class="title sectiontitle">Response
+                keys </h3><p class="p">The response's <code class="ph codeph">experimental/http-metrics</code> section contains a list of
+                routes, each containing the following keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="get_status_v1_services_pe_master__response_keys__entry__1">Key </th>
+                            <th class="entry" id="get_status_v1_services_pe_master__response_keys__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_master__response_keys__entry__1">
+                                <code class="ph codeph">aggregate</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_master__response_keys__entry__2">The total time Puppet
+                                Server spent processing requests for this route.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_master__response_keys__entry__1">
+                                <code class="ph codeph">count</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_master__response_keys__entry__2">The total number of
+                                requests Puppet Server processed for this route.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_master__response_keys__entry__1">
+                                <code class="ph codeph">mean</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_master__response_keys__entry__2">The average time Puppet
+                                Server spent on each request for this route, calculated by dividing
+                                the <code class="ph codeph">aggregate</code> value
+                                by the <code class="ph codeph">count</code>.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_master__response_keys__entry__1">
+                                <code class="ph codeph">route-id</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_master__response_keys__entry__2">The route being served. The
+                                request returns a route with the special <code class="ph codeph">route-id</code> of "total", which represents the
+                                aggregate data for all requests along all routes.</td>
+                        </tr>
+                    </tbody></table><p class="p">Routes for newer versions of Puppet Enterprise and newer
+                agents are prefixed with <code class="ph codeph">puppet-v3</code>,
+                while Puppet Enterprise 3 agents' routes are not. For example, a PE 2017.3 <code class="ph codeph">route-id</code> might be <code class="ph codeph">puppet-v3-report-/*/</code>, while the equivalent PE 3
+                agent's <code class="ph codeph">route-id</code> is <code class="ph codeph">:environment-report-/*/</code>.</p><p class="p">For
+            example:</p><pre class="pre codeblock json"><code>"pe-master": {
+    {...},
+    "status": {
+        "experimental": {
+            "http-metrics": [
+                {
+                    "aggregate": 70668,
+                    "count": 234,
+                    "mean": 302,
+                    "route-id": "total"
+                },
+                {
+                    "aggregate": 28613,
+                    "count": 13,
+                    "mean": 2201,
+                    "route-id": "puppet-v3-catalog-/*/"
+                },
+                {...}
+            ]
+        }
+    }
+}</code></pre></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="get_status_v1_services_pe_puppet_profiler">
+    <h2 class="title topictitle2" id="ariaid-title4">GET /status/v1/services/pe-puppet-profiler </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">/status/v1/services/pe-puppet-profiler</code> endpoint returns JSON containing
+        statistics about catalog compilation. You can use this data to discover which functions or
+        resources are consuming the most resources or are most frequently used. </p>
+        <section class="section"><p class="p">You must query it at port 8140 and
+                append the <code class="ph codeph">level=debug</code> URL
+                parameter.</p><p class="p">The Puppet Server profiler is enabled by
+                default, but if it has been disabled, this endpoint's metrics are not available.
+                Instead, the endpoint returns the same keys returned by a standard status endpoint
+                request and an empty <code class="ph codeph">status</code>
+                key.</p></section>
+        <section class="section" id="get_status_v1_services_pe_puppet_profiler__query_parameters"><h3 class="title sectiontitle">Query
+                parameters </h3><p class="p">No parameters are supported. Defaults to using the&nbsp;<code class="ph codeph">critical</code>&nbsp;status level.</p></section>
+        <section class="section" id="get_status_v1_services_pe_puppet_profiler__response_codes"><h3 class="title sectiontitle">Response
+                codes </h3><div class="p">The server uses the following response codes:
+                    <ul class="ul">
+                    <li class="li">200 if and only if all services
+                        report a status of&nbsp;<code class="ph codeph">running</code></li>
+                    <li class="li">503 if any service’s status
+                            is&nbsp;<code class="ph codeph">unknown</code>&nbsp;or&nbsp;<code class="ph codeph">error</code></li>
+                </ul></div></section>
+        <section class="section" id="get_status_v1_services_pe_puppet_profiler__response_keys"><h3 class="title sectiontitle">Response
+                keys </h3><p class="p">If the profiler is enabled, the response returns
+                two subsections in the <code class="ph codeph">experimental</code>
+                section:</p><ul class="ul">
+                <li class="li"><code class="ph codeph">experimental/function-metrics</code>, containing statistics about
+                    functions evaluated by Puppet Server when compiling catalogs.</li>
+                <li class="li"><code class="ph codeph">experimental/resource-metrics</code>, containing statistics about
+                    resources declared in manifests compiled by Puppet Server.</li>
+            </ul><p class="p">Each function measured in the <code class="ph codeph">function-metrics</code> section also has a <strong class="ph b">function</strong> key containing the function's name, and each resource
+                measured in the <code class="ph codeph">resource-metrics</code>
+                section has a <strong class="ph b">resource</strong> key containing the
+                resource's name.</p><p class="p">The two sections otherwise share these
+                keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="get_status_v1_services_pe_puppet_profiler__response_keys__entry__1">Key </th>
+                            <th class="entry" id="get_status_v1_services_pe_puppet_profiler__response_keys__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_puppet_profiler__response_keys__entry__1">
+                                <code class="ph codeph">aggregate</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_puppet_profiler__response_keys__entry__2">The total time spent
+                                handling this function call or resource during catalog
+                                compilation.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_puppet_profiler__response_keys__entry__1">
+                                <code class="ph codeph">count</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_puppet_profiler__response_keys__entry__2">The number of times Puppet
+                                Server has called the function or instantiated the resource during
+                                catalog compilation.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_status_v1_services_pe_puppet_profiler__response_keys__entry__1">
+                                <code class="ph codeph">mean</code>
+                            </td>
+                            <td class="entry" headers="get_status_v1_services_pe_puppet_profiler__response_keys__entry__2">The average time spent
+                                handling this function call or resource during catalog compilation,
+                                calculated by dividing the <code class="ph codeph">aggregate</code> value by the <code class="ph codeph">count</code>.</td>
+                        </tr>
+                    </tbody></table><p class="p">For
+            example:</p><pre class="pre codeblock json"><code>"pe-puppet-profiler": {
+    {...},
+    "status": {
+        "experimental": {
+            "function-metrics": [
+                {
+                    "aggregate": 1628,
+                    "count": 407,
+                    "function": "include",
+                    "mean": 4
+                },
+                {...},
+            "resource-metrics": [
+                {
+                    "aggregate": 3535,
+                    "count": 5,
+                    "mean": 707,
+                    "resource": "Class[Puppet_enterprise::Profile::Console]"
+                },
+                {...},
+            ]
+        }
+    }
+}</code></pre></section>
+    </div>
+</article></article></article></main></body></html>

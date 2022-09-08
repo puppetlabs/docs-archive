@@ -1,0 +1,322 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="As your Puppet Enterprise infrastructure scales up to 4,000 nodes and beyond, add load-balanced compilers to your installation to increase the number of agents you can manage."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="compiler_installation"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Installing compilers</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="compiler_installation">
+    <h1 class="title topictitle1" id="ariaid-title1">Installing compilers </h1>
+    
+    <div class="body conbody"><p class="shortdesc">As your <span class="ph">Puppet Enterprise</span> infrastructure scales up to 4,000
+        nodes and beyond, add load-balanced compilers to your installation to increase the number of
+        agents you can manage. </p>
+        <p class="p">Each compiler increases capacity by 1,500 to 3,000 nodes, until you
+            exhaust the capacity of <span class="ph">PuppetDB</span> or the console.</p>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="how_compilers_work">
+    <h2 class="title topictitle2" id="ariaid-title2">How compilers work</h2>
+    
+    <div class="body conbody"><p class="shortdesc">A single master can process requests and compile code for
+        up to 4,000 nodes. When you exceed this scale, expand your infrastructure by adding
+        compilers to share the workload and compile catalogs faster. </p>
+        <div class="p">
+            <div class="note important note_important"><span class="note__title">Important:</span> Compilers must run the same OS major
+                version, platform, and architecture as the master.</div>
+        </div>
+        <div class="p">Compilers act as <span class="ph">PCP</span> brokers, conveying messages between
+            the orchestrator and <span class="ph">Puppet Execution
+                                                  Protocol (PXP)</span> agents. <span class="ph">PXP</span> agents connect to <span class="ph">PCP</span>
+            brokers running on compilers over port 8142. Status checks on compilers must be sent to
+            port 8140, using <code class="ph codeph">https://&lt;hostname&gt;:8140/status/v1/simple</code>.<br><img class="image" src="firewall_large.png"><br>
+        </div>
+        <section class="section" id="how_compilers_work__components_and_services_running_on_compile_masters"><h3 class="title sectiontitle">Components and services running on compilers
+                </h3><p class="p">Compilers typically run <span class="ph">Puppet Server</span> and <span class="ph">PuppetDB</span> services, as well as a file sync client.
+                Older, legacy-style compilers must be converted in order to add <span class="ph">PuppetDB</span>.</p><p class="p">When triggered by a web endpoint, file sync takes changes from the working
+                directory on the master and deploys the code to a live code directory. File sync
+                then deploys that code to all your compilers, ensuring that all masters in a
+                multi-master configuration remain in sync. By default, compilers check for code
+                updates every five seconds.</p><p class="p">The certificate authority (CA) service is disabled on compilers. A proxy service running on the
+                compiler <span class="ph">Puppet Server</span> directs CA requests to the master,
+                which hosts the CA in default installations.</p><p class="p">Compilers also
+                have:</p><ul class="ul">
+                <li class="li">The repository for agent installation, <code class="ph codeph">pe_repo</code>
+                </li>
+                <li class="li">The controller profile used with <span class="ph">PE</span> client
+                    tools</li>
+                <li class="li">
+                    <span class="ph">Puppet Communications
+                                                  Protocol (PCP)</span> brokers to enable orchestrator
+                    scale</li>
+            </ul><p class="p">Logs for compilers are located at <code class="ph codeph">/var/log/puppetlabs/puppetserver/</code>.</p><p class="p">Logs for PCP brokers on compilers are located at <code class="ph codeph">/var/log/puppetlabs/puppetserver/pcp-broker.log</code>.</p></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="using_load_balancers_with_compilers">
+    <h2 class="title topictitle2" id="ariaid-title3">Using load balancers with compilers </h2>
+    
+    <div class="body conbody"><p class="shortdesc">When using more than one compiler, a load balancer can
+        help distribute the load between the compilers and provide a level of
+        redundancy.</p>
+        <p class="p">Specifics on how to configure a load balancer infrastructure falls
+            outside the scope of this document, but examples of how to leverage <code class="ph codeph">haproxy</code> for this purpose can be found in the HAproxy
+            module documentation.</p>
+        <section class="section" id="using_load_balancers_with_compilers__load_balancing_for_orchestration_scale"><h3 class="title sectiontitle">Load balancing</h3><p class="p">
+                <span class="ph">PCP</span> brokers run on compilers and connect to <span class="ph">PXP</span> agents over port 8142. <span class="ph">PCP</span> brokers are built on websockets and require many
+                persistent connections. If you're not using HTTP health checks, we recommend using a
+                round robin or random load balancing algorithm for <span class="ph">PXP</span> agent connections to <span class="ph">PCP</span> brokers, because <span class="ph">PCP</span> brokers don't operate independent of the
+                orchestrator and isolate themselves if they become disconnected. You can check
+                connections with the <code class="ph codeph">/status/v1/simple</code> endpoint for an error state. </p><p class="p">You must also configure your load balancer to avoid closing long-lived connections
+                that have little traffic. In the HAproxy module, you can set the <code class="ph codeph">timeout tunnel</code> to <code class="ph codeph">15m</code> because <span class="ph">PCP</span> brokers
+                disconnect inactive connections after 15 minutes.</p></section>
+        <section class="section" id="using_load_balancers_with_compilers__using_health_checks"><h3 class="title sectiontitle">Using health checks </h3><p class="p">The <span class="ph">Puppet</span> REST API exposes a status endpoint that can be
+                leveraged from a load balancer health check to ensure that unhealthy hosts do not
+                receive agent requests from the load balancer.</p><p class="p">The master
+                service responds to unauthenticated HTTP GET requests issued to <code class="ph codeph">https://&lt;hostname&gt;:8140/status/v1/simple</code>.
+                The API responds with an HTTP 200 status code if the service is healthy.</p><p class="p">If your load balancer doesn't support HTTP health checks, a
+                simpler alternative is to check that the host is listening for TCP connections on
+                port 8140. This ensures that requests aren't forwarded to an unreachable instance of
+                the master, but it does not guarantee that a host is pulled out of rotation if it's
+                deemed unhealthy, or if the service listening on port 8140 is not a service related
+                to <span class="ph">Puppet</span>.</p></section>
+        <section class="section" id="using_load_balancers_with_compilers__optimizing_workload_distribution"><h3 class="title sectiontitle">Optimizing workload distribution </h3><p class="p">Due to
+                the diverse nature of the network communications between the agent and the master,
+                we recommend that you implement a load balancing algorithm that distributes traffic
+                between compilers based on the number of open connections. Load balancers often
+                refer to this strategy as "balancing by least connections."</p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="system_configuration.html#firewall_large" title="These are the port requirements for large installations with compilers.">Firewall configuration for large installations with compilers</a></li><li class="linklist"><a class="link" href="status_api_plaintext_endpoints.html#get_status_v1_simple" title="The /status/v1/simple returns a status that reflects all services the status service knows about.">GET /status/v1/simple</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="install_compilers">
+    <h2 class="title topictitle2" id="ariaid-title4">Install compilers </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Installing a compiler adds the specified node to the <span class="ph uicontrol">PE
+            Compiler</span> node group and installs the <span class="ph">PuppetDB</span>
+        service on the node. </p>
+        <section class="section context">To install a FIPS-compliant compiler, install the compiler on a <a class="xref" href="supported_operating_systems.html#supported_operating_systems_and_devices" title="When choosing an operating system, first consider the machine's role. Different roles support different operating systems and architectures.">supported platform</a> with
+            FIPS mode enabled. The node must be configured with sufficient available entropy or the
+            installation process fails.</section>
+        <section><div class="li step p">
+                <span class="ph cmd">On your master logged in as root, run: </span>
+                <div class="itemgroup info"><pre class="pre codeblock"><code>puppet infrastructure provision compiler &lt;COMPILER_FQDN&gt;</code></pre>You
+                    can specify these optional parameters: <ul class="ul">
+                        <li class="li">
+                            <div class="p"><code class="ph codeph">dns-alt-names</code> — Comma-separated list
+                                of any alternative names that agents use to connect to compilers.
+                                The installation uses <code class="ph codeph">puppet</code> by default. <div class="note note note_note"><span class="note__title">Note:</span> If
+                                    your <code class="ph codeph">puppet.conf</code> file includes a
+                                        <code class="ph codeph">dns_alt_names</code> entry, you
+                                    must include the <code class="ph codeph">dns-alt-names</code>
+                                    parameter when provisioning your compiler. </div></div>
+                        </li>
+                        <li class="li">
+                            <p class="p"><code class="ph codeph">no-dns-alt-names</code> — Prevents the installer from
+                                setting the default alternative name, <code class="ph codeph">puppet</code>. Use
+                                this parameter if you don't allow alternative names
+                                    (<code class="ph codeph">allow-subject-alt-names: false</code> in your
+                                    <code class="ph codeph">ca.conf</code>).</p>
+                        </li>
+                    </ul>
+                </div>
+            </div></section>
+        <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>
+            <p class="p">After installing compilers, you must configure them to
+                appropriately route communication between your master and agent nodes.</p>
+        </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="convert-compiler">
+    <h2 class="title topictitle2" id="ariaid-title5">Convert existing compilers</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">If you have legacy compilers, you can improve their usability and scalability by
+        adding <span class="ph">PuppetDB</span>. In addition to installing the <span class="ph">PuppetDB</span> service, converting an existing compiler adds the
+        node to the <span class="ph uicontrol">PE Compiler</span> node group and unpins it from the
+            <span class="ph uicontrol">PE Master</span> node group. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>Open port 5432 from compilers to your master.</section>
+        <section><div class="li step p">
+                <span class="ph cmd">On your master logged in as root, run: .</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet infrastructure run convert_legacy_compiler compiler=&lt;COMPILER_FQDN-1&gt;,&lt;COMPILER_FQDN-2&gt;</code></pre>
+                </div>
+                <div class="itemgroup info">
+                    <div class="note tip note_tip"><span class="note__title">Tip:</span> To convert all
+                        compilers:<pre class="pre codeblock"><code>puppet infrastructure run convert_legacy_compiler all=true</code></pre></div>
+                </div>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="configure_compilers_for_orchestrator_scale">
+   <h2 class="title topictitle2" id="ariaid-title6">Configure compilers</h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Compilers must be configured to appropriately route
+      communication between your master and agent nodes. </p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><ul class="ul">
+            <li class="li"><p class="p">Install compilers and load
+               balancers.</p></li>
+            <li class="li"><p class="p">If you need DNS altnames for your load
+                  balancers, add them to the master.</p></li>
+            <li class="li"><p class="p">Ensure port 8143 is open on the master or
+                  on any workstations used to run orchestrator jobs.</p></li>
+         </ul></section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Configure <code class="ph codeph">pe_repo::compile_master_pool_address</code> to send agent install requests to
+               the load balancer.</span>
+            <div class="itemgroup info"><div class="note important note_important"><span class="note__title">Important:</span> If you have load balancers in multiple data centers, you must configure <code class="ph codeph">compile_master_pool_address</code> using
+                  Hiera, instead of using configuration data in the console, as described in this
+                  step. Using either of these methods updates the agent install script URL displayed
+                  in the console. </div><div class="note note note_note"><span class="note__title">Note:</span> If you are using a single
+                  compile master, configure <code class="ph codeph">compile_master_pool_address</code> with the compile master's fully qualified
+                  domain name (FQDN). </div></div>
+            <ol type="a" class="ol substeps">
+               <li class="li substep substepexpand">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Master</span> group.</span>
+                    </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Select the <span class="ph uicontrol">Configuration</span> tab, and in the <code class="ph codeph">Data</code> section, in the <span class="ph uicontrol">pe_repo</span> class, specify parameters: </span>
+                  <div class="itemgroup info"><div class="p">
+                        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                 <tr class="row">
+                                    <th class="entry" id="configure_compilers_for_orchestrator_scale__entry__1">
+                                       <span class="ph uicontrol">Parameter</span>
+                                    </th>
+                                    <th class="entry" id="configure_compilers_for_orchestrator_scale__entry__2">
+                                       <span class="ph uicontrol">Value</span>
+                                    </th>
+                                 </tr>
+                              </thead><tbody class="tbody">
+                                 <tr class="row">
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__1">
+                                       <span class="ph uicontrol">compile_master_pool_address</span>
+                                    </td>
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__2">Load balancer hostname.</td>
+                                 </tr>
+                              </tbody></table>
+                     </div></div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Click <span class="ph uicontrol">Add data</span> and commit changes.</span>
+               </li>
+            </ol>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Run <span class="ph">Puppet</span> on the
+               compiler, and then on the master. </span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Configure infrastructure agents to connect
+               orchestration agents to the master.</span>
+            <ol type="a" class="ol substeps">
+               <li class="li substep substepexpand">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Infrastructure Agent</span>
+                            group.</span>
+                    </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">If you manage your load balancers with agents,
+                     on the <span class="ph uicontrol">Rules</span> tab, pin
+                     load balancers to the group.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, find the <span class="ph uicontrol">puppet_enterprise::profile::agent</span>
+                     class and specify parameters:</span>
+                  <div class="itemgroup info"><div class="p">
+                        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                 <tr class="row">
+                                    <th class="entry" id="configure_compilers_for_orchestrator_scale__entry__5">
+                                       <span class="ph uicontrol">Parameter</span>
+                                    </th>
+                                    <th class="entry" id="configure_compilers_for_orchestrator_scale__entry__6">
+                                       <span class="ph uicontrol">Value</span>
+                                    </th>
+                                 </tr>
+                              </thead><tbody class="tbody">
+                                 <tr class="row">
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__5">
+                                       <span class="ph uicontrol">pcp_broker_list</span>
+                                    </td>
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__6">JSON list including the hostname
+                                       for your master. If you have an HA replica, include it after
+                                       the master. Hostnames must include port 8142, for example
+                                          <kbd class="ph userinput">["MASTER.EXAMPLE.COM:8142"]</kbd>. </td>
+                                 </tr>
+                                 <tr class="row">
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__5">
+                                       <span class="ph uicontrol">master_uris</span>
+                                    </td>
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__6">Provide the host name for your
+                                       master, for example,&nbsp;<kbd class="ph userinput">["https://MASTER.EXAMPLE.COM"]</kbd>. Uris must
+                                       begin with&nbsp;<code class="ph codeph">https://</code>. This setting assumes
+                                       port 8140 unless you specify otherwise with&nbsp;<code class="ph codeph">host:port</code>.</td>
+                                 </tr>
+                              </tbody></table>
+                     </div></div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Remove any values set for <span class="ph uicontrol">pcp_broker_ws_uris</span>.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Commit changes.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Run <span class="ph">Puppet</span> on all
+                     agents classified into the <span class="ph uicontrol">PE
+                        Infrastructure Agent</span> group.&nbsp;</span>
+                  <div class="itemgroup info"><p class="p">This <span class="ph">Puppet</span> run doesn't change <span class="ph">PXP</span> agent configuration. If you have high
+                        availability configured and haven’t already pinned your load balancer to
+                           the&nbsp;<span class="ph uicontrol">PE Infrastructure
+                           Agent</span>&nbsp;group, the <span class="ph">Puppet</span>
+                        run configures your load balancer to compile catalogs on the
+                     master.</p></div>
+               </li>
+            </ol>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Configure agents to connect orchestration agents to
+               the load balancer.</span>
+            <ol type="a" class="ol substeps">
+               <li class="li substep substepexpand">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Agent</span> group.</span>
+                    </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, find the <span class="ph uicontrol">puppet_enterprise::profile::agent</span>
+                     class and specify parameters: </span>
+                  <div class="itemgroup info"><div class="p">
+                        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                 <tr class="row">
+                                    <th class="entry" id="configure_compilers_for_orchestrator_scale__entry__11">
+                                       <span class="ph uicontrol">Parameter</span>
+                                    </th>
+                                    <th class="entry" id="configure_compilers_for_orchestrator_scale__entry__12">
+                                       <span class="ph uicontrol">Value</span>
+                                    </th>
+                                 </tr>
+                              </thead><tbody class="tbody">
+                                 <tr class="row">
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__11">
+                                       <span class="ph uicontrol">pcp_broker_list</span>
+                                    </td>
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__12">JSON list including the hostname
+                                       for your load balancers. Hostnames must include port 8142,
+                                       for example <kbd class="ph userinput">["LOADBALANCER1.EXAMPLE.COM:8142","LOADBALANCER2.EXAMPLE.COM:8142"]</kbd>
+                                    </td>
+                                 </tr>
+                                 <tr class="row">
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__11">
+                                       <span class="ph uicontrol">master_uris</span>
+                                    </td>
+                                    <td class="entry" headers="configure_compilers_for_orchestrator_scale__entry__12">Provide a list of load balancer
+                                       host names, for example, <kbd class="ph userinput">["https://LOADBALANCER1.EXAMPLE.COM","https://LOADBALANCER2.EXAMPLE.COM"]</kbd>.
+                                       Uris must begin with <code class="ph codeph">https://</code>. This setting assumes
+                                       port 8140 unless you specify otherwise with <code class="ph codeph">host:port</code>.</td>
+                                 </tr>
+                              </tbody></table>
+                     </div></div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Remove any values set for <span class="ph uicontrol">pcp_broker_ws_uris</span>.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Commit changes.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Run <span class="ph">Puppet</span> on the
+                     master, then run <span class="ph">Puppet</span> on all agents, or
+                     install new agents. </span>
+                  <div class="itemgroup info"><p class="p">This <span class="ph">Puppet</span> run configures <span class="ph">PXP</span> agents to connect to the load
+                        balancer.</p></div>
+               </li>
+            </ol>
+         </li></ol></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="system_configuration.html#firewall_large" title="These are the port requirements for large installations with compilers.">Firewall configuration for large installations with compilers</a></li></ul></div></nav></article></article></article></main></body></html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Razor relies on a PXE environment to boot the Razor microkernel. You must set up your PXE environment before you can successfully provision with Razor."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Melissa Amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="setting_up_a_razor_environment"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Setting up a Razor environment</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="setting_up_a_razor_environment">
+   <h1 class="title topictitle1" id="ariaid-title1">Setting up a <span class="ph">Razor</span>
+      environment</h1>
+   
+   
+   <div class="body conbody"><p class="shortdesc"><span class="ph">Razor</span> relies on a PXE
+      environment to boot the <span class="ph">Razor</span> microkernel. You must set up your
+      PXE environment before you can successfully provision with <span class="ph">Razor</span>.</p>
+      <div class="p">There are two ways to enable PXE boot: <ul class="ul">
+            <li class="li">
+               <p class="p">(Recommended) Integrate <span class="ph">Razor</span>
+                  with the DHCP solution of the system being provisioned. </p>
+            </li>
+            <li class="li">
+               <p class="p">Rely on UEFI to directly load the .ipxe file that’s required to
+                  boot the <span class="ph">Razor</span> microkernel. </p>
+            </li>
+         </ul></div>
+      <p class="p">Because it’s difficult to guarantee that all of your hardware is
+         UEFI-enabled, configuring DHCP is the preferred method for setting up a <span class="ph">Razor</span> environment.</p>
+   </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="set_up_a_razor_environment">
+   <h2 class="title topictitle2" id="ariaid-title2">Set up a <span class="ph">Razor</span> environment</h2>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Set up a PXE environment using the DHCP and TFTP service of
+      your choice.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>You must have <span class="ph">Puppet Enterprise</span> installed.</section>
+      <section class="section context">
+         <div class="p">This workflow describes a sample setup using dnsmasq. Dnsmasq is not
+            intended for production environments; however, you can use a similar workflow to set up
+            DHCP and TFTP with more robust solutions.<div class="note important note_important"><span class="note__title">Important:</span> Set up and test PXE in a completely isolated test environment. Running a second DHCP
+               server on your company’s network could bring down the network or replace a server
+               with a fresh installation. See&nbsp;<a class="xref" href="protecting_existing_nodes.html#protecting_existing_nodes" title="In&nbsp;brownfield environments&nbsp;– those in which you already have machines installed that PXE boot against the Razor server – you must take extra precautions to protect existing nodes. Failure to adequately protect existing nodes can result in data loss.">Protecting existing nodes</a>&nbsp;for
+               strategies on avoiding data loss.</div></div>
+      </section>
+   </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title3" id="install_and_configure_dnsmasq_dhcp-tftp_service">
+    <h3 class="title topictitle3" id="ariaid-title3">Install and configure dnsmasq DHCP-TFTP service</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Install dnsmasq to manage communication between nodes and
+        the <span class="ph">Razor</span> server. When a node boots, dnsmasq forwards the
+        booted node to the <span class="ph">Razor</span> service.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Use YUM to install dnsmasq: <code class="ph codeph">yum install dnsmasq</code></span>
+            </li><li class="li step">
+                <span class="ph cmd">If it doesn't already exist, create the directory
+                        <code class="ph codeph">/var/lib/tftpboot</code>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Change the permissions for the TFTP boot
+                    directory: <code class="ph codeph">chmod 655
+                        /var/lib/tftpboot</code>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title4" id="temporarily_disable_selinux">
+    <h3 class="title topictitle3" id="ariaid-title4">Temporarily disable SELinux</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">You must temporarily disable SELinux in order to enable
+        PXE boot. Alternatively, you could craft an enforcement rule for SELinux that enables PXE
+        boot but doesn't completely disable SELinux.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the file <code class="ph codeph">/etc/sysconfig/selinux</code>, set <code class="ph codeph">SELINUX=disabled</code>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Restart the computer.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="edit_dnsmasq_to_enable_dhcp">
+    <h3 class="title topictitle3" id="ariaid-title5">Edit dnsmasq.conf to enable DHCP</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">You must specify a DHCP range to enable communication with
+        your DHCP server. </p>
+        <section class="section context"><div class="note tip note_tip"><span class="note__title">Tip:</span> For
+                more complex setups, it might be helpful to indicate a range name, for example:
+                    <code class="ph codeph">dhcp-range=range1,10.0.1.50,10.0.1.120,24h
+                    dhcp-range=range2,10.0.1.121,10.0.1.222,48h</code>.</div></section>
+        <section><div class="li step p">
+                <span class="ph cmd">Edit <code class="ph codeph">/etc/dnsmasq.conf</code>to specify a DHCP range. </span>
+                <div class="itemgroup stepxmp"><div class="p">For example,
+                        for an IP range from 10.0.1.50 - 10.0.1.120 with a 24-hour lease, your file
+                        resembles:&nbsp;<pre class="pre codeblock"><code># Uncomment this to enable the integrated DHCP server, you need
+# to supply the range of addresses available for lease and optionally
+# a lease time. If you have more than one network, you must
+# repeat this for each network on which you want to supply DHCP
+# service.
+dhcp-range=10.0.1.50,10.0.1.120,24h</code></pre></div></div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="edit_the_dnsmasq_configuration_file_to_enable_pxe_boot">
+ <h3 class="title topictitle3" id="ariaid-title6">Edit the dnsmasq configuration file to enable PXE boot</h3>
+ 
+ 
+ <div class="body taskbody"><p class="shortdesc">Use dnsmasq to enable PXE booting on nodes.</p>
+  <section><ol class="ol steps"><li class="li step stepexpand">
+    <span class="ph cmd">At the bottom of the <code class="ph codeph">/etc/dnsmasq.conf</code> file, add: <code class="ph codeph">conf-dir=/etc/dnsmasq.d</code></span>
+   </li><li class="li step stepexpand">
+    <span class="ph cmd">Write and exit the file.</span>
+   </li><li class="li step stepexpand">
+    <span class="ph cmd">Create the file <code class="ph codeph">/etc/dnsmasq.d/razor</code> and add configuration information.&nbsp;</span>
+    <div class="itemgroup stepxmp"><p class="p">For example, for dnsmasq
+      2.45:</p><div class="p"><pre class="pre codeblock"><code> # iPXE sets option 175, mark it for network IPXEBOOT
+ dhcp-match=IPXEBOOT,175
+ dhcp-boot=net:IPXEBOOT,bootstrap.ipxe
+ dhcp-boot=undionly-20140116.kpxe
+ # TFTP setup
+ enable-tftp
+ tftp-root=/var/lib/tftpboot</code></pre></div></div>
+   </li><li class="li step stepexpand">
+    <span class="ph cmd">Enable dnsmasq on boot: <code class="ph codeph">chkconfig dnsmasq on</code></span>
+   </li><li class="li step stepexpand">
+    <span class="ph cmd">Start the dnsmasq service: <code class="ph codeph">service dnsmasq start</code></span>
+   </li></ol></section>
+  <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+ </div>
+</article></article></article></article></main></body></html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="TLSv1 and TLSv1.1 are disabled by default in PE."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="enable_tlsv1"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Enable TLSv1</title></head><body id="enable_tlsv1"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Enable TLSv1 </h1>
+    
+    <div class="body taskbody"><p class="shortdesc">TLSv1 and TLSv1.1 are disabled by default in <span class="ph">PE</span>.</p>
+        <section class="section context">
+            <div class="p">You must enable TLSv1 to install agents on these platforms:<ul class="ul">
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">AIX</span>
+                        </p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">CentOS</span> 5</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">RHEL</span> 5</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">SLES 11</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">Solaris</span> 10</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">Windows</span> Server 2008 R2</p>
+                    </li>
+                </ul></div>
+            <p class="p">To comply with security regulations, <span class="ph">PE</span> 2019.1 and
+                later uses only version 1.2 of the Transport Layer Security (TLS) protocol. </p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span> &gt; <span class="ph uicontrol">PE Infrastructure</span>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, in the <span class="ph uicontrol">Data</span> area, add the following class, parameter,
+                    and value:</span>
+                <div class="itemgroup info">
+                    <table class="table frame-all"><caption></caption><colgroup><col style="width:33.33333333333333%"><col style="width:33.33333333333333%"><col style="width:33.33333333333333%"></colgroup><thead class="thead">
+                                <tr class="row">
+                                    <th class="entry" id="enable_tlsv1__entry__1">Class</th>
+                                    <th class="entry" id="enable_tlsv1__entry__2">Parameter</th>
+                                    <th class="entry" id="enable_tlsv1__entry__3">Value</th>
+                                </tr>
+                            </thead><tbody class="tbody">
+                                <tr class="row">
+                                    <td class="entry" headers="enable_tlsv1__entry__1"><code class="ph codeph">puppet_enterprise::master::puppetserver</code></td>
+                                    <td class="entry" headers="enable_tlsv1__entry__2"><code class="ph codeph">ssl_protocols</code></td>
+                                    <td class="entry" headers="enable_tlsv1__entry__3"><code class="ph codeph">["TLSv1", "TLSv1.1",
+                                            "TLSv1.2"]</code></td>
+                                </tr>
+                            </tbody></table>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add data</span>, and commit changes.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run <span class="ph">Puppet</span> on the master. </span>
+            </li></ol></section>
+    </div>
+</article></main></body></html>

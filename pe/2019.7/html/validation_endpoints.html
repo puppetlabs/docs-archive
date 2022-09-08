@@ -1,0 +1,337 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use validation endpoints to validate groups in the node classifier."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="validation_endpoints"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Validation endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="validation_endpoints">
+    <h1 class="title topictitle1" id="ariaid-title1">Validation endpoints </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Use validation endpoints to validate groups in the node
+        classifier. </p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="post_v1_validate_group">
+    <h2 class="title topictitle2" id="ariaid-title2">POST /v1/validate/group </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/validate/group</code> endpoint to validate groups in the node
+        classifier.</p>
+
+        <section class="section" id="post_v1_validate_group__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">The request contains a group object. The
+                request uses the following keys:</p>
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="post_v1_validate_group__request_format__entry__1">Key </th>
+                            <th class="entry" id="post_v1_validate_group__request_format__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__1">
+                                <code class="ph codeph">name</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__2">The name of the node group
+                                (required).</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__1">
+                                <code class="ph codeph">environment</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__2">The name of the node
+                                group's environment. This key is optional; if it's not provided, the
+                                default environment (<code class="ph codeph">production</code>) is used.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__1">
+                                <code class="ph codeph">environment_trumps</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__2">Whether this node group's
+                                environment overrides those of other node groups at
+                                classification-time. This key is optional; if it's not provided, the
+                                default value of <code class="ph codeph">false</code> is used.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__1">
+                                <code class="ph codeph">description</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__2">A string describing the
+                                node group. This key is optional; if it's not provided, the node
+                                group has no description and this key doesn't appear in
+                                responses.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__1">
+                                <code class="ph codeph">parent</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__2">The ID of the node group's
+                                parent (required).</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__1">
+                                <code class="ph codeph">rule</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__2">The condition that must be
+                                satisfied for a node to be classified into this node group. The
+                                structure of this condition is described in the "Rule Condition
+                                Grammar" section above.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__1">
+                                <code class="ph codeph">variables</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__2">An object that defines the
+                                names and values of any top-level variables set by the node group.
+                                The keys of the object are the variable names, and the corresponding
+                                value is that variable's value, which can be any sort of JSON value.
+                                The <code class="ph codeph">variables</code> key
+                                is optional, and if a node group does not define any top-level
+                                variables then it can be omitted.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__1">
+                                <code class="ph codeph">classes</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__request_format__entry__2">An object that defines the
+                                classes to be used by nodes in the node group. The <code class="ph codeph">classes</code> key is required, and at
+                                minimum is an empty object ({}). The <code class="ph codeph">classes</code> key also contains the parameters
+                                for each class. Some classes have required parameters. This is a
+                                two-level object; that is, the keys of the object are class names
+                                (strings), and each key's value is another object that defines class
+                                parameter values. This innermost object maps between class parameter
+                                names and their values. The keys are the parameter names (strings),
+                                and each value is the parameter's value, which can be any kind of
+                                JSON value. The <code class="ph codeph">classes</code> key is not optional; if it is missing, the
+                                service returns a <code class="ph codeph">400: Bad
+                                    Request</code> response.</td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="post_v1_validate_group__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">If the group is valid, the service
+                returns a <code class="ph codeph">200 OK</code> response with the
+                validated group as the body.</p><p class="p">If a validation error is
+                encountered, the service returns one of the following <code class="ph codeph">400</code>-level error responses.</p><p class="p">Responses and keys returned for create group requests depend on the type of error.
+                </p><p class="p">
+                <code class="ph codeph">schema-violation</code>
+            </p><p class="p">If any of the required keys are missing or the values of any
+                of the defined keys do not match the required type, the service returns a <code class="ph codeph">400: Bad Request</code> response using the
+                following keys:</p>
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__1">Key</th>
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__1">
+                                <code class="ph codeph">kind</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__2">"schema-violation"</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__1">
+                                <code class="ph codeph">details</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__2">An object that contains three keys: <ul class="ul">
+                                    <li class="li">code&gt;submitted&lt;/code&gt;:
+                                        Describes the submitted object.</li>
+                                    <li class="li">
+                                        <code class="ph codeph">schema</code>:
+                                        Describes the schema that object is expected to conform to. </li>
+                                    <li class="li">
+                                        <code class="ph codeph">error</code>:
+                                        Describes how the submitted object failed to conform to the
+                                        schema. </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">
+                <code class="ph codeph">malformed-request</code>
+            </p><p class="p">If the request's body could not be parsed as JSON, the service
+                returns a <code class="ph codeph">400: Bad Request</code> response
+                using the following keys:</p>
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__7">Key</th>
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__8">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__7">
+                                <code class="ph codeph">kind</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__8">"malformed-request"</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__7">
+                                <code class="ph codeph">details</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__8">An object that contains two keys: <ul class="ul">
+                                    <li class="li">
+                                        <code class="ph codeph">body</code>: Holds
+                                        the request body that was received. </li>
+                                    <li class="li">
+                                        <code class="ph codeph">error</code>:
+                                        Describes how the submitted object failed to conform to the
+                                        schema. </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">
+                <code class="ph codeph">uniqueness-violation</code>
+            </p><p class="p">If your attempt to create the node group violates uniqueness
+                constraints (such as the constraint that each node group name must be unique within
+                its environment), the service returns a <code class="ph codeph">422:
+                    Unprocessable Entity</code> response using the following keys:</p>
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__13">Key</th>
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__14">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__13">
+                                <code class="ph codeph">kind</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__14">"uniqueness-violation"</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__13">
+                                <code class="ph codeph">msg</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__14">Describes which fields of the node group
+                                caused the constraint to be violated, along with their
+                                values.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__13">
+                                <code class="ph codeph">details</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__14">An object that contains two keys: <ul class="ul">
+                                    <li class="li">
+                                        <code class="ph codeph">conflict</code>:
+                                        An object whose keys are the fields of the node group that
+                                        violated the constraint and whose values are the
+                                        corresponding field values. </li>
+                                    <li class="li">
+                                        <code class="ph codeph">constraintName</code>: The name of the database
+                                        constraint that was violated. </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">
+                <code class="ph codeph">missing-referents</code>
+            </p><p class="p">If classes or class parameters defined by the node group, or
+                inherited by the node group from its parent, do not exist in the submitted node
+                group's environment, the service returns a <code class="ph codeph">422: Unprocessable Entity</code> response. In both cases the response object
+                uses the following keys:</p>
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__21">Key</th>
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__22">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__21">
+                                <code class="ph codeph">kind</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__22">"missing-referents"</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__21">
+                                <code class="ph codeph">msg</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__22">Describes the error and lists the missing
+                                classes or parameters.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__21">
+                                <code class="ph codeph">details</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__22">An array of objects, where each object
+                                describes a single missing referent, and has the following keys: <ul class="ul">
+                                    <li class="li">
+                                        <code class="ph codeph">kind</code>:
+                                        "missing-class" or "missing-parameter", depending on whether
+                                        the entire class doesn't exist, or the class just doesn't
+                                        have the parameter. </li>
+                                    <li class="li">
+                                        <code class="ph codeph">missing</code>:
+                                        The name of the missing class or class parameter. </li>
+                                    <li class="li">
+                                        <code class="ph codeph">environment</code>: The environment that the class or
+                                        parameter is missing from; that is, the environment of the
+                                        node group where the error was encountered. </li>
+                                    <li class="li">
+                                        <code class="ph codeph">group</code>: The
+                                        name of the node group where the error was encountered. Due
+                                        to inheritance, this might not be the group where the
+                                        parameter was defined. </li>
+                                    <li class="li">
+                                        <code class="ph codeph">defined_by</code>:
+                                        The name of the node group that defines the class or
+                                        parameter. </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody></table>
+            <p class="p">
+                <code class="ph codeph">missing-parent</code>
+            </p><p class="p">If the parent of the node group does not exist, the service
+                returns a <code class="ph codeph">422: Unprocessable Entity</code>
+                response. The response object uses the following keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__29">Key </th>
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__30">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__29">
+                                <code class="ph codeph">kind</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__30">"missing-parent"</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__29">
+                                <code class="ph codeph">msg</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__30">Shows the parent UUID that
+                                did not exist.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__29">
+                                <code class="ph codeph">details</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__30">The full submitted node
+                                group.</td>
+                        </tr>
+                    </tbody></table><p class="p">
+                <code class="ph codeph">inheritance-cycle</code>
+            </p><p class="p">If the request causes an inheritance cycle, the service
+                returns a <code class="ph codeph">422: Unprocessable Entity</code>
+                response. The response object uses the following keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__37">Key </th>
+                            <th class="entry" id="post_v1_validate_group__response_format__entry__38">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__37">
+                                <code class="ph codeph">kind</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__38">"inheritance-cycle"</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__37">
+                                <code class="ph codeph">details</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__38">An array of node group
+                                objects that includes each node group involved in the cycle</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__37">
+                                <code class="ph codeph">msg</code>
+                            </td>
+                            <td class="entry" headers="post_v1_validate_group__response_format__entry__38">A shortened description of
+                                the cycle, including a list of the node group names with each
+                                followed by its parent until the first node group is
+                                repeated.</td>
+                        </tr>
+                    </tbody></table></section>
+    </div>
+</article></article></article></main></body></html>

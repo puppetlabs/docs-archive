@@ -1,0 +1,514 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="This page covers the different ways you can use Puppet Enterprise (PE) to manage your Windows configurations, including creating local group and user accounts."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="managing_windows_configurations"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Managing Windows configurations</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="managing_windows_configurations">
+    <h1 class="title topictitle1" id="ariaid-title1">Managing <span class="ph">Windows</span> configurations </h1>
+    <p class="shortdesc">This page covers the different ways you can use <span class="ph">Puppet Enterprise</span> (<span class="ph">PE</span>)
+        to manage your <span class="ph">Windows</span> configurations, including creating
+        local group and user accounts. </p>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="basic_tasks_and_concepts_in_windows">
+    <h2 class="title topictitle2" id="ariaid-title2">Basic tasks and concepts in <span class="ph">Windows</span></h2>
+    <p class="shortdesc">This section is meant to help familiarize you with several
+        common tasks used in <span class="ph">Puppet Enterprise</span> (<span class="ph">PE</span>) with <span class="ph">Windows</span> agents, and explain the concepts and reasons
+        behind performing them.</p>
+<article class="topic task nested2" aria-labelledby="ariaid-title3" id="practice_windows_tasks">
+    <h3 class="title topictitle3" id="ariaid-title3">Practice tasks</h3>
+    <p class="shortdesc">In other locations in the documentation, these can be
+        found as steps in tasks, but they are not explained as thoroughly.</p>
+    
+<article class="topic task nested3" aria-labelledby="ariaid-title4" id="write_a_simple_manifest">
+   <h4 class="title topictitle4" id="ariaid-title4">Write a simple manifest </h4>
+   
+   <div class="body taskbody"><p class="shortdesc"><span class="ph">Puppet</span> manifest files are
+      lists of resources that have a unique title and a set of named attributes that describe the
+      desired state.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <p class="p">You need a text editor, for example Visual Studio Code (VS Code), to create manifest
+            files. Puppet has an <a class="xref" href="https://puppet-vscode.github.io/docs/getting-started/" target="_blank">extension</a> for VS Code that supports syntax
+            highlighting of the <span class="ph">Puppet</span>  language. Editors like
+            Notepad++ or Notepad won't highlight <span class="ph">Puppet</span>  syntax, but
+            can also be used to create manifests. </p>
+      </section>
+      <section class="section context">
+         <p class="p">Manifest files are written in <span class="ph">Puppet</span>
+            code, a domain specific language (DSL) that defines the desired state of resources on a
+            system, such as files, users, and packages. <span class="ph">Puppet</span>
+            compiles these text-based manifests into catalogs, and uses those to apply configuration
+            changes.</p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Create a file named <code class="ph codeph">file.pp</code> and save it in <code class="ph codeph">c:\myfiles\</code></span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">With your text editor of choice, add the following
+               text to the file:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code>file { 'c:\\Temp\\foo.txt':
+  ensure   =&gt; present,
+  content  =&gt; 'This is some text in my file'
+}</code></pre>
+               </div>
+            </div>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p">Note the following details in this file resource example:</p>
+         <ul class="ul">
+            <li class="li">
+               <p class="p">
+                  <span class="ph">Puppet</span> uses a basic syntax of <code class="ph codeph">type { title: }</code>, where&nbsp;<code class="ph codeph">type</code>&nbsp;is the resource type — in this case
+                     it’s&nbsp;<code class="ph codeph">file</code>.</p>
+            </li>
+            <li class="li">
+               <p class="p">The resource title (the value before the <code class="ph codeph">:</code>) is <code class="ph codeph">C:\\Temp\\foo.txt</code>. The file resource uses the title to determine
+                  where to create the file on disk. A resource title must always be unique within a
+                  given manifest.</p>
+            </li>
+            <li class="li">
+               <p class="p">The&nbsp;<code class="ph codeph">ensure</code> parameter is set to <code class="ph codeph">present</code> to create the file on disk, if it's not already present. For
+                     <code class="ph codeph">file</code> type resources, you can
+                  also use the value <code class="ph codeph">absent</code>, which
+                  removes the file from disk if it exists.</p>
+            </li>
+            <li class="li">
+               <p class="p">The&nbsp;<code class="ph codeph">content</code> parameter is set to <code class="ph codeph">This is some text in my file</code>, which writes that value to the
+                  file.</p>
+            </li>
+         </ul>
+      </section>
+   </div>
+</article><article class="topic task nested3" aria-labelledby="ariaid-title5" id="validate_manifest_with_puppet_parser_validate">
+   <h4 class="title topictitle4" id="ariaid-title5">Validate your manifest with <code class="ph codeph"> puppet parser validate </code></h4>
+   
+   <div class="body taskbody"><p class="shortdesc">You can validate that a manifest's syntax is correct by
+      using the command <code class="ph codeph">puppet parser
+      validate</code></p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Check your syntax by entering <code class="ph codeph">puppet parser validate c:\myfiles\file.pp</code> in the
+                  <span class="ph">Puppet</span> command prompt. If a manifest has no syntax
+               errors, the tool outputs nothing.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">To see what output occurs when there is an error,
+               temporarily edit the manifest and remove the <code class="ph codeph">:</code> after the resource title. Run <code class="ph codeph">puppet parser validate c:\myfiles\file.pp</code> again, and see the following
+               output:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code>Error: Could not parse for environment production: Syntax error at 'ensure' at c:/myfiles/file.pp:2:3</code></pre>
+               </div>
+            </div>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested3" aria-labelledby="ariaid-title6" id="launch_the_puppet_command_prompt">
+   <h4 class="title topictitle4" id="ariaid-title6">Launch the <span class="ph">Puppet</span> command prompt </h4>
+   
+   <div class="body taskbody"><p class="shortdesc">A lot of common interactions with <span class="ph">Puppet</span> are done via the command line.</p>
+      <section><div class="li step p">
+            <span class="ph cmd">To open the command line interface, enter<kbd class="ph userinput"> Command Prompt Puppet</kbd>&nbsp;in
+                  your&nbsp;<span class="ph uicontrol">Start Menu</span>,
+               and click&nbsp;<span class="ph uicontrol">Start Command Prompt
+                  with Puppet</span>.</span>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p">The <span class="ph">Puppet</span> command prompt has a few
+            details worth noting:</p>
+         <ul class="ul">
+            <li class="li">Several important batch files live in the current working
+                  directory,&nbsp;<code class="ph codeph">C:\Program Files\Puppet
+                  Labs\Puppet\bin</code>. The most important of these batch files is&nbsp;<code class="ph codeph">puppet.bat</code>. <span class="ph">Puppet</span> is a <span class="ph">Ruby</span> based
+               application, and&nbsp;<code class="ph codeph">puppet.bat</code>&nbsp;is a wrapper around executing <span class="ph">Puppet</span> code through <code class="ph codeph">ruby.exe</code>.</li>
+            <li class="li">
+               <p class="p">Running the command prompt with <span class="ph">Puppet</span> rather than just the default <span class="ph">Windows</span> command prompt ensures that all of the <span class="ph">Puppet</span> tooling is in&nbsp;PATH, even if you change
+                  to a different directory.</p>
+            </li>
+         </ul>
+      </section>
+   </div>
+</article><article class="topic task nested3" aria-labelledby="ariaid-title7" id="simulate_a_run_with_noop">
+   <h4 class="title topictitle4" id="ariaid-title7">Simulate a <span class="ph">Puppet</span> run with <code class="ph codeph">--noop</code></h4>
+   
+   <div class="body taskbody"><p class="shortdesc">
+      <span class="ph">Puppet</span> has a switch that you can use to test if manifests make
+      the intended changes. This is referred to as non-enforcement or no-op mode.</p>
+      <section><div class="li step p">
+            <span class="ph cmd">To simulate changes, run <code class="ph codeph">puppet apply c:\myfiles\file.pp --noop</code> in the command
+               prompt:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code>C:\Program Files\Puppet Labs\Puppet\bin&gt;puppet apply c:\myfiles\file.pp --noop
+Notice: Compiled catalog for win-User.localdomain in environment production in 0.45 seconds
+Notice: /Stage[main]/MainFile[C:\Temp\foo.txt]/ensure: current value absent, should be present (noop)
+Notice: Class[Main]: Would have triggered 'refresh' from 1 events
+Notice: Stage[main]: Would have triggered 'refresh' from 1 events
+Notice: Applied catalog in 0.03 seconds</code></pre>
+               </div>
+               <p class="p"></p>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p">
+            <span class="ph">Puppet</span> shows you the changes it <em class="ph i">would</em> make, but does not actually make the changes. It <em class="ph i">would</em> create a new file at <code class="ph codeph">C:\Temp\foo.txt</code>, but it hasn't, because you used <code class="ph codeph">--noop</code>.</p>
+      </section>
+   </div>
+</article><article class="topic task nested3" aria-labelledby="ariaid-title8" id="enforce_desired_state_puppet_apply">
+    <h4 class="title topictitle4" id="ariaid-title8">Enforce the desired state with <code class="ph codeph">puppet apply</code></h4>
+    
+    <div class="body taskbody"><p class="shortdesc">When the output of the simulation shows the changes you
+        intend to make, you can start enforcing these changes with the <code class="ph codeph">puppet apply</code> command.</p>
+        <section><div class="li step p">
+                <span class="ph cmd">Run <code class="ph codeph">puppet
+                        apply c:\myfiles\file.pp</code>. </span>
+                <div class="itemgroup info">
+                    <p class="p">To see more details about what this command did, you can
+                        specify additional options, such as <code class="ph codeph">--trace</code>, <code class="ph codeph">--debug</code>, or <code class="ph codeph">--verbose</code>, which can help you diagnose problematic code. If
+                            <code class="ph codeph">puppet apply</code> fails, <span class="ph">Puppet</span> outputs a full stack trace.</p>
+                </div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p">
+                <span class="ph">Puppet</span> enforces the resource state you've described
+                in <code class="ph codeph">file.pp</code>, in this case
+                guaranteeing that a file (<code class="ph codeph">c:\Temp\foo.txt</code>) is present and has the contents <code class="ph codeph">This is some text in my file</code>.</p>
+        </section>
+    </div>
+</article></article><article class="topic concept nested2" aria-labelledby="ariaid-title9" id="understanding_idempotency">
+  <h3 class="title topictitle3" id="ariaid-title9">Understanding idempotency </h3>
+  
+  <div class="body conbody"><p class="shortdesc">A key feature of <span class="ph">Puppet</span> is
+    its <em class="ph i">idempotency</em>: the ability to repeatedly apply a manifest to
+    guarantee a desired resource state on a system, with the same results every time.</p>
+    <p class="p">If a given resource is already in the desired state, <span class="ph">Puppet</span> performs no actions. If a given resource is not in the
+      desired state, <span class="ph">Puppet</span> takes whatever action is necessary to put
+      the resource into the desired state. Idempotency enables <span class="ph">Puppet</span>
+      to simulate resource changes without performing them, and lets you set up configuration
+      management one time, fixing configuration drift without recreating resources from scratch each
+      time <span class="ph">Puppet</span> runs.</p>
+    <p class="p">To demonstrate how <span class="ph">Puppet</span> can be applied
+      repeatedly to get the same results, change the manifest at <code class="ph codeph">c:\myfiles\file.pp</code> to the following:</p>
+    <pre class="pre codeblock"><code>file { 'C:\\Temp\\foo.txt':
+  ensure   =&gt; present,
+  content  =&gt; 'I have changed my file content.'
+}</code></pre>
+    <p class="p">Apply the manifest by running <code class="ph codeph">puppet apply c:\myfiles\file.pp</code>. Open <code class="ph codeph">c:\Temp\foo.txt</code> and notice that <span class="ph">Puppet</span> changes the
+      file's contents.</p>
+    <p class="p">Applying the manifest again with <code class="ph codeph">puppet apply c:\myfiles\file.pp</code> results in no changes to the system, demonstrating
+      that <span class="ph">Puppet</span> behaves idempotently.</p>
+    <p class="p">Many of the samples in <span class="ph">Puppet</span> documentation
+      assume that you have this basic understanding of creating and editing manifest files, and
+      applying them with <code class="ph codeph">puppet apply</code>.</p>
+  </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title10" id="additional_command_line_tools">
+    <h3 class="title topictitle3" id="ariaid-title10">Additional command line tools</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Once you understand how to write manifests, validate them,
+        and use <code class="ph codeph">puppet apply</code> to enforce your
+        changes, you're ready to use commands such as <code class="ph codeph">puppet
+            agent</code>, <code class="ph codeph">puppet resource</code>, and
+            <code class="ph codeph">puppet module
+        install</code>.</p>
+        <section class="section"><h4 class="title sectiontitle">puppet agent</h4><p class="p">Like <code class="ph codeph">puppet
+                    apply</code>, the <code class="ph codeph">puppet
+                    agent</code> command line tool applies configuration changes to a system.
+                However, <code class="ph codeph">puppet agent</code> retrieves
+                compiled catalogs from a <span class="ph">Puppet Server</span>, and applies them to
+                the local system. <span class="ph">Puppet</span> is installed as a <span class="ph">Windows</span> service, and by default tries to contact the
+                master every 30 minutes by running <code class="ph codeph">puppet
+                    agent</code> to retrieve new catalogs and apply them locally.</p></section>
+        <section class="section"><h4 class="title sectiontitle">puppet resource</h4><div class="p">You can run <code class="ph codeph">puppet
+                    resource</code> to query the state of a particular type of resource on the
+                system. For example, to list all of the users on a system, run the command <code class="ph codeph">puppet resource user</code>. <br><img class="image" src="puppet_resource_user_output.png" alt="A terminal window showing user information, such as user groups and user ID, returned by the puppet resource user command."><br>
+            </div><p class="p">The computer used for this example has three local user
+                accounts: Administrator, Guest, and vagrant. Note that the output is the same format
+                as a manifest, and you can copy and paste it directly into a manifest.</p></section>
+        <section class="section"><h4 class="title sectiontitle">puppet module
+                install</h4><p class="p">
+                <span class="ph">Puppet</span> includes many core resource types, plus you
+                can extend <span class="ph">Puppet</span> by installing modules. Modules
+                contain additional resource definitions and the code necessary to modify a system to
+                create, read, modify, or delete those resources. The <span class="ph">Puppet</span>
+                <span class="ph">Forge</span> contains modules developed by <span class="ph">Puppet</span> and community members available for anyone to
+                use.</p><p class="p">
+                <span class="ph">Puppet</span> synchronizes modules from a master to agent
+                nodes during <code class="ph codeph">puppet agent</code> runs.
+                Alternatively, you can use the standalone <span class="ph">Puppet</span>
+                module tool, included when you install <span class="ph">Puppet</span>, to
+                manage, view, and test modules.</p><p class="p">Run <code class="ph codeph">puppet module list</code> to show the list of modules
+                installed on the system.</p><p class="p">To install modules, the <span class="ph">Puppet</span> module tool uses the syntax <code class="ph codeph">puppet module install NAMESPACE/MODULENAME</code>. The
+                    <code class="ph codeph">NAMESPACE</code> is registered to a
+                module, and <code class="ph codeph">MODULE</code> refers to the
+                specific module name. A very common module to install on <span class="ph">Windows</span> is <code class="ph codeph">registry</code>, under the <code class="ph codeph">puppetlabs</code> namespace. So, to install the <code class="ph codeph">registry</code> module, run <code class="ph codeph">puppet module install puppetlabs/registry</code>.</p></section>
+    </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title11" id="managing_windows_services">
+   <h2 class="title topictitle2" id="ariaid-title11">Manage Windows services </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">You can use <span class="ph">Puppet</span> to manage
+         <span class="ph">Windows</span> services, specifically, to start, stop, enable,
+      disable, list, query, and configure services. This way, you can ensure that certain services
+      are always running or are disabled as necessary.</p>
+      <section class="section context">
+         <p class="p">You write <span class="ph">Puppet</span> code to manage
+            services in the manifest. When you apply the manifest, the changes you make to the
+            service are applied.</p>
+         <div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> In addition to using manifests to apply
+               configuration changes, you can query system state using the <code class="ph codeph">puppet resource</code> command, which emits code as well as
+               applying changes.</div>
+         </div>
+      </section>
+   </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title12" id="ensure_a_windows_service_is_running">
+        <h3 class="title topictitle3" id="ariaid-title12">Ensure a Windows service is running</h3>
+        
+        
+        <div class="body taskbody"><p class="shortdesc">There are often services that you always want running
+                in your infrastructure.</p>
+                <section><div class="li step p">
+                                <span class="ph cmd">To have <span class="ph">Puppet</span> ensure that a
+                                        service is running, use the following code:</span>
+                                <div class="itemgroup info">
+                                        <pre class="pre codeblock"><code>service { '&lt;service name&gt;':
+       ensure =&gt; 'running'
+    }</code></pre>
+                                </div>
+                        </div></section>
+                <section class="example"><div class="tasklabel"><h4 class="sectiontitle tasklabel">Example</h4></div>For example, the following manifest code ensures
+                        the&nbsp; <span class="ph">Windows</span> Time&nbsp;service is
+                        running:
+                        <pre class="pre codeblock"><code>service { 'w32time':
+  ensure =&gt; 'running'
+}</code></pre></section>
+        </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title13" id="stop_a_windows_service">
+  <h3 class="title topictitle3" id="ariaid-title13">Stop a Windows service </h3>
+  
+  <div class="body taskbody"><p class="shortdesc">Some services can impair performance, or might need to be
+    stopped for regular maintenance.</p>
+    <section><div class="li step p">
+        <span class="ph cmd">To disable a service, use the code:</span>
+        <div class="itemgroup info"><pre class="pre codeblock"><code>service { '&lt;service name&gt;':
+   ensure =&gt; 'stopped',
+   enable =&gt; 'false'
+}</code></pre></div>
+      </div></section>
+    <section class="example"><div class="tasklabel"><h4 class="sectiontitle tasklabel">Example</h4></div>For example, this disables the disk defragmentation service,
+      which can negatively impact service
+      performance.<pre class="pre codeblock"><code> service { 'defragsvc':
+  ensure =&gt; 'stopped',
+  enable =&gt; 'false'
+}</code></pre>
+    </section>
+  </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title14" id="schedule_recurring_windows_task">
+   <h3 class="title topictitle3" id="ariaid-title14">Schedule a recurring task </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">Regularly scheduled tasks are often necessary on <span class="ph">Windows</span> to perform routine system maintenance. </p>
+      <section class="section context"><p class="p">If you need to sync files
+            from another system on the network, perform backups to another disk, or execute log or
+            index maintenance on SQL Server, you can use <span class="ph">Puppet</span> to
+            schedule and perform regular tasks. The following shows how to regularly delete
+            files.</p></section>
+      <section><div class="li step p">
+            <span class="ph cmd">To delete all files recursively from <code class="ph codeph">C:\Windows\Temp</code> at 8 AM each day, create a
+               resource called <code class="ph codeph">scheduled_task</code> with
+               these attributes:</span>
+            <div class="itemgroup info"><pre class="pre codeblock"><code>scheduled_task { 'Purge global temp files':
+   ensure    =&gt; present,
+   enabled   =&gt; true,
+   command   =&gt; 'c:\\windows\\system32\\cmd.exe',
+   arguments =&gt; '/c "del c:\\windows\\temp\\*.* /F /S /Q"',
+   trigger   =&gt; {
+      schedule   =&gt; daily,
+      start_time =&gt; '08:00',
+  }
+}</code></pre></div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><div class="p">After you set up <span class="ph">Puppet</span> to manage this task, the Task Scheduler includes
+            the task you specified: <br><img class="image" src="windows_task_scheduler.png" alt="The task scheduler showing that the task has been added to the task list."><br>
+         </div></section>
+      <section class="example"><div class="tasklabel"><h4 class="sectiontitle tasklabel">Example</h4></div><p class="p">In addition to creating a trivial
+            daily task at a specified time, the scheduled task resource supports a number of other
+            more advanced scheduling capabilities, including more fine-tuned scheduling. For
+            example, to change the above task to instead perform a disk clean-up every 2 hours,
+            modify the trigger
+            definition:</p><pre class="pre codeblock"><code>scheduled_task { 'Purge global temp files every 2 hours':
+   ensure  =&gt; present,
+   enabled =&gt; true,
+   command   =&gt; 'c:\\windows\\system32\\cmd.exe',
+   arguments =&gt; '/c "del c:\\windows\\temp\\*.* /F /S /Q"',
+   trigger =&gt; [{
+      day_of_week =&gt; ['mon', 'tues', 'wed', 'thurs', 'fri'],
+      every =&gt; '1',
+      minutes_interval =&gt; '120',
+      minutes_duration =&gt; '1440',
+      schedule =&gt; 'weekly',
+      start_time =&gt; '07:30'
+   }],
+  user =&gt; 'system',
+}</code></pre><div class="p">You can see the corresponding definition reflected in the Task
+            Scheduler GUI: <br><img class="image" src="task_scheduler_2.png" alt="The Task Scheduler's &#34;Edit Trigger&#34; window, showing task schedule options such as how often and on what days to repeat the task."><br>
+         </div></section>
+   </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title15" id="manage_windows_users_and_groups">
+      <h2 class="title topictitle2" id="ariaid-title15">Manage <span class="ph">Windows</span> users and
+            groups</h2>
+      <p class="shortdesc">
+            <span class="ph">Puppet</span> can be used to create local group and user
+            accounts. Local user accounts are often desirable for isolating applications requiring
+            unique permissions.</p>
+      
+<article class="topic task nested2" aria-labelledby="ariaid-title16" id="manage_windows_administrator_accounts">
+   <h3 class="title topictitle3" id="ariaid-title16">Manage administrator accounts </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">It is often necessary to standardize the local <span class="ph">Windows</span> Administrator password across an entire <span class="ph">Windows</span> deployment.</p>
+      <section><div class="li step p">
+            <span class="ph cmd">To manage administrator accounts with <span class="ph">Puppet</span>, create a user resource with <code class="ph codeph">'Administrator'</code> as the resource title like
+               so:</span>
+            <div class="itemgroup info">
+               <pre class="pre codeblock"><code>user { 'Administrator':
+   ensure =&gt; present,
+   password =&gt; 'yabbadabba'
+}</code></pre>
+               <div class="note note note_note"><span class="note__title">Note:</span> Securing the password used in the manifest is
+                  beyond the scope of this introductory example, but it’s common to use <span class="ph">Hiera</span>, a key/value lookup tool for configuration,
+                  with eyaml to solve this problem. Not only does this solution provide secure
+                  storage for the password value, but it also provides parameterization to support
+                  reuse, opening the door to easy password rotation policies across an entire
+                  network of <span class="ph">Windows</span> machines.</div>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p"></p>
+      </section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title17" id="configure_apps_to_use_different_account">
+   <h3 class="title topictitle3" id="ariaid-title17">Configure an app to use a different account </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">You might not always want to use the default user for an
+      application, you can use <span class="ph">Puppet</span> to create users for other
+      applications, like ASP.NET. </p>
+      <section><div class="li step p">
+            <span class="ph cmd">To configure ASP.NET apps to use accounts other than
+               the default <code class="ph codeph">Network Service</code>, create
+               a user and exec resource:&nbsp;</span>
+            <div class="itemgroup info"><pre class="pre codeblock"><code>user { 'aspnet_banking_app':
+   ensure          =&gt; present,
+   managehome      =&gt; true,
+   comment         =&gt; 'ASP.NET Service account for Banking application',
+   password        =&gt; 'banking_app_password',
+   groups          =&gt; ['IIS_IUSRS', 'Users'],
+   auth_membership =&gt; 'minimum',
+   notify          =&gt; Exec['regiis_aspnet_banking_app']
+}
+
+exec { 'regiis_aspnet_banking_app':
+   path        =&gt; 'c:\\windows\\Microsoft.NET\\Framework\\v4.0.30319',
+   command     =&gt; 'aspnet_regiis.exe -ga aspnet_banking_app',
+   refreshonly =&gt; true
+}</code></pre></div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">In this example, the user
+            is created in the appropriate groups, and the ASP.NET IIS registration command is run
+            after the user is created to ensure file permissions are correct.</p><div class="p"><br><img class="image" src="windows_iis_users.png" alt="The group properties window showing that the user in the previous example has been created."><br></div><p class="p">In the user resource, there are a few important
+            details to note:</p><ul class="ul">
+            <li class="li"><p class="p">
+                  <code class="ph codeph">managehome</code> is set to create the
+                  user's home directory on disk.</p></li>
+            <li class="li"><p class="p">
+                  <code class="ph codeph">auth_membership</code> is set to
+                  minimum, meaning that <span class="ph">Puppet</span> makes sure the <code class="ph codeph">aspnet_banking_app</code> user is a part of
+                  the <code class="ph codeph">IIS_IUSRS</code> and <code class="ph codeph">Users</code> group, but doesn't remove the
+                  user from any other groups it might be a part of.</p></li>
+            <li class="li"><p class="p">
+                  <code class="ph codeph">notify</code> is set on the user, and
+                     <code class="ph codeph">refreshonly</code> is set on the
+                     <code class="ph codeph">exec</code>. This tells <span class="ph">Puppet</span> to run <code class="ph codeph">aspnet_regiis.exe</code> only when the <code class="ph codeph">aspnet_banking_app</code> is created or changed.</p></li>
+         </ul></section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title18" id="manage_local_groups">
+   <h3 class="title topictitle3" id="ariaid-title18">Manage local groups </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">Local user accounts are often desirable for isolating
+      applications requiring unique permissions. It can also be useful to manipulate existing local
+      groups. </p>
+      <section><div class="li step p">
+            <span class="ph cmd">To add domain users or groups not present in the
+               Domain Administrators group to the local Administrators group, use this code:</span>
+            <div class="itemgroup info">
+               <pre class="pre codeblock"><code>group { 'Administrators':
+   ensure  =&gt; 'present',
+   members =&gt; ['DOMAIN\\User'],
+   auth_membership =&gt; false
+}</code></pre>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p">In this case, <code class="ph codeph">auth_membership</code> is set to false to ensure that <code class="ph codeph">DOMAIN\User</code> is present in the Administrators group, but that
+            other accounts that might be present in Administrators are not removed.</p>
+         <p class="p">Note that the <code class="ph codeph">groups</code>
+            attribute of <code class="ph codeph">user</code> and the <code class="ph codeph">members</code> attribute of <code class="ph codeph">group</code> might both accept SID values, like the
+            well-known SID for Administrators, S-1-5-32-544.</p>
+      </section>
+   </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title19" id="executing_powershell_code">
+   <h2 class="title topictitle2" id="ariaid-title19">Executing <span class="ph">PowerShell</span>
+      code </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Some <span class="ph">Windows</span> maintenance
+      tasks require the use of <span class="ph">Windows</span> Management Instrumentation
+      (WMI), and PowerShell is the most useful way to access WMI methods. <span class="ph">Puppet</span> has a special module that can be used to execute
+      arbitrary <span class="ph">PowerShell</span> code.</p>
+      <section class="section context"><p class="p">A common <span class="ph">Windows</span> maintenance tasks is to disable <span class="ph">Windows</span> drive indexing, because it can negatively impact
+            disk performance on servers.</p></section>
+      <section><div class="li step p">
+            <span class="ph cmd">To disable drive indexing:</span>
+            <div class="itemgroup info"><pre class="pre codeblock"><code>$drive = 'C:'
+
+exec { 'disable-c-indexing':
+   provider  =&gt; powershell,
+   command   =&gt; "\$wmi_volume = Get-WmiObject -Class Win32_Volume -Filter 'DriveLetter=\"${drive}\"'; if (\$wmi_volume.IndexingEnabled -ne \$True) { return }; \$wmi_volume | Set-WmiInstance -Arguments @{IndexingEnabled = \$False}",
+   unless    =&gt; "if ((Get-WmiObject -Class Win32_Volume -Filter 'DriveLetter=\"${drive}\"').IndexingEnabled) { exit 1 }",
+}</code></pre></div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><div class="p">You can see the results in
+            your object editor window: <br><img class="image" src="windows_maintain.png" alt="Object editor window showing that IndexingEnabled is set to FALSE."><br>
+         </div><p class="p">Using the <span class="ph">Windows</span> built-in
+            WBEMTest tool, running this manifest sets <code class="ph codeph">IndexingEnabled</code> to <code class="ph codeph">FALSE</code>,
+            which is the desired behavior.</p><div class="p"> This <code class="ph codeph">exec</code> sets a few important attributes: <ul class="ul">
+               <li class="li"><p class="p">The provider is configured to use <span class="ph">PowerShell</span> (which relies on the
+                     module).</p></li>
+               <li class="li"><p class="p">The command contains inline <span class="ph">PowerShell</span>, and as such, must be
+                     escaped with <span class="ph">PowerShell</span> variables
+                     preceded with <code class="ph codeph">$</code> must be
+                     escaped as <code class="ph codeph">\$</code>. </p></li>
+               <li class="li"><p class="p">The <code class="ph codeph">unless</code> attribute is set to ensure that <span class="ph">Puppet</span> behaves idempotently, a key aspect of
+                     using <span class="ph">Puppet</span> to manage resources. If the
+                     resource is already in the desired state, <span class="ph">Puppet</span>
+                     does not modify the resource state.&nbsp; </p></li>
+            </ul>
+         </div></section>
+   </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title20" id="using_templates_to_manage_puppet_code">
+  <h2 class="title topictitle2" id="ariaid-title20">Using templates to better manage <span class="ph">Puppet</span> code </h2>
+  
+  <div class="body conbody"><p class="shortdesc">While inline <span class="ph">PowerShell</span> is usable as an <code class="ph codeph">exec</code>
+    resource in your manifest, such code can be difficult to read and maintain, especially when it
+    comes to handling escaping rules.</p>
+    <p class="p"> For executing multi-line scripts, use <span class="ph">Puppet</span> templates instead. The following example shows how you can use a template to organize the
+      code for disabling <span class="ph">Windows</span> drive indexing.</p>
+    <pre class="pre codeblock"><code>$drive = 'C:'
+
+exec { 'disable-c-indexing':
+  command   =&gt; template('Disable-Indexing.ps1.erb'),
+  provider  =&gt; powershell,
+  unless    =&gt; "if ((Get-WmiObject -Class Win32_Volume -Filter 'DriveLetter=\"${drive}\"').IndexingEnabled) { exit 1 }",
+}</code></pre>
+    <p class="p">The <span class="ph">PowerShell</span> code for
+      Disable-Indexing.ps1.erb becomes:</p>
+    <pre class="pre codeblock"><code>function Disable-Indexing($Drive)
+{
+  $drive = Get-WmiObject -Class Win32_Volume -Filter "DriveLetter='$Letter'"
+  if ($drive.IndexingEnabled -ne $True) { return }
+  $drive | Set-WmiInstance -Arguments @{IndexingEnabled=$False} | Out-Null
+}
+
+Disable-Indexing -Drive '&lt;%= @driveLetter %&gt;'</code></pre>
+  </div>
+</article></article></article></main></body></html>

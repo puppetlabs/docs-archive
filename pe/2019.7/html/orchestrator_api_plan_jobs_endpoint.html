@@ -1,0 +1,461 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the /plan_jobs endpoint to view details about plan jobs you have run."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Kate Lopresti <kate.lopresti@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrator_api_plan_jobs_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet orchestrator API: plan jobs endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="orchestrator_api_plan_jobs_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">Puppet</span> orchestrator API: plan jobs
+        endpoint</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">/plan_jobs</code> endpoint to view details about plan jobs you have
+        run. </p>
+        <p class="p"></p>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="orchestrator_api_get_plan_jobs">
+  <h2 class="title topictitle2" id="ariaid-title2">GET /plan_jobs</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">List the known plan jobs sorted by name and in descending
+    order.</p>
+    <section class="section" id="orchestrator_api_get_plan_jobs__parameters"><h3 class="title sectiontitle">Parameters</h3><p class="p">The request accepts the following query
+        parameters:</p><table class="table" id="orchestrator_api_get_plan_jobs__table_y1s_32g_yfb"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_get_plan_jobs__table_y1s_32g_yfb__entry__1">Parameter</th>
+              <th class="entry" id="orchestrator_api_get_plan_jobs__table_y1s_32g_yfb__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_y1s_32g_yfb__entry__1">
+                <code class="ph codeph">limit</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_y1s_32g_yfb__entry__2">Return only the most recent <em class="ph i">n</em> number of jobs.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_y1s_32g_yfb__entry__1">
+                <code class="ph codeph">offset</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_y1s_32g_yfb__entry__2">Return results offset <em class="ph i">n</em> records into the result set.</td>
+            </tr>
+          </tbody></table></section>
+    <section class="section" id="orchestrator_api_get_plan_jobs__response_format"><h3 class="title sectiontitle">Response
+        format</h3><p class="p">The response is a JSON object that contains a list of
+        the known plan jobs, and information about the pagination. </p><table class="table" id="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb"><caption></caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">Key</th>
+              <th class="entry" id="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">items</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">An array of all the plan jobs.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">id</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">An absolute URL to the given plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The ID of the plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">state</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The current state of the plan job: <code class="ph codeph">running</code>,<code class="ph codeph">success</code>, or <code class="ph codeph">failure</code></td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">options</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">Information about the plan job: <code class="ph codeph">description</code>, <code class="ph codeph">plan_name</code>, and any <code class="ph codeph">parameters</code>.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">description</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The user-provided description for the plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">plan_name</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The name of the plan that was run, for example <code class="ph codeph">package::install</code>.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">parameters</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The parameters passed to the plan for the job. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">result</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The output from the plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">owner</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The subject ID and login for the user that requested the
+                job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">created_timestamp</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The time the plan job was created. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">finished_timestamp</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The time the plan job finished. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">events</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">A link to the events for a given plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">status</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">A hash of jobs that ran as part of the plan job, with
+                associated lists of states and their enter and exit times.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">pagination</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">Contains the information about the limit, offset and
+                total number of items.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">limit</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The number of items the request was limited to. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">offset</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The offset from the start of the collection (zero
+                based).</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__1">
+                <code class="ph codeph">total</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs__table_adv_nbg_yfb__entry__2">The total number of items in the collection, ignoring
+                limit and offset.</td>
+            </tr>
+          </tbody></table><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>{
+  "items" : [ {
+    "finished_timestamp" : null,
+    "name" : "37",
+    "events" : {
+      "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/37/events"
+    },
+    "state" : "running",
+    "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/37",
+    "created_timestamp" : "YYYY-MM-DDT20:22:08Z",
+    "options" : {
+      "description" : "Testing myplan",
+      "plan_name" : "myplan",
+      "parameters" : {
+        "nodes" : [ "localhost" ]
+      }
+    },
+    "owner" : {
+      "email" : "",
+      "is_revoked" : false,
+      "last_login" : "YYYY-MM-DDT20:22:06.327Z",
+      "is_remote" : false,
+      "login" : "admin",
+      "is_superuser" : true,
+      "id" : "42bf351c-f9ec-40af-84ad-e976fec7f4bd",
+      "role_ids" : [ 1 ],
+      "display_name" : "Administrator",
+      "is_group" : false
+    },
+    "result" : null
+  }, {
+    "finished_timestamp" : null,
+    "name" : "36",
+    "events" : {
+      "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/36/events"
+    },
+    "state" : "running",
+    "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/36",
+    "created_timestamp" : "YYYY-MM-DDT20:22:08Z",
+    "options" : {
+      "description" : "Testing myplan",
+      "plan_name" : "myplan",
+      "parameters" : {
+        "nodes" : [ "localhost" ]
+      }
+    },
+    "owner" : {
+      "email" : "",
+      "is_revoked" : false,
+      "last_login" : "YYYY-MM-DDT20:22:06.327Z",
+      "is_remote" : false,
+      "login" : "admin",
+      "is_superuser" : true,
+      "id" : "42bf351c-f9ec-40af-84ad-e976fec7f4bd",
+      "role_ids" : [ 1 ],
+      "display_name" : "Administrator",
+      "is_group" : false
+    },
+    "result" : null
+  }, {
+    "finished_timestamp" : null,
+    "name" : "35",
+    "events" : {
+      "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/35/events"
+    },
+    "state" : "running",
+    "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/35",
+    "created_timestamp" : "YYYY-MM-DDT20:22:07Z",
+    "options" : {
+      "description" : "Testing myplan",
+      "plan_name" : "myplan",
+      "parameters" : {
+        "nodes" : [ "localhost" ]
+      }
+    },
+    "owner" : {
+      "email" : "",
+      "is_revoked" : false,
+      "last_login" : "YYYY-MM-DDT20:22:06.327Z",
+      "is_remote" : false,
+      "login" : "admin",
+      "is_superuser" : true,
+      "id" : "42bf351c-f9ec-40af-84ad-e976fec7f4bd",
+      "role_ids" : [ 1 ],
+      "display_name" : "Administrator",
+      "is_group" : false
+    },
+    "result" : null
+  }, {
+    "finished_timestamp" : null,
+    "name" : "34",
+    "events" : {
+      "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/34/events"
+    },
+    "state" : "running",
+    "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/34",
+    "created_timestamp" : "YYYY-MM-DDT20:22:07Z",
+    "options" : {
+      "description" : "Testing myplan",
+      "plan_name" : "myplan",
+      "parameters" : {
+        "nodes" : [ "localhost" ]
+      }
+    },
+    "owner" : {
+      "email" : "",
+      "is_revoked" : false,
+      "last_login" : "YYYY-MM-DDT20:22:06.327Z",
+      "is_remote" : false,
+      "login" : "admin",
+      "is_superuser" : true,
+      "id" : "42bf351c-f9ec-40af-84ad-e976fec7f4bd",
+      "role_ids" : [ 1 ],
+      "display_name" : "Administrator",
+      "is_group" : false
+    },
+    "result" : null
+  }, {
+    "finished_timestamp" : null,
+    "name" : "33",
+    "events" : {
+      "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/33/events"
+    },
+    "state" : "running",
+    "id" : "https://localhost:50310/orchestrator/v1/plan_jobs/33",
+    "created_timestamp" : "YYYY-MM-DDT20:22:07Z",
+    "options" : {
+      "description" : "Testing myplan",
+      "plan_name" : "myplan",
+      "parameters" : {
+        "nodes" : [ "localhost" ]
+      }
+    },
+    "owner" : {
+      "email" : "",
+      "is_revoked" : false,
+      "last_login" : "YYYY-MM-DDT20:22:06.327Z",
+      "is_remote" : false,
+      "login" : "admin",
+      "is_superuser" : true,
+      "id" : "42bf351c-f9ec-40af-84ad-e976fec7f4bd",
+      "role_ids" : [ 1 ],
+      "display_name" : "Administrator",
+      "is_group" : false
+    },
+    "result" : null
+  } ],
+  "pagination" : {
+    "limit" : 5,
+    "offset" : 3,
+    "total" : 40
+  }
+}</code></pre></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="orchestrator_api_get_plan_jobs_id">
+  <h2 class="title topictitle2" id="ariaid-title3">GET /plan_jobs/:job-id</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">List all the details of a given plan job.</p>
+    <section class="section" id="orchestrator_api_get_plan_jobs_id__response_format"><h3 class="title sectiontitle">Response
+        format</h3><p class="p">The response is a JSON object that lists all details of
+        a given plan job. The following keys are used:</p><table class="table" id="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1">Key</th>
+              <th class="entry" id="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">Defintion</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">id</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">An absolute URL to the given plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">name</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The ID of the plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">state</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The current state of the plan job: <code class="ph codeph">running</code>,<code class="ph codeph">success</code>, or <code class="ph codeph">failure</code>
+              </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">options</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">Information about the plan job: <code class="ph codeph">description</code>, <code class="ph codeph">plan_name</code>, and any <code class="ph codeph">parameters</code>.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">description</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The user-provided description for the plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">plan_name</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The name of the plan that was run, for example <code class="ph codeph">package::install</code>.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">parameters</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The parameters passed to the plan for the job. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">result</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The output from the plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">owner</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The subject ID and login for the user that requested the
+                job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">timestamp</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The time when the plan job state last changed.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">created_timestamp</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The time the plan job was created. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1">
+                <code class="ph codeph">finished_timestamp</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">The time the plan job finished. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">events</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">A link to the events for a given plan job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__1"><code class="ph codeph">status</code></td>
+              <td class="entry" headers="orchestrator_api_get_plan_jobs_id__table_zwg_vgg_yfb__entry__2">A hash of jobs that ran as part of the plan job, with
+                associated lists of states and their enter and exit times.</td>
+            </tr>
+          </tbody></table><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>{
+  "id": "https://orchestrator.example.com:8143/orchestrator/v1/plan_jobs/1234",
+  "name": "1234",
+  "state": "success",
+  "options": {
+    "description": "This is a plan run",
+    "plan_name": "package::install",
+    "parameters": {
+      "foo": "bar"
+    }
+  },
+  "result": {
+    "output": "test\n"
+  },
+  "owner": {
+    "email": "",
+    "is_revoked": false,
+    "last_login": "YYYY-MM-DDT17:06:48.170Z",
+    "is_remote": false,
+    "login": "admin",
+    "is_superuser": true,
+    "id": "42bf351c-f9ec-40af-84ad-e976fec7f4bd",
+    "role_ids": [
+      1
+    ],
+    "display_name": "Administrator",
+    "is_group": false
+  },
+  "timestamp": "YYYY-MM-DDT16:45:31Z",
+  "status": {
+    "1": [
+      {
+        "state": "running",
+        "enter_time": "YYYY-MM-DDT18:44:31Z",
+        "exit_time": "YYYY-MM-DDT18:45:31Z"
+      },
+      {
+        "state": "finished",
+        "enter_time": "YYYY-MM-DDT18:45:31Z",
+        "exit_time": null
+      }
+    ],
+    "2": [
+      {
+        "state": "running",
+        "enter_time": "YYYY-MM-DDT18:44:31Z",
+        "exit_time": "YYYY-MM-DDT18:45:31Z"
+      },
+      {
+        "state": "failed",
+        "enter_time": "YYYY-MM-DDT18:45:31Z",
+        "exit_time": null
+      }
+    ]
+  },
+  "events": {
+    "id": "https://localhost:8143/orchestrator/v1/plan_jobs/1234/events"
+  }
+}</code></pre></section>
+    <section class="section" id="orchestrator_api_get_plan_jobs_id__error_responses"><h3 class="title sectiontitle">Error
+        responses</h3><p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p><ul class="ul">
+        <li class="li">
+          <code class="ph codeph">puppetlabs.orchestrator/validation-error</code>:
+          if the <code class="ph codeph">job-id</code> in the request is not an
+          integer, the server returns a <code class="ph codeph">400</code>
+          response.</li>
+        <li class="li">
+          <code class="ph codeph">puppetlabs.orchestrator/unknown-job</code>: if
+          the plan job does not exist, the server returns a <code class="ph codeph">404</code> response.</li>
+      </ul></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article></article></article></main></body></html>

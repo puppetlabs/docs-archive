@@ -1,0 +1,168 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Deploy environments on the command line with the r10k command."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="deploying_environments_with_r10k"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Deploying environments with r10k</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="deploying_environments_with_r10k">
+   <h1 class="title topictitle1" id="ariaid-title1">Deploying environments with <span class="ph">r10k</span></h1>
+   
+   <div class="body conbody"><p class="shortdesc">Deploy environments on the command line with the <code class="ph codeph">r10k</code> command.</p>
+      <p class="p">The first time you run <span class="ph">r10k</span>, deploy all
+         environments and modules by running <code class="ph codeph">r10k deploy
+            environment</code>.</p>
+      <p class="p">This command:</p>
+      <ol class="ol">
+         <li class="li">Checks your control repository to see what branches are
+            present.</li>
+         <li class="li">Maps those branches to the <span class="ph">Puppet</span>
+            directory environments.</li>
+         <li class="li">Clones your <span class="ph">Git</span> repo, and either
+            creates (if this is your first run) or updates (if it is a subsequent run) your
+            directory environments with the contents of your repo branches.</li>
+      </ol>
+      <div class="note note note_note"><span class="note__title">Note:</span> 
+         <p class="p">When running commands to deploy code on a master, <span class="ph">r10k</span> needs write access to your environment path. Run <span class="ph">r10k</span> as the <code class="ph codeph">pe-puppet</code> user or as root. Running the user as root requires access control
+            to the root user.</p>
+      </div>
+   </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="updating_environments_with_r10k">
+    <h2 class="title topictitle2" id="ariaid-title2">Updating environments</h2>
+    
+    <div class="body conbody"><p class="shortdesc">To update environments with <span class="ph">r10k</span>, use the <code class="ph codeph"><code class="ph codeph">deploy environment</code></code>
+        command.</p></div>
+<article class="topic concept nested2" aria-labelledby="ariaid-title3" id="updating_all_environments">
+    <h3 class="title topictitle3" id="ariaid-title3">Updating all environments </h3>
+    
+    <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">deploy
+            environment</code> command updates all existing environments and recursively creates
+        new environments.</p>
+        <p class="p">The <code class="ph codeph">deploy
+                environment</code> command updates all existing environments and recursively
+            creates new environments. This command updates modules only on the first deployment of a
+            given environment. On subsequent updates, it updates only the environment itself.</p>
+        <p class="p">From the command line, run <code class="ph codeph">r10k deploy environment</code></p>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title4" id="updating_all_environments_and_modules">
+    <h3 class="title topictitle3" id="ariaid-title4">Updating all environments and modules </h3>
+    
+    <div class="body conbody"><p class="shortdesc">With the <code class="ph codeph">--puppetfile</code> flag, the <code class="ph codeph">deploy
+            environment</code> command updates all environments and modules.</p>
+        <p class="p">This command:</p>
+        <ul class="ul">
+            <li class="li">Updates all sources.</li>
+            <li class="li">Creates new environments.</li>
+            <li class="li">Deletes old environments.</li>
+            <li class="li">Recursively updates all environment modules specified in each
+                environment's <span class="ph">Puppetfile</span>.</li>
+        </ul>
+        <p class="p">This command does the maximum possible work, and is therefore the
+            slowest method for <span class="ph">r10k</span> deployments. Usually, you
+            should use the less resource-intensive commands for updating environments and
+            modules.</p>
+        <p class="p">From the command line, run <code class="ph codeph">r10k deploy environment --puppetfile</code></p>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title5" id="updating_a_single_environment">
+    <h3 class="title topictitle3" id="ariaid-title5">Updating a single environment </h3>
+    
+    <div class="body conbody"><p class="shortdesc">To updated just one environment, specify that environment
+        name with the <code class="ph codeph">deploy environment</code>
+        command.</p>
+        <p class="p">This command updates modules only on the first deployment of the
+            specified environment. On subsequent updates, it updates only the environment
+            itself.</p>
+        <p class="p">If you're actively developing on a given environment, this is the
+            quickest way to deploy your changes.</p>
+        <p class="p">On the command line, run <code class="ph codeph">r10k
+                deploy environment &lt;MY_WORKING_ENVIRONMENT&gt;</code></p>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title6" id="updating_a_single_environment_and_its_modules">
+    <h3 class="title topictitle3" id="ariaid-title6">Updating a single environment and its modules </h3>
+    
+    <div class="body conbody"><p class="shortdesc">To update both a single given environment and all of the
+        modules contained in that environment's <span class="ph">Puppetfile</span>, add the <code class="ph codeph">--puppetfile</code>
+        flag to your command. This is useful if you want to make sure that a given environment is
+        fully up to date.</p>
+        <p class="p">On the command line, run <code class="ph codeph">r10k
+                deploy environment &lt;MY_WORKING_ENVIRONMENT&gt; --puppetfile</code></p>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="installing_and_updating_modules_with_r10k">
+      <h2 class="title topictitle2" id="ariaid-title7">Installing and updating modules</h2>
+      
+      <div class="body conbody"><p class="shortdesc"> To update modules, use the <code class="ph codeph">r10k deploy module</code> subcommand. This command installs or
+            updates the modules you've specified in each environment's <span class="ph">Puppetfile</span>. </p>
+            <p class="p">If the specified module is not described in a given environment's
+                        <span class="ph">Puppetfile</span>, that environment is skipped.</p>
+      </div>
+<article class="topic concept nested2 concepts}" aria-labelledby="ariaid-title8" id="updating_a_certain_module_across_all_environments">
+    <h3 class="title topictitle3" id="ariaid-title8">Updating specific modules across all environments </h3>
+    
+    <div class="body conbody"><p class="shortdesc">To update specific modules across all environments,
+        specify the modules with the <code class="ph codeph">deploy module</code>
+        command.</p>
+        <p class="p"> You can specify a single module or multiple modules. This is useful
+            when you're working on a module and want to update it across all environments.</p>
+        <p class="p">For example, to update the apache, jenkins, and java modules, run
+                <code class="ph codeph">r10k deploy module apache jenkins
+                java</code></p>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title9" id="updating_one_or_more_modules_in_a_single_environment">
+    <h3 class="title topictitle3" id="ariaid-title9">Updating one or more modules in a single environment </h3>
+    
+    <div class="body conbody"><p class="shortdesc">To update specific modules in a single environment,
+        specify both the environment and the modules.</p>
+        <p class="p">On the command line, run <code class="ph codeph">r10k
+                deploy module</code> with:</p>
+        <ul class="ul">
+            <li class="li">The environment option <code class="ph codeph">-e</code>.</li>
+            <li class="li">The name of the environment.</li>
+            <li class="li">The names of the modules you want to update in that
+                environment.</li>
+        </ul>
+        <p class="p">For example, to install the apache, jenkins, and java modules in the
+            production environment, run <code class="ph codeph">r10k deploy module
+                -e production apache jenkins java</code></p>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title10" id="viewing_environments_with_r10k">
+            <h2 class="title topictitle2" id="ariaid-title10">Viewing environments with <span class="ph">r10k</span></h2>
+            
+            <div class="body conbody"><p class="shortdesc">Display information about your environments and
+                        modules with the <code class="ph codeph">r10k deploy
+                                    display</code> subcommand. This subcommand does not deploy
+                        environments, but only displays information about the environments and
+                        modules <span class="ph">r10k</span> is managing.</p>
+                        <p class="p">This command can return varying levels of detail about
+                                    the environments.</p>
+                        <ul class="ul">
+                                    <li class="li">To display all environments being
+                                                managed by <span class="ph">r10k</span>, use
+                                                the <code class="ph codeph">deploy
+                                                  display</code> command. From the command line,
+                                                run <code class="ph codeph"> r10k
+                                                  deploy display</code></li>
+                        </ul>
+                        <ul class="ul">
+                                    <li class="li">To display all managed environments and
+                                                  <span class="ph">Puppetfile</span> modules,
+                                                use the <span class="ph">Puppetfile</span>
+                                                flag, <code class="ph codeph">-p</code>. From the command line, run <code class="ph codeph"> r10k deploy
+                                                  display -p</code></li>
+                        </ul>
+                        <ul class="ul">
+                                    <li class="li">To get detailed information about module
+                                                versions, use the <code class="ph codeph">-p</code> (<span class="ph">Puppetfile</span>) and <code class="ph codeph">--detail</code>
+                                                flags. This provides both the expected and actual
+                                                versions of the modules listed in each environment's
+                                                  <span class="ph">Puppetfile</span>. From
+                                                the command line, run <code class="ph codeph"> r10k deploy display -p
+                                                  --detail</code></li>
+                        </ul>
+                        <ul class="ul">
+                                    <li class="li">To get detailed information about the
+                                                modules only in specific environments, limit your
+                                                query with the environment names. This provides both
+                                                the expected and actual versions of the modules
+                                                listed in the <span class="ph">Puppetfile</span> in each
+                                                specified environment. For example, to see details
+                                                on the modules for environments called production,
+                                                vmwr, and webrefactor, run:
+                                                <pre class="pre codeblock"><code>r10k deploy display -p --detail production vmwr webrefactor</code></pre></li>
+                        </ul>
+            </div>
+</article></article></article></main></body></html>

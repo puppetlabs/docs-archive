@@ -1,0 +1,27 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="r10k is a code management tool that allows you to manage your environment configurations (such as production, testing, and development) in a source control repository."><meta name="DC.relation" scheme="URI" content="r10k_config.html#configuring_r10k"><meta name="DC.relation" scheme="URI" content="r10k_customize_config.html#customizing_r10k_configuration"><meta name="DC.relation" scheme="URI" content="r10k_deploy_env.html#deploying_environments_with_r10k"><meta name="DC.relation" scheme="URI" content="r10k_commands.html#r10k_commands"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="managing_code_with_r10k"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Managing code with r10k</title></head><body id="managing_code_with_r10k"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+   <h1 class="title topictitle1" id="ariaid-title1">Managing code with <span class="ph">r10k</span></h1>
+   
+   <div class="body conbody"><p class="shortdesc">
+      <span class="ph">r10k</span> is a code management tool that allows you to manage your
+      environment configurations (such as production, testing, and development) in a source control
+      repository.</p>
+      <p class="p">Based on the code in your control repo branches, <span class="ph">r10k</span> creates environments on your master and installs and
+         updates the modules you want in each environment. If you are running <span class="ph">PE</span> 2015.3 or later, we encourage you to use <span class="ph">Code Manager</span>, which uses <span class="ph">r10k</span> in
+         the background to automate the deployment of your code. If you use <span class="ph">Code Manager</span>, you won't need to manage or interact with <span class="ph">r10k</span> manually. To learn more about <span class="ph">Code Manager</span> and begin setup, see the <span class="ph">Code Manager</span> page. However, if you're already using <span class="ph">r10k</span> and aren't ready to switch to <span class="ph">Code Manager</span>, you can continue using <span class="ph">r10k</span> alone.</p>
+      <p class="p">To set up <span class="ph">r10k</span> to manage your
+         environments:</p>
+      <ol class="ol">
+         <li class="li">Set up a control repository for your code.</li>
+         <li class="li">Create a <span class="ph">Puppetfile</span> to manage the
+            content for your environment.</li>
+         <li class="li">Configure <span class="ph">r10k</span>. Optionally, you can
+            also customize your <span class="ph">r10k</span> configuration in <span class="ph">Hiera</span>.</li>
+         <li class="li">Run <span class="ph">r10k</span> to deploy your environments
+            and modules.</li>
+      </ol>
+      <p class="p">We've also included a reference of <span class="ph">r10k</span>
+         subcommands.</p>
+   </div>
+<nav role="navigation" class="related-links"><ul class="ullinks"><li class="link ulchildlink"><strong><a href="r10k_config.html#configuring_r10k">Configuring r10k</a></strong><br>When performing a fresh text-mode installation of <span class="ph">Puppet Enterprise (PE)</span>, you can configure <span class="ph">r10k</span> by adding parameters to the <code class="ph codeph">pe.conf</code> file. In existing installations, configure <span class="ph">r10k</span> by adjusting parameters in the         console.</li><li class="link ulchildlink"><strong><a href="r10k_customize_config.html#customizing_r10k_configuration">Customizing r10k configuration</a></strong><br>If you need a customized <span class="ph">r10k</span> configuration, you can set specific parameters             with <span class="ph">Hiera</span>.</li><li class="link ulchildlink"><strong><a href="r10k_deploy_env.html#deploying_environments_with_r10k">Deploying environments with r10k</a></strong><br>Deploy environments on the command line with the <code class="ph codeph">r10k</code> command.</li><li class="link ulchildlink"><strong><a href="r10k_commands.html#r10k_commands">r10k command reference</a></strong><br>         <span class="ph">r10k</span> accepts several command line actions, with         options and subcommands.</li></ul></nav></article></main></body></html>

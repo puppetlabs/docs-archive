@@ -1,0 +1,208 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="File sync helps Code Manager keep your Puppet code synchronized across multiple masters."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="about_file_sync"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>About file sync</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="about_file_sync">
+    <h1 class="title topictitle1" id="ariaid-title1">About file sync </h1>
+    
+    <div class="body conbody"><p class="shortdesc">File sync helps <span class="ph">Code Manager</span> keep your <span class="ph">Puppet</span> code synchronized
+        across multiple masters.</p>
+        <p class="p">When triggered by a web endpoint, file sync takes changes from your
+            working directory on your master and deploys the code to a live code directory. File
+            sync then automatically deploys that code onto all your compilers, ensuring that all
+            masters in a multi-master configuration are kept in sync.</p>
+        <p class="p">In addition, file sync ensures that your <span class="ph">Puppet</span> code is deployed only when it is ready.
+            These deployments ensure that your agents' code won't change during a run. File sync
+            also triggers an environment cache flush when the deployment has finished, to ensure
+            that new agent runs happen against the newly deployed <span class="ph">Puppet</span> code.</p>
+        <p class="p">File sync works with <span class="ph">Code Manager</span>, so you typically won't need to do anything with file sync directly. If
+            you want to know more about how file sync works, or you need to work with file sync
+            directly for testing, this page provides additional information.</p>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="filesync_terms">
+   <h2 class="title topictitle2" id="ariaid-title2">File sync terms</h2>
+   
+   <div class="body conbody"><p class="shortdesc">There are a few terms that are helpful when you are working
+      with file sync or tools that use file sync.</p>
+      <div class="p">
+         <dl class="dl">
+            
+               <dt class="dt dlterm">
+                  <strong class="ph b">Live code directory</strong>
+               </dt>
+               <dd class="dd">This is the directory that all of the <span class="ph">Puppet</span> environments, manifests, and modules are
+                  stored in. This directory is used by <span class="ph">Puppet Server</span> for
+                  catalog compilation. It corresponds to the <span class="ph">Puppet Server</span>
+                  <code class="ph codeph">master-code-dir</code> setting and the
+                     <span class="ph">Puppet</span><code class="ph codeph">$codedir</code> setting. The default value is <code class="ph codeph">/etc/puppetlabs/code</code>. In file sync configuration, you
+                  might see this referred to simply as live-dir. This directory exists on all of
+                  your masters.</dd>
+            
+            
+               <dt class="dt dlterm">
+                  <strong class="ph b">Staging code directory</strong>
+               </dt>
+               <dd class="dd">This is the directory where you stage your code changes
+                  before rolling them out to the live code dir. You can move files into this
+                  directory in your usual way. Then, when you trigger a file sync deployment, file
+                  sync moves the changes to the live code dir on all of your masters. This directory
+                  exists only on the master; compilers do not need a staging directory. The default
+                  value is <code class="ph codeph">/etc/puppetlabs/code-staging</code>.</dd>
+            
+         </dl>
+      </div>
+   </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="how_file_sync_works">
+    <h2 class="title topictitle2" id="ariaid-title3">How file sync works </h2>
+    
+    <div class="body conbody"><p class="shortdesc">File sync helps distribute your code to all of your
+        masters and agents.</p>
+        <p class="p">By default, file sync is disabled and the staging directory is not
+            created on the master. If you're upgrading from 2015.2 or earlier, file sync is disabled
+            after the upgrade. You must enable file sync, and then run <span class="ph">Puppet</span> on all masters. This creates the staging directory
+            on the master, which you can then populate with your <span class="ph">Puppet</span> code. File sync can then commit your code; that is, it can prepare the code for
+            synchronization to the live code directory, and then your compilers. Normally, <span class="ph">Code Manager</span> triggers this commit automatically, but you can
+            trigger a commit by hitting the file sync endpoint. </p>
+        <p class="p">For example:</p>
+        <pre class="pre codeblock bash"><code>/opt/puppetlabs/puppet/bin/curl -s --request POST --header "Content-Type: application/json" --data '{"commit-all": true}' --cert ${cert} --key ${key} --cacert ${cacert} https://${fqdn}:8140/file-sync/v1/commit"</code></pre>
+        <p class="p">The above command is run from the master and contains the following
+            variables:</p>
+        <ul class="ul">
+            <li class="li"><code class="ph codeph">fqdn</code>: Fully
+                qualified domain name of the master.</li>
+            <li class="li"><code class="ph codeph">cacert</code>: The <span class="ph">Puppet</span> CA's certificate (<code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/ca.pem</code>).</li>
+            <li class="li"><code class="ph codeph">cert</code>: The ssl
+                cert for the master (<code class="ph codeph">/etc/puppetlabs/ssl/certs/${fqdn}.pem</code>).</li>
+            <li class="li"><code class="ph codeph">key</code>: The
+                private key for the master (<code class="ph codeph">/etc/puppetlabs/ssl/private_keys/${fqdn}.pem</code>).</li>
+        </ul>
+        <p class="p">This command commits all of the changes in the staging directory.
+            After the commit, when any compilers check the file sync service for changes, they
+            receive the new code and deploy it into their own code directories, where it is
+            available for agents checking in to those masters. (By default, compilers check file
+            sync every 5 seconds.) </p>
+        <p class="p">Commits can be restricted to a specific environment and can include
+            details such as a message, and information about the commit author. </p>
+    </div>
+<article class="topic concept nested2" aria-labelledby="ariaid-title4" id="enabling_or_disabling_file_sync">
+    <h3 class="title topictitle3" id="ariaid-title4">Enabling or disabling file sync </h3>
+    
+    <div class="body conbody"><p class="shortdesc">File sync is normally enabled or disabled automatically
+        along with <span class="ph">Code Manager</span>.</p>
+        <p class="p">File sync's behavior is linked to that of <span class="ph">Code Manager</span>. Because <span class="ph">Code Manager</span> is disabled by default, file sync
+            is also disabled. To enable file sync, enable <span class="ph">Code Manager</span> You can enable and configure <span class="ph">Code Manager</span> either during or after <span class="ph">PE</span>
+            installation.</p>
+        <p class="p">The <code class="ph codeph">file_sync_enabled</code>
+            parameter in the <code class="ph codeph">puppet_enterprise::profile::master</code> class in the console defaults to
+                <code class="ph codeph">automatic</code>, which means that file
+            sync is enabled and disabled automatically with <span class="ph">Code Manager</span>. If you set this parameter to <code class="ph codeph">true</code>, it forces file sync to be enabled even if <span class="ph">Code Manager</span> is disabled. The <code class="ph codeph">file_sync_enabled</code> parameter doesn't appear in the
+            class definitions --- you must add the parameter to the class in order to set it.</p>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="filesync_resetting">
+    <h3 class="title topictitle3" id="ariaid-title5">Resetting file sync</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">If file sync has entered a failure state, consumed all
+        available disk space, or a repository has become irreparably corrupted, reset the service. </p>
+        <section class="section context">
+            <p class="p">Resetting deletes the commit history for all repositories managed
+                by file sync, which frees up disk space and returns the service to a "fresh install"
+                state while preserving any code in the staging directory. </p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On the master, perform the appropriate
+                    action:</span>
+                <div class="itemgroup info"><div class="p"><ul class="ul">
+                            <li class="li"><p class="p">If you use file sync with
+                                    Code Manager, ensure that any code ready for deployment is
+                                    present in the staging directory, and that the code most
+                                    recently deployed is present in your control repository so that
+                                    it can be re-synced.</p></li>
+                            <li class="li"><p class="p">If you use file sync with
+                                    r10k, perform an r10k deploy and ensure that the code most
+                                    recently deployed is present in your control repository so that
+                                    it can be re-synced. </p></li>
+                            <li class="li"><p class="p">If you use file sync
+                                    alone, ensure that any code ready for deployment is present
+                                        in&nbsp;<code class="ph codeph">/etc/puppetlabs/code-staging</code>.</p></li>
+                        </ul></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Shut down the pe-puppetserver service: <code class="ph codeph">puppet resource service
+                        pe-puppetserver ensure=stopped</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Delete the data directory located at <code class="ph codeph">/opt/puppetlabs/server/data/puppetserver/filesync/storage</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Restart the pe-puppetserver service: <code class="ph codeph">puppet resource service
+                        pe-puppetserver ensure=running</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Perform the appropriate action:</span>
+                <div class="itemgroup info"><div class="p"><ul class="ul">
+                            <li class="li"><p class="p">If you use file sync with
+                                    Code Manager, use Code Manager to deploy all environments.
+                                </p></li>
+                            <li class="li"><p class="p">If you use file sync alone
+                                    or with r10k, perform a commit. </p></li>
+                        </ul></div></div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">File sync is now reset.
+                The service creates fresh repositories on each client and the storage server for the
+                code it manages. </p></section>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="checking_your_deployments">
+      <h2 class="title topictitle2" id="ariaid-title6">Checking your deployments </h2>
+      
+      <div class="body conbody"><p class="shortdesc">You can manually check information about file sync's
+            deployments with curl commands that hit the <code class="ph codeph">status</code> endpoint.</p>
+            <p class="p">To manually check that your code has been successfully committed
+                  and deployed, you can hit a status endpoint on the master. </p>
+            <div class="p">
+                  <pre class="pre codeblock"><code>curl -k https://${fqdn}:8140/status/v1/services?level=debug
+</code></pre>
+            </div>
+            <p class="p">This returns output in JSON, so you can pipe it to <code class="ph codeph">python -m json.tool</code> for better
+                  readability.</p>
+            <p class="p">To check a list of file sync's clients, query the <code class="ph codeph">file-sync-storage-service</code> section of the
+                  master by running a curl command. </p>
+            <p class="p">This command returns a list of:</p>
+            <ul class="ul">
+                  <li class="li">All of the clients that file sync is aware of.</li>
+                  <li class="li">When those clients last checked in.</li>
+                  <li class="li">Which commit they have deployed .</li>
+            </ul>
+            <div class="p">
+                  <pre class="pre codeblock"><code>curl -k https://${fqdn}:8140/status/v1/services/file-sync-client-service?level=debug
+</code></pre>
+            </div>
+            <p class="p">If your commit has been deployed, it is listed in the status
+                  listing for <code class="ph codeph">latest_commit</code>.</p>
+      </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="filesync_cautions">
+    <h2 class="title topictitle2" id="ariaid-title7">Cautions </h2>
+    
+    <div class="body conbody"><p class="shortdesc">There are a few things to be aware of with file
+        sync.</p>
+        <section class="section" id="filesync_cautions__always_use_the_staging_directory"><h3 class="title sectiontitle">Always use the staging directory </h3><p class="p">Always
+                make changes to your <span class="ph">Puppet</span> code in the
+                staging directory. If you have edited code in the live code directory on the master
+                or any compiled masters, <em class="ph i">it's overwritten</em> by file
+                sync on the next commit.</p><p class="p">The <code class="ph codeph">enable-forceful-sync</code> parameter is set to <code class="ph codeph">true</code> by default in <span class="ph">PE</span>. When <code class="ph codeph">false</code>, file sync does not overwrite changes in the code directory,
+                but instead logs errors in <code class="ph codeph">/var/log/puppetlabs/puppetserver/puppetserver.log</code>. To set this
+                parameter to <code class="ph codeph">false</code>, add via <span class="ph">Hiera</span> (<code class="ph codeph">puppet_enterprise::master::file_sync::file_sync_enable_forceful_sync:
+                    false</code>). </p></section>
+        <section class="section" id="filesync_cautions__puppet_module_command_and_file_sync"><h3 class="title sectiontitle">The puppet module command and file sync </h3><p class="p">The <code class="ph codeph">puppet module</code> command doesn't
+                work with file sync. If you are using file sync, specify modules in the <span class="ph">Puppetfile</span> and use <span class="ph">Code Manager</span> to handle your
+            syncs.</p></section>
+        <section class="section" id="filesync_cautions__permissions"><h3 class="title sectiontitle">Permissions
+                </h3><p class="p">File sync runs as the <code class="ph codeph">pe-puppet</code> user. To sync files, file sync <strong class="ph b">must</strong> have permission to read the staging directory and to
+                write to all files and directories in the live code directory. To make sure file
+                sync can read and write what it needs to, ensure that these code directories are
+                both owned by the <code class="ph codeph">pe-puppet</code>
+                user:</p><pre class="pre codeblock bash"><code>chown -R pe-puppet /etc/puppetlabs/code /etc/puppetlabs/code-staging</code></pre></section>
+        <section class="section" id="filesync_cautions__environment_isolation_metadata"><h3 class="title sectiontitle">Environment isolation metadata </h3><p class="p">File sync
+                generates <code class="ph codeph">.pp</code> metadata files in
+                both your live and staging code directories. These files provide environment
+                isolation for your resource types, ensuring that each environment uses the correct
+                version of the resource type. Do not delete or modify these files. Do not use
+                expressions from these files in regular manifests.</p><p class="p">For more
+                details about these files and how they isolate resource types in multiple
+                environments, see environment isolation.</p></section>
+    </div>
+</article></article></article></main></body></html>

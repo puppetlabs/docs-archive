@@ -1,0 +1,42 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrator_api_error_responses"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet orchestrator API: error responses</title></head><body id="orchestrator_api_error_responses"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+  <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">Puppet</span> orchestrator API: error
+    responses </h1>
+  
+  <div class="body conbody"><p class="shortdesc">From time to time, you might encounter an error using the
+    orchestrator API. In such cases, you receive an error response.</p>
+    <section class="section"><div class="p">Every error response from the <span class="ph">Puppet</span> orchestrator is a JSON response. Each response is an
+        object that contains the following keys:<table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+              <tr class="row">
+                <th class="entry" id="orchestrator_api_error_responses__entry__1">Key </th>
+                <th class="entry" id="orchestrator_api_error_responses__entry__2">Definition</th>
+              </tr>
+            </thead><tbody class="tbody">
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_error_responses__entry__1"><code class="ph codeph">kind</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_error_responses__entry__2">The kind of error encountered.</td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_error_responses__entry__1"><code class="ph codeph">msg</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_error_responses__entry__2">The message associated with the
+                  error.</td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_error_responses__entry__1"><code class="ph codeph">details</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_error_responses__entry__2">A hash with more information about the
+                  error.</td>
+              </tr>
+            </tbody></table></div><p class="p">For example, if an environment does not exist for a given
+        request, an error is raised similar to the following:</p><div class="p"><pre class="pre codeblock json"><code>{
+  "kind" : "puppetlabs.orchestrator/unknown-environment",
+  "msg" : "Unknown environment doesnotexist",
+  "details" : {
+    "environment" : "doesnotexist"
+  }
+}</code></pre></div></section>
+  </div>
+</article></main></body></html>

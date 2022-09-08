@@ -1,0 +1,167 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Some plan language and features are not available in PE or have some caveats."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="plans_limitations"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Plan caveats and limitations</title></head><body id="plans_limitations"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+  <h1 class="title topictitle1" id="ariaid-title1">Plan caveats and limitations</h1>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">Some plan language and features are not available in <code class="ph codeph">PE</code> or have some caveats.</p>
+    <section class="section"><h2 class="title sectiontitle"><span class="ph">Bolt</span> modules are not
+        included</h2>
+      
+      <div class="p">The following modules that come pre-installed with open source <span class="ph">Bolt</span> are not available by default in <span class="ph">PE</span>:<ul class="ul">
+          <li class="li"><code class="ph codeph">aggregate</code></li>
+          <li class="li"><code class="ph codeph">canary</code></li>
+          <li class="li"><code class="ph codeph">puppetdb_fact</code></li>
+          <li class="li"><code class="ph codeph">ruby_task_helper </code></li>
+          <li class="li"><code class="ph codeph">python_task_helper</code></li>
+          <li class="li"><code class="ph codeph">facts </code><ul class="ul">
+              <li class="li">The <span class="ph">PE</span> equivalent of <code class="ph codeph">facts</code> is
+                  <code class="ph codeph">factor_task</code></li>
+            </ul></li>
+          <li class="li"><code class="ph codeph">puppet_agent </code><ul class="ul">
+              <li class="li">The <span class="ph">PE</span> equivalent of <code class="ph codeph">puppet_agent</code>
+                is <code class="ph codeph">pe_bootstrap</code></li>
+            </ul></li>
+        </ul></div>
+    </section>
+    <section class="section"><h2 class="title sectiontitle">Plan language functions </h2>
+      
+      <div class="p">The following <span class="ph">Bolt</span> plan functions will not work in <span class="ph">PE</span> and using them will cause a plan to fail: <ul class="ul">
+          <li class="li"><code class="ph codeph">apply_prep</code>
+          </li>
+          <li class="li"><code class="ph codeph">file::read</code></li>
+          <li class="li"><code class="ph codeph">file::write</code></li>
+          <li class="li"><code class="ph codeph">file::readable</code></li>
+          <li class="li"><code class="ph codeph">file::exists</code></li>
+          <li class="li"><code class="ph codeph">set_feature</code>
+          </li>
+          <li class="li"><code class="ph codeph">add_to_group</code>
+          </li>
+          <li class="li"><code class="ph codeph">set_config</code>
+          </li>
+        </ul></div>
+    </section>
+    <section class="section"><h2 class="title sectiontitle">Apply blocks </h2>
+      
+      <p class="p">The <code class="ph codeph">apply</code> feature for
+        managing resources in a plan is not yet supported in <code class="ph codeph">PE</code>. Using it will cause a plan to fail at the <code class="ph codeph">apply</code> step.</p>
+    </section>
+    <section class="section"><h2 class="title sectiontitle">Target groups </h2>
+      
+      <p class="p">Support for target groups is unavailable in <span class="ph">PE</span>. Using <code class="ph codeph">add_to_group</code> will cause a plan to fail and referencing a group name in <code class="ph codeph">get_targets</code> will not return any nodes. When using
+          <code class="ph codeph">get_targets</code> you <strong class="ph b">must</strong> reference either node certnames or supply a <span class="ph">PuppetDB</span> query.</p>
+      <div class="p">Here is an example of a plan using get targets with node certnames:
+        <pre class="pre codeblock"><code>plan example::get_targets_example () {
+  $nodes = get_targets([‘node1.mydomain.com’, ‘node2.mydomain.com’])
+  run_command(‘whoami’, $nodes)
+}</code></pre></div>
+    </section>
+    <section class="section"><h2 class="title sectiontitle">Target features </h2>
+      
+      <p class="p">Support for target features is unavailable in <span class="ph">PE</span>. Using <code class="ph codeph">set_feature</code> will cause a plan to fail and referencing a target object’s features
+        list will always return an empty array.</p>
+      <div class="p">Here is an example of a plan that would return an empty features
+        list:<pre class="pre codeblock"><code>plan example::empty_features_example (TargetSpec $node) {
+  return get_target($node).features()
+}</code></pre></div>
+    </section>
+    <section class="section"><h2 class="title sectiontitle">Target configuration</h2>
+      
+      <p dir="ltr" class="p">While you can set up node transport configuration through the
+          <span class="ph">PE</span> inventory for nodes to use SSH or WinRM, plans in <span class="ph">PE</span> do not support setting or changing the configuration
+        settings for targets from within a plan. Using the <code class="ph codeph">set_config</code> function in a plan will cause a plan to fail and referencing a target
+        object’s configuration hash will always return an empty hash.</p>
+      <p dir="ltr" class="p">The use of URIs in a target name to override the transport is
+        also not supported. All references to targets (i.e. when using <code class="ph codeph">get_targets</code>) must be either PuppetDB queries or valid certnames
+        that are already in the <span class="ph">PE</span> inventory.</p>
+      <div class="p">Here is an example of a plan that uses <code class="ph codeph">get_targets</code>
+        correctly:<pre class="pre codeblock"><code>plan example::get_targets_example () {
+  ## NOTE! If you used ssh://node1.mydomain.com as the first entry, this plan would fail!
+  $nodes = get_targets([‘node1.mydomain.com’, ‘node2.mydomain.com’])
+  run_command(‘whoami’, $nodes)
+}</code></pre></div>
+    </section>
+    <section class="section"><h2 class="title sectiontitle"><code class="ph codeph">_run_as</code> options
+        in plan functions</h2>
+      
+      <p class="p">Plans in PE does not support the <code class="ph codeph">_run_as</code> parameter for changing the user that accesses hosts or executes actions.
+        If this parameter is supplied to any plan function, the plan will execute but the user will
+        not change.</p>
+      <div class="p">For example, the following plan will succeed, but will not run as
+          <code class="ph codeph">other_user</code>:<pre class="pre codeblock"><code>plan example::run_as_example (TargetSpec $nodes) {
+  run_command(‘whoami’, $nodes, _run_as =&gt; ‘other_user’)
+}</code></pre></div>
+    </section>
+    <section class="section"><h2 class="title sectiontitle">The <code class="ph codeph">localhost</code>
+        target</h2>
+      
+      <p class="p">The special target <code class="ph codeph">localhost</code> is not available for plans in <span class="ph">PE</span>. Using
+          <code class="ph codeph">localhost</code> anywhere in a plan will result
+        in a plan failure. If you need to run a plan on the <span class="ph">PE</span> master
+        host, use the master's certname to reference it. </p>
+      <div class="p">For example, you can use the following plan for <span class="ph">PE</span> master host <code class="ph codeph">my-pe-master.company.com</code>:<pre class="pre codeblock"><code>plan example::referencing_the_master(){
+  # Note that if you tried to use `localhost` instead of `my-pe-master` this plan would fail!
+  run_command(‘whoami’, ‘my-pe-master.company.com’)
+}</code></pre></div>
+    </section>
+    <section class="section"><h2 class="title sectiontitle">Standard <span class="ph">Puppet</span> log
+        functions</h2>
+      
+      <p class="p"><span class="ph">Puppet</span>'s built-in logging functions, like
+          <code class="ph codeph">notice</code> and <code class="ph codeph">warn</code>, will not log anywhere. Plans with those functions will still
+        work, but the logging messages will not appear. </p>
+      <p class="p">If you need to use a logging function in your plan, the <code class="ph codeph">out::message()</code> plan function will write an event to the
+        orchestrator's event stream. </p>
+      <div class="p">For example, the following will log the message correctly to the event
+        stream:
+        <pre class="pre codeblock"><code>plan example::logging(){
+  out::message(“This will output to the orchestrator event stream”)
+}</code></pre></div>
+      <div class="p">This will not log any messages:
+        <pre class="pre codeblock"><code>plan example::bad_logging(){
+  # neither of the following will output any messages anywhere
+  notice(“this will go nowhere!”)
+  warn(“this will also go nowhere!”)
+}</code></pre></div>
+    </section>
+    <section class="section"><h2 class="title sectiontitle">Script and file sources</h2>
+      
+      <p class="p">When using <code class="ph codeph">run_script</code>
+        or <code class="ph codeph">download_file</code>, the source location for
+        the files <strong class="ph b">must</strong> be from a module that uses a
+        modulename/filename selector for a file or directory in <code class="ph codeph">$MODULEROOT/files</code>. PE does not support file sources that reference
+        absolute paths.</p>
+      <p class="p">Here is an example of a module structure and a plan that correctly uses
+        the modulename/filename selector: </p>
+      <div class="p">
+        <pre class="pre codeblock"><code>example/
+├── files
+    └──my_script.sh
+└── plans
+    └──run_script_example.pp</code></pre>
+      </div>
+      <pre class="pre codeblock"><code>plan example::run_script_example (TargetSpec $nodes) {
+  run_script(‘example/my_script.sh’, $nodes)
+}</code></pre>
+    </section>
+    <section class="section"><h2 class="title sectiontitle">Code deployment for plans</h2>
+      
+      <p class="p">For plans in <span class="ph">PE</span> to work, you must have code manager enabled
+        to deploy code to your master. </p>
+      <p dir="ltr" class="p">Masters will now deploy a second codedir for plans to load code from. The second
+        code location on masters have some effects on standard module functionality:</p>
+      <ul class="ul">
+        <li dir="ltr" class="li">
+          <p dir="ltr" class="p">Installation modules using the <code class="ph codeph">puppet module install</code> command will not work for plans because
+            the puppet module tool will not install to the secondary location for plans. The <code class="ph codeph">puppet module install</code> command will still work
+            for normal <span class="ph">Puppet</span> code executed and compiled from <span class="ph">Puppet Server</span>.</p>
+        </li>
+        <li dir="ltr" class="li">
+          <p dir="ltr" class="p">A <code class="ph codeph">$modulepath</code> configuration that uses fully qualified paths might not work for
+            plans if they reference the standard <code class="ph codeph">/etc/puppetlabs/code</code> location. We recommend using relative paths in <code class="ph codeph">$modulepath</code>.</p>
+        </li>
+      </ul>
+    </section>
+  </div>
+</article></main></body></html>

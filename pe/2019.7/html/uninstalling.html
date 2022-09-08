@@ -1,0 +1,154 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise includes a script for uninstalling. You can uninstall component infrastructure nodes or from agent nodes."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="uninstalling"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Uninstalling</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="uninstalling">
+    <h1 class="title topictitle1" id="ariaid-title1">Uninstalling </h1>
+    <p class="shortdesc"><span class="ph">Puppet Enterprise</span> includes a script
+        for uninstalling. You can uninstall component infrastructure nodes or from agent
+        nodes.</p>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="uninstall_infra_nodes">
+    <h2 class="title topictitle2" id="ariaid-title2">Uninstall infrastructure nodes </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">puppet-enterprise-uninstaller</code> script is installed on the master. In order to
+        uninstall, you must run the uninstaller on each infrastructure node.</p>
+        <section class="section context"><p class="p">By default, the
+                uninstaller removes the software, users, logs, cron jobs, and caches, but it leaves
+                your modules, manifests, certificates, databases, and configuration files in place,
+                as well as the home directories of any users it removes.</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">From the infrastructure node that you want to
+                    uninstall, from the command line as root, navigate to the installer directory
+                    and run the uninstall command: <code class="ph codeph">$ sudo
+                        ./puppet-enterprise-uninstaller</code>
+                </span>
+                <div class="itemgroup info"><div class="p">
+                        <div class="note note note_note"><span class="note__title">Note:</span> If you don't have access to the
+                            installer directory, you can run <code class="ph codeph">/opt/puppetlabs/bin/puppet-enterprise-uninstaller</code>.</div>
+                    </div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Follow prompts to uninstall.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) If you don't uninstall the master, and
+                    you plan to reinstall on an infrastructure node at a later date, remove the
+                    agent certificate for that component from the master. On the master: <code class="ph codeph">puppetserver ca clean &lt;PE COMPONENT CERT
+                        NAME&gt;</code>.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="uninstall_agents">
+    <h2 class="title topictitle2" id="ariaid-title3">Uninstall agents</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">You can remove the agent from nodes that you no longer
+        want to manage.</p>
+        <section class="section context">
+            <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Uninstalling the agent
+                    doesn't remove the node from your environment. To completely remove all traces
+                    of a node, you must also purge the node. </div></div>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="adding_and_removing_nodes.html#adding_and_removing_nodes" title="After you install a Puppet agent on a node, accept its certificate signing request and begin managing it with Puppet Enterprise (PE). Or remove nodes that you no longer need.">Adding and removing agent nodes</a></li></ul></div></nav><article class="topic task nested2" aria-labelledby="ariaid-title4" id="uninstall_nix_agents">
+    <h3 class="title topictitle3" id="ariaid-title4">Uninstall <span class="ph">*nix</span> agents</h3>
+    
+    <div class="body taskbody"><p class="shortdesc">The <span class="ph">*nix</span> agent package
+        includes an uninstall script, which you can use when you're ready to retire a
+        node.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the agent node, run the uninstall script:
+                        <code class="ph codeph">run
+                        /opt/puppetlabs/bin/puppet-enterprise-uninstaller</code></span>
+            </li><li class="li step">
+                <span class="ph cmd">Follow prompts to uninstall.</span>
+            </li><li class="li step">
+                <span class="ph cmd">(Optional) If you plan to reinstall on the node at
+                    a later date, remove the agent certificate for the agent from the master:
+                        <code class="ph codeph">puppetserver ca clean
+                        &lt;AGENT CERT NAME&gt;</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="uninstall_windows_agents">
+    <h3 class="title topictitle3" id="ariaid-title5">Uninstall <span class="ph">Windows</span> agents</h3>
+    
+    <div class="body taskbody"><p class="shortdesc">To uninstall the agent from a <span class="ph">Windows</span> node, use the <span class="ph">Windows</span>
+        <span class="ph uicontrol">Add or Remove Programs</span> interface,
+        or uninstall from the command line.</p>
+        <section class="section context">
+            <p class="p">Uninstalling the agent removes the <span class="ph">Puppet</span> program directory, the agent service, and all
+                related registry keys. The data directory remains intact, including all SSL keys. To
+                completely remove <span class="ph">Puppet</span> from the system, manually
+                delete the data directory.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Use the <span class="ph">Windows</span>
+                    <span class="ph uicontrol">Add or Remove Programs</span>
+                    interface to remove the agent.</span>
+                <div class="itemgroup info">
+                    <p class="p">Alternatively, you can uninstall from the command line if
+                        you have the original .msi file or know the product code of the installed
+                        MSI, for example: <code class="ph codeph">msiexec /qn
+                            /norestart /x [puppet.msi|&lt;PRODUCT_CODE&gt;]</code>
+                    </p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) If you plan to reinstall on the node at
+                    a later date, remove the agent certificate for the agent from the master:
+                        <code class="ph codeph">puppetserver ca clean
+                        &lt;AGENT CERT NAME&gt;</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="uninstall_macosx_agents">
+                    <h3 class="title topictitle3" id="ariaid-title6">Uninstall <span class="ph">macOS</span>
+                                        agents</h3>
+                    
+                    <div class="body taskbody"><p class="shortdesc">Use the command line to remove all aspects
+                                        of the agent from <span class="ph">macOS</span>
+                                        nodes. </p>
+                                        <section class="section context"> </section>
+                                        <section><ol class="ol steps"><li class="li step stepexpand">
+                                                  <span class="ph cmd">On the agent
+                                                  node, run these commands:</span>
+                                                  <div class="itemgroup info">
+                                                  <pre class="pre codeblock"><code>rm -rf /var/log/puppetlabs
+rm -rf /var/run/puppetlabs
+pkgutil --forget com.puppetlabs.puppet-agent
+launchctl remove puppet
+rm -rf /Library/LaunchDaemons/com.puppetlabs.puppet.plist  
+launchctl remove pxp-agent  
+rm -rf /Library/LaunchDaemons/com.puppetlabs.pxp-agent.plist
+rm -rf /etc/puppetlabs
+rm -rf /opt/puppetlabs</code></pre>
+                                                  </div>
+                                                  </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) If you plan to reinstall on the node at
+                    a later date, remove the agent certificate for the agent from the master:
+                        <code class="ph codeph">puppetserver ca clean
+                        &lt;AGENT CERT NAME&gt;</code>
+                </span>
+            </li></ol></section>
+                    </div>
+</article></article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="uninstaller_options">
+    <h2 class="title topictitle2" id="ariaid-title7">Uninstaller options </h2>
+    
+    <div class="body refbody"><p class="shortdesc">You can use the following command-line flags to change the
+        uninstaller's behavior.</p>
+        <section class="section"><ul class="ul">
+                <li class="li"><code class="ph codeph">-p</code> — Purge
+                    additional files. With this flag, the uninstaller also removes all configuration
+                    files, modules, manifests, certificates, the home directories of any users
+                    created by the installer, and the <span class="ph">Puppet</span> public
+                    GPG key used for package verification.</li>
+                <li class="li"><code class="ph codeph">-d</code> — Also
+                    remove any databases created during installation.</li>
+                <li class="li"><code class="ph codeph">-h</code> —
+                    Display a help message.</li>
+                <li class="li"><code class="ph codeph">-n</code> — Run in
+                        <code class="ph codeph">noop</code> mode; show commands
+                    that would have been run during uninstallation without actually running
+                    them.</li>
+                <li class="li"><code class="ph codeph">-y</code> — Don't
+                    ask to confirm uninstallation, assuming an answer of yes.</li>
+            </ul><p class="p">To remove every trace of <span class="ph">PE</span>
+                from a system,
+            run:</p><pre class="pre codeblock"><code>$ sudo ./puppet-enterprise-uninstaller -d -p</code></pre></section>
+    </div>
+</article></article></article></main></body></html>

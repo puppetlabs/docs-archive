@@ -1,0 +1,327 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise can export many metrics to Graphite, a third-party monitoring application that stores real-time metrics and provides customizable ways to view them. After Graphite support is enabled, Puppet Server exports a set of metrics by default that is designed to be immediately useful to Puppet administrators."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="getting_started_with_graphite"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Getting started with Graphite</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="getting_started_with_graphite">
+    <h1 class="title topictitle1" id="ariaid-title1">Getting started with Graphite</h1>
+    
+    <div class="body conbody"><p class="shortdesc">Puppet Enterprise can export many metrics to Graphite, a
+        third-party monitoring application that stores real-time metrics and provides customizable
+        ways to view them. After Graphite support is enabled, Puppet Server exports a set of metrics
+        by default that is designed to be immediately useful to Puppet administrators.</p>
+        <div class="note note note_note"><span class="note__title">Note:</span> A Graphite setup is deeply customizable and can
+            report many different Puppet Server metrics on demand. However, it requires considerable
+            configuration and additional server resources. For an easier, but more limited,
+            web-based dashboard of Puppet Server metrics built into Puppet Server, use the developer
+            dashboard. To retrieve metrics manually via HTTP, use the Status API.</div>
+        <p class="p">To use Graphite with Puppet Enterprise, you must:</p>
+        <ul class="ul">
+            <li class="li">Install and configure a Graphite server.</li>
+            <li class="li">Enable Puppet Server's Graphite support</li>
+        </ul>
+        <p class="p">Grafana provides a web-based customizable dashboard that's compatible
+            with Graphite, and the Grafanadash module installs and configures it by default.</p>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="using_the_grafanadash_module">
+   <h2 class="title topictitle2" id="ariaid-title2">Using the Grafanadash module</h2>
+   
+   <div class="body conbody"><p class="shortdesc">The Grafanadash module quickly installs and configures a
+      basic test instance of Graphite with the Grafana extension. When installed on a dedicated
+      Puppet agent, this module provides a quick demonstration of how Graphite and Grafana can
+      consume and display Puppet Server metrics.</p>
+      <div class="p">
+         <div class="note caution note_caution"><span class="note__title">CAUTION:</span> The Grafanadash module referenced in this
+            document is not a Puppet-supported module; it is for testing and demonstration purposes
+            only. It is tested against CentOS 7 only. Also, install this module on a dedicated agent
+            only. Do not install it on the Puppet master, because the module makes security policy
+            changes that are inappropriate for a Puppet master: <ul class="ul">
+               <li class="li">
+                  <p class="p">SELinux can cause issues with Graphite and Grafana, so the
+                     module temporarily disables SELinux. If you reboot the machine after using the
+                     module to install Graphite, you must disable SELinux again and restart the
+                     Apache service to use Graphite and Grafana.</p>
+               </li>
+               <li class="li">
+                  <p class="p">The module disables the iptables firewall and enables
+                     cross-origin resource sharing on Apache, which are potential security
+                     risks.</p>
+               </li>
+            </ul></div>
+      </div>
+      <p class="p"></p>
+   </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title3" id="installing_the_grafanadash_module">
+    <h3 class="title topictitle3" id="ariaid-title3">Installing the Grafanadash module</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Install the Grafanadash module on a *nix agent. The
+        module's <code class="ph codeph">grafanadash::dev</code> class installs
+        and configures a Graphite server, the Grafana extension, and a default
+        dashboard.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Install a *nix PE agent to serve as the Graphite
+                    server.</span>
+            </li><li class="li step">
+                <span class="ph cmd">As root on the Puppet agent node, run <code class="ph codeph">puppet module install
+                        puppetlabs-grafanadash</code>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">As root on the Puppet agent node, run <code class="ph codeph">puppet apply -e 'include
+                        grafanadash::dev'</code>.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title4" id="running_grafana">
+   <h3 class="title topictitle3" id="ariaid-title4">Running Grafana</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Grafana is a dashboard that can interpret and visualize
+      Puppet Server metrics over time, but you must configure it to do so.</p>
+      <section class="section context">
+         <p class="p">Grafana runs as a web dashboard, and the Grafanadash module
+            configures it at port 10000 by default. However, there are no Puppet metrics displayed
+            by default. You must create a metrics dashboard to view Puppet's metrics in Grafana, or
+            edit and import a JSON-based dashboard such as the sample Grafana dashboard that we
+            provide.</p>
+      </section>
+      <section><ol class="ol steps"><li class="li step">
+            <span class="ph cmd">In a web browser on a computer that can reach the
+               Puppet agent node, navigate to <code class="ph codeph">http://&lt;AGENT'S HOSTNAME&gt;:10000</code>.</span>
+         </li><li class="li step">
+            <span class="ph cmd">Open the <code class="ph codeph">sample_metrics_dashboard.json</code> file in a text editor on the same computer
+               you're using to access Grafana.</span>
+         </li><li class="li step">
+            <span class="ph cmd">Throughout the file, replace our sample setting of
+                  <code class="ph codeph">master.example.com</code> with the
+               hostname of your Puppet master. This value must be used as the <code class="ph codeph">metrics_server_id</code> setting, as configured
+               below.</span>
+         </li><li class="li step">
+            <span class="ph cmd">Save the file.</span>
+         </li><li class="li step">
+            <span class="ph cmd">In the Grafana UI, click <span class="ph uicontrol">search</span> (the folder icon), then <span class="ph uicontrol">Import</span>, then <span class="ph uicontrol">Browse.</span></span>
+         </li><li class="li step">
+            <span class="ph cmd">Navigate to and select the edited JSON file.</span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p">This loads a dashboard with nine graphs that display various metrics
+            exported from the Puppet Server to the Graphite server. However, these graphs remain
+            empty until you enable Puppet Server's Graphite metrics.</p>
+      </section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="getting_started_with_graphite.html#sample_grafana_dashboard_graphs" title="Use the sample Grafana dashboard as your starting point and customize it to suit your needs. You can click on the title of any graph, and then click edit to adjust the graphs as you see fit.">Sample Grafana dashboard graphs</a></li></ul></div></nav></article></article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="enabling_puppet_servers_graphite_support">
+        <h2 class="title topictitle2" id="ariaid-title5">Enabling Puppet Server's Graphite support</h2>
+        
+        <div class="body taskbody"><p class="shortdesc">Use the PE Master node group in the console to
+                configure Puppet Server's metrics output settings.</p>
+                <section><ol class="ol steps"><li class="li step">
+                                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the <span class="ph uicontrol">PE
+                                                Infrastructure</span> group, select the
+                                                <span class="ph uicontrol">PE
+                                                Master</span> group.</span>
+                        </li><li class="li step">
+                                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span>
+                                        tab, in the <code class="ph codeph">puppet_enterprise::profile::master</code> class,
+                                        add these parameters:</span>
+                                <ol type="a" class="ol substeps">
+                                        <li class="li substep">
+                                                <span class="ph cmd">Set <code class="ph codeph">metrics_graphite_enabled</code> to <code class="ph codeph">true</code>
+                                                  (default is false). </span>
+                                        </li>
+                                        <li class="li substep">
+                                                <span class="ph cmd">Set <code class="ph codeph">metrics_server_id</code> to the Puppet master
+                                                  hostname. </span>
+                                        </li>
+                                        <li class="li substep">
+                                                <span class="ph cmd">Set <code class="ph codeph">metrics_graphite_host</code> to the hostname
+                                                  for the agent node on which you're running
+                                                  Graphite and Grafana. </span>
+                                        </li>
+                                        <li class="li substep">
+                                                <span class="ph cmd">Set <code class="ph codeph">metrics_graphite_update_interval_seconds</code>
+                                                  to a value to set Graphite's update frequency in
+                                                  seconds. This setting is optional, and the default
+                                                  value is <code class="ph codeph">60</code>. </span>
+                                        </li>
+                                </ol>
+                        </li><li class="li step">
+                                <span class="ph cmd">Verify that these parameters are
+                                        set to their default values, unless your Graphite server
+                                        uses a non-standard port:</span>
+                                <ol type="a" class="ol substeps">
+                                        <li class="li substep">
+                                                <span class="ph cmd">Set <code class="ph codeph">metrics_jmx_enabled</code> to <code class="ph codeph">true</code> (default
+                                                  value). </span>
+                                        </li>
+                                        <li class="li substep">
+                                                <span class="ph cmd">Set <code class="ph codeph">metrics_graphite_port</code> to <code class="ph codeph">2003</code>
+                                                  (default value) or the Graphite port on your
+                                                  Graphite server. </span>
+                                        </li>
+                                        <li class="li substep">
+                                                <span class="ph cmd">Set <code class="ph codeph">profiler_enabled</code> to <code class="ph codeph">true</code> (default
+                                                  value). </span>
+                                        </li>
+                                </ol>
+                        </li><li class="li step">
+                                <span class="ph cmd">Commit changes.</span>
+                        </li></ol></section>
+                <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>
+                        <div class="note note note_note"><span class="note__title">Note:</span> In the Grafana UI, choose an
+                                appropriate time window from the drop-down menu.</div>
+                        <div class="note note note_note"><span class="note__title">Note:</span> The <code class="ph codeph">puppet_enterprise::profile::master::metrics_enabled</code>
+                                parameter used in Puppet Enterprise 2016.3 and earlier is no longer
+                                necessary and has been deprecated. If you set it, PE notifies you of
+                                the setting's deprecation.</div>
+                </section>
+        </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="sample_grafana_dashboard_graphs">
+    <h2 class="title topictitle2" id="ariaid-title6">Sample Grafana dashboard graphs</h2>
+    
+    <div class="body refbody"><p class="shortdesc">Use the sample Grafana dashboard as your starting point
+        and customize it to suit your needs. You can click on the title of any graph, and then click
+            <span class="ph uicontrol">edit</span> to adjust the graphs as
+        you see fit.</p>
+        <section class="section">
+            <p class="p">
+                <a class="xref" href="sample_grafana_dashboard_json_code.html" title="The following JSON code is an example metrics dashboard. Copy and save it to a .json file to reuse it.">Sample
+                    Grafana dashboard
+                    code</a>
+            </p>
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="sample_grafana_dashboard_graphs__entry__1">Graph name</th>
+                            <th class="entry" id="sample_grafana_dashboard_graphs__entry__2">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__1"> Active requests </td>
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__2"> This graph serves as a "health check" for
+                                the Puppet Server. It shows a flat line that represents the number
+                                of CPUs you have in your system, a metric that indicates the total
+                                number of HTTP requests actively being processed by the server at
+                                any moment in time, and a rolling average of the number of active
+                                requests. If the number of requests being processed exceeds the
+                                number of CPUs for any significant length of time, your server might
+                                be receiving more requests than it can efficiently process. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__1"> Request durations </td>
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__2"> This graph breaks down the average
+                                response times for different types of requests made by Puppet
+                                agents. This indicates how expensive catalog and report requests are
+                                compared to the other types of requests. It also provides a way to
+                                see changes in catalog compilation times when you modify your Puppet
+                                code. A sharp curve upward for all of the types of requests
+                                indicates an overloaded server, and they should trend downward after
+                                reducing the load on the server. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__1"> Request ratios </td>
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__2"> This graph shows how many requests of
+                                each type that Puppet Server has handled. Under normal
+                                circumstances, you should see about the same number of catalog,
+                                node, or report requests, because these all happen one time per
+                                agent run. The number of file and file metadata requests correlate
+                                to how many remote file resources are in the agents' catalogs.
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__1"> External HTTP Communications </td>
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__2"> This graph tracks the amount of time it
+                                takes Puppet Server to send data and requests for common operations
+                                to, and receive responses from, external HTTP services, such as
+                                PuppetDB. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__1"> File Sync </td>
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__2"> This graph tracks how long Puppet Server
+                                spends on File Sync operations, for both its storage and client
+                                services. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__1"> JRubies </td>
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__2"> This graph tracks how many JRubies are in
+                                use, how many are free, the mean number of free JRubies, and the
+                                mean number of requested JRubies. If the number of free JRubies is
+                                often less than one, or the mean number of free JRubies is less than
+                                one, Puppet Server is requesting and consuming more JRubies than are
+                                available. This overload reduces Puppet Server's performance. While
+                                this might simply be a symptom of an under-resourced server, it can
+                                also be caused by poorly optimized Puppet code or bottlenecks in the
+                                server's communications with PuppetDB if it is in use. If catalog
+                                compilation times have increased but PuppetDB performance remains
+                                the same, examine your Puppet code for potentially unoptimized code.
+                                If PuppetDB communication times have increased, tune PuppetDB for
+                                better performance or allocate more resources to it. If neither
+                                catalog compilation nor PuppetDB communication times are degraded,
+                                the Puppet Server process might be under-resourced on your server.
+                                If you have available CPU time and memory, increase the number of
+                                JRuby instances to allow it to allocate more JRubies. Otherwise,
+                                consider adding additional compilers to distribute the catalog
+                                compilation load. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__1"> JRuby Timers </td>
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__2"> This graph tracks several JRuby pool
+                                metrics. <ul class="ul">
+                                    <li class="li">The borrow time represents the mean
+                                        amount of time that Puppet Server uses ("borrows") each
+                                        JRuby from the pool.</li>
+                                    <li class="li">The wait time represents the total
+                                        amount of time that Puppet Server waits for a free JRuby
+                                        instance.</li>
+                                    <li class="li">The lock held time represents the amount
+                                        of time that Puppet Server holds a lock on the pool, during
+                                        which JRubies cannot be borrowed. This occurs while Puppet
+                                        Server synchronizes code for File Sync.</li>
+                                    <li class="li">The lock wait time represents the amount
+                                        of time that Puppet Server waits to acquire a lock on the
+                                        pool.</li>
+                                </ul> These metrics help identify sources of potential JRuby
+                                allocation bottlenecks. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__1"> Memory Usage </td>
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__2"> This graph tracks how much heap and
+                                non-heap memory that Puppet Server uses. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__1"> Compilation </td>
+                            <td class="entry" headers="sample_grafana_dashboard_graphs__entry__2"> This graph breaks catalog compilation
+                                down into various phases to show how expensive each phase is on the
+                                master. </td>
+                        </tr>
+                    </tbody></table>
+        </section>
+        <div class="example"><h3 class="title sectiontitle">Example Grafana dashboard excerpt</h3>
+            
+            <p class="p"> The following example shows only the <code class="ph codeph">targets</code> parameter of a dashboard to demonstrate the full
+                names of Puppet's exported Graphite metrics (assuming the Puppet Server instance has
+                a domain of <code class="ph codeph">master.example.com</code>) and
+                a way to add targets directly to an exported Grafana dashboard's JSON content. </p>
+            <pre class="pre codeblock"><code>"panels": [
+    {
+        "span": 4,
+        "editable": true,
+        "type": "graphite",
+
+...
+
+        "targets": [
+            {
+                "target": "alias(puppetlabs.master.example.com.num-cpus,'num cpus')"
+            },
+            {
+                "target": "alias(puppetlabs.master.example.com.http.active-requests.count,'active requests')"
+            },
+            {
+                "target": "alias(puppetlabs.master.example.com.http.active-histo.mean,'average')"
+            }
+        ],
+        "aliasColors": {},
+        "aliasYAxis": {},
+        "title": "Active Requests"
+    }
+]
+</code></pre>
+            <p class="p"> See the sample Grafana dashboard for a detailed example of how a
+                Grafana dashboard accesses these exported Graphite metrics. </p>
+        </div>
+    </div>
+</article></article></article></main></body></html>

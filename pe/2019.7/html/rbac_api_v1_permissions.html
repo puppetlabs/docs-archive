@@ -1,0 +1,156 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="You assign permissions to user roles to manage user access to objects. The permissions endpoints enable you to get information about available objects and the permissions that can be constructed for those objects."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="permissions_endpoints_api_v1"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Permissions endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="permissions_endpoints_api_v1">
+    <h1 class="title topictitle1" id="ariaid-title1">Permissions endpoints </h1>
+    
+    <div class="body conbody"><p class="shortdesc">You assign permissions to user roles to manage user access
+        to objects. The <code class="ph codeph">permissions</code> endpoints
+        enable you to get information about available objects and the permissions that can be
+        constructed for those objects. </p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="permissions_keys">
+    <h2 class="title topictitle2" id="ariaid-title2">Permissions keys </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The following keys are used with the RBAC v1 API’s
+        permissions endpoints. The available values for these keys are available from the <code class="ph codeph">/types</code> endpoint (see below).</p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="permissions_keys__entry__1">Key </th>
+                        <th class="entry" id="permissions_keys__entry__2">Explanation </th>
+                        <th class="entry" id="permissions_keys__entry__3">Example </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="permissions_keys__entry__1"><code class="ph codeph">object_type</code>
+                        </td>
+                        <td class="entry" headers="permissions_keys__entry__2">A string identifying the type
+                            of object this permission applies to. </td>
+                        <td class="entry" headers="permissions_keys__entry__3"><code class="ph codeph">"node_groups"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="permissions_keys__entry__1"><code class="ph codeph">action</code>
+                        </td>
+                        <td class="entry" headers="permissions_keys__entry__2">A string indicating the type of
+                            action this permission permits. </td>
+                        <td class="entry" headers="permissions_keys__entry__3"><code class="ph codeph">"modify_children"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="permissions_keys__entry__1"><code class="ph codeph">instance</code>
+                        </td>
+                        <td class="entry" headers="permissions_keys__entry__2">A string containing the primary
+                            ID of the object instance this permission applies to, or <code class="ph codeph">"*"</code> indicating that it
+                            applies to all instances. If the given action does not allow instance
+                            specification, <code class="ph codeph">"*"</code>
+                            should always be used. </td>
+                        <td class="entry" headers="permissions_keys__entry__3"><code class="ph codeph">"cec7e830-555b-11e4-916c-0800200c9a66"</code> or
+                                <code class="ph codeph">"*"</code>
+                        </td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_types">
+ <h2 class="title topictitle2" id="ariaid-title3">GET /types </h2>
+ 
+ <div class="body refbody"><p class="shortdesc">Lists the objects that integrate with RBAC and demonstrates
+  the permissions that can be constructed by picking the appropriate <code class="ph codeph">object_type</code>, <code class="ph codeph">action</code>, and
+   <code class="ph codeph">instance</code> triple. Authentication is
+  required.</p>
+  <section class="section"><p class="p">The <code class="ph codeph">has_instances</code> flag indicates that the action permission is instance-specific if
+     <code class="ph codeph">true</code>, or <code class="ph codeph">false</code> if this action permission does not require instance
+   specification.</p></section>
+  <section class="section" id="get_types__response_format"><h3 class="title sectiontitle">Response
+    format </h3><p class="p">Returns a 200 OK response with a listing of types. </p><p class="p">For
+   example:</p><pre class="pre codeblock json"><code>[{ "object_type": "node_groups",
+   "display_name": "Node Groups",
+   "description": "Groups that nodes can be assigned to."
+   "actions": [{ "name": "view",
+                 "display_name": "View",
+                 "description": "View the node groups",
+                 "has_instances": true
+                },{
+                 "name":"modify",
+                 "display_name": "Configure",
+                 "description": "Modify description, variables and classes",
+                 "has_instances": true
+                }, ...]
+ },...]</code></pre></section>
+  <section class="section" id="get_types__error_responses"><h3 class="title sectiontitle">Error
+    responses </h3><p class="p">Returns a 401 Unauthorized response if no user is logged
+    in. </p><p class="p">Returns a 403 Forbidden response if the current user lacks
+    permissions to view the types. </p></section>
+ </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="post_permitted">
+ <h2 class="title topictitle2" id="ariaid-title4">POST /permitted </h2>
+ 
+ <div class="body refbody"><p class="shortdesc">Checks an array of permissions for the subject identified by
+  the submitted identifier.</p>
+  <section class="section" id="post_permitted__request_format"><h3 class="title sectiontitle">Request format
+    </h3><p class="p">This endpoint takes a "token" in the form of a user or a user
+    group's UUID and a list of permissions. This returns true or false for each permission queried,
+    representing whether the subject is permitted to take the given action. </p><p class="p">The full evaluation of permissions is taken into account, including inherited roles and
+    matching general permissions against more specific queries. For example, a query for <code class="ph codeph">users:edit:1</code> returns <code class="ph codeph">true</code> if the subject has <code class="ph codeph">users:edit:1</code> or <code class="ph codeph">users:edit:*</code>.</p><p class="p">In the following example, the first permission is querying whether the
+    subject specified by the token is permitted to perform the <code class="ph codeph">edit_rules</code> action on the instance of <code class="ph codeph">node_groups</code> identified by the ID <code class="ph codeph">4</code>.
+    Note that in reality, node groups and users use UUIDs as their
+   IDs.</p><pre class="pre codeblock json"><code>{"token": "&lt;subject uuid&gt;",
+ "permissions": [{"object_type": "node_groups",
+                  "action": "edit_rules",
+                  "instance": "4"},
+                 {"object_type": "users",
+                  "action": "disable",
+                  "instance": "1"}]
+}</code></pre></section>
+  <section class="section" id="post_permitted__response_format"><h3 class="title sectiontitle">Response
+    format </h3><p class="p">Returns a 200 OK response with an array of Boolean values
+    representing whether each submitted action on a specific object type and instance is permitted
+    for the subject. The array always has the same length as the submitted array and each returned
+    Boolean value corresponds to the submitted permission query at the same index.</p><p class="p">The example response below was returned from the example request in the previous
+    section. This return means the subject is permitted <code class="ph codeph">node_groups:edit_rules:4</code> but not permitted <code class="ph codeph">users:disable:1</code>.</p><pre class="pre codeblock json"><code>[true, false]</code></pre></section>
+ </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="rbac_api_v1_permissions_get_permitted_object_action">
+    <h2 class="title topictitle2" id="ariaid-title5">GET /permitted/&lt;object-type&gt;/&lt;action&gt;</h2>
+    
+    <div class="body refbody"><p class="shortdesc">Return an array of permitted instances for the given
+            <code class="ph codeph">object-type</code>/<code class="ph codeph">action</code> pair based on the current user
+        authentication context. </p>
+        <section class="section">
+            <p class="p">This endpoint returns the instance values as an array for the given
+                    <code class="ph codeph">object-type</code> and <code class="ph codeph">action</code> pair. If the user does
+                not have permissions for any instance, an empty array will be returned. </p>
+            <p class="p">If the <code class="ph codeph">object-type</code> does not map to a known
+                    <code class="ph codeph">object-type</code>, the endpoint will return a 404. </p>
+            <p class="p">If the <code class="ph codeph">action</code> does not exist for the given
+                    <code class="ph codeph">object-type</code>, the endpoint will return a 404. </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Example</h3>
+            
+            <div class="p"><code class="ph codeph">GET
+                /permitted/node_groups/view</code><pre class="pre codeblock"><code>["00000000-0000-4000-8000-000000000000"]</code></pre></div>
+            <p class="p">Returns a 200 OK response with a listing of instances. </p>
+        </section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="rbac_api_v1_permissions_get_permitted_object_action_uuid">
+    <h2 class="title topictitle2" id="ariaid-title6">GET /permitted/&lt;object-type&gt;/&lt;action&gt;/&lt;uuid&gt;</h2>
+    
+    <div class="body refbody"><p class="shortdesc">Return an array of permitted instances for the given
+            <code class="ph codeph">object-type</code>/<code class="ph codeph">action</code> pair based on the user matching the
+        supplied <code class="ph codeph">uuid</code>. </p>
+        <section class="section">
+            <p class="p">This endpoint returns the instance values as an array for the given
+                    <code class="ph codeph">object-type</code> and <code class="ph codeph">action</code> pair. If the user does
+                not have permissions for any instances, and empty array will be returned. </p>
+            <p class="p">If the <code class="ph codeph">object-type</code> does not map to a know
+                    <code class="ph codeph">object-type</code>, the endpoint will return a 404. </p>
+            <p class="p">If the <code class="ph codeph">action</code> does not exist for the given
+                    <code class="ph codeph">object-type</code>, the endpoint will return a 404. </p>
+            <p class="p">If the <code class="ph codeph">uuid</code> does not map to a known <code class="ph codeph">user</code>, the
+                endpoint will return a 404.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Example</h3>
+            
+            <div class="p"><code class="ph codeph">GET
+                /permitted/node_groups/view/fe62d770-5886-11e4-8ed6-0800200c9a66</code><pre class="pre codeblock"><code>["00000000-0000-4000-8000-000000000000"]</code></pre></div>
+            <p class="p">Returns a 200 OK response with a listing of instances. </p>
+        </section>
+    </div>
+</article></article></article></main></body></html>

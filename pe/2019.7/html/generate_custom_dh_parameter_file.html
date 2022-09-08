@@ -1,0 +1,36 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="The &#34;Logjam Attack&#34; (CVE-2015-4000) exposed several weaknesses in the Diffie-Hellman (DH) key exchange. To help mitigate the &#34;Logjam Attack,&#34; PE ships with a pre-generated 2048 bit Diffie-Hellman param file. In the case that you don't want to use the default DH param file, you can generate your own."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="generate_a_custom_diffie_hellman_parameter_file"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Generate a custom Diffie-Hellman parameter file</title></head><body id="generate_a_custom_diffie_hellman_parameter_file"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+   <h1 class="title topictitle1" id="ariaid-title1">Generate a custom Diffie-Hellman parameter file </h1>
+   
+   <div class="body taskbody"><p class="shortdesc">The "Logjam Attack" (CVE-2015-4000) exposed several
+      weaknesses in the Diffie-Hellman (DH) key exchange. To help mitigate the "Logjam Attack," <span class="ph">PE</span> ships with a pre-generated 2048 bit Diffie-Hellman param
+      file. In the case that you don't want to use the default DH param file, you can generate your
+      own.</p>
+      <section class="section context">
+         <div class="note note note_note"><span class="note__title">Note:</span> In the following procedure, <code class="ph codeph">&lt;PROXY-CUSTOM-dhparam&gt;.pem</code> can be replaced with any file
+            name, except <code class="ph codeph">dhparam_puppetproxy.pem</code>,
+            as this is the default file name used by PE.</div>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">On your master, run: </span>
+            <div class="itemgroup info">
+               <pre class="pre codeblock"><code>/opt/puppetlabs/puppet/bin/openssl dhparam -out /etc/puppetlabs/nginx/&lt;PROXY-CUSTOM-dhparam&gt;.pem 2048</code></pre>
+            </div>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> After running this command, <span class="ph">PE</span> can
+                  take several minutes to complete this step.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Open your <code class="ph codeph">pe.conf</code> file (located at
+                  <code class="ph codeph">/etc/puppetlabs/enterprise/conf.d/pe.conf</code>) and add the following
+               parameter and value:</span>
+            <div class="itemgroup info">
+               <pre class="pre codeblock"><code>"puppet_enterprise::profile::console::proxy::dhparam_file": "/etc/puppetlabs/nginx/&lt;PROXY-CUSTOM-dhparam&gt;.pem"
+</code></pre>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Run <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent -t</code>.</span>
+         </li></ol></section>
+   </div>
+</article></main></body></html>

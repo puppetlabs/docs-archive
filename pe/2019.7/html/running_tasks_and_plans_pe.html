@@ -1,0 +1,46 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the orchestrator to run tasks and plans in the console or on the command line."><meta name="DC.relation" scheme="URI" content="installing_tasks.html#installing_tasks"><meta name="DC.relation" scheme="URI" content="running_tasks.html"><meta name="DC.relation" scheme="URI" content="running_plans_in_pe.html"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="running_tasks_and_plans_pe_overview"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Tasks and plans in PE</title></head><body id="running_tasks_and_plans_pe_overview"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+ <h1 class="title topictitle1" id="ariaid-title1">Tasks and plans in <span class="ph">PE</span></h1>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">Use the orchestrator to run tasks and plans in the console or on the command
+  line.</p>
+  <div class="p">You can install pre-existing tasks and plans and run them from the console
+   and from the command line. <div class="note note note_note"><span class="note__title">Note:</span> If you have set up compilers and you want
+    to use tasks and/or plans, you must either set <code class="ph codeph">master_uris</code> or you <code class="ph codeph">server_list</code> on agents to point to your compilers. This setting is
+    described in the section on configuring compilers for orchestrator scale.</div></div>
+  <p class="p">A <em class="ph i">task</em> is a single action that you execute
+   on target machines. With tasks, you can troubleshoot and deploy changes to individual or multiple
+   systems in your infrastructure. </p>
+  <p class="p">A <em class="ph i">plan</em> is a bundle of tasks that can be
+   combined with other logic. They allow you to do complex task operations, like running multiple
+   tasks with one command or running certain tasks based on the output of another task. </p>
+  <p class="p">You can run tasks and plans from your tool of choice: the console, the
+   orchestrator command line interface (CLI), or the orchestrator API <code class="ph codeph">/command/task</code> and <code class="ph codeph">/command/plan_jobs</code> endpoint.</p>
+  <p class="p">You can launch a task or plan and check on the status or view the output
+   later with the console or CLI. </p>
+  <p class="p">Running a task or plan does not update your <span class="ph">Puppet</span> configuration. If you run a task or plan that changes the
+   state of a resource that <span class="ph">Puppet</span> is managing, a subsequent <span class="ph">Puppet</span> run changes the state of that resource back to what is defined
+   in your <span class="ph">Puppet</span> configuration. For example, if you use a task to
+   update the version of a managed package, the version of that package is reset to whatever is
+   specified in a manifest on the next <span class="ph">Puppet</span> run.</p>
+  <div class="p">
+   <div class="note note note_note"><span class="note__title">Note:</span> If you are running multiple tasks and plans, make sure your concurrency limit for tasks and
+    bolt-server can accommodate your needs. See <a class="xref" href="config_orchestration.html#configure_the_orchestrator_and_pe_orchestration_services" title="There are several optional parameters you can add to configure the behavior of the orchestrator and pe-orchestration-services. Because they are profile classes, you can change these in the console in the PE Orchestrator group.">Configure the orchestrator and pe-orchestration-services</a> to
+    adjust these settings. </div>
+  </div>
+  <section class="section"><h2 class="title sectiontitle">RBAC for tasks and plans</h2>
+   
+   <p class="p">Tasks rely on role-based access control (RBAC) to determine who can run
+    which tasks on your infrastructure. You can delegate access, even on a per-task basis, to ensure
+    that teams or individuals can run task and plan jobs only on infrastructure they manage. </p>
+   <p class="p">RBAC for plans and tasks do <strong class="ph b">not</strong>
+    intersect. This means that if a user does not have access to a specific task but they have
+    access to run a plan containing that task, they are still able to run the plan. This allows you
+    to implement more customized security options by wrapping tasks within plans. Read more about
+    RBAC considerations for writing plans <a class="xref" href="writing_plans_in_puppet_language_pe.html#rbac_writing_plans" title="Take user permissions into consideration when writing plans by understanding how RBAC for plans works.">here</a>. </p>
+  </section>
+ </div>
+<nav role="navigation" class="related-links"><ul class="ullinks"><li class="link ulchildlink"><strong><a href="installing_tasks.html#installing_tasks">Installing tasks and plans</a></strong><br>         <span class="ph">Puppet Enterprise</span> comes with some pre-installed tasks, but you must         install all plans or any other tasks you want to use.</li><li class="link ulchildlink"><strong><a href="running_tasks.html">Running tasks in PE</a></strong><br>Use the orchestrator to set up jobs in the console or on         the command line and run <span class="ph">Bolt</span> tasks across systems in your         infrastructure.</li><li class="link ulchildlink"><strong><a href="running_plans_in_pe.html">Running plans in PE</a></strong><br>Use the orchestrator to set up jobs in the console or                 on the command line and run plans across systems in your infrastructure.</li></ul></nav></article></main></body></html>

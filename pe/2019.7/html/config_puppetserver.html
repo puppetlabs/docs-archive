@@ -1,0 +1,389 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="After you've installed Puppet Enterprise, optimize it for your environment by configuring and tuning Puppet Server settings as needed."><meta name="DC.relation" scheme="URI" content="config_intro.html#config_intro"><meta name="DC.relation" scheme="URI" content="tuning_standard.html#tuning_standard"><meta name="DC.relation" scheme="URI" content="config_java_args.html#increase_the_java_heap_size_for_pe_java_services"><meta name="DC.relation" scheme="URI" content="config_ulimit.html#config_ulimit_for_pe_services"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="configuring_and_tuning_puppet_server"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configuring and tuning Puppet Server</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="configuring_and_tuning_puppet_server">
+    <h1 class="title topictitle1" id="ariaid-title1">Configuring and tuning <span class="ph">Puppet Server</span>
+    </h1>
+    <p class="shortdesc">After you've installed <span class="ph">Puppet Enterprise</span>, optimize it for your environment by configuring and
+        tuning <span class="ph">Puppet Server</span> settings as needed.</p>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#config_intro" title="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances.">Methods for configuring Puppet Enterprise</a></li><li class="linklist"><a class="link" href="tuning_standard.html#tuning_standard" title="Use these guidelines to configure your installation to maximize its use of available system (CPU and RAM) resources.">Tuning standard installations</a></li><li class="linklist"><a class="link" href="config_java_args.html#increase_the_java_heap_size_for_pe_java_services" title="The Java heap size is the Java Virtual Machine (JVM) memory allocated to Java services in Puppet Enterprise (PE). You can use any configuration method you choose. We will use the console to change the Java heap size for console services, Puppet Server, orchestration services, or PuppetDB in the examples below.">Increase the Java heap size for PE Java services</a></li><li class="linklist"><a class="link" href="config_ulimit.html#config_ulimit_for_pe_services" title="The various services in PE require up to one file handle per connected client. On most operating system configurations, the defaults are not adequate for more than a couple hundred clients. To support more clients, you need to increase the number of allowed file handles.">Configure ulimit for PE services</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="tune_the_maximum_number_of_jruby_instances">
+                <h2 class="title topictitle2" id="ariaid-title2">Tune the maximum number of <span class="ph">JRuby</span> instances</h2>
+                
+                <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">jruby_max_active_instances</code> setting
+                                controls the maximum number of <span class="ph">JRuby</span>
+                                instances to allow on the <span class="ph">Puppet Server</span>.</p>
+                                <section class="section context"><p class="p">The default used in <span class="ph">PE</span> is the number of
+                                                  CPUs - 1, expressed as <code class="ph codeph">$::processorcount - 1</code>. One
+                                                  instance is the minimum value and four instances
+                                                  is the maximum value. Four <span class="ph">JRuby</span> instances works
+                                                  for most environments.</p><p class="p">Because increasing the maximum number of <span class="ph">JRuby</span> instances also
+                                                  increases the amount of RAM used by <code class="ph codeph">pe-puppetserver</code>, increase your heap
+                                                  size. We conservatively estimate that a <span class="ph">JRuby</span> process uses
+                                                  512MB of RAM.</p><p class="p">To change
+                                                  the number of instances using <span class="ph">Hiera</span>:</p></section>
+                                <section><ol class="ol steps"><li class="li step stepexpand">
+                                                  <span class="ph cmd">Add the
+                                                  following
+                                                  code to your default <code class="ph codeph">.yaml</code> file and set the
+                                                  desired number of instances:</span>
+                                                  <div class="itemgroup info"><pre class="pre codeblock"><code>puppet_enterprise::master::puppetserver::jruby_max_active_instances: &lt;number of instances&gt;</code></pre></div>
+                                                </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">To compile the
+                                                  changes, run <code class="ph codeph">puppet agent -t</code>
+                                                  </span>
+                                                </li></ol></section>
+                </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="tune_max_requests_per_instance">
+    <h2 class="title topictitle2" id="ariaid-title3">Tune the maximum requests per JRuby instance</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">max_requests_per_instance</code> setting determines the maximum number of requests
+        per instance of a <span class="ph">JRuby</span> interpreter before it is killed. </p>
+        <section class="section context"><p class="p">The appropriate value
+                for this parameter depends on how busy your servers are and how much you are
+                affected by a memory leak. By default, <code class="ph codeph">max_requests_per_instance</code> is set to 100,000 in <span class="ph">PE</span>.</p><p class="p">When a <span class="ph">JRuby</span> interpreter is killed, all of its memory is
+                reclaimed and it is replaced in the pool with a new interpreter. This prevents any
+                one interpreter from consuming too much RAM, mitigating <span class="ph">Puppet</span> code memory leak issues and keeping <span class="ph">Puppet Server</span> up.</p><p class="p">Starting a new
+                interpreter has a performance cost, so set the parameter to get a new interpreter no
+                more than every few hours. There are multiple interpreters running with requests
+                balanced across them, so the lifespan of each interpreter varies. </p><p class="p">To increase the maximum requests per instance using <span class="ph">Hiera</span>:</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Add the following code to your default <code class="ph codeph">.yaml</code> and set the desired number of
+                    requests.</span>
+                <div class="itemgroup info"><pre class="pre codeblock"><code>puppet_enterprise::master::puppetserver::jruby_max_requests_per_instance: &lt;number of requests&gt;</code></pre></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">To compile the changes, run <code class="ph codeph">puppet agent -t</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="config_code_cache">
+    <h2 class="title topictitle2" id="ariaid-title4">Tune the <code class="ph codeph">reserved_code_cache</code></h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">reserved_code_cache</code> is an option for the Java Hotspot VM
+        compiler. It sets the maximum amount of space available to store the compiler’s code cache.
+        Java limits the code cache size to 512mb minimum and 2048mb maximum.</p>
+        <section class="section context">
+            <p class="p"><span class="ph">JRuby</span> requires an estimated 128mb of cache space per
+                instance, so to determine the amount of space needed, calculate the number of <span class="ph">JRuby</span> instances x 128mb.</p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">To adjust the <code class="ph codeph">reserved_code_cache</code>, use Hiera or the console to
+                    change the parameter. For example, to change the cache size to 1024mb in the
+                    console, set the following parameter in the <span class="ph uicontrol">PE Master</span>
+                    node group.</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet_enterprise::master::puppetserver::reserved_code_cache: 1024m</code></pre>
+                </div>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="tune_ruby_load_path">
+               <h2 class="title topictitle2" id="ariaid-title5">Tune the Ruby load path </h2>
+               
+               <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">ruby_load_path</code> setting determines where <span class="ph">Puppet Server</span> finds components
+                              such as <span class="ph">Puppet</span> and <span class="ph">Facter</span>.</p>
+                              <section class="section context"><p class="p">The default setting is located at <code class="ph codeph">$puppetserver_jruby_puppet_ruby_load_path =
+                                                  ['/opt/puppetlabs/puppet/lib/ruby/vendor_ruby',
+                                                  '/opt/puppetlabs/puppet/cache/lib']</code>.</p><p class="p">To change the path to a
+                                                  different array in <code class="ph codeph">pe.conf</code>:</p></section>
+                              <section><ol class="ol steps"><li class="li step stepexpand">
+                                                  <span class="ph cmd">Add the
+                                                  following to your <code class="ph codeph">pe.conf</code> file on your master
+                                                  and set your new load path parameter.</span>
+                                                  <div class="itemgroup info"><pre class="pre codeblock"><code>puppet_enterprise::master::puppetserver::puppetserver_jruby_puppet_ruby_load_path</code></pre></div>
+                                             </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">Run <code class="ph codeph">puppet agent
+                                                  -t</code>
+                                                  </span>
+                                             </li></ol></section>
+                              <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">Note that if you change the <code class="ph codeph">libdir</code> you must
+                                                  also change the <code class="ph codeph">vardir</code>.</p></section>
+               </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="config_multithread_setting_puppetserver">
+    <h2 class="title topictitle2" id="ariaid-title6">Tune the multithreaded server setting</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">jruby_puppet_multithreaded</code> setting allows you to enable
+        multithreaded mode, which uses a single <span class="ph">JRuby</span> instance to
+        process requests, like catalog compiles, concurrently. The setting defaults to
+            <code class="ph codeph">false</code>. </p>
+        <section class="section context">
+            <p class="p">To enable or disable the setting using <span class="ph">Hiera</span>:</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Add the following code to your default <code class="ph codeph">.yaml</code> file and set the
+                    parameter to <code class="ph codeph">true</code> (enable) or <code class="ph codeph">false</code> (disable).
+                    For example:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet_enterprise::master::puppetserver::jruby_puppet_multithreaded: &lt;true or false&gt;</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">To compile the changes, run <code class="ph codeph">puppet agent -t</code></span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="enable_or_disable_environment_class_cache_enabled">
+           <h2 class="title topictitle2" id="ariaid-title7">Enable or disable
+                      cached
+                      data when updating classes
+           </h2>
+           
+           <div class="body taskbody"><p class="shortdesc">The optional <code class="ph codeph">environment-class-cache-enabled</code> setting specifies
+                      whether cached data is used when updating classes in the console. When <code class="ph codeph">true</code>, <span class="ph">Puppet Server</span> refreshes classes using file
+                      sync, improving performance.</p>
+                      <section class="section context"><p class="p">The
+                                            default value for <code class="ph codeph">environment-class-cache-enabled</code> depends
+                                            on whether you use <span class="ph">Code Manager</span>.</p><ul class="ul">
+                                            <li class="li"><p class="p">With <span class="ph">Code Manager</span>, the default
+                                                  value is enabled (<code class="ph codeph">true</code>). File sync clears the
+                                                  cache automatically in the background, so clearing
+                                                  the environment cache manually isn't required when
+                                                  using <span class="ph">Code Manager</span>.</p></li>
+                                            <li class="li"><p class="p">Without
+                                                  <span class="ph">Code Manager</span>, the
+                                                  default value is disabled (<code class="ph codeph">false</code>).</p></li>
+                                 </ul><div class="note note note_note"><span class="note__title">Note:</span> If you're not using
+                                                  <span class="ph">Code Manager</span> and opt to
+                                            enable this setting, make sure your code deployment
+                                            method — for example <span class="ph">r10k</span>
+                                            — clears the environment cache when it completes. If you
+                                            don't clear the environment cache, the Node Classifier
+                                            doesn't receive new class information until <span class="ph">Puppet Server</span> is
+                                            restarted.</div><p class="p">To enable or
+                                            disable the cache using <span class="ph">Hiera</span>: </p></section>
+                      <section><ol class="ol steps"><li class="li step stepexpand">
+                                            <span class="ph cmd">Add the following code
+                                                  to your default <code class="ph codeph">.yaml </code>file and set the
+                                                  parameter to the appropriate setting.</span>
+                                            <div class="itemgroup info"><pre class="pre codeblock"><code>puppet_enterprise::master::puppetserver::
+           jruby_environment_class_cache_enabled: &lt;true OR false&gt;</code></pre></div>
+                                 </li><li class="li step stepexpand">
+                                            <span class="ph cmd">To compile the
+                                                  changes, run <code class="ph codeph">puppet agent -t</code>
+                                            </span>
+                                 </li></ol></section>
+           </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="config-puppetserver-environment-timeout">
+    <h2 class="title topictitle2" id="ariaid-title8">Change the <code class="ph codeph">environment_timeout</code> setting</h2>
+    
+    
+
+    <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">environment_timeout</code> setting controls how long the master caches data it loads
+        from an environment, determining how much time passes before changes to an environment's <span class="ph">Puppet</span> code are reflected in its environment.</p>
+        <section class="section context">
+            <div class="p">In <span class="ph">PE</span>, the <code class="ph codeph">environment_timeout</code> is set to <code class="ph codeph">0</code>. This lowers the performance of your master
+                but makes it easy for new users to deploy updated <span class="ph">Puppet</span> code. Once your code deployment process is
+                mature, change this setting to <code class="ph codeph">unlimited</code>.<div class="note note note_note"><span class="note__title">Note:</span> When you install Code Manager
+                    and set the <code class="ph codeph">code_manager_auto_configure</code> parameter to <code class="ph codeph">true</code>, <code class="ph codeph">environment_timeout</code> is updated to <code class="ph codeph">unlimited</code></div></div>
+            <p class="p">To
+                change the <code class="ph codeph">environment_timeout</code> setting using <code class="ph codeph">pe.conf</code>:</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Add the following to your <code class="ph codeph">pe.conf</code> file on your master and specify
+                    either <code class="ph codeph">0</code> or <code class="ph codeph">unlimited</code>:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet_enterprise::master::environment_timeout:&lt;time&gt;</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run <code class="ph codeph">puppet
+                        agent -t</code></span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p">For more information, see <a class="xref" href="https://docs.puppet.com/puppet/latest/environments_about.html#environments-limitations" target="_blank">Environments limitations</a></p>
+        </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title9" id="add_certificates_to_the_puppet_admin_certificate_whitelist">
+    <h2 class="title topictitle2" id="ariaid-title9">Add certificates to the <code class="ph codeph">puppet-admin</code> certificate whitelist </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Add trusted certificates to the <code class="ph codeph">puppet-admin</code> certificate whitelist.</p>
+        <section class="section context"><p class="p">To
+                add certificates to the whitelist using <code class="ph codeph">pe.conf</code>:</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Add the following code to your <code class="ph codeph">pe.conf</code> file on your master and add the
+                    desired certificates.</span>
+                <div class="itemgroup info"><pre class="pre codeblock"><code>puppet_enterprise::master::puppetserver::puppet_admin_certs:'example_cert_name'</code></pre></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run <code class="ph codeph">puppet
+                        agent -t</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title10" id="disable_update_checking">
+    <h2 class="title topictitle2" id="ariaid-title10">Disable update checking </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">
+        <span class="ph">Puppet Server</span> (pe-puppetserver) checks for updates when it starts
+        or restarts, and every 24 hours thereafter. It transmits basic, anonymous info to our
+        servers at <span class="ph">Puppet, Inc.</span> to get update information. You can
+        optionally turn this off.</p>
+        <section class="section context"><p class="p">Specifically, it
+                transmits:</p><ul class="ul">
+                <li class="li"><p class="p">Product name</p></li>
+                <li class="li"><p class="p">
+                        <span class="ph">Puppet Server</span> version</p></li>
+                <li class="li"><p class="p">IP address</p></li>
+                <li class="li"><p class="p">Data collection timestamp</p></li>
+            </ul><p class="p">To turn off update checking using the console:</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Open the console, click <span class="ph uicontrol">Classification</span>, and select
+                    the
+                    PE Master node group. </span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, find the <code class="ph codeph">puppet_enterprise::profile::master</code>
+                    class and find the <code class="ph codeph">check_for_updates</code> parameter from the list and change its value to
+                        <code class="ph codeph">false</code>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add parameter</span> and commit changes.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the nodes hosting the master and console, run
+                        <span class="ph">Puppet</span>.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title11" id="puppet_server_configuration_files">
+    <h2 class="title topictitle2" id="ariaid-title11">
+        <span class="ph">Puppet Server</span> configuration files </h2>
+    
+    <div class="body refbody"><p class="shortdesc">At startup, <span class="ph">Puppet Server</span> reads
+        all of the <code class="ph codeph">.conf</code> files in the <code class="ph codeph">conf.d</code> directory (<code class="ph codeph">/etc/puppetlabs/puppetserver/conf.d</code>).</p>
+        <section class="section"><p class="p">The <code class="ph codeph">conf.d</code> directory contains the following files:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="puppet_server_configuration_files__entry__1">File name</th>
+                            <th class="entry" id="puppet_server_configuration_files__entry__2">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="puppet_server_configuration_files__entry__1">
+                                <code class="ph codeph">auth.conf</code>
+                            </td>
+                            <td class="entry" headers="puppet_server_configuration_files__entry__2">Contains authentication rules and settings
+                                for agents and API endpoint access.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="puppet_server_configuration_files__entry__1">
+                                <code class="ph codeph">global.conf</code>
+                            </td>
+                            <td class="entry" headers="puppet_server_configuration_files__entry__2">Contains global configuration settings for
+                                    <span class="ph">Puppet Server</span>, including logging
+                                settings. </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="puppet_server_configuration_files__entry__1">
+                                <code class="ph codeph">metrics.conf</code>
+                            </td>
+                            <td class="entry" headers="puppet_server_configuration_files__entry__2">Contains settings for <span class="ph">Puppet Server</span> metrics services.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="puppet_server_configuration_files__entry__1">
+                                <code class="ph codeph">pe-puppet-server.conf</code>
+                            </td>
+                            <td class="entry" headers="puppet_server_configuration_files__entry__2">Contains <span class="ph">Puppet Server</span> settings specific to <span class="ph">Puppet Enterprise</span>.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="puppet_server_configuration_files__entry__1">
+                                <code class="ph codeph">webserver.conf</code>
+                            </td>
+                            <td class="entry" headers="puppet_server_configuration_files__entry__2">Contains SSL service configuration
+                                settings.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="puppet_server_configuration_files__entry__1">
+                                <code class="ph codeph">ca.conf</code>
+                            </td>
+                            <td class="entry" headers="puppet_server_configuration_files__entry__2">(Deprecated) Contains rules for
+                                Certificate Authority services. Superseded by <code class="ph codeph">webserver.conf</code> and <code class="ph codeph">auth.conf</code>. </td>
+                        </tr>
+                    </tbody></table><p class="p">For information about <span class="ph">Puppet Server</span> configuration files, see <a class="xref" href="https://docs.puppet.com/puppetserver/latest/configuration.html" target="_blank">Puppet Server's config files</a> for the <span class="ph">Puppet Server</span> version you're using, and the Related
+                information links below.</p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="puppet_server_metrics.html" title="Puppet Server can provide performance and status metrics to external services for monitoring server health and performance over time.">Viewing and managing Puppet Server metrics</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title12" id="pe_puppet_server_conf_settings">
+    <h2 class="title topictitle2" id="ariaid-title12">pe-puppet-server.conf settings </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">pe-puppet-server.conf </code>file contains <span class="ph">Puppet Server</span>
+        settings specific to <span class="ph">Puppet Enterprise</span>, with all settings wrapped in a
+            <code class="ph codeph">jruby-puppet</code> section.</p>
+        <section class="section"><dl class="dl">
+                
+                    <dt class="dt dlterm">
+                        <code class="ph codeph">gen-home</code>
+                    </dt>
+                    <dd class="dd">Determines where <span class="ph">JRuby</span>
+                        looks for gems. It is also used by the <code class="ph codeph">puppetserver gem</code> command line tool.</dd>
+                    <dd class="dd ddexpand">Default: <code class="ph codeph">/opt/puppetlabs/puppet/cache/jruby-gems</code>
+                    </dd>
+                
+                
+                    <dt class="dt dlterm">
+                        <code class="ph codeph">master-conf-dir</code>
+                    </dt>
+                    <dd class="dd">Sets the <span class="ph">Puppet</span>
+                        configuration directory's path.</dd>
+                    <dd class="dd ddexpand">Default: <code class="ph codeph">/etc/puppetlabs/puppet</code>
+                    </dd>
+                
+                
+                    <dt class="dt dlterm">
+                        <code class="ph codeph">master-var-dir</code>
+                    </dt>
+                    <dd class="dd">Sets the <span class="ph">Puppet</span> variable
+                        directory's path.</dd>
+                    <dd class="dd ddexpand">Default: <code class="ph codeph">/opt/puppetlabs/server/data/puppetserver</code>
+                    </dd>
+                
+                
+                    <dt class="dt dlterm">
+                        <code class="ph codeph">max-queued-requests</code>
+                    </dt>
+                    <dd class="dd">
+                        <p class="p">Optional. Sets the maximum number of requests that can
+                            be queued waiting to borrow a from the pool. After this limit is
+                            exceeded, a <code class="ph codeph">503 Service
+                                Unavailable</code> response is returned for all new requests until
+                            the queue drops below the limit. </p>
+                        <div class="p">If <code class="ph codeph">max-retry-delay</code> is set to a positive value, then the 503
+                            response includes a <code class="ph codeph">Retry-After</code> header indicating a random sleep time after
+                            which the client can retry the request. <div class="note note note_note"><span class="note__title">Note:</span> Don't use this solution if your managed infrastructure includes a
+                                significant number of agents older than <span class="ph">Puppet</span> 5.3. Older agents treat a 503
+                                response as a failure, which ends their runs, causing groups of
+                                older agents to schedule their next runs at the same time, creating
+                                a thundering herd problem.</div>
+                        </div>
+                    </dd>
+                    <dd class="dd ddexpand">Default: <code class="ph codeph">0</code>
+                    </dd>
+                
+                
+                    <dt class="dt dlterm">
+                        <code class="ph codeph">max-retry-delay</code>
+                    </dt>
+                    <dd class="dd">Optional. Sets the upper limit in seconds for the random
+                        sleep set as a <code class="ph codeph">Retry-After</code>
+                        header on 503 responses returned when <code class="ph codeph">max-queued-requests</code> is enabled. </dd>
+                    <dd class="dd ddexpand">Default: <code class="ph codeph">1800</code>
+                    </dd>
+                
+                
+                    <dt class="dt dlterm">
+                        <code class="ph codeph">jruby_max_active_instances</code>
+                    </dt>
+                    <dd class="dd">Controls the maximum number of <span class="ph">JRuby</span> instances to allow on the <span class="ph">Puppet Server</span>.</dd>
+                    <dd class="dd ddexpand">Default: <code class="ph codeph">4</code>
+                    </dd>
+                
+                
+                    <dt class="dt dlterm">
+                        <code class="ph codeph">max_requests_per_instance</code>
+                    </dt>
+                    <dd class="dd">Sets the maximum number of requests per instance of a
+                            <span class="ph">JRuby</span> interpretor before it is
+                        killed.</dd>
+                    <dd class="dd ddexpand">Default: <code class="ph codeph">100000</code>
+                    </dd>
+                
+                
+                    <dt class="dt dlterm">
+                        <code class="ph codeph">ruby-load-path</code>
+                    </dt>
+                    <dd class="dd">Sets the <span class="ph">Puppet</span>
+                        configuration directory's path. The agent's&nbsp;<code class="ph codeph">libdir</code> value is added by default.</dd>
+                    <dd class="dd ddexpand">Default: <code class="ph codeph">'/opt/puppetlabs/puppet/lib/ruby/vendor_ruby',
+                            '/opt/puppetlabs/puppet/cache/lib'</code>
+                    </dd>
+                
+            </dl></section>
+    </div>
+</article></article></article></main></body></html>

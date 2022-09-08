@@ -1,0 +1,446 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The puppet-code command allows you to trigger Code Manager from the command line to deploy your environments."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="triggering_code_manager_on_the_command_line"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Triggering Code Manager on the command line</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="triggering_code_manager_on_the_command_line">
+  <h1 class="title topictitle1" id="ariaid-title1">Triggering <span class="ph">Code Manager</span> on
+    the command line </h1>
+  <p class="shortdesc"> The <code class="ph codeph">puppet-code</code> command allows you to trigger <span class="ph">Code Manager</span> from the command line to deploy your environments. </p>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="installing_and_configuring_puppet_code">
+   <h2 class="title topictitle2" id="ariaid-title2">Installing and configuring puppet-code</h2>
+   
+   <div class="body conbody"><p class="shortdesc"><span class="ph">PE</span> automatically installs
+      and configures the <code class="ph codeph">puppet-code</code> command on
+      your masters as part of the included <span class="ph">PE</span> client tools package.
+      You can also set up <code class="ph codeph">puppet-code</code> on an agent
+      node or on a workstation, customize configuration for different users, or change the
+      configuration settings. </p>
+      <p class="p">The global configuration settings for <span class="ph">Linux</span> and <span class="ph">macOS</span> systems are in a JSON file at <code class="ph codeph">/etc/puppetlabs/client-tools/puppet-code.conf</code>. The
+         default configuration file looks something like:</p>
+      <pre class="pre codeblock json"><code>{
+"cacert": "/etc/puppetlabs/puppet/ssl/certs/ca.pem",
+"token-file": "~/.puppetlabs/token",
+"service-url": "https://&lt;PUPPET MASTER HOSTNAME&gt;:8170/code-manager"
+ }</code></pre>
+      <div class="p">
+         <div class="note important note_important"><span class="note__title">Important:</span> 
+            <p class="p">On a <span class="ph">PE</span>-managed machine, <span class="ph">Puppet</span> manages this file for you. Do not manually edit
+               this file, because <span class="ph">Puppet</span> overwrites your new values
+               the next time it runs.</p>
+         </div>
+      </div>
+      <p class="p">Additionally, you can set up <code class="ph codeph">puppet-code</code> on an agent node or on a workstation not managed by <span class="ph">PE</span>. And on any machine, you can set up user-specific config
+         files. For instructions, see the related topic about advanced configuration of <code class="ph codeph">puppet-code</code>.</p>
+      <p class="p">You can also override existing configuration settings on a case-by-case
+         basis on the command line. When you deploy environments with the <code class="ph codeph">puppet-code deploy</code> command, you can specify either an alternative
+         config file or particular config settings directly in the command. For examples, see the
+         related topic about deploying environments with <code class="ph codeph">puppet code</code>.</p>
+      <section class="section" id="installing_and_configuring_puppet_code__windows_paths"><h3 class="title sectiontitle"><span class="ph">Windows</span> paths </h3><p class="p">The global
+               <code class="ph codeph">puppet-code</code> configuration file on
+               <span class="ph">Windows</span> systems is located at <code class="ph codeph">C:\ProgramData\PuppetLabs\client-tools\puppet-code.conf</code>.</p><p class="p">The default configuration file looks something
+         like:</p><pre class="pre codeblock json"><code>{
+"cacert": "C:\\ProgramData\\PuppetLabs\\puppet\\etc\\ssl\\certs\\ca.pem",
+"token-file": "C:\\Users\\&lt;username&gt;\\.puppetlabs\\token",
+"service-url": "https://&lt;PUPPET MASTER HOSTNAME&gt;:8170/code-manager"
+ }</code></pre></section>
+   </div>
+<article class="topic concept nested2" aria-labelledby="ariaid-title3" id="configuration_precedence_and_puppet_code">
+    <h3 class="title topictitle3" id="ariaid-title3">Configuration precedence and puppet-code </h3>
+    
+    <div class="body conbody"><p class="shortdesc">There are several ways to configure <code class="ph codeph">puppet-code</code>, but some configuration methods take
+        precedence over others.</p>
+        <p class="p">If no other configuration is specified, <code class="ph codeph">puppet-code</code> uses the settings in the global configuration
+            file. User-specific configuration files override the global configuration file.</p>
+        <p class="p">If you specify a configuration file on the command line, <span class="ph">Puppet</span> temporarily uses that configuration file
+                <strong class="ph b">only</strong> and does not read the global or user-specific
+            config files at all.</p>
+        <p class="p">Finally, if you specify individual configuration options directly on
+            the command line, those options temporarily take precedence over <em class="ph i">any</em> configuration file settings.</p>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="deploying_environments_with_puppet_code">
+   <h2 class="title topictitle2" id="ariaid-title4">Deploying environments with puppet-code </h2>
+   
+   <div class="body conbody"><p class="shortdesc">To deploy environments with the <code class="ph codeph">puppet-code</code> command, use the <code class="ph codeph">deploy</code> action, either with the name of a single environment or with the <code class="ph codeph">--all</code> flag.</p>
+      <p class="p">The <code class="ph codeph">deploy</code> action
+         deploys the environments, but returns only deployment <em class="ph i">queuing</em> results by default. To view the results of the deployment itself, add the
+            <code class="ph codeph">--wait</code> flag.</p>
+      <p class="p">The <code class="ph codeph">--wait</code> flag deploys
+         the specified environments, waits for file sync to complete code deployment to the live
+         code directory and all compilers, and then returns results. In deployments that are
+         geographically dispersed or have a large quantity of environments, completing code
+         deployment can take up to several minutes.</p>
+      <p class="p">The resulting message includes the deployment signature, which is the
+         commit SHA of the control repo used to deploy the environment. The output also includes two
+         other SHAs that indicate that file sync is aware that the environment has been newly
+         deployed to the code staging directory.</p>
+      <p class="p">To temporarily override default, global, and user-specific configuration
+         settings, specify the following configuration options on the command line:</p>
+      <ul class="ul">
+         <li class="li">
+            <code class="ph codeph">--cacert</code>
+         </li>
+         <li class="li"><code class="ph codeph">--token-file</code>,
+               <code class="ph codeph">-t</code></li>
+         <li class="li">
+            <code class="ph codeph">--service-url</code>
+         </li>
+      </ul>
+      <p class="p">Alternately, you can specify a custom <code class="ph codeph">puppet-code.conf</code> configuration file by using the <code class="ph codeph">--config-file</code> option.</p>
+      <section class="section" id="deploying_environments_with_puppet_code__running_puppet_code_on_windows"><h3 class="title sectiontitle">Running puppet-code on <span class="ph">Windows</span></h3><p class="p">If you're running these commands from a managed or non-managed <span class="ph">Windows</span> workstation, you must specify the full path to the
+            command. </p></section>
+      <div class="example">
+         <pre class="pre codeblock"><code>C:\Program Files\Puppet Labs\Client\bin\puppet code deploy mytestenvironment --wait</code></pre>
+      </div>
+   </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title5" id="deploy_environments">
+    <h3 class="title topictitle3" id="ariaid-title5">Deploy environments on the command line</h3>
+    
+    <div class="body taskbody"><p class="shortdesc">To deploy environments, use the <code class="ph codeph">puppet-code deploy</code> command, specifying the environments to
+        deploy.</p>
+        <section><div class="li step p">
+                <span class="ph cmd">To deploy environments, on the command line, run
+                        <code class="ph codeph">puppet-code deploy</code>,
+                    specifying the environment.</span>
+                <div class="itemgroup info"><p class="p">Specify the
+                        environment by name. To deploy all environments, use the <code class="ph codeph">--all</code> flag.</p><p class="p">Optionally, you can specify the <code class="ph codeph">--wait</code> flag to return results after the deployment is
+                        finished. Without the <code class="ph codeph">--wait</code> flag, the command returns only queuing
+                    results.</p></div>
+                <div class="itemgroup stepxmp"><p class="p"><code class="ph codeph">puppet-code deploy myenvironment
+                            --wait</code></p><p class="p"><code class="ph codeph">puppet-code deploy --all --wait</code></p><p class="p">Both of these commands deploy the specified environments, and then
+                        return deployment results with a control repo commit SHA for each
+                        environment.</p></div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="puppet_code.html#reference_puppet_code_command" title="The puppet-code command accepts options, actions, and deploy action options.">Reference: puppet-code command</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="deploy_with_a_custom_configuration_file">
+      <h3 class="title topictitle3" id="ariaid-title6">Deploy with a custom configuration file </h3>
+      
+      <div class="body taskbody"><p class="shortdesc">You can deploy environments with a custom configuration
+            file that you specify on the command line.</p>
+            <section><div class="li step p">
+                        <span class="ph cmd">To deploy all environments using the
+                              configuration settings in a specified config file, run the command
+                                    <code class="ph codeph">puppet-code
+                                    deploy</code> command with a <code class="ph codeph">--config-file</code> flag specifying the
+                              location of the config file.</span>
+                        <div class="itemgroup stepxmp">
+                              <pre class="pre codeblock"><code>puppet-code --config-file ~/.puppetlabs/myconfigfile/puppet code.conf deploy --all</code></pre>
+                        </div>
+                  </div></section>
+      </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title7" id="deploy_with_command_line_configuration_settings">
+   <h3 class="title topictitle3" id="ariaid-title7">Deploy with command-line configuration settings </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">You can override an existing configuration setting on a
+      per-use basis by specifying that setting on the command line.</p>
+      <section class="section context"></section>
+      <section><div class="li step p">
+            <span class="ph cmd">Specify the setting, which is used on this deployment
+               only, on the command line.</span>
+            <div class="itemgroup stepxmp">
+               <pre class="pre codeblock"><code>puppet-code --service-url "https://puppet.example.com:8170/code-manager" deploy mytestenvironment</code></pre>
+            </div>
+            <div class="itemgroup stepresult">
+               <p class="p">This example deploys 'mytestenvironment' using global or
+                  user-specific config settings (if set), except for <code class="ph codeph">--service-url</code>, for which it uses the value specified on
+                  the command line ("https://puppet.example.com:8170/code-manager").</p>
+            </div>
+         </div></section>
+   </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="advanced_puppet_code_configuration">
+    <h2 class="title topictitle2" id="ariaid-title8">Advanced puppet-code configuration </h2>
+    
+    <div class="body conbody"><p class="shortdesc">You can set up the <code class="ph codeph">puppet-code</code> command on an agent node or on a workstation not managed by <span class="ph">PE</span>. And on any machine, you can set up user-specific config
+        files.</p>
+        <p class="p">You can set up the <code class="ph codeph">puppet-code</code> command on an agent node or on a workstation not managed by
+                <span class="ph">PE</span>. And on any machine, you can set up user-specific
+            config files.</p>
+        <p class="p">The <code class="ph codeph">puppet-code.conf</code>
+            file is a JSON configuration file for the <code class="ph codeph">puppet-code</code> command. For <span class="ph">Linux</span> or <span class="ph">Mac OS X</span> operating systems, it looks something like:</p>
+        <pre class="pre codeblock json"><code>{
+"cacert": "/etc/puppetlabs/puppet/ssl/certs/ca.pem",
+"token-file": "~/.puppetlabs/token",
+"service-url": "https://&lt;PUPPET MASTER HOSTNAME&gt;:8170/code-manager"
+}</code></pre>
+        <p class="p">For <span class="ph">Windows</span> systems, use the entire <span class="ph">Windows</span> path, such as:</p>
+        <pre class="pre codeblock json"><code>{
+"cacert": "C:\\ProgramData\\PuppetLabs\\puppet\\etc\\ssl\\certs\\ca.pem",
+"token-file": "C:\\Users\\&lt;username&gt;\\.puppetlabs\\token",
+"service-url": "https://&lt;PUPPET MASTER HOSTNAME&gt;:8170/code-manager"
+}</code></pre>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="installing_pe_client_tools.html#installing_pe_client_tools" title="PE client tools are a set of command line tools that let you access Puppet Enterprise services from a workstation that might or might not be managed by Puppet.">Installing PE client tools</a></li></ul></div></nav><article class="topic task nested2" aria-labelledby="ariaid-title9" id="configure_puppet_code_on_agents_and_workstations">
+   <h3 class="title topictitle3" id="ariaid-title9">Configure puppet-code on agents and workstations </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">To use <code class="ph codeph">puppet-code</code> on an agent node or on a workstation that is not managed by <span class="ph">PE</span>, install the client tools package and configure <code class="ph codeph">puppet-code</code> on that machine.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">Download and install the
+            client tools package. See the client tools documentation for instructions.</p></section>
+      <section><div class="li step p">
+            <span class="ph cmd">Create a config file called <code class="ph codeph">puppet-code.conf</code> in the client tools directory.</span>
+            <div class="itemgroup info">
+               <ul class="ul">
+                  <li class="li">For <span class="ph">Linux</span> and <span class="ph">Mac OS X</span> systems, the default client
+                     tools directory is <code class="ph codeph">/etc/puppetlabs/client-tools</code></li>
+                  <li class="li">For <span class="ph">Windows</span>
+                     systems, the default client tools directory is<code class="ph codeph">&nbsp;C:\ProgramData\PuppetLabs\client-tools</code></li>
+               </ul>
+            </div>
+         </div></section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title10" id="configure_puppet_code_for_different_users">
+   <h3 class="title topictitle3" id="ariaid-title10">Configure puppet-code for different users </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">On any machine, whether it is a master, an agent, or a
+      workstation not managed by <span class="ph">PE</span>, you can set up specific
+         <code class="ph codeph">puppet-code</code> configurations for specific
+      users.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">If <span class="ph">PE</span> is <strong class="ph b">not</strong>
+            installed on the workstation you are configuring, see instructions for configuring
+               <code class="ph codeph">puppet-code</code> on agents and
+            workstations.</p></section>
+      <section class="section context"></section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Create a <code class="ph codeph">puppet-code.conf</code> file in the user's client tools directory.</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <ul class="ul">
+                     <li class="li">
+                        <p class="p">For <span class="ph">Linux</span> or
+                              <span class="ph">Mac OS X</span> systems, place the
+                           file in the user's <code class="ph codeph">~/.puppetlabs/client-tools/</code></p>
+                     </li>
+                     <li class="li">
+                        <p class="p">For <span class="ph">Windows</span>
+                           systems, place the file in the default user config file location: <code class="ph codeph">C:\Users\&lt;username&gt;\.puppetlabs\ssl\certs\ca.pem</code></p>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the user's <code class="ph codeph">puppet-code.conf</code> file, specify the <code class="ph codeph">cacert</code>, <code class="ph codeph">token-file</code>,
+               and <code class="ph codeph">service-url</code> settings in JSON
+               format.&nbsp;</span>
+         </li></ol></section>
+   </div>
+</article></article><article class="topic reference nested1" aria-labelledby="ariaid-title11" id="reference_puppet_code_command">
+    <h2 class="title topictitle2" id="ariaid-title11">Reference: puppet-code command </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">puppet-code</code> command accepts options, actions, and <code class="ph codeph">deploy</code> action options.</p>
+        <section class="section"><p class="p">Usage: <code class="ph codeph">puppet-code [global options] &lt;action&gt; [action
+                    options]</code></p></section>
+    </div>
+<article class="topic reference nested2" aria-labelledby="ariaid-title12" id="global_puppet_code_options">
+    <h3 class="title topictitle3" id="ariaid-title12">Global puppet-code options </h3>
+    
+    <div class="body refbody"><p class="shortdesc">Global options set the behavior of the <code class="ph codeph">puppet-code</code> command on the command line.</p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="global_puppet_code_options__entry__1">Option </th>
+                        <th class="entry align-center" id="global_puppet_code_options__entry__2">Description </th>
+                        <th class="entry" id="global_puppet_code_options__entry__3">Accepted arguments </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="global_puppet_code_options__entry__1"><code class="ph codeph">--help</code>, <code class="ph codeph">-h</code>
+                        </td>
+                        <td class="entry align-center" headers="global_puppet_code_options__entry__2">Prints usage
+                            information for <code class="ph codeph">puppet-code</code>. </td>
+                        <td class="entry" headers="global_puppet_code_options__entry__3">none </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="global_puppet_code_options__entry__1"><code class="ph codeph">--version</code>, <code class="ph codeph">-V</code>
+                        </td>
+                        <td class="entry align-center" headers="global_puppet_code_options__entry__2">Prints the
+                            application version. </td>
+                        <td class="entry" headers="global_puppet_code_options__entry__3">none </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="global_puppet_code_options__entry__1"><code class="ph codeph">--log-level</code>, <code class="ph codeph">-l</code>
+                        </td>
+                        <td class="entry align-center" headers="global_puppet_code_options__entry__2">Sets the log
+                            verbosity. It accepts one log level as an argument. </td>
+                        <td class="entry" headers="global_puppet_code_options__entry__3">log levels: none, trace, debug,
+                            info, warn, error, fatal. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="global_puppet_code_options__entry__1"><code class="ph codeph">--config-file</code>, <code class="ph codeph">-c</code>
+                        </td>
+                        <td class="entry align-center" headers="global_puppet_code_options__entry__2">Sets a <code class="ph codeph">puppet-code.conf</code> file that
+                            takes precedence over all other existing <code class="ph codeph">puppet-code.conf</code> files. </td>
+                        <td class="entry" headers="global_puppet_code_options__entry__3">A path to a <code class="ph codeph">puppet-code.conf</code> file. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="global_puppet_code_options__entry__1"><code class="ph codeph">--cacert</code>
+                        </td>
+                        <td class="entry align-center" headers="global_puppet_code_options__entry__2">Sets a <span class="ph">Puppet</span> CA certificate that
+                            overrides the <code class="ph codeph">cacert</code>
+                            setting in any configuration files. </td>
+                        <td class="entry" headers="global_puppet_code_options__entry__3">A path to the location of a CA
+                            Certificate. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="global_puppet_code_options__entry__1"><code class="ph codeph">--token-file</code>, <code class="ph codeph">-t</code>
+                        </td>
+                        <td class="entry align-center" headers="global_puppet_code_options__entry__2">Sets an
+                            authentication token that overrides the <code class="ph codeph">token-file</code> setting in any configuration
+                            files. </td>
+                        <td class="entry" headers="global_puppet_code_options__entry__3">A path to the location of the
+                            authentication token. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="global_puppet_code_options__entry__1"><code class="ph codeph">--service-url</code>
+                        </td>
+                        <td class="entry align-center" headers="global_puppet_code_options__entry__2">Sets a base URL
+                            for the <span class="ph">Code Manager</span> service,
+                            overriding <code class="ph codeph">service-url</code>
+                            settings in any configuration files. </td>
+                        <td class="entry" headers="global_puppet_code_options__entry__3">A valid URL to the service.
+                        </td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title13" id="puppet_code_actions">
+    <h3 class="title topictitle3" id="ariaid-title13">puppet-code actions </h3>
+    
+    <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">puppet-code</code> command can perform print, deploy, and status actions.</p>
+        <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="puppet_code_actions__entry__1">Action </th>
+                        <th class="entry align-center" id="puppet_code_actions__entry__2">Result </th>
+                        <th class="entry align-center" id="puppet_code_actions__entry__3">Arguments </th>
+                        <th class="entry" id="puppet_code_actions__entry__4">Options </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="puppet_code_actions__entry__1"><code class="ph codeph">puppet-code print-config</code>
+                        </td>
+                        <td class="entry align-center" headers="puppet_code_actions__entry__2">Prints out the
+                            resolved <code class="ph codeph">puppet-code</code>
+                            configuration. </td>
+                        <td class="entry align-center" headers="puppet_code_actions__entry__3">none </td>
+                        <td class="entry" headers="puppet_code_actions__entry__4">none </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet_code_actions__entry__1"><code class="ph codeph">puppet-code deploy</code>
+                        </td>
+                        <td class="entry align-center" headers="puppet_code_actions__entry__2">Runs remote code
+                            deployments with the <span class="ph">Code Manager</span> service. By default, returns only deployment queuing
+                            results. </td>
+                        <td class="entry align-center" headers="puppet_code_actions__entry__3">Accepts either
+                            the name of a single environment or the <code class="ph codeph">--all</code> flag. </td>
+                        <td class="entry" headers="puppet_code_actions__entry__4"><code class="ph codeph">--wait</code>, <code class="ph codeph">-w</code>; <code class="ph codeph">--all</code>; <code class="ph codeph">--dry-run</code>; <code class="ph codeph">--format</code>, <code class="ph codeph">-F</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet_code_actions__entry__1"><code class="ph codeph">puppet-code status</code>
+                        </td>
+                        <td class="entry align-center" headers="puppet_code_actions__entry__2">Checks whether
+                                <span class="ph">Code Manager</span> and file sync
+                            are responding. By default, details are returned at the info level. </td>
+                        <td class="entry align-center" headers="puppet_code_actions__entry__3">Accepts log
+                            levels none, trace, info, warn, error, fatal. </td>
+                        <td class="entry" headers="puppet_code_actions__entry__4">none </td>
+                    </tr>
+                </tbody></table>
+    </div>
+<article class="topic reference nested3" aria-labelledby="ariaid-title14" id="puppet_code_deploy_action_options">
+   <h4 class="title topictitle4" id="ariaid-title14">puppet-code deploy action options </h4>
+   
+   <div class="body refbody"><p class="shortdesc">Modify the <code class="ph codeph">puppet-code deploy</code> action with action options.</p>
+      <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+               <tr class="row">
+                  <th class="entry" id="puppet_code_deploy_action_options__entry__1">Option</th>
+                  <th class="entry" id="puppet_code_deploy_action_options__entry__2">Description</th>
+               </tr>
+            </thead><tbody class="tbody">
+               <tr class="row">
+                  <td class="entry" headers="puppet_code_deploy_action_options__entry__1"><code class="ph codeph">--wait</code>, <code class="ph codeph">-w</code></td>
+                  <td class="entry" headers="puppet_code_deploy_action_options__entry__2">Causes <code class="ph codeph">puppet-code deploy</code> to: <ol class="ol">
+                        <li class="li">
+                           <p class="p">Start a deployment,</p>
+                        </li>
+                        <li class="li">
+                           <p class="p">Wait for the deployment to complete,</p>
+                        </li>
+                        <li class="li">
+                           <p class="p">Wait for file sync to deploy the code to all
+                              compilers, and</p>
+                        </li>
+                        <li class="li">
+                           <p class="p">Return the deployment signature with control repo
+                              commit SHAs for each environment.</p>
+                        </li>
+                     </ol>The return output also includes two other SHAs that indicate that file
+                     sync is aware that the environment has been newly deployed to the code-staging
+                     directory.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="puppet_code_deploy_action_options__entry__1">
+                     <code class="ph codeph">--all</code>
+                  </td>
+                  <td class="entry" headers="puppet_code_deploy_action_options__entry__2">Tells <code class="ph codeph">puppet-code deploy</code> to start deployments for all <span class="ph">Code Manager</span> environments.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="puppet_code_deploy_action_options__entry__1">
+                     <code class="ph codeph">--dry-run</code>
+                  </td>
+                  <td class="entry" headers="puppet_code_deploy_action_options__entry__2">Tests the connections to each configured remote and,
+                     if successfully connected, returns a consolidated list of the environments from
+                     all remotes. The <code class="ph codeph">--dry-run</code>
+                     flag implies both <code class="ph codeph">--all</code> and
+                        <code class="ph codeph">--wait</code>.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="puppet_code_deploy_action_options__entry__1"><code class="ph codeph">--format</code>, <code class="ph codeph">-F</code></td>
+                  <td class="entry" headers="puppet_code_deploy_action_options__entry__2">Specifies the output format. The default and only
+                     supported value is 'json'.</td>
+               </tr>
+            </tbody></table>
+   </div>
+</article></article><article class="topic reference nested2" aria-labelledby="ariaid-title15" id="puppet_code_conf_configuration_settings">
+    <h3 class="title topictitle3" id="ariaid-title15">puppet-code.conf configuration settings </h3>
+    
+    <div class="body refbody"><p class="shortdesc">Temporarily specify <code class="ph codeph">puppet-code.conf</code> configuration settings on the command line.</p>
+        <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="puppet_code_conf_configuration_settings__entry__1">Setting </th>
+                        <th class="entry align-center" id="puppet_code_conf_configuration_settings__entry__2">Controls </th>
+                        <th class="entry align-center" id="puppet_code_conf_configuration_settings__entry__3"><span class="ph">Linux</span> and <span class="ph">Mac OS X</span> default </th>
+                        <th class="entry" id="puppet_code_conf_configuration_settings__entry__4"><span class="ph">Windows</span> default </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="puppet_code_conf_configuration_settings__entry__1"><code class="ph codeph">cacert</code>
+                        </td>
+                        <td class="entry align-center" headers="puppet_code_conf_configuration_settings__entry__2">Specifies the
+                            path to the <span class="ph">Puppet</span> CA certificate to use
+                            when connecting to the <span class="ph">Code Manager</span> service
+                            over SSL. </td>
+                        <td class="entry align-center" headers="puppet_code_conf_configuration_settings__entry__3"><code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/ca.pem</code>
+                        </td>
+                        <td class="entry" headers="puppet_code_conf_configuration_settings__entry__4"><code class="ph codeph">C:\ProgramData\PuppetLabs\puppet\etc\ssl\certs\ca.pem</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet_code_conf_configuration_settings__entry__1"><code class="ph codeph">token-file</code>
+                        </td>
+                        <td class="entry align-center" headers="puppet_code_conf_configuration_settings__entry__2">Specifies the
+                            location of the file containing the authentication token for <span class="ph">Code Manager</span>. </td>
+                        <td class="entry align-center" headers="puppet_code_conf_configuration_settings__entry__3"><code class="ph codeph">~/.puppetlabs/token</code>
+                        </td>
+                        <td class="entry" headers="puppet_code_conf_configuration_settings__entry__4"><code class="ph codeph">C:\Users\&lt;username&gt;\.puppetlabs\token</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="puppet_code_conf_configuration_settings__entry__1"><code class="ph codeph">service-url</code>
+                        </td>
+                        <td class="entry align-center" headers="puppet_code_conf_configuration_settings__entry__2">Specifies the
+                            base URL of the <span class="ph">Code Manager</span> service. </td>
+                        <td class="entry align-center" headers="puppet_code_conf_configuration_settings__entry__3"><code class="ph codeph">https://&lt;PUPPET MASTER
+                                HOSTNAME&gt;:8170/code-manager</code>
+                        </td>
+                        <td class="entry" headers="puppet_code_conf_configuration_settings__entry__4"><code class="ph codeph">https://&lt;PUPPET MASTER
+                                HOSTNAME&gt;:8170/code-manager</code>
+                        </td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article></article></article></article></main></body></html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Familiarize yourself with error responses to make working the node classifier service API easier."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="node_classifier_errors"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Node classifier errors</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="node_classifier_errors">
+    <h1 class="title topictitle1" id="ariaid-title1">Node classifier errors </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Familiarize yourself with error responses to make working
+        the node classifier service API easier.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="error_response_description">
+                            <h2 class="title topictitle2" id="ariaid-title2">Error response description </h2>
+                            
+                            <div class="body refbody"><p class="shortdesc">Errors from the node classifier
+                                                  service are JSON responses.</p>
+                                                  <section class="section"><p class="p">Error responses contain these
+                                                  keys:</p></section>
+                                                  <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                                  <tr class="row">
+                                                  <th class="entry" id="error_response_description__entry__1">Key </th>
+                                                  <th class="entry" id="error_response_description__entry__2">Definition</th>
+                                                  </tr>
+                                                  </thead><tbody class="tbody">
+                                                  <tr class="row">
+                                                  <td class="entry" headers="error_response_description__entry__1"><code class="ph codeph">kind</code>
+                                                  </td>
+                                                  <td class="entry" headers="error_response_description__entry__2">A
+                                                  string classifying the error. It is the same for
+                                                  all errors that have the same kind of thing in
+                                                  their <code class="ph codeph">details</code> key.</td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="error_response_description__entry__1"><code class="ph codeph">msg</code>
+                                                  </td>
+                                                  <td class="entry" headers="error_response_description__entry__2">A
+                                                  human-readable message describing the error,
+                                                  suitable for presentation to the user.</td>
+                                                  </tr>
+                                                  <tr class="row">
+                                                  <td class="entry" headers="error_response_description__entry__1"><code class="ph codeph">details</code>
+                                                  </td>
+                                                  <td class="entry" headers="error_response_description__entry__2">Additional machine-readable information about the
+                                                  error condition. The format of this key's value
+                                                  varies between kinds of errors but is the same for
+                                                  any given error kind.</td>
+                                                  </tr>
+                                                  </tbody></table>
+                            </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="internal_server_errors">
+    <h2 class="title topictitle2" id="ariaid-title3">Internal server errors </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Any endpoint might return a <code class="ph codeph">500: Internal Server Error</code> response in addition to its usual
+        responses. There are two kinds of internal server error responses: <code class="ph codeph">application-error</code> and <code class="ph codeph">database-corruption</code>.</p>
+        <p class="p">An <code class="ph codeph">application-error</code>
+            response is a catchall for unexpected errors. The <code class="ph codeph">msg</code> of an <code class="ph codeph">application-error</code> 500 contains the underlying error's message first,
+            followed by a description of other information that can be found in details. The <code class="ph codeph">details</code> contain the error's stack trace as
+            an array of strings under the <code class="ph codeph">trace</code>
+            key, and might also contain <code class="ph codeph">schema</code>,
+                <code class="ph codeph">value</code>, and <code class="ph codeph">error</code> keys if the error was caused by a schema
+            validation failure.</p>
+        <p class="p">A <code class="ph codeph">database-corruption</code>
+            500 response occurs when a resource that is retrieved from the database fails to conform
+            to the schema expected of it by the application. This is probably just a bug in the
+            software, but it could potentially indicate either genuine corruption in the database or
+            that a third party has changed values directly in the database. The <code class="ph codeph">msg</code> section contains a description of how the
+            database corruption could have occurred. The <code class="ph codeph">details</code> section contains <code class="ph codeph">retrieved</code>, <code class="ph codeph">schema</code>, and
+                <code class="ph codeph">error</code> keys, which have the resource
+            as retrieved, the schema it is expected to conform to, and a description of how it fails
+            to conform to that schema as the respective values.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="not_found_errors">
+    <h2 class="title topictitle2" id="ariaid-title4">Not found errors </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Any endpoint where a resource identifier is supplied can
+        produce a <code class="ph codeph">404 Not Found Error</code> response if a
+        resource with that identifier could not be found.</p>
+        <p class="p">All not found error responses have the same form. The <code class="ph codeph">kind</code> is "not-found", the <code class="ph codeph">msg</code> is "The resource could not be found.", and the <code class="ph codeph">details</code> key contains the URI of the request
+            that resulted in this response.</p>
+    </div>
+</article></article></article></main></body></html>

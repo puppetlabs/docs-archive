@@ -1,0 +1,795 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the /command endpoint to start and stop orchestrator jobs for tasks and plans."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrator_api_commands_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet orchestrator API: command endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="orchestrator_api_commands_endpoint">
+        <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">Puppet</span> orchestrator API:
+                command endpoint </h1>
+        
+        <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">/command</code> endpoint to start and stop orchestrator jobs for tasks
+                and plans.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="orchestrator_api_post_command_deploy">
+  <h2 class="title topictitle2" id="ariaid-title2">POST /command/deploy </h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">Run the orchestrator across all nodes in an
+    environment.</p>
+    <section class="section"><h3 class="title sectiontitle">Request format</h3><p class="p">The request body must be a JSON object using these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_deploy__entry__1">Key </th>
+              <th class="entry" id="orchestrator_api_post_command_deploy__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">environment</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">The environment to deploy. <strong class="ph b">This key is required.</strong></td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">scope</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">Object, required unless <code class="ph codeph">target</code> is specified. The PuppetDB
+                query, a list of nodes, a classifier node group id, or an application/application
+                instance to deploy.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">description </code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">String, a description of the job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">noop</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">Boolean, whether to run the agent in
+                no-op mode. The default is <code class="ph codeph">false</code>.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">no_noop</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">Boolean, whether to run the agent in
+                enforcement mode. Defaults to <code class="ph codeph">false</code>. This flag overrides <code class="ph codeph">noop =
+                  true</code> if set in the agent's <code class="ph codeph">puppet.conf</code>, and cannot be set to true at the same time as the <code class="ph codeph">noop</code> flag.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">concurrency</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">Integer, the maximum number of nodes to
+                run at one time. The default, if unspecified, is unlimited.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">enforce_environment</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">Boolean, whether to force agents to run
+                in the same environment in which their assigned applications are defined. This key
+                is required to be&nbsp;<code class="ph codeph">false</code>&nbsp;if&nbsp;<code class="ph codeph">environment</code>&nbsp;is an empty string</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">debug</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">Boolean, whether to use the <code class="ph codeph">--debug</code> flag on Puppet agent
+                runs.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">trace</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">Boolean, whether to use the <code class="ph codeph">--trace</code> flag on Puppet agent
+                runs.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">evaltrace</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">Boolean, whether to use the <code class="ph codeph">--evaltrace</code> flag on Puppet agent
+                runs.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__1">
+                <code class="ph codeph">target</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__2">String, &nbsp;required
+                  unless&nbsp;<code class="ph codeph">scope</code>&nbsp;is specified. The name of an application or application
+                instance to deploy. If an application is specified, all instances of that
+                application are deployed. If this key is left blank or unspecified without a scope,
+                the entire environment is deployed. <strong class="ph b">This key is
+                  deprecated.</strong></td>
+            </tr>
+          </tbody></table><p class="p">For example, to deploy the <code class="ph codeph">node1.example.com</code> environment in no-op mode, the following
+        request is
+      valid:</p><pre class="pre codeblock json"><code>{
+  "environment" : "",
+  "noop" : true,
+  "scope" : {
+    "nodes" : ["node1.example.com"]
+  }
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Scope</h3><p class="p">Scope is a JSON object containing exactly one of these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_deploy__entry__25">Key </th>
+              <th class="entry" id="orchestrator_api_post_command_deploy__entry__26">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__25">
+                <code class="ph codeph">application</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__26">The name of an application or application
+                instance to deploy. If an application type is specified, all instances of that
+                application are deployed.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__25">
+                <code class="ph codeph">nodes</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__26">A list of node names to target.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__25">
+                <code class="ph codeph">query</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__26">A PuppetDB or PQL query to use to
+                discover nodes. The target is built from <code class="ph codeph">certname</code> values collected at the top level of the query.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__25">
+                <code class="ph codeph">node_group</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__26">A classifier node group ID. The ID must
+                correspond to a node group that has defined rules. It is not sufficient for parent
+                groups of the node group in question to define rules. The user must also have
+                permissions to view the node group.</td>
+            </tr>
+          </tbody></table><p class="p">To deploy an application instance in the <code class="ph codeph">production</code>
+        environment:</p><pre class="pre codeblock json"><code>{
+  "environment" : "production",
+  "scope" : {
+    "application" : "Wordpress_app[demo]"
+  }
+}</code></pre><p class="p">To deploy a list of
+        nodes:</p><pre class="pre codeblock json"><code>{
+  "environment" : "production",
+  "scope" : {
+    "nodes" : ["node1.example.com", "node2.example.com"]
+  }
+}</code></pre><p class="p">To deploy a list of nodes with the <code class="ph codeph">certname</code> value matching a
+        regex:</p><pre class="pre codeblock json"><code>{
+  "environment" : "production",
+  "scope" : {
+    "query" : ["from", "nodes", ["~", "certname", ".*"]]
+  }
+}</code></pre><p class="p">To deploy to the nodes defined by the "All Nodes" node
+      group:</p><pre class="pre codeblock json"><code>{
+  "environment" : "production",
+  "scope" : {
+    "node_group" : "00000000-0000-4000-8000-000000000000"
+  }
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><p class="p">If all node runs succeed, and the environment is successfully deployed,
+        the server returns a <code class="ph codeph">202</code> response.</p><p class="p">The response is a JSON object containing a link to retrieve information
+        about the status of the job and uses any one of these keys: </p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_deploy__entry__35">Key </th>
+              <th class="entry" id="orchestrator_api_post_command_deploy__entry__36">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__35">
+                <code class="ph codeph">id</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__36">An absolute URL that links to the newly
+                created job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__35">
+                <code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__36">The name of the newly created
+                job.</td>
+            </tr>
+          </tbody></table><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>{
+  "job" : {
+    "id" : "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234"
+    "name" : "1234"
+  }
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3><p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_deploy__entry__41">Key </th>
+              <th class="entry" id="orchestrator_api_post_command_deploy__entry__42">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__41">
+                <code class="ph codeph">puppetlabs.orchestrator/unknown-environment</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__42">If the environment does not exist, the
+                server returns a <code class="ph codeph">404</code>
+                response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__41">
+                <code class="ph codeph">puppetlabs.orchestrator/empty-environment</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__42">If the environment requested contains no
+                applications or no nodes, the server returns a <code class="ph codeph">400</code> response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__41">
+                <code class="ph codeph">puppetlabs.orchestrator/empty-target</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__42">If the application instance specified to
+                deploy does not exist or is empty, the server returns a <code class="ph codeph">400</code> response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__41">
+                <code class="ph codeph">puppetlabs.orchestrator/dependency-cycle</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__42">If the application code contains a cycle,
+                the server returns a <code class="ph codeph">400</code>
+                response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__41">
+                <code class="ph codeph">puppetlabs.orchestrator/puppetdb-error</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__42">If the orchestrator is unable to make a
+                query to PuppetDB, the server returns a <code class="ph codeph">400</code> response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__41">
+                <code class="ph codeph">puppetlabs.orchestrator/query-error</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_deploy__entry__42">If a user does not have appropriate
+                permissions to run a query, or if the query is invalid, the server returns a <code class="ph codeph">400</code> response.</td>
+            </tr>
+          </tbody></table></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_forming_requests.html" title="Instructions on interacting with this API.">Puppet orchestrator API: forming requests</a></li><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="orchestrator_api_post_command_stop">
+  <h2 class="title topictitle2" id="ariaid-title3">POST /command/stop </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Stop an orchestrator job that is currently in progress.
+    Puppet agent runs that are in progress finish, but no new agent runs start. While agents are
+    finishing, the server continues to produce events for the job.</p>
+    <section class="section"><p class="p">The job transitions to status <code class="ph codeph">stopped</code> when all pending agent runs have
+        finished.</p><p class="p">This command is <em class="ph i">idempotent</em>: it can be issued against the same job any number of times.</p></section>
+    <section class="section"><h3 class="title sectiontitle">Request format</h3><p class="p">The JSON body of the request must contain the ID of the job to stop. The
+        job ID is the same value as the <code class="ph codeph">name</code>
+        property returned with the <code class="ph codeph">deploy</code>
+        command.</p><ul class="ul">
+        <li class="li"><code class="ph codeph">job</code>: the name of
+          the job to stop.</li>
+      </ul><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>{
+  "job": "1234"
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><p class="p">If the job is stopped successfully, the server returns a <code class="ph codeph">202</code> response. The response uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_stop__entry__1">Key </th>
+              <th class="entry" id="orchestrator_api_post_command_stop__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__1">
+                <code class="ph codeph">id</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__2">An absolute URL that links to the newly
+                created job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__1">
+                <code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__2">The name of the newly created
+                job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__1">
+                <code class="ph codeph">nodes</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__2">A hash that shows all of the possible
+                node statuses, and how many nodes are currently in that status.</td>
+            </tr>
+          </tbody></table><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>{
+  "job" : {
+    "id" : "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234",
+    "name" : "1234",
+    "nodes" : {
+      "new" : 5,
+      "running" : 8,
+      "failed"  : 3,
+      "errored" : 1,
+      "skipped" : 2,
+      "finished": 5
+    }
+  }
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3><p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_stop__entry__9">Key </th>
+              <th class="entry" id="orchestrator_api_post_command_stop__entry__10">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__9">
+                <code class="ph codeph">puppetlabs.orchestrator/validation-error</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__10">If a job name is not valid, the server
+                returns a <code class="ph codeph">400</code> response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__9">
+                <code class="ph codeph">puppetlabs.orchestrator/unknown-job</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_stop__entry__10">If a job name is unknown, the server
+                returns a <code class="ph codeph">404</code> response.</td>
+            </tr>
+          </tbody></table></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="orchestrator_api_post_command_task">
+  <h2 class="title topictitle2" id="ariaid-title4">POST /command/task</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">Run a permitted task job across a set of nodes.</p>
+    <section class="section"><h3 class="title sectiontitle">Request format</h3><p class="p">The request body must be a JSON object and uses the following
+        keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_task__entry__1">Key</th>
+              <th class="entry" id="orchestrator_api_post_command_task__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__1">
+                <code class="ph codeph">environment</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__2">The environment to load the task from. The default is
+                  <code class="ph codeph">production</code>.
+              </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__1">
+                <code class="ph codeph">scope</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__2">The PuppetDB query, list of nodes, or a node group ID.
+                Application scopes are not allowed for task jobs.&nbsp;<strong class="ph b">This key is required.</strong>
+              </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__1">
+                <code class="ph codeph">description</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__2">A description of the job. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__1">
+                <code class="ph codeph">noop</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__2">Whether to run the job in no-op mode. The default is
+                  <code class="ph codeph">false</code>. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__1">
+                <code class="ph codeph">task</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__2">The task to run on the targets. <strong class="ph b">This key is required.</strong>
+              </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__1">
+                <code class="ph codeph">params</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__2">The parameters to pass to the task. This key is
+                required, but can be an empty object.</td>
+            </tr>
+          </tbody></table><p class="p">For example, to run the <code class="ph codeph">package</code> task on <code class="ph codeph">node1.example.com</code>, the following request is valid:
+      </p><pre class="pre codeblock"><code>{
+  "environment" : "test-env-1",
+  "task" : "package",
+  "params" : {
+    "action" : "install",
+    "name" : "httpd"
+  },
+  "scope" : {
+    "nodes" : ["node1.example.com"]
+  }
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Scope</h3><p class="p">Scope is a JSON object containing exactly one of the following keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_task__entry__15">Key</th>
+              <th class="entry" id="orchestrator_api_post_command_task__entry__16">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__15">
+                <code class="ph codeph">nodes</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__16">An array of node names to target.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__15">
+                <code class="ph codeph">query</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__16">A PuppetDB or PQL query to use to discover nodes. The
+                target is built from the <code class="ph codeph">certname</code> values collected at the top level of the query.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__15">
+                <code class="ph codeph">node_group</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__16">A classifier node group ID. The ID must correspond to a
+                node group that has defined rules. It is not sufficient for parent groups of the
+                node group in question to define rules. The user must also have permissions to view
+                the node group. Any nodes specified in the scope that the user does not have
+                permissions to run the task on are excluded.</td>
+            </tr>
+          </tbody></table><p class="p">To deploy an application instance in
+        the&nbsp;production&nbsp;environment, the following request is
+        valid:</p><pre class="pre codeblock"><code>{
+  "environment" : "production",
+  "scope" : {
+    "application" : "Wordpress_app[demo]"
+  }
+}</code></pre><div class="p">To run a task on a list of nodes, the following request is
+        valid:<pre class="pre codeblock"><code>{
+  "environment" : "production",
+  "scope" : {
+    "nodes" : ["node1.example.com", "node2.example.com"]
+  }
+}</code></pre>
+      </div><div class="p">To run a task on a list of nodes with the <code class="ph codeph">certname</code> value matching a regex, the following
+        request is
+        valid:<pre class="pre codeblock"><code>{
+  "environment" : "production",
+  "scope" : {
+    "query" : ["from", "nodes", ["~", "certname", ".*"]]
+  }
+}</code></pre>
+      </div><div class="p">To deploy to the nodes defined by the "All Nodes" node group the
+        following request is
+        valid:<pre class="pre codeblock"><code>{
+  "environment" : "production",
+  "scope" : {
+    "node_group" : "00000000-0000-4000-8000-000000000000"
+  }
+}</code></pre>
+      </div></section>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><p class="p">If the task is starts successfully, the response will have a <code class="ph codeph">202</code> status. </p><div class="p">The response will be a JSON object containing a link to retrieve information about
+        the status of the job. The keys of this object are: <ul class="ul">
+          <li class="li">
+            <code class="ph codeph">id</code>: an absolute URL that
+            links to the newly created job.</li>
+          <li class="li">
+            <code class="ph codeph">name</code>: the name of the
+            newly created job. For
+            example:<pre class="pre codeblock"><code>{
+  "job" : {
+    "id" : "https://orchestrator.example.com:8143/orchestrator/v1/jobs/1234",
+    "name" : "1234"
+  }
+}</code></pre>
+          </li>
+        </ul> - </div></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3><p class="p">For this endpoint, the&nbsp;<code class="ph codeph">kind</code>&nbsp;key of the error displays the conflict.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_task__entry__23">Key </th>
+              <th class="entry" id="orchestrator_api_post_command_task__entry__24">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__23">
+                <code class="ph codeph">puppetlabs.orchestrator/unknown-environment</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__24">
+                <p class="p">If the environment does not exist, the server returns
+                  a&nbsp;404 response.</p>
+              </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__23">
+                <code class="ph codeph">puppetlabs.orchestrator/empty-target</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__24"> If the application instance specified to deploy does
+                not exist or is empty, the server returns a&nbsp;400&nbsp;response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__23">
+                <code class="ph codeph">puppetlabs.orchestrator/puppetdb-error</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__24">If the orchestrator is unable to make a query to
+                PuppetDB, the server returns a&nbsp;400&nbsp;response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__23">
+                <code class="ph codeph">puppetlabs.orchestrator/query-error</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__24">If a user does not have appropriate permissions to run a
+                query, or if the query is invalid, the server returns
+                a&nbsp;400&nbsp;response.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__23">
+                <code class="ph codeph">puppetlabs.orchestrator/not-permitted</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_task__entry__24">
+                <p class="p">This error occurs when a user does not have permission to run
+                  the task on the requested nodes. Server returns a&nbsp;403&nbsp;response.</p>
+              </td>
+            </tr>
+          </tbody></table></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="post__command_task_target">
+    <h2 class="title topictitle2" id="ariaid-title5">POST /command/task_target</h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc">Create a new task-target, which is a collection of tasks, nodes and node groups that
+        define a permission group. When a user has permissions to run via a given task-target, they
+        are granted permissions to run the given set of tasks, on the set of nodes described by the
+        task-target</p>
+        <section class="section"><h3 class="title sectiontitle">Request format</h3>
+            
+            <div class="p">The request body must be a JSON object and uses the following keys:<table class="table frame-all"><caption></caption><colgroup><col style="width:30.959752321981426%"><col style="width:69.04024767801857%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="post__command_task_target__entry__1">Key</th>
+                                <th class="entry colsep-1 rowsep-1" id="post__command_task_target__entry__2">Definition</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__1"><code class="ph codeph">display_name</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__2">A required string that is used to name the task-target. No
+                                    uniqueness requirements</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__1"><code class="ph codeph">tasks</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__2">An optional array of tasks that correspond to the
+                                    task-target. There is no requirement that the tasks correspond
+                                    to existing tasks. If omitted or empty,
+                                        <code class="ph codeph">all_tasks</code> must be provided and set to
+                                    true.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__1"><code class="ph codeph">all_tasks</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__2">An optional boolean to determine if all tasks can be run on
+                                    designated targets. Defaults to false. If omitted,
+                                        <code class="ph codeph">tasks</code> are required to be specified. If both
+                                        <code class="ph codeph">all_tasks</code> is true and valid tasks are
+                                    supplied, <code class="ph codeph">tasks</code> are ignored and
+                                        <code class="ph codeph">all_tasks</code> is set.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__1"><code class="ph codeph">nodes</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__2">An array of certnames that can correspond to both agent and
+                                    agentless nodes. The user can run the task against the specified
+                                    nodes. There is no requirement that the nodes correspond to
+                                    currently available nodes. The array can be empty.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__1"><code class="ph codeph">node_groups</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__2">An array of node-group-ids that describe the set of nodes the
+                                    task can be run against. The possible nodes described by the
+                                    node group will be combined with any nodes in the `nodes` array.
+                                    The array can be empty.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__1"><code class="ph codeph">pql_query</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__2">An optional string that is a single PQL query to fetch nodes
+                                    that the task-target corresponds to. The query results must
+                                    contain the certnames key in the results to identify the
+                                    permitted nodes.</td>
+                            </tr>
+                        </tbody></table></div>
+            <div class="p">For example:
+                <pre class="pre codeblock"><code>{
+  "display_name": "foo",
+  "tasks": ["abc", "def"],
+  "nodes": ["node1" "node2"],
+  "node_groups": ["00000000-0000-4000-8000-000000000000"]
+}
+
+{
+  "display_name": "foo",
+  "all_tasks": "true",
+  "nodes": ["node1" "node2"],
+  "node_groups": ["00000000-0000-4000-8000-000000000000"]
+}</code></pre></div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Response format </h3>
+            
+            <p class="p">If the task-target is successfully created, the server will return a 200 response
+                with a JSON object containing a link to retrieve information about the task-target.
+                The keys of this object are:</p>
+            <ul class="ul">
+                <li class="li"><code class="ph codeph">id</code>: an absolute URL to retrieve the individual
+                    task-target.</li>
+                <li class="li"><code class="ph codeph">name</code>: a unique identifier for the task-target.</li>
+            </ul>
+            <div class="p">For example:
+                <pre class="pre codeblock"><code>{
+  "task_target": {
+    "id": "https://orchestrator.example.com:8143/orchestrator/v1/scopes/task_targets/1",
+    "name": "1"
+  }
+}</code></pre></div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Error responses </h3>
+            
+            <div class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.
+                See the <a class="xref" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a> documentation for the
+                general format of error responses.<table class="table frame-all"><caption></caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="post__command_task_target__entry__15">Key</th>
+                                <th class="entry colsep-1 rowsep-1" id="post__command_task_target__entry__16">Definition</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__15"><code class="ph codeph">puppetlabs.orchestrator/validation-error</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="post__command_task_target__entry__16">If there is no display name supplied, there are no tasks
+                                    specified when supplied, task names are not strings,
+                                        <code class="ph codeph">all_tasks</code> is not a boolean when supplied,
+                                        <code class="ph codeph">all_tasks</code> is not set to true when tasks are
+                                    not supplied, node names are not strings, node-group ids are not
+                                    strings, or <code class="ph codeph">pql_query</code> is not a string the
+                                    service returns a <code class="ph codeph">400</code> response.</td>
+                            </tr>
+                        </tbody></table></div>
+        </section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="orchestrator_api_post_command_schedule_task">
+  <h2 class="title topictitle2" id="ariaid-title6">POST /command/schedule_task</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">Schedule a task to run at a future date and time. </p>
+    <section class="section"><h3 class="title sectiontitle">Request format</h3><p class="p">The request body must be a JSON object and uses the following
+        keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_schedule_task__entry__1">Key</th>
+              <th class="entry" id="orchestrator_api_post_command_schedule_task__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__1">
+                <code class="ph codeph">task</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__2">The task to run on the targets. Required. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__1">
+                <code class="ph codeph">params</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__2">The parameters to pass to the task. Required. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__1">
+                <code class="ph codeph">scope</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__2">The PuppetDB query, list of nodes, or a node group ID.
+                Application scopes are not allowed for task jobs. Required.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__1">
+                <code class="ph codeph">scheduled_time</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__2">The ISO-8601 timestamp the determines when to run the
+                scheduled job. If timestamp is in the past, a 400 error is thrown. Required.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__1">
+                <code class="ph codeph">description</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__2">A description of the job.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__1">
+                <code class="ph codeph">environment</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__2">The environment to load the task from. The default is
+                  <code class="ph codeph">production</code>.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__1">
+                <code class="ph codeph">noop</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__2">Whether to run the job in no-op mode. The default is
+                false. </td>
+            </tr>
+          </tbody></table><p class="p">For example, to run the <code class="ph codeph">package</code> task on <code class="ph codeph">node1.example.com</code>, the following request is valid:
+      </p><pre class="pre codeblock"><code>{
+  "environment" : "test-env-1",
+  "task" : "package",
+  "params" : {
+    "action" : "install",
+    "package" : "httpd"
+  },
+  "scope" : {
+    "nodes" : ["node1.example.com"]
+  },
+  "scheduled_time" : "2027-05-05T19:50:08Z"
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><p class="p">If the task schedules successfully the server returns 202.</p><p class="p">The response is a JSON object containing a link to retrieve information about the
+        status of the job. The keys of this object are</p><ul class="ul">
+        <li class="li"><code class="ph codeph">id</code>:
+          an absolute URL that links to the newly created job.</li>
+        <li class="li"><code class="ph codeph">name</code>: the name of the newly created job.</li>
+      </ul><div class="p">For example:
+        <pre class="pre codeblock"><code>{
+  "scheduled_job" : {
+    "id" : "https://orchestrator.example.com:8143/orchestrator/v1/scheduled_jobs/2",
+    "name" : "1234"
+  }
+}</code></pre></div></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3><p class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_post_command_schedule_task__entry__17">Key </th>
+              <th class="entry" id="orchestrator_api_post_command_schedule_task__entry__18">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__17">
+                <code class="ph codeph">puppetlabs.orchestrator/invalid-time</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_post_command_schedule_task__entry__18">
+                <p class="p">If the <code class="ph codeph">scheduled_time</code> provided is in the past, the server returns a 400
+                  response.</p>
+              </td>
+            </tr>
+          </tbody></table></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="orchestrator_api_post_command_plan_run">
+  <h2 class="title topictitle2" id="ariaid-title7">POST /command/plan_run </h2>
+  
+  
+
+  <div class="body refbody"><p class="shortdesc">Run a plan via the plan executor.</p>
+    <section class="section"><h3 class="title sectiontitle">Request format </h3>
+      
+      <div class="p">The request body must be a JSON object. The following keys are
+          available:<ul class="ul">
+          <li class="li"><code class="ph codeph">plan_name</code>:
+            String, the name of the plan to run.</li>
+          <li class="li"><code class="ph codeph">params</code>: Hash, the
+            parameters the job will use. </li>
+          <li class="li"><code class="ph codeph">environment</code>:
+            String, environment to load the plan from. The default is <code class="ph codeph">production</code>. </li>
+          <li class="li"><code class="ph codeph">description</code>:
+            String, description of the job. </li>
+        </ul></div>
+      <div class="p">To start the <code class="ph codeph">canary</code>
+        plan, the following request is valid:
+        <pre class="pre codeblock"><code>{
+  "plan_name" : "canary",
+  "description" : "Start the canary plan on node1 and node2",
+  "params" : {
+    "nodes" : ["node1.example.com", "node2.example.com"],
+    "command" : "whoami",
+    "canary" : 1
+  }
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Response format </h3>
+      
+      <p class="p">If the plan starts successfully, the response will have status 202. </p>
+      <p class="p">The response will be a JSON object containing the generated plan job
+        name. </p>
+      <div class="p">For example:
+        <pre class="pre codeblock"><code>{
+  "name" : "1234"
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Error responses </h3>
+      
+      <div class="p">See the <a class="xref" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">error response documentation</a> for the
+        general format of error response. For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.<ul class="ul">
+          <li class="li"><code class="ph codeph">puppetlabs.orchestrator/validation-error</code>: if the plan name is not valid the
+            server returns a <code class="ph codeph">400</code> response.</li>
+          <li class="li"><code class="ph codeph">puppetlabs.orchestrator/not-permitted</code>: this error occurs if a user makes a
+            request they lack permissions for. The server returns a <code class="ph codeph">403</code> response.</li>
+        </ul></div>
+    </section>
+  </div>
+</article></article></article></main></body></html>

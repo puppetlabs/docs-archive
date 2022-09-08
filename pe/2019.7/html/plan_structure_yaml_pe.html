@@ -1,0 +1,289 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="YAML plans contain a list of steps with optional parameters and results."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="plan_structure_yaml_pe"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Plan structure</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="plan_structure_yaml_pe">
+ <h1 class="title topictitle1" id="ariaid-title1">Plan structure </h1>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">YAML plans contain a list of steps with optional parameters
+  and results.</p>
+  <div class="p">YAML maps accept these keys: <ul class="ul">
+    <li class="li">
+     <p class="p"><code class="ph codeph">steps</code>: The list of steps
+      to perform </p>
+    </li>
+    <li class="li">
+     <p class="p"><code class="ph codeph">parameters</code>: (Optional)
+      The parameters accepted by the plan </p>
+    </li>
+    <li class="li">
+     <p class="p"><code class="ph codeph">return</code>: (Optional) The
+      value to return from the plan </p>
+    </li>
+   </ul></div>
+ </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="plans_steps_key_pe">
+  <h2 class="title topictitle2" id="ariaid-title2">Steps key</h2>
+  
+  
+
+  <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">steps</code>
+    key is an array of step objects, each of which corresponds to a specific action to
+    take.</p>
+    <section class="section">
+      <p class="p">When the plan runs, each step is executed in order. If a step fails, the
+        plan halts execution and raises an error containing the result of the step that failed.</p>
+      <div class="p">Steps use these fields: <ul class="ul">
+          <li class="li">
+            <p class="p">
+              <code class="ph codeph">name</code>: A unique name that can be used
+              to refer to the result of the step later </p>
+          </li>
+          <li class="li">
+            <p class="p">
+              <code class="ph codeph">description</code>: (Optional) An
+              explanation of what the step is doing</p>
+          </li>
+        </ul></div>
+      <p class="p">Other available keys depend on the type of step.</p>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Command step</h3>
+      
+      <p class="p">Use a <code class="ph codeph">command</code> step to
+        run a single command on a list of targets and save the results, containing stdout, stderr,
+        and exit code.</p>
+      <p class="p">The step fails if the exit code of any command is non-zero.</p>
+      <div class="p">Command steps use these fields: <ul class="ul">
+          <li class="li">
+            <p class="p">
+              <code class="ph codeph">command</code>: The command to run </p>
+          </li>
+          <li class="li">
+            <p class="p">
+              <code class="ph codeph">target</code>: A target or list of targets
+              to run the command on </p>
+          </li>
+        </ul></div>
+      <div class="p">For
+        example:<pre class="pre codeblock"><code>steps:
+  - command: hostname -f
+    target:
+      - web1.example.com
+      - web2.example.com
+      - web3.example.com
+    description: "Get the webserver hostnames"</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Task step</h3>
+      
+      <p class="p">Use a <code class="ph codeph">task</code> step to run
+        a <span class="ph">Bolt</span> task on a list of targets and save the results.</p>
+      <div class="p">Task steps use these fields: <ul class="ul">
+          <li class="li">
+            <code class="ph codeph">task</code>: The task to run </li>
+          <li class="li">
+            <code class="ph codeph">target</code>: A target or list of targets to
+            run the task on </li>
+          <li class="li">
+            <code class="ph codeph">parameters</code>: (Optional) A map of
+            parameter values to pass to the task </li>
+        </ul></div>
+      <div class="p">For
+        example:<pre class="pre codeblock"><code>steps:
+  - task: package
+    target:
+      - web1.example.com
+      - web2.example.com
+      - web3.example.com
+    description: "Check the version of the openssl package on the webservers"
+    parameters:
+      action: status
+      name: openssl</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Script step</h3>
+       Use a <code class="ph codeph">script</code> step to run a script on a list of targets and save the results. <p class="p">The script must be in the <code class="ph codeph">files/</code> directory of a module. The name of the script must be specified as
+          <code class="ph codeph">&lt;modulename&gt;/path/to/script</code>,
+        omitting the <code class="ph codeph">files</code> directory from the
+        path.</p><div class="p">Script steps use these fields: <ul class="ul">
+          <li class="li">
+            <code class="ph codeph">script</code>: The script to
+            run </li>
+          <li class="li">
+            <code class="ph codeph">target</code>: A target or list
+            of targets to run the script on </li>
+          <li class="li">
+            <code class="ph codeph">arguments</code>: (Optional) An
+            array of command-line arguments to pass to the script </li>
+        </ul></div><div class="p">For
+        example:<pre class="pre codeblock"><code>steps:
+  - script: mymodule/check_server.sh
+    target:
+      - web1.example.com
+      - web2.example.com
+      - web3.example.com
+    description: "Run mymodule/files/check_server.sh on the webservers"
+    arguments:
+      - "/index.html"
+      - 60</code></pre></div></section>
+    <section class="section"><h3 class="title sectiontitle">File upload step</h3>
+      
+      <p class="p">Use a file upload step to upload a file to a specific location on a list
+        of targets.</p>
+      <p class="p">The file to upload must be in the <code class="ph codeph">files/</code> directory of a <span class="ph">Puppet</span> module. The source
+        for the file must be specified as <code class="ph codeph">&lt;modulename&gt;/path/to/file</code>, omitting the <code class="ph codeph">files</code> directory from the path.</p>
+      <div class="p">File upload steps use these fields: <ul class="ul">
+          <li class="li">
+            <code class="ph codeph">source</code>: The location of the file to be
+            uploaded </li>
+          <li class="li">
+            <code class="ph codeph">destination</code>: The location to upload the
+            file to </li>
+        </ul></div>
+      <div class="p">For
+        example:<pre class="pre codeblock"><code>steps:
+  - source: mymodule/motd.txt
+    destination: /etc/motd
+    target:
+      - web1.example.com
+      - web2.example.com
+      - web3.example.com
+    description: "Upload motd to the webservers"</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Plan step</h3>
+      
+      <p class="p">Use a <code class="ph codeph">plan</code> step to run
+        another plan and save its result.</p>
+      <div class="p">Plan steps use these fields: <ul class="ul">
+          <li class="li">
+            <code class="ph codeph">plan</code>: The name of the plan to run </li>
+          <li class="li">
+            <code class="ph codeph">parameters</code>: (Optional) A map of
+            parameter values to pass to the plan </li>
+        </ul></div>
+      <div class="p">For
+        example:<pre class="pre codeblock"><code>steps:
+  - plan: facts
+    description: "Gather facts for the webservers using the built-in facts plan"
+    parameters:
+      nodes:
+        - web1.example.com
+        - web2.example.com
+        - web3.example.com</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Resources step</h3>
+      
+      <p class="p">Use a <code class="ph codeph">resources</code> step to
+        apply a list of Puppet resources. A resource defines the desired state for part of a target.
+        Bolt ensures each resource is in its desired state. Like the steps in a <code class="ph codeph">plan</code>, if any resource in the list fails, the rest are
+        skipped. </p>
+      <p class="p">For each <code class="ph codeph">resources</code>
+        step, <span class="ph">Bolt</span> executes the <code class="ph codeph">apply_prep</code> plan function against the targets specified with the <code class="ph codeph">targets</code> field. For more information about <code class="ph codeph">apply_prep</code> see the Applying manifest block
+        section.</p>
+      <div class="p">Resources steps use these fields:<ul class="ul" id="plans_steps_key_pe__ul_emj_szb_j3b">
+          <li class="li">
+            <code class="ph codeph">resouces</code>: An array of resources to
+            apply</li>
+          <li class="li">
+            <code class="ph codeph">target</code>: A target or list of targets to
+            apply the resources on</li>
+        </ul></div>
+      <p class="p">Each resource is a YAML map with a type and title, and optionally a
+          <code class="ph codeph">parameters</code> key. The resource type and
+        title can either be specified separately with the <code class="ph codeph">type</code> and <code class="ph codeph">title</code> keys, or can be
+        specified in a single line by using the type name as a key with the title as its value.</p>
+      <div class="p">For
+        example:<pre class="pre codeblock"><code>steps:
+  - resources:
+    # This resource is type 'package' and title 'nginx'
+    - package: nginx
+      parameters:
+        ensure: latest
+    # This resource is type 'service' and title 'nginx'
+    - type: service
+      title: nginx
+      parameters:
+        ensure: running
+    target:
+      - web1.example.com
+      - web2.example.com
+      - web3.example.com
+    description: "Set up nginx on the webservers"</code></pre>
+      </div>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="plans_parameters_key_pe">
+  <h2 class="title topictitle2" id="ariaid-title3">Parameters key</h2>
+  
+  
+
+  <div class="body refbody"><p class="shortdesc">Plans accept parameters with the <code class="ph codeph">parameters</code> key. The value of <code class="ph codeph">parameters</code> is a map, where each key is the name of a parameter and the value is a
+    map describing the parameter.</p>
+    <section class="section">
+      <p class="p">Parameter values can be referenced from steps as variables.</p>
+      <div class="p">Parameters use these fields: <ul class="ul">
+          <li class="li">
+            <p class="p"><code class="ph codeph">type</code>: (Optional)
+              A valid <a class="xref" href="https://puppet.com/docs/puppet/latest/lang_data.html#puppet-data-types" target="_blank">Puppet data type</a>. The value supplied must match the type or
+              the plan fails. </p>
+          </li>
+          <li class="li">
+            <p class="p"><code class="ph codeph">default</code>:
+              (Optional) Used if no value is given for the parameter </p>
+          </li>
+          <li class="li">
+            <p class="p"><code class="ph codeph">description</code>:
+              (Optional) </p>
+          </li>
+        </ul></div>
+      <div class="p">For example, this plan accepts a <code class="ph codeph">load_balancer</code> name as a string, two sets of nodes called <code class="ph codeph">frontends</code> and <code class="ph codeph">backends</code>, and a <code class="ph codeph">version</code> string:
+        <pre class="pre codeblock"><code>parameters:
+  # A simple parameter definition doesn't need a type or description
+  load_balancer:
+  frontends:
+    type: TargetSpec
+    description: "The frontend web servers"
+backends:
+    type: TargetSpec
+    description: "The backend application servers"
+  version:
+    type: String
+              description: "The new application version to deploy"</code></pre></div>
+    </section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="plans_how_strings_are_evaluated_pe">
+  <h2 class="title topictitle2" id="ariaid-title4">How strings are evaluated</h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">The behavior of strings is defined by how they're written in
+    the plan.</p>
+    <p class="p"><code class="ph codeph">'single-quoted strings'</code>
+      are treated as string literals without any interpolation.</p>
+    <p class="p"><code class="ph codeph">"double-quoted strings"</code>
+      are treated as <span class="ph">Puppet</span> language double-quoted strings with
+      variable interpolation.</p>
+    <p class="p"><code class="ph codeph">| block-style strings</code> are
+      treated as expressions of arbitrary Puppet code. Note the string itself must be on a new line
+      after the <code class="ph codeph">|</code> character.</p>
+    <p class="p"><code class="ph codeph">bare strings</code> are treated
+      dynamically based on their content. If they begin with a <code class="ph codeph">$</code>, they're treated as <span class="ph">Puppet</span> code expressions.
+      Otherwise, they're treated as YAML literals.</p>
+    <div class="example">Here's an example of different kinds of strings in
+      use:<pre class="pre codeblock"><code>parameters:
+  message:
+    type: String
+    default: "hello"
+
+steps:
+  - eval: hello
+    description: 'This will evaluate to: hello'
+  - eval: $message
+    description: 'This will evaluate to: hello'
+  - eval: '$message'
+    description: 'This will evaluate to: $message'
+  - eval: "${message} world"
+    description: 'This will evaluate to: hello world'
+  - eval: |
+      [$message, $message, $message].join(" ")
+    description: 'This will evaluate to: hello hello hello'</code></pre></div>
+  </div>
+</article></article></article></main></body></html>

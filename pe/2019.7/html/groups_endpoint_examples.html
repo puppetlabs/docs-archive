@@ -1,0 +1,102 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use example requests to better understand how to work with groups in the node classifier API."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="groups_endpoint_examples"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Groups endpoint examples</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="groups_endpoint_examples">
+    <h1 class="title topictitle1" id="ariaid-title1">Groups endpoint examples </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Use example requests to better understand how to work with
+        groups in the node classifier API.</p>
+        <p class="p">These requests assume the following configuration:</p>
+        <ul class="ul">
+            <li class="li">The <span class="ph">Puppet</span> master is running on
+                    <code class="ph codeph">puppetlabs-nc.example.vm</code> with
+                access to certificates and whitelisting to enable URL requests.</li>
+            <li class="li">Port 4433 is open.</li>
+        </ul>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="create_a_group_called_my_nodes">
+  <h2 class="title topictitle2" id="ariaid-title2">Create a group called My Nodes </h2>
+  
+  <div class="body refbody"><p class="shortdesc">This request uses POST /v1/groups to create a group called
+      <em class="ph i">My Nodes</em>.</p>
+    <section class="section"><pre class="pre codeblock"><code>curl -X POST -H 'Content-Type: application/json' \
+  --cert /etc/puppetlabs/puppet/ssl/certs/puppetlabs-nc.example.vm.pem \
+  --key /etc/puppetlabs/puppet/ssl/private_keys/puppetlabs-nc.example.vm.pem \
+  --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem \
+  -d '{ "name": "My Nodes",
+        "parent": "00000000-0000-4000-8000-000000000000",
+        "environment": "production",
+        "classes": {}
+      }' \
+  https://puppetlabs-nc.example.vm:4433/classifier-api/v1/groups</code></pre></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="groups_endpoint.html#post_v1_groups" title="Use the /v1/groups endpoint to create a new node group without specifying its ID. When you use this endpoint, the node classifier service randomly generates an ID.">POST /v1/groups</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_the_group_id_of_my_nodes">
+  <h2 class="title topictitle2" id="ariaid-title3">Get the group ID of My Nodes </h2>
+  
+  <div class="body refbody"><p class="shortdesc">This request uses the groups endpoint to get details about
+    groups.</p>
+    <section class="section"><pre class="pre codeblock"><code>curl 'https://puppetlabs-nc.example.vm:4433/classifier-api/v1/groups' \
+   -H "Content-Type: application/json" \
+   --cert /etc/puppetlabs/puppet/ssl/certs/puppetlabs-nc.example.vm.pem \
+   --key /etc/puppetlabs/puppet/ssl/private_keys/puppetlabs-nc.example.vm.pem \
+   --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem</code></pre><p class="p">The response is a JSON file containing details about all groups,
+        including the <em class="ph i">My Nodes</em> group
+      ID.</p><pre class="pre codeblock"><code>{
+  "environment_trumps": false,
+  "parent": "00000000-0000-4000-8000-000000000000",
+  "name": "My Nodes",
+  "variables": {},
+  "id": "085e2797-32f3-4920-9412-8e9decf4ef65",
+  "environment": "production",
+  "classes": {}
+}</code></pre></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="groups_endpoint.html#groups_endpoint" title="The groups endpoint is used to create, read, update, and delete groups.">Groups endpoint</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="pin_a_node_to_the_my_nodes_group">
+   <h2 class="title topictitle2" id="ariaid-title4">Pin a node to the My Nodes group </h2>
+   
+   <div class="body refbody"><p class="shortdesc">This request uses POST /v1/groups/&lt;id&gt; to pin the
+      node <em class="ph i">example-to-pin.example.vm</em> to <em class="ph i">My Groups</em> using the group ID retrieved in the previous step.</p>
+      <section class="section"><pre class="pre codeblock"><code>curl -X POST -H 'Content-Type: application/json' \
+   --cert /etc/puppetlabs/puppet/ssl/certs/puppetlabs-nc.example.vm.pem \
+   --key /etc/puppetlabs/puppet/ssl/private_keys/puppetlabs-nc.example.vm.pem \
+   --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem \
+   -d '{ "nodes": ["example-to-pin.example.vm"] }' \
+        https://puppetlabs-nc.example.vm:4433/classifier-api/v1/groups/085e2797-32f3-4920-9412-8e9decf4ef65/pin</code></pre></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="groups_endpoint.html#post_v1_groups_id" title="Use the /v1/groups/<id&gt; endpoint to update the name, environment, parent, rule, classes, class parameters, configuration data, and variables of the node group with the given ID by submitting a node group delta.">POST /v1/groups/&lt;id&gt;</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="pin_a_second_node_to_the_my_nodes_group">
+  <h2 class="title topictitle2" id="ariaid-title5">Pin a second node to the My Nodes group </h2>
+  
+  <div class="body refbody"><p class="shortdesc">This request uses POST /v1/groups/&lt;id&gt; to pin a second
+    node <em class="ph i">example-to-pin-2.example.vm</em> to <em class="ph i">My Groups</em>.</p>
+    <section class="section"><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> You must supply all the nodes to pin to the group. For example, this request includes
+          both <em class="ph i">example-to-pin.example.vm</em> and <em class="ph i">example-to-pin-2.example.vm</em>.</div></div><pre class="pre codeblock"><code>curl -X POST -H 'Content-Type: application/json' \
+  --cert /etc/puppetlabs/puppet/ssl/certs/puppetlabs-nc.example.vm.pem.pem \
+  --key /etc/puppetlabs/puppet/ssl/private_keys/puppetlabs-nc.example.vm.pem.pem \
+  --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem \
+  -d '{ "nodes": ["example-to-pin-2.example.vm"] }' \
+      https://puppetlabs-nc.example.vm.pem:4433/classifier-api/v1/groups/085e2797-32f3-4920-9412-8e9decf4ef65/pin</code></pre></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="groups_endpoint.html#post_v1_groups_id" title="Use the /v1/groups/<id&gt; endpoint to update the name, environment, parent, rule, classes, class parameters, configuration data, and variables of the node group with the given ID by submitting a node group delta.">POST /v1/groups/&lt;id&gt;</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="unpin_a_node_from_the_my_nodes_group">
+    <h2 class="title topictitle2" id="ariaid-title6">Unpin a node from the My Nodes group</h2>
+    
+    <div class="body refbody"><p class="shortdesc">This request uses POST /v1/groups/&lt;id&gt; to unpin the node
+            <em class="ph i">example-to-unpin.example.vm</em> from <em class="ph i">My Groups</em>.</p>
+        <section class="section"><pre class="pre codeblock"><code>curl -X POST -H 'Content-Type: application/json' \
+   --cert /etc/puppetlabs/puppet/ssl/certs/puppetlabs-nc.example.vm.pem \
+   --key /etc/puppetlabs/puppet/ssl/private_keys/puppetlabs-nc.example.vm.pem \
+   --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem \
+   -d '{ "nodes": ["example-to-unpin.example.vm"] }' \
+        https://puppetlabs-nc.example.vm:4433/classifier-api/v1/groups/085e2797-32f3-4920-9412-8e9decf4ef65/unpin</code></pre></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="add_a_class_and_parameters_to_the_my_nodes_group">
+  <h2 class="title topictitle2" id="ariaid-title7">Add a class and parameters to the My Nodes group </h2>
+  
+  <div class="body refbody"><p class="shortdesc">This request uses POST /v1/groups/&lt;id&gt; to specify the
+      <em class="ph i">apache</em> class and parameters for <em class="ph i">My Groups</em>.</p>
+    <section class="section"><pre class="pre codeblock"><code>curl -X POST -H 'Content-Type: application/json' \
+  --cert /etc/puppetlabs/puppet/ssl/certs/puppetlabs-nc.example.vm.pem.pem \
+  --key /etc/puppetlabs/puppet/ssl/private_keys/puppetlabs-nc.example.vm.pem.pem \
+  --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem \
+  -d '{ "classes": {"apache": {"serveradmin": "roy@reynholm.co.uk","keepalive_timeout": null} } }' \
+      https://puppetlabs-nc.example.vm.pem:4433/classifier-api/v1/groups/085e2797-32f3-4920-9412-8e9decf4ef65</code></pre></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="groups_endpoint.html#post_v1_groups_id" title="Use the /v1/groups/<id&gt; endpoint to update the name, environment, parent, rule, classes, class parameters, configuration data, and variables of the node group with the given ID by submitting a node group delta.">POST /v1/groups/&lt;id&gt;</a></li></ul></div></nav></article></article></article></main></body></html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The Packages page in the console shows all packages in use across your infrastructure by name, version, and provider, as well as the number of instances of each package version in your infrastructure. Use the Packages page to quickly identify which nodes are impacted by packages you know are eligible for maintenance updates, security patches, and license renewals."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="viewing_all_packages_in_use"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Viewing and managing all packages in use</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="viewing_all_packages_in_use">
+    <h1 class="title topictitle1" id="ariaid-title1">Viewing and managing all packages in use </h1>
+    
+    <div class="body conbody"><p class="shortdesc">The <span class="keyword wintitle">Packages</span> page in the console shows all packages in use across your
+        infrastructure by name, version, and provider, as well as the number of instances of each
+        package version in your infrastructure. Use the <span class="keyword wintitle">Packages</span> page to quickly identify which nodes are impacted by
+        packages you know are eligible for maintenance updates, security patches, and license
+        renewals. </p>
+        <p class="p">Package inventory reporting is available for all nodes with Puppet
+            agent version 1.6.0 or later installed, including systems that are not actively managed
+            by Puppet. </p>
+        <div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> Packages are gathered from all
+                available providers. The package data reported on the <span class="keyword wintitle">Packages</span> page can also be obtained by
+                using the <code class="ph codeph">puppet resource</code> command
+                to search for <code class="ph codeph">package</code>.</div></div>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="enable_package_data_collection">
+   <h2 class="title topictitle2" id="ariaid-title2">Enable package data collection </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Package data collection is disabled by default, so the
+      Packages page in the console initially appears blank. In order to view a node's current
+      package inventory, enable package data collection.</p>
+      <section class="section context">
+         <p class="p">You can choose to collect package data on all your nodes, or just a
+            subset. Any node with Puppet agent version 1.6.0 or later installed can report package
+            data, including nodes that are not under active management with <span class="ph">Puppet Enterprise</span>. </p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="keyword wintitle">Classification. </span></span>
+            <div class="itemgroup info"><div class="p"><ul class="ul">
+                     <li class="li"><p class="p">If you want to collect package
+                           data on all your nodes, click the <span class="ph uicontrol">PE Agent</span> node group.</p></li>
+                     <li class="li"><p class="p">If you want to collect package
+                           data on a subset of your nodes, click <span class="ph uicontrol">Add group</span> and create a new classification
+                           node group. Select <span class="ph uicontrol">PE
+                              Agent</span> as the group's parent name. After the new node group
+                           is set up, use the <span class="ph uicontrol">Rules</span> tab to dynamically add the relevant nodes.
+                        </p></li>
+                  </ul></div></div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Configuration</span>. In the <span class="ph uicontrol">Add new class</span> field, select <span class="ph uicontrol">puppet_enterprise::profile::agent</span> and click
+                  <span class="ph uicontrol">Add class</span>. </span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">puppet_enterprise::profile::agent</span> class, set the <span class="ph uicontrol">Parameter</span> to <span class="ph uicontrol">package_inventory_enabled</span> and the <span class="ph uicontrol">Value</span> to <kbd class="ph userinput">true</kbd>. Click <span class="ph uicontrol">Add parameter</span>, and commit changes. </span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Run Puppet to apply these changes to the nodes in your
+               node group. </span>
+            <div class="itemgroup info">
+               <p class="p">Puppet enables package inventory collection on this Puppet run,
+                  and begins collecting package data and reporting it on the <span class="keyword wintitle">Packages</span> page on each subsequent
+                  Puppet run. </p>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Run Puppet a second time to begin collecting package
+               data, then click <span class="keyword wintitle">Packages</span>.</span>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="collect_filter_and_export_package_data">
+   <h2 class="title topictitle2" id="ariaid-title3">View and manage package inventory </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">To view and manage the complete inventory of packages on
+      your systems, use the Packages page in the console. </p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <p class="p">Make sure you have enabled package data collection for the nodes you
+            wish to view.</p>
+      </section>
+      <section class="section context"><div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> If all the nodes on which a certain package is installed are
+               deactivated, but the nodes' specified <code class="ph codeph">node-purge-ttl</code> period has not yet elapsed, instances of
+               the package still appear in summary counts on the <span class="keyword wintitle">Packages</span> page. To correct this issue, adjust the
+                  <code class="ph codeph">node-purge-ttl</code> setting and run
+               garbage collection. </div></div></section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Run Puppet to collect the latest package data from
+               your nodes.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="keyword wintitle">Packages</span> to view your package inventory. To narrow the
+               list of packages, enter the name or partial name of a package in the <span class="ph uicontrol">Filter by package name</span> field and
+               click <span class="ph uicontrol">Apply</span>. </span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click any package name or version to enter the detail
+               page for that package. </span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">On a package's detail page, use the <span class="ph uicontrol">Version</span> selector to locate nodes
+               with a particular package version installed. </span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Use the <span class="ph uicontrol">Instances</span> selector to locate nodes where the package is not managed
+               with Puppet, or to view nodes on which a package instance is managed with Puppet. </span>
+            <div class="itemgroup info">
+               <p class="p">To quickly find the place in your manifest where a
+                  Puppet-managed package is declared, select a code path in the <span class="ph uicontrol">Instances</span> selector and click <span class="ph uicontrol">Copy path</span>.</p>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">To modify a package on a group of nodes: </span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <ul class="ul">
+                     <li class="li">
+                        <p class="p">If the package is managed with Puppet, select a code
+                           path in the <span class="ph uicontrol">Instances</span> selector and click <span class="ph uicontrol">Copy path</span>, then navigate to and update
+                           the manifest. </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">If the package is not managed with Puppet, click
+                              <span class="ph menucascade"><span class="ph uicontrol">Run</span><abbr title="and then"> &gt; </abbr><span class="ph uicontrol">Task</span></span> and create a new task. </p>
+                     </li>
+                  </ul></div>
+            </div>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="view_package_data_collection_metadata">
+  <h2 class="title topictitle2" id="ariaid-title4">View package data collection metadata </h2>
+  
+  <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">puppet_inventory_metadata</code> fact reports whether package data collection is enabled on
+    a node, and shows the time spent collecting package data on the node during the last Puppet
+    run.</p>
+    <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">Make sure you have enabled
+        package data collection for the nodes you wish to view.</p></section>
+    <section><ol class="ol steps"><li class="li step stepexpand">
+        <span class="ph cmd">Click <span class="keyword wintitle">Classification</span> and select the node group you created when enabling package
+          data collection.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">Click <span class="ph uicontrol">Matching nodes</span> and select a node from the list.</span>
+      </li><li class="li step stepexpand">
+        <span class="ph cmd">On the node's inventory page, click <span class="ph uicontrol">Facts</span> and locate <span class="ph uicontrol">puppet_inventory_metadata</span> in the list. </span>
+        <div class="itemgroup info"><div class="p">The fact value looks
+            something like:
+            <pre class="pre codeblock"><code>{
+     "packages" : {
+       "collection_enabled" : true,
+       "last_collection_time" : "1.9149s"
+     }
+   }</code></pre></div></div>
+      </li></ol></section>
+  </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="disable_package_data_collection">
+    <h2 class="title topictitle2" id="ariaid-title5">Disable package data collection </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">If you need to disable package data collection, set
+            <span class="ph uicontrol">package_inventory_enabled</span> to
+            <code class="ph codeph">false</code> and run Puppet twice. </p>
+        <section class="section context"><p class="p"></p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="keyword wintitle">Classification</span> and select the node group you used
+                    when enabling package data collection.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Configuration</span>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">In the <span class="ph uicontrol">puppet_enterprise::profile::agent</span> class, locate <span class="ph uicontrol">package_inventory_enabled</span> and
+                    click <span class="ph uicontrol">Edit</span>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Change the <span class="ph uicontrol">Value</span> of <span class="ph uicontrol">package_inventory_enabled</span> to <code class="ph codeph">false</code>, then commit changes. </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run Puppet to apply these changes to the nodes in
+                    your node group and disable package data collection. </span>
+                <div class="itemgroup info"><p class="p">Package data is
+                        collected for a final time during this run. </p></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run Puppet a second time to purge package data
+                    from the impacted nodes' storage.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+    </div>
+</article></article></article></main></body></html>

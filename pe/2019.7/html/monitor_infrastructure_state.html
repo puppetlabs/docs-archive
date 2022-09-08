@@ -1,0 +1,594 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="When nodes fetch their configurations from the Puppet master, they send back inventory data and a report of their run. This information is summarized on the Status page in the console."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="monitor_current_infrastructure_state"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Monitoring current infrastructure state</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="monitor_current_infrastructure_state">
+    <h1 class="title topictitle1" id="ariaid-title1">Monitoring current infrastructure state </h1>
+    
+    <div class="body conbody"><p class="shortdesc">When nodes fetch their configurations from the Puppet master, they send back
+        inventory data and a report of their run. This information is summarized on the
+            <span class="keyword wintitle">Status</span> page in the console. </p>
+        <p class="p">The <span class="keyword wintitle">Status</span> page displays the most recent run status of each of your
+            nodes so you can quickly find issues and diagnose their causes. You can also use this
+            page to gather essential information about your infrastructure at a glance, such as how
+            many nodes your Puppet master is managing, and whether any nodes are unresponsive.</p>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="node_run_statuses">
+   <h2 class="title topictitle2" id="ariaid-title2">Node run statuses </h2>
+   
+   <div class="body refbody"><p class="shortdesc">The <span class="keyword wintitle">Status</span> page displays the run status of each node following
+      the most recent Puppet run. There are 10 possible run statuses. </p>
+      <section class="section" id="node_run_statuses__nodes_run_in_enforcement_mode"><h3 class="title sectiontitle">Nodes run in enforcement mode </h3><div class="p">
+            <dl class="dl">
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_failed.png" width="20" alt="Red exclamation point icon"> With failures </dt>
+                  <dd class="dd">This node’s last Puppet run failed, or Puppet encountered
+                     an error that prevented it from making changes.</dd>
+                  <dd class="dd ddexpand">The error is usually tied to a particular resource (such
+                     as a file) managed by Puppet on the node. The node as a whole might still be
+                     functioning normally. Alternatively, the problem might be caused by a situation
+                     on the Puppet master, preventing the node's agent from verifying whether the
+                     node is compliant.</dd>
+               
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_corrective.png" width="20" alt="Icon that looks like half of an apple pie"> With corrective changes</dt>
+                  <dd class="dd">During the last Puppet run, Puppet found inconsistencies
+                     between the last applied catalog and this node’s configuration, and corrected
+                     those inconsistencies to match the catalog.<div class="note note note_note"><span class="note__title">Note:</span> Corrective change reporting is available only on agent nodes
+                        running PE 2016.4 and later. Agents running earlier versions report all
+                        change events as "with intentional changes."</div></dd>
+               
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_changed.png" width="20" alt="Icon that looks like half of a blueberry pie"> With intentional changes</dt>
+                  <dd class="dd">During the last Puppet run, changes to the catalog were
+                     successfully applied to the node.</dd>
+               
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_unchanged.png" width="20" alt="Green checkmark icon"> Unchanged</dt>
+                  <dd class="dd">This node's last Puppet run was successful, and it was
+                     fully compliant. No changes were necessary.</dd>
+               
+            </dl>
+         </div></section>
+      <section class="section" id="node_run_statuses__nodes_run_in_no_op_mode"><h3 class="title sectiontitle">Nodes run in no-op mode </h3><div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> No-op mode reporting is available only on agent
+               nodes running PE 2016.4 and later. Agents running earlier versions report all no-op
+               mode runs as "would be unchanged."</div>
+            <dl class="dl">
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_failed.png" width="20" alt="Red exclamation point icon"> With failures</dt>
+                  <dd class="dd">This node’s last Puppet run in no-op mode failed, or
+                     Puppet encountered an error that prevented it from simulating changes.</dd>
+               
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_corrective.png" width="20" alt="Icon that looks like half of an apple pie"> Would have corrective changes</dt>
+                  <dd class="dd">During the last Puppet run, Puppet found inconsistencies
+                     between the last applied catalog and this node’s configuration, and would have
+                     corrected those inconsistencies to match the catalog.</dd>
+               
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_changed.png" width="20" alt="Icon that looks like half of a blueberry pie"> Would have intentional changes</dt>
+                  <dd class="dd">During the last Puppet run, catalog changes would have
+                     been applied to the node.</dd>
+               
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_unchanged.png" width="20" alt="Green checkmark icon"> Would be unchanged</dt>
+                  <dd class="dd">This node’s last Puppet run was successful, and the node
+                     was fully compliant. No changes would have been necessary.</dd>
+               
+            </dl>
+         </div></section>
+      <section class="section" id="node_run_statuses__nodes_not_reporting"><h3 class="title sectiontitle">Nodes
+            not reporting </h3><div class="p">
+            <dl class="dl">
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_notreporting.png" width="20" alt="Gray dash icon"> Unresponsive</dt>
+                  <dd class="dd">The node hasn't reported to the Puppet master recently. Something might be
+                     wrong. The cutoff for considering a node unresponsive defaults to one hour, and
+                     can be configured via the
+                        <code class="ph codeph">puppet_enterprise::console_services::no_longer_reporting_cutoff</code>
+                     parameter. See <a class="xref" href="config_console.html#configure_the_pe_console_and_console_services" title="Configure the behavior of the console and console-services, as needed.">Configure the PE console and console-services</a> for more
+                     information.</dd>
+                  <dd class="dd ddexpand">Check the run status table to see the timestamp for the
+                     last known Puppet run for the node and an indication of whether its last known
+                     run was in no-op mode. Correct the problem to resume Puppet runs on the
+                     node.</dd>
+               
+               
+                  <dt class="dt dlterm">
+                     <img class="image" src="icon_notreporting.png" width="20" alt="Gray dash icon"> Have no reports</dt>
+                  <dd class="dd">Although Puppet Server is aware of this node's existence, the node has never
+                     submitted a Puppet report for one or more of the following reasons: it's a
+                     newly commissioned node; it has never come online; or its copy of Puppet is not
+                     configured correctly.<div class="note note note_note"><span class="note__title">Note:</span> Expired or deactivated nodes are
+                        displayed on the <span class="ph uicontrol">Status</span> page for seven days. To
+                        extend the amount of time that you can view or search for these nodes,
+                        change the <code class="ph codeph">node-ttl</code> setting in PuppetDB. Changing this
+                        setting affects resources and exported resources.</div></dd>
+               
+            </dl>
+         </div></section>
+      <section class="section" id="node_run_statuses__special_categories"><h3 class="title sectiontitle">Special categories </h3><p class="p">In addition to reporting the run status of each node, the <span class="keyword wintitle">Status</span> page
+            provides a secondary count of nodes that fall into special categories.</p><div class="p">
+            <dl class="dl">
+               
+                  <dt class="dt dlterm">Intended catalog failed</dt>
+                  <dd class="dd">During the last Puppet run, the intended catalog for this
+                     node failed, so Puppet substituted a cached catalog, as per your configuration
+                     settings. </dd>
+                  <dd class="dd ddexpand">This typically occurs when you have compilation errors in
+                     your Puppet code. Check the Puppet run's log for details. </dd>
+                  <dd class="dd ddexpand">This category is shown only if one or more agents fail to
+                     retrieve a valid catalog from Puppet Server.</dd>
+               
+               
+                  <dt class="dt dlterm">Enforced resources found</dt>
+                  <dd class="dd">During the last Puppet run in no-op mode, one or more
+                     resources was enforced, as per your use of the <code class="ph codeph">noop =&gt; false</code> metaparameter setting.</dd>
+                  <dd class="dd ddexpand">This category is shown only if enforced resources are
+                     present on one or more nodes.</dd>
+               
+            </dl>
+         </div></section>
+   </div>
+<article class="topic concept nested2" aria-labelledby="ariaid-title3" id="how_puppet_determines_node_run_statuses">
+   <h3 class="title topictitle3" id="ariaid-title3">How Puppet determines node run statuses </h3>
+   
+   <div class="body conbody"><p class="shortdesc">Puppet uses a hierarchical system to determine a single run
+      status for each node. This system gives higher priority to the activity types most likely to
+      cause problems in your deployment, so you can focus on the nodes and events most in need of
+      attention.</p>
+      <p class="p">During a Puppet run, several activity types might occur on a single
+         node. A node's run status reflects the activity with the highest alert level, regardless of
+         how many events of each type took place during the run. Failure events receive the highest
+         alert level, and no change events receive the lowest.</p>
+      <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+               <tr class="row">
+                  <th class="entry align-center" id="how_puppet_determines_node_run_statuses__entry__1">Run status </th>
+                  <th class="entry" id="how_puppet_determines_node_run_statuses__entry__2">Definitely happened </th>
+                  <th class="entry" id="how_puppet_determines_node_run_statuses__entry__3">Might also have happened </th>
+               </tr>
+            </thead><tbody class="tbody">
+               <tr class="row">
+                  <td class="entry align-center" headers="how_puppet_determines_node_run_statuses__entry__1">
+                     <img class="image" src="icon_failed.png" width="35" alt="Red exclamation point icon">
+                  </td>
+                  <td class="entry" headers="how_puppet_determines_node_run_statuses__entry__2">Failure </td>
+                  <td class="entry" headers="how_puppet_determines_node_run_statuses__entry__3">Corrective change, intentional
+                     change, no change </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry align-center" headers="how_puppet_determines_node_run_statuses__entry__1">
+                     <img class="image" src="icon_corrective.png" width="35" alt="Icon that looks like half of an apple pie">
+                  </td>
+                  <td class="entry" headers="how_puppet_determines_node_run_statuses__entry__2">Corrective change </td>
+                  <td class="entry" headers="how_puppet_determines_node_run_statuses__entry__3">Intentional change, no change
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry align-center" headers="how_puppet_determines_node_run_statuses__entry__1">
+                     <img class="image" src="icon_changed.png" width="35" alt="Icon that looks like half of a blueberry pie">
+                  </td>
+                  <td class="entry" headers="how_puppet_determines_node_run_statuses__entry__2">Intentional change </td>
+                  <td class="entry" headers="how_puppet_determines_node_run_statuses__entry__3">No change </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry align-center" headers="how_puppet_determines_node_run_statuses__entry__1">
+                     <img class="image" src="icon_unchanged.png" width="35" alt="Green checkmark icon">
+                  </td>
+                  <td class="entry" headers="how_puppet_determines_node_run_statuses__entry__2">No change </td>
+                  <td class="entry" headers="how_puppet_determines_node_run_statuses__entry__3"></td>
+               </tr>
+            </tbody></table>
+      <p class="p">For example, during a Puppet run in enforcement mode, a node with 100
+         resources receives intentional changes on 30 resources, corrective changes on 10 resources,
+         and no changes on the remaining 60 resources. This node's run status is "with corrective
+         changes."</p>
+      <p class="p">Node run statuses also prioritize run mode (either enforcement or no-op)
+         over the state of individual resources. This means that a node run in no-op mode is always
+         reported in the <span class="ph uicontrol">Nodes run in
+            no-op</span> column, even if some of its resource changes were enforced. Suppose
+         the no-op flags on a node's resources are all set to false. Changes to the resources are
+         enforced, not simulated. Even so, because it is run in no-op mode, the node's run status is
+         "would have intentional changes."</p>
+   </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="filtering_nodes_on_the_overview_page">
+    <h2 class="title topictitle2" id="ariaid-title4">Filtering nodes on the <span class="keyword wintitle">Status</span> page </h2>
+    
+    <div class="body conbody"><p class="shortdesc">You can filter the list of nodes displayed on the <span class="keyword wintitle">Status</span> page by
+        run status and by node fact. If you set a run status filter, and also set a node fact
+        filter, the table takes both filters into account, and shows only those nodes matching both
+        filters.</p>
+        <p class="p">Clicking <span class="ph uicontrol">Remove
+                filter</span> removes all filters currently in effect.</p>
+        <p class="p">The filters you set are persistent. If you set run status or fact filters on the
+                <span class="keyword wintitle">Status</span> page, they continue to be applied to the table until
+            they're changed or removed, even if you navigate to other pages in the console or log
+            out. The persistent storage is associated with the browser tab, not your user account,
+            and is cleared when you close the tab.</p>
+        <div class="p"><div class="note important note_important"><span class="note__title">Important:</span> The filter results count
+                and the fact filter matching nodes counts are cached for two minutes after first
+                retrieval. This reduces the total load on PuppetDB and decreases page load time,
+                especially for fact filters with multiple rows. As a result, the displayed counts
+                might be up to two minutes out of date.</div></div>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title5" id="filter_by_node_run_status">
+    <h3 class="title topictitle3" id="ariaid-title5">Filter by node run status </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">The status counts section at the top of the <span class="keyword wintitle">Status</span> page shows a
+        summary of the number of nodes with each run status as of the last Puppet run. Filter nodes
+        by run status to quickly focus on nodes with failures or change events. </p>
+        <section><div class="li step p">
+                <span class="ph cmd">In the status counts section, select a run status
+                    (such as <span class="ph uicontrol">with corrective
+                        changes</span> or <span class="ph uicontrol">have no
+                        reports</span>) or a run status category (such as <span class="ph uicontrol">Nodes run in no-op</span>).</span>
+            </div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="filter_by_node_fact">
+   <h3 class="title topictitle3" id="ariaid-title6">Filter by node fact </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">You can create a highly specific list of nodes for further
+      investigation by using the fact filter tool. </p>
+      <section class="section context">
+         <p class="p">For example, you can check that nodes you've updated have
+            successfully changed, or find out the operating systems or IP addresses of a set of
+            failed nodes to better understand the failure. You might also filter by facts to fulfill
+            an auditor's request for information, such as the number of nodes running a particular
+            version of software.</p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Filter by fact value</span>. In the <span class="ph uicontrol">Fact</span> field, select one of the available facts. An
+               empty fact field is not allowed.</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note tip note_tip"><span class="note__title">Tip:</span> To see the facts and values reported by a
+                     node on its most recent run, click the node name in the <span class="keyword wintitle">Run status</span> table, then select the
+                     node’s <span class="ph uicontrol">Facts</span> tab.
+                  </div>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Select an Operator:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                           <tr class="row">
+                              <th class="entry align-center" id="filter_by_node_fact__entry__1">Operator </th>
+                              <th class="entry" id="filter_by_node_fact__entry__2">Meaning </th>
+                              <th class="entry" id="filter_by_node_fact__entry__3">Notes</th>
+                           </tr>
+                        </thead><tbody class="tbody">
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">=</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">is</td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3"></td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">!=</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">is not </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3"></td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">~</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">matches a regular
+                                 expression (regex) </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Select this operator to
+                                 use wildcards and other regular expressions if you want to find
+                                 matching facts without having to specify the exact value.</td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">!~</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">does not match a regular
+                                 expression (regex) </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3"></td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">&gt;</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">greater than </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Can be used only with
+                                 facts that have a numeric value.</td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">&gt;=</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">greater than or equal to </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Can be used only with
+                                 facts that have a numeric value.</td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">&lt;</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">less than </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Can be used only with
+                                 facts that have a numeric value.</td>
+                           </tr>
+                           <tr class="row">
+                              <td class="entry align-center" headers="filter_by_node_fact__entry__1">
+                                 <span class="ph uicontrol">&lt;=</span>
+                              </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__2">less than or equal to </td>
+                              <td class="entry" headers="filter_by_node_fact__entry__3">Can be used only with
+                                 facts that have a numeric value.</td>
+                           </tr>
+                        </tbody></table>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Value</span> field, enter a value. Strings are case-sensitive, so make sure
+               you use the correct case.</span>
+            <div class="itemgroup info">
+               <p class="p">The filter displays an error if you use an invalid string
+                  operator (for example, selecting a numeric value operator such as <strong class="ph b">
+                     <span class="ph uicontrol">&gt;=</span>
+                  </strong> and entering a non-numeric string such as <kbd class="ph userinput">pilsen</kbd> as the value) or enter an invalid regular
+                  expression.</p>
+               <div class="p">
+                  <div class="note note note_note"><span class="note__title">Note:</span> If you enter an invalid or empty value in
+                     the <span class="ph uicontrol">Value</span> field, <span class="ph">PE</span> takes the following action in order to avoid a
+                     filter error: <ul class="ul">
+                        <li class="li">
+                           <p class="p">Invalid or empty Boolean facts are processed as <strong class="ph b">false</strong>, and results are retrieved
+                              accordingly. </p>
+                        </li>
+                        <li class="li">
+                           <p class="p">Invalid or empty numeric facts are processed as <strong class="ph b">0</strong>, and results are retrieved
+                              accordingly. </p>
+                        </li>
+                        <li class="li">
+                           <p class="p">Invalid or incomplete regular expressions
+                              invalidate the filter, and no results are retrieved.</p>
+                        </li>
+                     </ul></div>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Add</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">As needed, repeat these steps to add additional
+               filters. If filtering by more than one node fact, specify either <span class="ph uicontrol">Nodes must match all rules</span> or <span class="ph uicontrol">Nodes can match any rule</span>.</span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <p class="p"></p>
+      </section>
+   </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="filter_nodes_in_your_node_list">
+    <h2 class="title topictitle2" id="ariaid-title7">Filtering nodes in your node list</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Filter your node list by node name or by PQL query to more
+        easily inspect them.</p>
+        <p class="p"></p>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title8" id="filter_your_node_list_by_node_name">
+    <h3 class="title topictitle3" id="ariaid-title8">Filter your node list by node name</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Filter your nodes list by node name to inspect them as a
+        group.</p>
+        <section class="section context"><p class="p"></p></section>
+        <section><div class="li step p">
+                <span class="ph cmd">Select <span class="ph uicontrol">Node name</span>, type in the word you want to filter by, and click
+                        <span class="ph uicontrol">Submit</span>.</span>
+            </div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title9" id="filter-your-nodes-by-pql">
+    <h3 class="title topictitle3" id="ariaid-title9">Filter your nodes by PQL query</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Filter your nodes list using a common <span class="ph">PQL</span> query. </p>
+        <section class="section context">
+            <p class="p">Filtering your nodes list by <span class="ph">PQL</span> query enables you to manage them by specific factors, such as by
+                operating system, report status, or class.</p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">Specify a target by doing one of the
+                    following:</span>
+                <ul class="ul choices">
+                    <li class="li choice">Enter a query that selects the target
+                        you want. See the <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/v4/pql.html" target="_blank">Puppet Query Language (PQL) reference</a> for more
+                        information.</li>
+                    <li class="li choice">Click <span class="ph uicontrol">Common queries</span>. Select one of the queries
+                        and replace the defaults in the braces (<code class="ph codeph">{ }</code>) with values that specify the target you
+                        want. <div class="p">
+                            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                        <tr class="row">
+                                            <th class="entry" id="filter-your-nodes-by-pql__entry__1">Target </th>
+                                            <th class="entry" id="filter-your-nodes-by-pql__entry__2">PQL
+                                                query</th>
+                                        </tr>
+                                    </thead><tbody class="tbody">
+                                        <tr class="row">
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__1">All nodes </td>
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__2">
+                                                <code class="ph codeph">nodes[certname] { }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__1">Nodes with
+                                                a specific resource (example: httpd) </td>
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__2">
+                                                <code class="ph codeph">resources[certname] { type = "Service" and title
+                                                  = "httpd" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__1">Nodes with
+                                                a specific fact and value (example: OS name is <span class="ph">CentOS</span>) </td>
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__2">
+                                                <code class="ph codeph">inventory[certname] { facts.os.name =
+                                                  "&lt;OS&gt;" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__1">Nodes with
+                                                a specific report status (example: last run failed) </td>
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__2">
+                                                <code class="ph codeph">reports[certname] { latest_report_status =
+                                                  "failed" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__1">Nodes with
+                                                a specific class (example: <span class="ph">Apache</span>) </td>
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__2">
+                                                <code class="ph codeph">resources[certname] { type = "Class" and title =
+                                                  "Apache" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__1">Nodes
+                                                assigned to a specific environment (example:
+                                                production) </td>
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__2">
+                                                <code class="ph codeph">nodes[certname] { catalog_environment =
+                                                  "production" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__1">Nodes with
+                                                a specific version of a resource type (example:
+                                                OpenSSL is v1.1.0e) </td>
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__2">
+                                                <code class="ph codeph">resources[certname] {type = "Package" and
+                                                  title="openssl" and parameters.ensure =
+                                                  "1.0.1e-51.el7_2.7" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__1">Nodes with
+                                                a specific resource and operating system (example:
+                                                httpd and <span class="ph">CentOS</span>) </td>
+                                            <td class="entry" headers="filter-your-nodes-by-pql__entry__2">
+                                                <code class="ph codeph">inventory[certname] { facts.operatingsystem =
+                                                  "CentOS" and resources { type = "Service" and
+                                                  title = "httpd" } }</code>
+                                            </td>
+                                        </tr>
+                                    </tbody></table>
+                        </div>
+                    </li>
+                </ul>
+            </div></section>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title10" id="monitor_pe_services">
+      <h2 class="title topictitle2" id="ariaid-title10">Monitor <span class="ph">PE</span> services </h2>
+      
+      <div class="body conbody"><p class="shortdesc">
+            <span class="ph">PE</span> includes console and command line tools for monitoring
+            the status of core services.</p>
+            <div class="p">
+                  <table class="table frame-all"><caption></caption><colgroup><col style="width:33.33333333333333%"><col style="width:33.33333333333333%"><col style="width:33.33333333333333%"></colgroup><thead class="thead">
+                                    <tr class="row">
+                                          <th class="entry colsep-1 rowsep-1" id="monitor_pe_services__entry__1">Component or service</th>
+                                          <th class="entry align-center colsep-1 rowsep-1" id="monitor_pe_services__entry__2">Status monitor</th>
+                                          <th class="entry align-center colsep-1 rowsep-1" id="monitor_pe_services__entry__3">Status command</th>
+                                    </tr>
+                              </thead><tbody class="tbody">
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1">Activity service</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2">✓</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1">Agentless Catalog Executor (ACE) service</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2"></td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1"><span class="ph">Bolt</span> service</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2"></td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1">Classifier service</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2">✓</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1"><span class="ph">Code Manager</span>
+                                                service</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2">✓</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1">Orchestrator service</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2">✓</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1"><span class="ph">Puppet Communications
+                                                  Protocol (PCP)</span>
+                                                broker</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2"></td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1"><span class="ph">PostgreSQL</span></td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2"></td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1"><span class="ph">Puppet Server</span></td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2">✓</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1"><span class="ph">PuppetDB</span></td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2">✓</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                                    <tr class="row">
+                                          <td class="entry colsep-1 rowsep-1" headers="monitor_pe_services__entry__1">Role-based access control (RBAC) service</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__2">✓</td>
+                                          <td class="entry align-center colsep-1 rowsep-1" headers="monitor_pe_services__entry__3">✓</td>
+                                    </tr>
+                              </tbody></table>
+            </div>
+      </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title11" id="view_the_puppet_services_status_monitor">
+    <h3 class="title topictitle3" id="ariaid-title11">View the <span class="keyword wintitle">Puppet
+            Services status</span> monitor </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">The <span class="keyword wintitle">Puppet Services status</span> monitor provides a visual overview of
+        the current state of core services, and can be used to quickly determine whether an
+        unresponsive or restarting service is causing an issue with your deployment. </p>
+        <section class="section context">A checkmark appears next to <span class="ph uicontrol">Puppet Services status</span> if all
+            applicable services are accepting requests. In the event that no data is available, a
+            question mark appears next to the link. If one or more services is restarting or not
+            accepting requests, a warning icon appears.</section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Status</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Puppet Services status</span> to open the monitor. </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title12" id="puppet_infrastructure_status_command">
+      <h3 class="title topictitle3" id="ariaid-title12"><code class="ph codeph">puppet
+                  infrastructure status</code> command </h3>
+      
+      <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">puppet infrastructure status</code> command displays
+            errors and alerts from <span class="ph">PE</span> components and services. </p>
+            <p class="p">The command reports separately on the master and any compilers or
+                  replicas in your environment. You must run the command as root.</p>
+      </div>
+</article></article></article></article></main></body></html>

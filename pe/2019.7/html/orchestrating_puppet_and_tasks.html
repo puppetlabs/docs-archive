@@ -1,0 +1,54 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet orchestrator is an effective tool for making on-demand changes to your infrastructure."><meta name="DC.relation" scheme="URI" content="running_jobs_with_puppet_orchestrator_overview.html#running_jobs_with_puppet_orchestrator_overview"><meta name="DC.relation" scheme="URI" content="configuring_puppet_orchestrator.html#configuring_puppet_orchestrator"><meta name="DC.relation" scheme="URI" content="bolt_configure_orchestrator.html"><meta name="DC.relation" scheme="URI" content="direct_puppet_a_workflow_for_controlling_change.html#direct_puppet_a_workflow_for_controlling_change"><meta name="DC.relation" scheme="URI" content="running_puppet_on_demand_with_orch.html"><meta name="DC.relation" scheme="URI" content="bolt_to_pe_overview.html#bolt_to_pe_overview"><meta name="DC.relation" scheme="URI" content="running_tasks_and_plans_pe.html"><meta name="DC.relation" scheme="URI" content="writing_tasks.html#writing_tasks"><meta name="DC.relation" scheme="URI" content="writing_plans.html"><meta name="DC.relation" scheme="URI" content="orchestrator_api_v1_endpoints.html"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Isaac Eldridge <isaac.eldridge@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrating_puppet_and_tasks"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Orchestrating Puppet, tasks, and plans</title></head><body id="orchestrating_puppet_and_tasks"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Orchestrating <span class="ph">Puppet</span>, tasks, and
+        plans</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">Puppet</span> orchestrator is an effective tool for making on-demand
+        changes to your infrastructure.</p>
+        <p class="p">With orchestrator you can: </p>
+        <ul class="ul">
+            <li class="li"> Automate tasks and plans tasks to eliminate manual work across
+                your infrastructure and applications. </li>
+            <li class="li">
+                <p class="p">Initiate Puppet jobs whenever you need to update agents. </p>
+            </li>
+            <li class="li">
+                <p class="p">Group the servers in your network according to immediate
+                    business needs. By leveraging orchestrator with <a class="xref" href="https://puppet.com/docs/puppetdb/latest/index.html" target="_blank">PuppetDB</a>, which stores detailed information
+                    about your nodes, you can search and filter servers based on metadata. No static
+                    lists of hosts, no reliance on complicated host-naming conventions. </p>
+            </li>
+            <li class="li">
+                <p class="p">Connect with thousands of hosts at the same time without
+                    slowing down your network. The Puppet Communications Protocol (PCP) and message
+                    broker efficiently mediate communications on your network even as your
+                    operational demands grow.</p>
+            </li>
+            <li class="li">
+                <p class="p">Distribute the Puppet agent workload by adding masters that
+                    are dedicated to catalog compilation as you increase in scale. Compilers
+                    efficiently process requests and compile code for environments that have
+                    thousands of nodes. For more information, see <a class="xref" href="installing_compilers.html" title="As your Puppet Enterprise infrastructure scales up to 4,000 nodes and beyond, add load-balanced compilers to your installation to increase the number of agents you can manage.">Installing compilers</a>.</p>
+            </li>
+            <li class="li">
+                <p class="p">Take advantage of the tasks installed with <span class="ph">PE</span>. Use the package task to inspect, install,
+                    upgrade, and manage packages or the service task to start, stop, restart, and
+                    check the status of services running on your systems. Additional tasks are
+                    available from the Puppet <a class="xref" href="https://forge.puppet.com/" target="_blank">Forge</a>.</p>
+            </li>
+            <li class="li">
+                <p class="p">Write your own tasks in any programming language that your
+                    target nodes can run, such as Bash, PowerShell, or Python.</p>
+            </li>
+            <li class="li">Write plans in Puppet or YAML or download them from the <a class="xref" href="https://forge.puppet.com/" target="_blank">Forge</a>.</li>
+            <li class="li">
+                <p class="p">Integrate server logging, auditing, and per node role-based
+                    access control (RBAC). </p>
+            </li>
+            <li class="li">Use plans to create customized permissions for tasks.</li>
+        </ul>
+    </div>
+<nav role="navigation" class="related-links"><ul class="ullinks"><li class="link ulchildlink"><strong><a href="running_jobs_with_puppet_orchestrator_overview.html#running_jobs_with_puppet_orchestrator_overview">Running jobs with Puppet orchestrator</a></strong><br>With the <span class="ph">Puppet</span> orchestrator, you can run three types         of "jobs": on-demand Puppet jobs, task runs, and plan runs. </li><li class="link ulchildlink"><strong><a href="configuring_puppet_orchestrator.html#configuring_puppet_orchestrator">Configuring Puppet orchestrator</a></strong><br>Once you've installed <span class="ph">PE</span> or         the client tools package, there are a few tasks you need to do to prepare your PE         infrastructure for orchestration services.</li><li class="link ulchildlink"><strong><a href="bolt_configure_orchestrator.html">Using Bolt with orchestrator</a></strong><br>         <span class="ph">Bolt</span> enables running a series of tasks — called             <dfn class="term">plans</dfn> — to help you automate the manual work of maintaining your         infrastructure. When you pair <span class="ph">Bolt</span> with <span class="ph">PE</span>, you get advanced automation with the management and         logging capabilities of <span class="ph">PE</span></li><li class="link ulchildlink"><strong><a href="direct_puppet_a_workflow_for_controlling_change.html#direct_puppet_a_workflow_for_controlling_change">Direct Puppet: a workflow for controlling change</a></strong><br>The orchestrator—used alongside other <span class="ph">PE</span> tools, such as <span class="ph">Code Manager</span>—allows you to control when and how infrastructure changes are made         before they reach your production environment.</li><li class="link ulchildlink"><strong><a href="running_puppet_on_demand_with_orch.html">Running Puppet on demand</a></strong><br>The orchestrator gives you the ability to set up jobs in             the console or on the command line to trigger on-demand Puppet runs. </li><li class="link ulchildlink"><strong><a href="bolt_to_pe_overview.html#bolt_to_pe_overview">Migrating Bolt tasks and plans to PE</a></strong><br> If you use <span class="ph">Bolt</span> tasks and plans to automate parts of         your configuration management, you can move that <span class="ph">Bolt</span> content         to a control repo and transform it into a <span class="ph">PE</span> environment.         This lets you manage and run tasks and plans using <span class="ph">PE</span> and the         console. <span class="ph">PE</span> environments and <span class="ph">Bolt</span> projects use the same default  structure, and both use a             <span class="ph">Puppetfile</span> to install content.</li><li class="link ulchildlink"><strong><a href="running_tasks_and_plans_pe.html">Tasks and plans in PE</a></strong><br>Use the orchestrator to run tasks and plans in the console or on the command   line.</li><li class="link ulchildlink"><strong><a href="writing_tasks.html#writing_tasks">Writing tasks</a></strong><br><span class="ph">Bolt</span> tasks are similar to     scripts, but they are kept in modules and can have metadata. This allows you to reuse and share     them.</li><li class="link ulchildlink"><strong><a href="writing_plans.html">Writing plans</a></strong><br>Plans allow you to run more than one task with a single   command, compute values for the input to a task, process the results of tasks, or make decisions   based on the result of running a task.</li><li class="link ulchildlink"><strong><a href="orchestrator_api_v1_endpoints.html">Puppet orchestrator API v1 endpoints</a></strong><br>Use this API to gather details about the orchestrator jobs         you run. </li></ul></nav></article></main></body></html>

@@ -1,0 +1,672 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The classification endpoint takes a node name and a set of facts, and returns information about how that node is classified. The output can help you test your classification rules."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Melissa Amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="classification_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Classification endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="classification_endpoint">
+        <h1 class="title topictitle1" id="ariaid-title1">Classification endpoint</h1>
+        <p class="shortdesc">The <code class="ph codeph">classification</code> endpoint takes a node name and a set
+                of facts, and returns information about how that node is classified. The output can
+                help you test your classification rules.</p>
+        
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="post_v1_classified_nodes_name">
+  <h2 class="title topictitle2" id="ariaid-title2">POST /v1/classified/nodes/&lt;name&gt; </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/classified/nodes/\&lt;name\&gt;</code> endpoint to retrieve the classification
+    information for the node with the given name and facts as supplied in the body of the
+    request.</p>
+    <section class="section" id="post_v1_classified_nodes_name__request_format"><h3 class="title sectiontitle">Request
+        format </h3><p class="p">The request body can contain a JSON object describing
+        the facts and trusted facts of the node to be classified. The object can have these
+        keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="post_v1_classified_nodes_name__request_format__entry__1">Key </th>
+              <th class="entry" id="post_v1_classified_nodes_name__request_format__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__request_format__entry__1"><code class="ph codeph">fact</code></td>
+              <td class="entry" headers="post_v1_classified_nodes_name__request_format__entry__2">The regular, non-trusted facts of the
+                node. The value of this key is a further object, whose keys are fact names, and
+                whose values are the fact values. Fact values can be a string, number, boolean,
+                array, or object.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__request_format__entry__1"><code class="ph codeph">trusted</code></td>
+              <td class="entry" headers="post_v1_classified_nodes_name__request_format__entry__2">The trusted facts of the node. The values
+                of this key are subject to the same restrictions as those on the value of the
+                  <code class="ph codeph">fact</code> key.</td>
+            </tr>
+          </tbody></table></section>
+    <section class="section" id="post_v1_classified_nodes_name__response_format"><h3 class="title sectiontitle">Response
+        format </h3><p class="p">The response is a JSON object describing the node
+        post-classification, using these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="post_v1_classified_nodes_name__response_format__entry__1">Key </th>
+              <th class="entry" id="post_v1_classified_nodes_name__response_format__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__1"><code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__2">The name of the node (a string).</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__1"><code class="ph codeph">groups</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__2">An array of the group-ids (strings) that
+                this node was classified into.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__1"><code class="ph codeph">environment</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__2">The name of the environment that this
+                node uses, which is taken from the node groups the node was classified into.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__1"><code class="ph codeph">classes</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__2">An object where the keys are class names
+                and the values are objects that map parameter names to values.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__1"><code class="ph codeph">parameters</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__response_format__entry__2">An object where the keys are top-level
+                variable names and the values are the values assigned to those variables.</td>
+            </tr>
+          </tbody></table><p class="p">This is an example of a response from this
+      endpoint:</p><pre class="pre codeblock json"><code>{
+  "name": "foo.example.com",
+  "groups": ["9c0c7d07-a199-48b7-9999-3cdf7654e0bf", "96d1a058-225d-48e2-a1a8-80819d31751d"],
+  "environment": "staging",
+  "parameters": {},
+  "classes": {
+    "apache": {
+      "keepalive_timeout": 30,
+      "log_level": "notice"
+    }
+  }
+}</code></pre></section>
+    <section class="section" id="post_v1_classified_nodes_name__error_responses"><h3 class="title sectiontitle">Error
+        responses </h3><p class="p">If the node is classified into multiple node groups
+        that define conflicting classifications for the node, the service returns a <samp class="ph msgph">500 Server Error</samp> response.</p><p class="p">The body
+        of this response contains the usual JSON error object described in the errors
+        documentation.</p><p class="p">The <code class="ph codeph">kind</code> key of the error is "classification-conflict", the <code class="ph codeph">msg</code> describes generally why this happens, and the <code class="ph codeph">details</code> key contains an object that describes the
+        specific conflicts encountered.</p><p class="p">The details object can have these
+        keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="post_v1_classified_nodes_name__error_responses__entry__1">Key </th>
+              <th class="entry" id="post_v1_classified_nodes_name__error_responses__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__1"><code class="ph codeph">environment</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__2">Maps directly to an array of value detail
+                objects (described below).</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__1"><code class="ph codeph">variables</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__2">Contains an object with a key for each
+                conflicting variable, whose values are an array of value detail objects.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__1"><code class="ph codeph">classes</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__2">Contains an object with a key for each
+                class that had conflicting parameter definitions, whose values are further objects
+                that describe the conflicts for that class's parameters.</td>
+            </tr>
+          </tbody></table><p class="p">A value details object describes one of the conflicting values
+        defined for the environment, a variable, or a class parameter. Each object contains these
+        keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="post_v1_classified_nodes_name__error_responses__entry__9">Key </th>
+              <th class="entry" id="post_v1_classified_nodes_name__error_responses__entry__10">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__9"><code class="ph codeph">value</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__10">The defined value, which is a string for
+                environment and class parameters, but for a variable can be any JSON value.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__9"><code class="ph codeph">from</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__10">The node group that the node was
+                classified into that caused this value to be added to the node's classification.
+                This group cannot define the value, because it can be inherited from an ancestor of
+                this group.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__9"><code class="ph codeph">defined_by</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name__error_responses__entry__10">The node group that actually defined this
+                value. This is often the <code class="ph codeph">from</code>
+                group, but could instead be an ancestor of that group.</td>
+            </tr>
+          </tbody></table><p class="p">This example shows a classification conflict error object with
+        node groups truncated for
+        clarity:</p><pre class="pre codeblock javascript"><code>{
+  "kind": "classification-conflict",
+  "msg": "The node was classified into multiple unrelated node groups that defined conflicting class parameters or top-level variables. See `details` for a list of the specific conflicts.",
+  "details": {
+    "classes": {
+      "songColors": {
+        "blue": [
+          {
+            "value": "Blue Suede Shoes",
+            "from": {
+              "name": "Elvis Presley",
+              "classes": {},
+              "rule": ["=", "nodename", "the-node"],
+              ...
+            },
+            "defined_by": {
+              "name": "Carl Perkins",
+              "classes": {"songColors": {"blue": "Blue Suede Shoes"}},
+              "rule": ["not", ["=", "nodename", "the-node"]],
+              ...
+            }
+          },
+          {
+            "value": "Since You've Been Gone",
+            "from": {
+              "name": "Aretha Franklin",
+              "classes": {"songColors": {"blue": "Since You've Been Gone"}},
+              ...
+            },
+            "defined_by": {
+              "name": "Aretha Franklin",
+              "classes": {"songColors": {"blue": "Since You've Been Gone"}},
+              ...
+            }
+          }
+        ]
+      }
+    }
+  }
+}</code></pre><p class="p">In this example, the conflicting "Blue Suede Shoes" value was included in
+        the classification because the node matched the "Elvis Presley" node group (because that is
+        the value of the "from" key), but that node group doesn't define the "Blue Suede Shoes"
+        value. That value is defined by the "Carl Perkins" node group, which is an ancestor of the
+        "Elvis Presley" node group, causing the latter to inherit the value from the former. The
+        other conflicting value, "Since You've Been Gone", is defined by the same node group that
+        the node matched.</p></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="node_classifier_errors.html#node_classifier_errors" title="Familiarize yourself with error responses to make working the node classifier service API easier.">Node classifier errors</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="post_v1_classified_nodes_name_explanation">
+  <h2 class="title topictitle2" id="ariaid-title3">POST /v1/classified/nodes/&lt;name&gt;/explanation </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/classified/nodes/\&lt;name\&gt;/explanation</code> endpoint to retrieve an explanation
+    of how a node is classified by submitting its facts.</p>
+    <section class="section" id="post_v1_classified_nodes_name_explanation__request_format"><h3 class="title sectiontitle">Request
+        format </h3><p class="p">The body of the request must be a JSON object
+        describing the node's facts. This object uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="post_v1_classified_nodes_name_explanation__request_format__entry__1">Key </th>
+              <th class="entry" id="post_v1_classified_nodes_name_explanation__request_format__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__request_format__entry__1"><code class="ph codeph">fact</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__request_format__entry__2">Describes the regular (non-trusted) facts
+                of the node. Its value must be a further object whose keys are fact names, and whose
+                values are the corresponding fact values. Structured facts can be included here;
+                structured fact values are further objects or arrays.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__request_format__entry__1"><code class="ph codeph">trusted</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__request_format__entry__2">Optional key that describes the trusted
+                facts of the node. Its value has exactly the same format as the <code class="ph codeph">fact</code> key's value.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__request_format__entry__1"><code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__request_format__entry__2">The node's name from the request's URL is
+                merged into this object under this key.</td>
+            </tr>
+          </tbody></table><p class="p">This is an example of a valid request
+      body:</p><pre class="pre codeblock javascript"><code>{
+  "fact": {
+    "ear-tips": "pointed",
+    "eyebrow pitch": "40",
+    "hair": "dark",
+    "resting bpm": "120",
+    "blood oxygen transporter": "hemocyanin",
+    "anterior tricuspids": "2",
+    "appendices": "1",
+    "spunk": "10"
+  }
+}</code></pre></section>
+    <section class="section" id="post_v1_classified_nodes_name_explanation__response_format"><h3 class="title sectiontitle">Response
+        format </h3><p class="p">The response is a JSON object that describes how the
+        node would be classified.</p><ul class="ul">
+        <li class="li">If the node would be successfully classified, this object contains
+          the final classification.</li>
+        <li class="li">If the classification would fail due to conflicts, this object
+          contains a description of the conflicts.</li>
+      </ul><p class="p">This response is intended to provide insight into the entire
+        classification process, so that if a node isn't classified as expected, you can trace the
+        deviation. </p><p class="p">Classification proceeds in this order:</p><ol class="ol">
+        <li class="li">All node group rules are tested on the node's facts and name, and
+          groups that don't match the node are culled, leaving the matching groups.</li>
+        <li class="li">Inheritance relations are used to further cull the matching groups,
+          by removing any matching node group that has a descendant that is also a matching node
+          group. Those node groups that are left over are <dfn class="term">leaf
+            groups</dfn>.</li>
+        <li class="li">Each leaf group is transformed into its inherited classification by
+          adding all the inherited values from its ancestors.</li>
+        <li class="li">All of the inherited classifications and individual node
+          classifications are inspected for conflicts. A conflict occurs whenever two inherited
+          classifications define different values for the environment, a class parameter, or a
+          top-level variable. </li>
+        <li class="li"><p class="p">Any individual node classification, including
+            classes, class parameters, configuration data, and variables, is added.</p></li>
+        <li class="li"><p class="p">Individual node classification is applied to
+            the group classification, forming the final classification, which is then returned to
+            the client.</p></li>
+      </ol><p class="p">The JSON object returned by this endpoint uses these
+        keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="post_v1_classified_nodes_name_explanation__response_format__entry__1">Key </th>
+              <th class="entry" id="post_v1_classified_nodes_name_explanation__response_format__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__1"><code class="ph codeph">match_explanations</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__2">Corresponds to step 1 of classification,
+                finding the matching node groups. This key's value is an explanation object just
+                like those found in node check-ins, which maps between a matching group's ID and an
+                explained condition object that demonstrates why the node matched that group's
+                rule.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__1"><code class="ph codeph">leaf_groups</code></td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__2">Corresponds to step 2 of classification,
+                finding the leaves. This key's value is an array of the leaf groups (that is, those
+                groups that are not related to any of the other matching groups).</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__1"><code class="ph codeph">inherited_classifications</code></td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__2">Corresponds to step 3 of classification,
+                adding inherited values. This key's value is an object mapping from a leaf group's
+                ID to the classification values provided by that group (after inheritance).</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__1"><code class="ph codeph">conflicts</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__2">Corresponds to step 4 of classification.
+                This key is present only if there are conflicts between the inherited
+                classifications. Its value is similar to a classification object, but wherever there
+                was a conflict there's an array of conflict details instead of a single
+                classification value. Each of these details is an object with three keys: <code class="ph codeph">value</code>, <code class="ph codeph">from</code>, and <code class="ph codeph">defined_by</code>. The <code class="ph codeph">value</code>
+                key is a conflicting value, the <code class="ph codeph">from</code> key is the group whose inherited classification provided this
+                value, and the <code class="ph codeph">defined_by</code> key is
+                the group that actually defined the value (which can be an ancestor of the <code class="ph codeph">from</code> group).</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__1"><code class="ph codeph">individual_classification</code></td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__2">Corresponds to step 5 of classification.
+                Its value includes classes, class parameters, configuration data, and variables
+                applied directly during this stage.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__1"><code class="ph codeph">final_classification</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__2">Corresponds to step 6 of classification,
+                present only if there are no conflicts between the inherited classifications. Its
+                value is the result of merging all individual node classification and group
+                classification. </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__1"><code class="ph codeph">node_as_received</code>
+              </td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__2">The submitted node object as received by
+                the service, after adding the <code class="ph codeph">name</code>
+                and, if not supplied by the client, an empty <code class="ph codeph">trusted</code> object. This key does not correspond to any of the
+                classification steps.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__1"><code class="ph codeph">classification_source</code></td>
+              <td class="entry" headers="post_v1_classified_nodes_name_explanation__response_format__entry__2">An annotated version of the
+                classification that has the environment and every class parameter and variable
+                replaced with an "annotated value" object. This key does not correspond to any of
+                the classification steps.</td>
+            </tr>
+          </tbody></table><p class="p">This example shows a response the endpoint could return in the
+        case of a successful
+        classification:</p><pre class="pre codeblock javascript"><code>{
+  "node_as_received": {
+    "name": "Tuvok",
+    "trusted": {},
+    "fact": {
+      "ear-tips": "pointed",
+      "eyebrow pitch": "30",
+      "blood oxygen transporter": "hemocyanin",
+      "anterior tricuspids": "2",
+      "hair": "dark",
+      "resting bpm": "200",
+      "appendices": "0",
+      "spunk": "0"
+    }
+  },
+  "match_explanations": {
+    "00000000-0000-4000-8000-000000000000": {
+      "value": true,
+      "form": ["~", {"path": "name", "value": "Tuvok"}, ".*"]
+    },
+    "8aeeb640-8dca-4b99-9c40-3b75de6579c2": {
+      "value": true,
+      "form": ["and",
+               {
+                 "value": true,
+                 "form": ["&gt;=", {"path": ["fact", "eyebrow pitch"], "value": "30"}, "25"]
+               },
+               {
+                 "value": true,
+                 "form": ["=", {"path": ["fact", "ear-tips"], "value": "pointed"}, "pointed"]
+               },
+               {
+                 "value": true,
+                 "form": ["=", {"path": ["fact", "hair"], "value": "dark"}, "dark"]
+               },
+               {
+                 "value": true,
+                 "form": ["&gt;=", {"path": ["fact", "resting bpm"], "value": "200"}, "100"]
+               },
+               {
+                 "value": true,
+                 "form": ["=",
+                          {
+                            "path": ["fact", "blood oxygen transporter"],
+                            "value": "hemocyanin"
+                          },
+                          "hemocyanin"
+                 ]
+               }
+      ]
+    }
+  },
+  "leaf_groups": {
+    "8aeeb640-8dca-4b99-9c40-3b75de6579c2": {
+      "name": "Vulcans",
+      "id": "8aeeb640-8dca-4b99-9c40-3b75de6579c2",
+      "parent": "00000000-0000-4000-8000-000000000000",
+      "rule": ["and", ["&gt;=", ["fact", "eyebrow pitch"], "25"],
+                      ["=", ["fact", "ear-tips"], "pointed"],
+                      ["=", ["fact", "hair"], "dark"],
+                      ["&gt;=", ["fact", "resting bpm"], "100"],
+                      ["=", ["fact", "blood oxygen transporter"], "hemocyanin"]
+      ],
+      "environment": "alpha-quadrant",
+      "variables": {},
+      "classes": {
+        "emotion": {"importance": "ignored"},
+        "logic": {"importance": "primary"}
+      },
+      "config_data": {
+        "USS::Voyager": {"designation": "subsequent"}
+      }
+    }
+  },
+  "inherited_classifications": {
+    "8aeeb640-8dca-4b99-9c40-3b75de6579c2": {
+      "environment": "alpha-quadrant",
+      "variables": {},
+      "classes": {
+        "logic": {"importance": "primary"},
+        "emotion": {"importance": "ignored"}
+      },
+      "config_data": {
+        "USS::Enterprise": {"designation": "original"},
+        "USS::Voyager": {"designation": "subsequent"}
+      }
+    }
+  },
+  "individual_classification": {
+    "classes": {
+      "emotion": {
+        "importance": "secondary"
+      }
+    },
+    "variables": {
+      "full_name": "S'chn T'gai Spock"
+    }
+  },
+  "final_classification": {
+    "environment": "alpha-quadrant",
+    "variables": {
+      "full_name": "S'chn T'gai Spock"
+    },
+    "classes": {
+      "logic": {"importance": "primary"},
+      "emotion": {"importance": "secondary"}
+    },
+    "config_data": {
+      "USS::Enterprise": {"designation": "original"},
+      "USS::Voyager": {"designation": "subsequent"}
+    }
+  },
+  "classification_sources": {
+    "environment": {
+      "value": "alpha-quadrant",
+      "sources": ["8aeeb640-8dca-4b99-9c40-3b75de6579c2"]
+    },
+    "variables": {},
+    "classes": {
+      "emotion": {
+        "puppetlabs.classifier/sources": ["8aeeb640-8dca-4b99-9c40-3b75de6579c2"],
+        "importance": {
+          "value": "secondary",
+          "sources": ["node"]
+        }
+      },
+      "logic": {
+        "puppetlabs.classifier/sources": ["8aeeb640-8dca-4b99-9c40-3b75de6579c2"],
+        "importance": {
+          "value": "primary",
+          "sources": ["8aeeb640-8dca-4b99-9c40-3b75de6579c2"]
+        }
+      },
+      "config_data": {
+        "USS::Enterprise": {
+          "designation": {
+            "value": "original",
+            "sources": ["00000000-0000-4000-8000-000000000000"]
+          }
+        },
+        "USS::Voyager": {
+          "designation": {
+            "value": "subsequent",
+            "sources": ["8aeeb640-8dca-4b99-9c40-3b75de6579c2"]
+          }
+        }
+      }
+    }
+  }
+}</code></pre><p class="p">This example shows a response that resulted from
+      conflicts:</p><pre class="pre codeblock javascript"><code>{
+  "node_as_received": {
+    "name": "Spock",
+    "trusted": {},
+    "fact": {
+      "ear-tips": "pointed",
+      "eyebrow pitch": "40",
+      "blood oxygen transporter": "hemocyanin",
+      "anterior tricuspids": "2",
+      "hair": "dark",
+      "resting bpm": "120",
+      "appendices": "1",
+      "spunk": "10"
+    }
+  },
+  "match_explanations": {
+    "00000000-0000-4000-8000-000000000000": {
+      "value": true,
+      "form": ["~", {"path": "name", "value": "Spock"}, ".*"]
+    },
+    "a130f715-c929-448b-82cd-fe21d3f83b58": {
+      "value": true,
+      "form": ["&gt;=", {"path": ["fact", "spunk"], "value": "10"}, "5"]
+    },
+    "8aeeb640-8dca-4b99-9c40-3b75de6579c2": {
+      "value": true,
+      "form": ["and",
+               {
+                 "value": true,
+                 "form": ["&gt;=", {"path": ["fact", "eyebrow pitch"], "value": "30"}, "25"]
+               },
+               {
+                 "value": true,
+                 "form": ["=", {"path": ["fact", "ear-tips"], "value": "pointed"}, "pointed"]
+               },
+               {
+                 "value": true,
+                 "form": ["=", {"path": ["fact", "hair"], "value": "dark"}, "dark"]
+               },
+               {
+                 "value": true,
+                 "form": ["&gt;=", {"path": ["fact", "resting bpm"], "value": "200"}, "100"]
+               },
+               {
+                 "value": true,
+                 "form": ["=",
+                          {
+                            "path": ["fact", "blood oxygen transporter"],
+                            "value": "hemocyanin"
+                          },
+                          "hemocyanin"
+                 ]
+               }
+      ]
+    }
+  },
+  "leaf_groups": {
+                   "a130f715-c929-448b-82cd-fe21d3f83b58": {
+                     "name": "Humans",
+                     "id": "a130f715-c929-448b-82cd-fe21d3f83b58",
+                     "parent": "00000000-0000-4000-8000-000000000000",
+                     "rule": ["&gt;=", ["fact", "spunk"], "5"],
+                     "environment": "alpha-quadrant",
+                     "variables": {},
+                     "classes": {
+                       "emotion": {"importance": "primary"},
+                       "logic": {"importance": "secondary"}
+                     }
+                   },
+                   "8aeeb640-8dca-4b99-9c40-3b75de6579c2": {
+                     "name": "Vulcans",
+                     "id": "8aeeb640-8dca-4b99-9c40-3b75de6579c2",
+                     "parent": "00000000-0000-4000-8000-000000000000",
+                     "rule": ["and", ["&gt;=", ["fact", "eyebrow pitch"], "25"],
+                                     ["=", ["fact", "ear-tips"], "pointed"],
+                                     ["=", ["fact", "hair"], "dark"],
+                                     ["&gt;=", ["fact", "resting bpm"], "100"],
+                                     ["=", ["fact", "blood oxygen transporter"], "hemocyanin"]
+                     ],
+                     "environment": "alpha-quadrant",
+                     "variables": {},
+                     "classes": {
+                       "emotion": {"importance": "ignored"},
+                       "logic": {"importance": "primary"}
+                     }
+                   }
+  },
+  "inherited_classifications": {
+    "a130f715-c929-448b-82cd-fe21d3f83b58": {
+      "environment": "alpha-quadrant",
+      "variables": {},
+      "classes": {
+        "logic": {"importance": "secondary"},
+        "emotion": {"importance": "primary"}
+      }
+    },
+    "8aeeb640-8dca-4b99-9c40-3b75de6579c2": {
+      "environment": "alpha-quadrant",
+      "variables": {},
+      "classes": {
+        "logic": {"importance": "primary"},
+        "emotion": {"importance": "ignored"}
+      }
+    }
+  },
+  "conflicts": {
+    "classes": {
+      "logic": {
+        "importance": [
+                        {
+                          "value": "secondary",
+                          "from": {
+                            "name": "Humans",
+                            "id": "a130f715-c929-448b-82cd-fe21d3f83b58",
+                            ...
+                          },
+                          "defined_by": {
+                            "name": "Humans",
+                            "id": "a130f715-c929-448b-82cd-fe21d3f83b58",
+                            ...
+                          }
+                        },
+                        {
+                          "value": "primary",
+                          "from": {
+                            "name": "Vulcans",
+                            "id": "8aeeb640-8dca-4b99-9c40-3b75de6579c2",
+                            ...
+                          },
+                          "defined_by": {
+                            "name": "Vulcans",
+                            "id": "8aeeb640-8dca-4b99-9c40-3b75de6579c2",
+                            ...
+                          }
+                        }
+        ]
+      },
+      "emotion": {
+        "importance": [
+                        {
+                          "value": "ignored",
+                          "from": {
+                            "name": "Vulcans",
+                            "id": "8aeeb640-8dca-4b99-9c40-3b75de6579c2",
+                            ...
+                          },
+                          "defined_by": {
+                            "name": "Vulcans",
+                            "id": "8aeeb640-8dca-4b99-9c40-3b75de6579c2",
+                            ...
+                          }
+                        },
+                        {
+                          "value": "primary",
+                          "from": {
+                            "name": "Humans",
+                            "id": "a130f715-c929-448b-82cd-fe21d3f83b58",
+                            ...
+                          },
+                          "defined_by": {
+                            "name": "Humans",
+                            "id": "a130f715-c929-448b-82cd-fe21d3f83b58",
+                            ...
+                          }
+                        }
+        ]
+      }
+    }
+  },
+  "individual_classification": {
+    "classes": {
+      "emotion": {
+        "importance": "secondary"
+      }
+    },
+    "variables": {
+      "full_name": "S'chn T'gai Spock"
+    }
+  }
+}</code></pre></section>
+  </div>
+</article></article></article></main></body></html>

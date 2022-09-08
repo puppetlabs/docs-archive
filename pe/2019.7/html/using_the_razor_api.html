@@ -1,0 +1,169 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The Razor API is REST-based."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="using_the_razor_api"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Using the Razor API</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="using_the_razor_api">
+    <h1 class="title topictitle1" id="ariaid-title1">Using the <span class="ph">Razor</span> API </h1>
+    
+    <div class="body conbody"><p class="shortdesc">The <span class="ph">Razor</span> API is
+        REST-based. </p>
+        <p class="p">By default, API calls are sent over HTTPS with TLS/SSL. The default
+            URL for the API entrypoint is <code class="ph codeph">https://localhost:8151/api</code>. This URL varies if you're running the <span class="ph">Razor</span> client on a different machine than the server, or
+            if you changed the default port due to a port conflict. </p>
+        <p class="p">The API uses JSON exclusively, and all requests must set the HTTP
+                <code class="ph codeph">Content-Type</code> header to <code class="ph codeph">application/json</code> and must <code class="ph codeph">Accept</code><code class="ph codeph">application/json</code> in the response.</p>
+        <p class="p">The <span class="ph">Razor</span> API is stable, and clients
+            can expect operations that work against this version of the API to work against future
+            versions of the API. However, we might add information or functionality to the API, so
+            clients must ignore anything in responses they receive from the server that they don't
+            understand.</p>
+        <section class="section"><h2 class="title sectiontitle">Structure and keys</h2><p class="p">Everything underneath <code class="ph codeph">/api</code> is part of the public API and is stable.</p><div class="note note note_note"><span class="note__title">Note:</span> The <code class="ph codeph">/svc</code>
+                namespace is an internal namespace used for communication with the iPXE client, the
+                microkernel, and other internal components of <span class="ph">Razor</span>.
+                This namespace is not enumerated under <code class="ph codeph">/api</code> and has no stability guarantee. We recommend making <code class="ph codeph">/svc</code> URLs available only to that part
+                of the network that contains nodes that need to be provisioned.</div><p class="p">The top-level <code class="ph codeph">/api</code> entrypoint serves as the start for navigating through the <span class="ph">Razor</span> command and query facilities. For example,
+                given the default API URL, call <code class="ph codeph">GET https://razor:8151/api</code> to view the API.</p><p class="p">The response is a JSON object with the following keys:</p><ul class="ul">
+                <li class="li"><code class="ph codeph">commands</code> —
+                    The commands available on this server.</li>
+                <li class="li"><code class="ph codeph">collections</code>
+                    — Read-only queries available on this server.</li>
+                <li class="li"><code class="ph codeph">version </code>—
+                    The version of <span class="ph">Razor</span> that is running on the
+                    server. The version should be used only for diagnostic purposes and for bug
+                    reporting, and never to decide whether the server supports a certain operation
+                    or not.</li>
+            </ul><p class="p">Each of those keys contains a JSON array, with a sequence of
+                JSON objects that have the following keys:</p><ul class="ul">
+                <li class="li"><code class="ph codeph">name</code> — A
+                    human-readable label for an object, usually unique only among objects of the
+                    same type on the same server.</li>
+                <li class="li"><code class="ph codeph">id</code> — The
+                    URL of an entity. A <code class="ph codeph">GET</code> request
+                    against a URL with an <code class="ph codeph">id</code>
+                    attribute produces a representation of the object.</li>
+                <li class="li"><code class="ph codeph">rel</code> — A
+                    "spec URL" that indicates the type of data contained. Use this key to discover
+                    the endpoint that you want to follow, rather than using the <code class="ph codeph">name</code>.</li>
+            </ul><p class="p">For example, <code class="ph codeph">{"name":"add-policy-tag",
+                    "rel":"https://api.puppetlabs.com/razor/v1/commands/add-policy-tag",
+                    "id":"https://localhost:8151/api/commands/add-policy-tag"}</code>.</p></section>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="commands">
+    <h2 class="title topictitle2" id="ariaid-title2">Commands </h2>
+    
+    <div class="body conbody"><p class="shortdesc">The list of commands that the <span class="ph">Razor</span> server supports is returned as part of a request to
+            <code class="ph codeph">GET /api</code> in the <code class="ph codeph">commands</code> array. Clients can identify commands using the
+            <code class="ph codeph">rel</code> attribute of each entry in the
+        array, and make their POST requests to the URL given in the <code class="ph codeph">id</code> attribute.</p>
+        <p class="p">The <code class="ph codeph">id</code> URL for each
+            command supports the following HTTP methods: </p>
+        <ul class="ul">
+            <li class="li"><p class="p"><code class="ph codeph">GET</code> — Retrieve information about the command, such as a help text
+                    and machine-readable information about the parameters this command
+                takes.</p></li>
+            <li class="li"><p class="p"><code class="ph codeph">POST</code> — Execute the command. Command parameters are supplied in a
+                    JSON document in the body of the <code class="ph codeph">POST</code> request.</p></li>
+        </ul>
+        <p class="p">Commands are generally asynchronous and return a status code of
+                <code class="ph codeph">202 Accepted</code> on success. The
+            response from a command generally has this form:</p>
+        <pre class="pre codeblock"><code>   {
+     "result":"Policy win2012r2 disabled",
+     "command":"http://razor:8088/api/collections/commands/74"
+   }</code></pre>
+        <p class="p">Here, <code class="ph codeph">result</code> is a
+            human-readable explanation of what the command did, and <code class="ph codeph">command</code> points into the collection of all the commands that
+            were ever run against this server. Performing a <code class="ph codeph">GET</code> against the <code class="ph codeph">command</code>
+            URL provides additional information about the execution of this command, such as the
+            status of the command, the parameters sent to the server, and details about errors.</p>
+        <div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> Most client commands allow
+                positional arguments, which can save keystrokes. </div></div>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="using_the_razor_client.html#using_positional_arguments_with_razor_client_commands" title="Most Razor client commands allow positional arguments, which means that you don’t have to explicitly enter the name of the argument, like --name.&nbsp; Instead, you can provide the values for each argument in a specific order.">Using positional arguments with Razor client commands</a></li></ul></div></nav></article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="collections">
+  <h2 class="title topictitle2" id="ariaid-title3">Collections </h2>
+  
+  <div class="body conbody"><p class="shortdesc">In addition to the supported commands above, a <code class="ph codeph">GET /api</code> request returns a list of supported
+    collections in the <code class="ph codeph">collections</code> array. </p>
+    <p class="p">Each entry contains at minimum the following keys:</p>
+    <ul class="ul">
+      <li class="li"><code class="ph codeph">name</code> — A
+        human-readable name for the collection.</li>
+      <li class="li"><code class="ph codeph">id</code> — The endpoint
+        through which the collection can be retrieved (via <code class="ph codeph">GET</code>).</li>
+      <li class="li"><code class="ph codeph">rel</code> — The type of the
+        collection.</li>
+    </ul>
+    <p class="p">A <code class="ph codeph">GET</code> request to the
+        <code class="ph codeph">id</code> of a collection returns a JSON object
+      The <code class="ph codeph">spec</code> property of that object indicates
+      the type of collection. The <code class="ph codeph">total</code> indicates
+      how many items there are in the collection in total (not just how many were returned by the
+      query). The <code class="ph codeph">items</code> value is the actual list of
+      items in the collection, a JSON array of objects. Each object has these properties:</p>
+    <ul class="ul">
+      <li class="li"><code class="ph codeph">id</code> — A URL that
+        uniquely identifies the object. A <code class="ph codeph">GET</code>
+        request to this URL provides further detail about the object.</li>
+      <li class="li"><code class="ph codeph">spec</code> — A URL that
+        identifies the type of the object.</li>
+      <li class="li"><code class="ph codeph">name</code> — A
+        human-readable name for the object.</li>
+    </ul>
+    <section class="section"><h3 class="title sectiontitle">Object details </h3><p class="p">Performing a <code class="ph codeph">GET</code> request
+        against the <code class="ph codeph">id</code> of an item in a collection
+        returns further detail about that object. Different types of objects provide different
+        properties. </p><p class="p">For example, here is a sample tag
+        listing:</p><pre class="pre codeblock"><code>{
+  "spec": "http://api.puppetlabs.com/razor/v1/collections/tags/member",
+  "id": "https://razor:8151/api/collections/tags/anything",
+  "name": "anything",
+  "rule": [ "=", 1, 1],
+  "nodes": {
+    "id": "http://razor:8151/api/collections/tags/anything/nodes",
+    "count": 2,
+    "name": "nodes"
+   },
+  "policies": {
+    "id": "http://razor:8151/api/collections/tags/anything/policies",
+    "count": 0,
+    "name": "policies"
+   }
+}</code></pre><p class="p">References to other resources are represented as a single JSON object (in
+        the case of a one-to-one relationship) or an array of JSON objects (for a one-to-many or
+        many-to-many relationship). Each JSON object contains these fields:</p><ul class="ul">
+        <li class="li"><code class="ph codeph">id</code> — A URL that
+          uniquely identifies the associated object or collection of objects.</li>
+        <li class="li"><code class="ph codeph">spec</code> — The type of
+          the associated object.</li>
+        <li class="li"><code class="ph codeph">name</code> — A
+          human-readable name for the object.</li>
+        <li class="li"><code class="ph codeph">count</code> — The number
+          of objects in the associated collection.</li>
+      </ul></section>
+    <section class="section"><h3 class="title sectiontitle">Querying the node
+        collection</h3><p class="p">You can query nodes based on <code class="ph codeph">hostname</code> or fields stored in <code class="ph codeph">hw_info</code>.</p><ul class="ul">
+        <li class="li"><code class="ph codeph">hostname</code> — A
+          regular expression to match against hostnames. The results include partial matches, so
+            <code class="ph codeph">hostname=example</code> returns all nodes
+          whose hostnames include <code class="ph codeph">example</code>.</li>
+        <li class="li">fields stored in <code class="ph codeph">hw_info</code> — <code class="ph codeph">mac</code>, <code class="ph codeph">serial</code>, <code class="ph codeph">asset</code>, and <code class="ph codeph">uuid</code>.</li>
+      </ul><p class="p">For example, the following queries the UUID to return the
+        associated
+      node:</p><pre class="pre codeblock"><code>/api/collections/nodes?uuid=9ad1e079-b9e3-347c-8b13-9b42cbf53a14'
+
+{
+  "items": [
+   {
+      "id": "https://razor.example.com:8151/api/collections/nodes/node14",
+      "name": "node14",
+      "spec": "http://api.puppetlabs.com/razor/v1/collections/nodes/member"
+    }],
+  "spec": "http://api.puppetlabs.com/razor/v1/collections/nodes"
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Paging collections</h3><p class="p">The <code class="ph codeph">nodes</code> and <code class="ph codeph">events</code> collections are paginated.</p><p class="p"><code class="ph codeph">GET</code> requests for them can include
+        the following parameters to limit the number of items returned:</p><ul class="ul">
+        <li class="li"><code class="ph codeph">limit</code> — Return this
+          many items.</li>
+        <li class="li"><code class="ph codeph">start</code> — Return
+          items starting at <code class="ph codeph">start</code>.</li>
+      </ul></section>
+  </div>
+</article></article></article></main></body></html>

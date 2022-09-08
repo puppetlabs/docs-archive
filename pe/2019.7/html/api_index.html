@@ -1,0 +1,317 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="reference"><meta name="description" content="APIs allow you to interact with Puppet and Puppet Enterprise (PE) applications from your own code or application integration hooks."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="api_index"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>API index</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="api_index">
+    <h1 class="title topictitle1" id="ariaid-title1">API index </h1>
+    
+    <div class="body refbody"><p class="shortdesc">APIs allow you to interact with <span class="ph">Puppet</span> and <span class="ph">Puppet Enterprise (PE)</span>
+        applications from your own code or application integration hooks.</p>
+        <section class="section"><h2 class="title sectiontitle">
+                <span class="ph">Puppet Enterprise</span> APIs</h2>
+            <p class="p">For information on port requirements, see the <a class="xref" href="https://puppet.com/docs/pe/2019.1/system_configuration.html" target="_blank">System Configuration</a> documents.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="api_index__entry__1">API</th>
+                            <th class="entry" id="api_index__entry__2">Useful for</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__1"><a class="xref" href="node_inventory_api.html#node_inventory_api" title="These are the endpoints for the node inventory v1 API.">Node inventory API</a></td>
+                            <td class="entry" headers="api_index__entry__2">
+                                <ul class="ul">
+                                    <li class="li">Making HTTP(S) requests to the Puppet
+                                        inventory service API. </li>
+                                    <li class="li">Creating and deleting connection entries
+                                        in the inventory service database.</li>
+                                    <li class="li">Listing the connections entries in the
+                                        inventory database.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__1">
+                                <a class="xref" href="rbac_api_v1.html" title="The role-based access control (RBAC) service enables you to manage users, directory groups, and roles.">RBAC service API
+                                    v1</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__2">
+                                <ul class="ul">
+                                    <li class="li">Managing access to <span class="ph">Puppet Enterprise</span>.</li>
+                                    <li class="li">Connecting to external directories.</li>
+                                    <li class="li">Generating authentication tokens.</li>
+                                    <li class="li">Managing users, user roles, user groups,
+                                        and user permissions.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__1">
+                                <a class="xref" href="rbac_api_v2_endpoints.html" title="The role-based access control (RBAC) service enables you to manage users, directory groups, and roles.">RBAC
+                                    service API v2</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__2">
+                                <ul class="ul">
+                                    <li class="li">Revoking authentication tokens.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__1">
+                                <a class="xref" href="node_classifier_service_api.html" title="These are the endpoints for the node classifier v1 API.">Node classifier service API</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__2">
+                                <ul class="ul">
+                                    <li class="li">Querying the groups that a node
+                                        matches.</li>
+                                    <li class="li">Querying the classes, parameters, and
+                                        variables that have been assigned to a node or group.</li>
+                                    <li class="li">Querying the environment that a node is
+                                        in.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__1">
+                                <a class="xref" href="orchestrator_api_v1_endpoints.html" title="Use this API to gather details about the orchestrator jobs you run.">Orchestrator
+                                    API</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__2">
+                                <ul class="ul">
+                                    <li class="li">Gathering details about the orchestrator
+                                        jobs you run.</li>
+                                    <li class="li">Inspecting applications and applications
+                                        instances in your <span class="ph">Puppet</span>
+                                        environments.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__1">
+                                <p class="p">
+                                    <a class="xref" href="code_manager_api.html#code_manager_api" title="Use Code Manager endpoints to deploy code and query environment deployment status on your masters without direct shell access.">
+                                        <span class="ph">Code Manager</span> API</a>
+                                </p>
+                            </td>
+                            <td class="entry" headers="api_index__entry__2">
+                                <div class="p">
+                                    <ul class="ul">
+                                        <li class="li">Creating a webhook to trigger <span class="ph">Code Manager</span>.</li>
+                                        <li class="li">Queueing <span class="ph">Puppet</span> code
+                                            deployments.</li>
+                                        <li class="li">Checking <span class="ph">Code Manager</span> and file sync
+                                            status.</li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__1">
+                                <a class="xref" href="status_api.html" title="The status API allows you to check the health of PE components and services. It can be useful for automated monitoring of your infrastructure, removing unhealthy service instances from a load-balanced pool, checking configuration values, or troubleshooting issues in PE.">Status API</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__2">
+                                <ul class="ul">
+                                    <li class="li">Checking the health status of <span class="ph">PE</span> services.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__1">
+                                <a class="xref" href="activity_api.html" title="The activity service logs changes to role-based access control (RBAC) entities, such as users, directory groups, and user roles.">Activity
+                                    service API</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__2">
+                                <ul class="ul">
+                                    <li class="li">Querying <span class="ph">PE</span> service and user events logged by the activity
+                                        service.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__1">
+                                <a class="xref" href="api_reference.html#api_reference" title="Use the Razor API to interact with Razor and provision bare metal nodes">
+                                    <span class="ph">Razor</span> API</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__2">
+                                <ul class="ul">
+                                    <li class="li">Provisioning bare-metal machines.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section"><h2 class="title sectiontitle">Open source <span class="ph">Puppet Server</span>, <span class="ph">Puppet</span>, <span class="ph">PuppetDB</span>, and <span class="ph">Forge</span>
+                APIs</h2><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="api_index__entry__21">API</th>
+                            <th class="entry" id="api_index__entry__22">Useful for</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__21">
+                                <div class="p">
+                                    <span class="ph">Puppet Server</span> administrative API
+                                    endpoints <ul class="ul">
+                                        <li class="li">
+                                            <p class="p">
+                                                <a class="xref" href="https://puppet.com/docs/puppetserver/latest/admin-api/v1/environment-cache.html" target="_blank">
+                                                  <code class="ph codeph">environment-cache</code>
+                                                </a>
+                                            </p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">
+                                                <a class="xref" href="https://puppet.com/docs/puppetserver/latest/admin-api/v1/jruby-pool.html" target="_blank">
+                                                  <code class="ph codeph">jruby-pool</code>
+                                                </a>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td class="entry" headers="api_index__entry__22">
+                                <div class="p">
+                                    <ul class="ul">
+                                        <li class="li">Deleting environment caches created
+                                            by a <span class="ph">Puppet</span> master.</li>
+                                        <li class="li">Deleting the <span class="ph">Puppet Server</span> pool of <span class="ph">JRuby</span> instances.</li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__21">Server-specific <span class="ph">Puppet</span> API <ul class="ul">
+                                    <li class="li">
+                                        <p class="p">
+                                            <a class="xref" href="https://puppet.com/docs/puppetserver/latest/puppet-api/v3/environment_classes.html" target="_blank">Environment classes</a>
+                                        </p>
+                                    </li>
+                                    <li class="li">
+                                        <p class="p">
+                                            <a class="xref" href="https://puppet.com/docs/puppetserver/latest/puppet-api/v3/environment_modules.html" target="_blank">Environment modules</a>
+                                        </p>
+                                    </li>
+                                    <li class="li">
+                                        <p class="p">
+                                            <a class="xref" href="https://puppet.com/docs/puppetserver/latest/puppet-api/v3/static_file_content.html" target="_blank">Static file content</a>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </td>
+                            <td class="entry" headers="api_index__entry__22">
+                                <div class="p">
+                                    <ul class="ul">
+                                        <li class="li">
+                                            <p class="p">Getting the classes and parameter
+                                                information that is associated with an environment,
+                                                with cache support.</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">Getting information about what
+                                                modules are installed in an environment.</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">Getting the contents of a specific
+                                                version of a file in a specific environment.</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__21">
+                                <a class="xref" href="https://puppet.com/docs/puppetserver/latest/status-api/v1/services.html" target="_blank">
+                                    <span class="ph">Puppet Server</span> status API&nbsp;</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__22">
+                                <ul class="ul">
+                                    <li class="li">
+                                        <p class="p">Checking the state, memory usage, and
+                                            uptime of the services running on <span class="ph">Puppet Server</span>.</p>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__21">
+                                <span class="ph">Puppet Server</span> metrics API&nbsp; <ul class="ul">
+                                    <li class="li">
+                                        <p class="p">
+                                            <a class="xref" href="https://puppet.com/docs/puppetserver/latest/metrics-api/v1/metrics_api.html" target="_blank">v1 metrics</a> (deprecated) </p>
+                                    </li>
+                                    <li class="li">
+                                        <p class="p">
+                                            <a class="xref" href="https://puppet.com/docs/puppetserver/latest/metrics-api/v2/metrics_api.html" target="_blank">v2 metrics</a> (Jolokia) </p>
+                                    </li>
+                                </ul>
+                            </td>
+                            <td class="entry" headers="api_index__entry__22">
+                                <ul class="ul">
+                                    <li class="li">
+                                        <p class="p">Querying <span class="ph">Puppet Server</span> performance and
+                                            usage metrics.&nbsp;</p>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__21">
+                                <a class="xref" href="https://puppet.com/docs/puppetserver/latest/http_api_index.html" target="_blank">
+                                    <span class="ph">Puppet</span> HTTP API</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__22">
+                                <ul class="ul">
+                                    <li class="li">Retrieving a catalog for a node</li>
+                                    <li class="li">Accessing environment information</li>
+                                </ul>
+                                <p class="p">For information on how this API is used
+                                    internally by <span class="ph">Puppet</span>, see <a class="xref" href="https://puppet.com/docs/puppet/6.10/subsystem_agent_master_comm.html" target="_blank">Agent/Master HTTPs Communications
+                                        page</a>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__21">
+                                <a class="xref" href="https://puppet.com/docs/puppetserver/latest/http_certificate.html" target="_blank">Certificate Authority (CA) API</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__22">
+                                <ul class="ul">
+                                    <li class="li">Used internally by <span class="ph">Puppet</span> to manage agent
+                                        certificates. </li>
+                                </ul>
+                                <p class="p">See <a class="xref" href="https://puppet.com/docs/puppet/6.10/subsystem_agent_master_comm.html" target="_blank">Agent/Master HTTPs Communications</a>
+                                    for details. See <a class="xref" href="https://puppet.com/docs/puppet/6.10/services_commands.html" target="_blank">Puppet's Commands page</a> for
+                                    information about the <span class="ph">Puppet</span> Cert
+                                    command line tool.</p>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__21">
+                                <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/index.html" target="_blank">
+                                    <span class="ph">PuppetDB</span> APIs</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__22">
+                                <ul class="ul">
+                                    <li class="li">Querying the data that <span class="ph">PuppetDB</span> collects from <span class="ph">Puppet</span>
+                                    </li>
+                                    <li class="li">Importing and exporting <span class="ph">PuppetDB</span> archives</li>
+                                    <li class="li">Changing the <span class="ph">PuppetDB</span> model of a
+                                        population</li>
+                                    <li class="li">Querying information about the <span class="ph">PuppetDB</span> server</li>
+                                    <li class="li">Querying <span class="ph">PuppetDB</span> metrics</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="api_index__entry__21">
+                                <a class="xref" href="https://forgeapi.puppetlabs.com/" target="_blank">
+                                    <span class="ph">Forge</span> API</a>
+                            </td>
+                            <td class="entry" headers="api_index__entry__22">
+                                <ul class="ul">
+                                    <li class="li">Finding information about modules and
+                                        users on the <span class="ph">Forge</span>
+                                    </li>
+                                    <li class="li">Writing scripts and tools that interact
+                                        with the <span class="ph">Forge</span> website</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody></table></section>
+    </div>
+</article></article></main></body></html>

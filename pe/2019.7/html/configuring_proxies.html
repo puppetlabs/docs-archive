@@ -1,0 +1,86 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="You can work around limited internet access by configuring proxies at various points in your infrastructure, depending on your connectivity limitations."><meta name="DC.relation" scheme="URI" content="config_intro.html#config_intro"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Melissa Amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="configuring_proxies"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configuring proxies</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="configuring_proxies">
+    <h1 class="title topictitle1" id="ariaid-title1">Configuring proxies</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">You can work around limited internet access by configuring
+        proxies at various points in your infrastructure, depending on your connectivity
+        limitations. </p>
+        <p class="p">The examples provided here assume an unauthenticated proxy running at
+                <code class="ph codeph">proxy.example.vlan</code> on port
+            8080.</p>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#config_intro" title="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances.">Methods for configuring Puppet Enterprise</a></li></ul></div></nav><article class="topic concept nested1" aria-labelledby="ariaid-title2" id="installing_agents_through_a_proxy">
+                <h2 class="title topictitle2" id="ariaid-title2">Downloading agent installation packages through a
+                                proxy</h2>
+                
+                
+                <div class="body conbody"><p class="shortdesc">If your master doesn't have internet access,
+                                it can't download agent installation packages. If you want to use
+                                package management to install agents, set up a proxy and specify its
+                                connection details so that <code class="ph codeph">pe_repo</code> can access agent
+                                tarballs.</p>
+                                <p class="p">In the <code class="ph codeph">pe_repo</code> class of the
+                                                  <span class="ph uicontrol">PE
+                                                  Master</span> node group, specify values for
+                                                  <code class="ph codeph">pe_repo::http_proxy_host</code>
+                                                and <code class="ph codeph">pe_repo::http_proxy_port</code>
+                                                settings. </p>
+                                <div class="p">If you want to specify these settings in
+                                                  <code class="ph codeph">pe.conf</code>, add the following
+                                                to your <code class="ph codeph">pe.conf</code> file with your desired
+                                                parameters: <pre class="pre codeblock"><code>"pe_repo::http_proxy_host": "proxy.example.vlan",
+"pe_repo::http_proxy_port": 8080</code></pre>
+                                                
+                                </div>
+                                <div class="p">
+                                                <div class="note tip note_tip"><span class="note__title">Tip:</span> To test proxy
+                                                  connections to <code class="ph codeph">pe_repo</code>,
+                                                  run:<pre class="pre codeblock"><code>curl -x&nbsp;http://proxy.example.vlan:8080&nbsp;-I&nbsp;https://pm.puppetlabs.com</code></pre>
+                                                </div>
+                                </div>
+                </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="proxying_agent_traffic">
+    <h2 class="title topictitle2" id="ariaid-title3">Setting a proxy for agent traffic</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">General proxy settings in <code class="ph codeph">puppet.conf</code> manage HTTP connections that are
+        directly initiated by the agent. </p>
+        <p class="p">To configure agents to communicate through a proxy using <code class="ph codeph">pe.conf</code>, specify values for the <code class="ph codeph">http_proxy_host</code> and <code class="ph codeph">http_proxy_port</code> settings in
+                <code class="ph codeph">/etc/puppetlabs/puppet/puppet.conf</code>. </p>
+        <div class="p">
+            <pre class="pre codeblock"><code>http_proxy_host = proxy.example.vlan
+http_proxy_port =&nbsp;8080</code></pre>
+        </div>
+        <p class="p">For more information about HTTP proxy host options, see the <span class="ph">Puppet</span>
+            <a class="xref" href="https://puppet.com/docs/puppet/latest/configuration.html#httpproxyhost" target="_blank">configuration reference</a>.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="proxying_code_manager_traffic">
+    <h2 class="title topictitle2" id="ariaid-title4">Setting a proxy for Code Manager traffic</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">Code Manager</span> has its own set of proxy configuration options which
+        you can use to set a proxy for connections to the <span class="ph">Git</span> server
+        or the <span class="ph">Forge</span>. These settings are unaffected by the proxy
+        settings in <code class="ph codeph">puppet.conf</code>,
+        because <span class="ph">Code Manager</span> is run by <span class="ph">Puppet Server</span>.</p>
+        <div class="note note note_note"><span class="note__title">Note:</span> To set a proxy for <span class="ph">Code Manager</span>
+            connections, you must use an HTTP URL for your <span class="ph">r10k</span>
+            remote and for all Puppetfile module entries.</div>
+        <p class="p">Use a proxy for all HTTP connections, including both <span class="ph">Git</span> and the <span class="ph">Forge</span>, when
+            configuring <span class="ph">Code Manager</span>.</p>
+        <div class="p">To configure <span class="ph">Code Manager</span> to use a proxy
+            using Hiera, add the following code to your default <code class="ph codeph">.yaml</code> and specify your proxy name. For example:
+            <pre class="pre codeblock"><code>puppet_enterprise::profile::master::r10k_proxy: "http://proxy.example.vlan:8080"</code></pre>
+        </div>
+        <div class="p">
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> To test proxy connections to <span class="ph">Git</span> or the <span class="ph">Forge</span>, run
+                one of these commands:<pre class="pre codeblock"><code>curl -x&nbsp;http://proxy.example.vlan:8080&nbsp;-I&nbsp;https://github.com</code></pre>
+                <pre class="pre codeblock"><code>curl -x&nbsp;http://proxy.example.vlan:8080&nbsp;-I&nbsp;https://forgeapi.puppet.com</code></pre>
+            </div>
+        </div>
+        <p class="p">For detailed information about configuring proxies for <span class="ph">Code Manager</span> traffic, see the <span class="ph">Code Manager</span> documentation.</p>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="code_mgr_customizing.html#config_proxies" title="To configure proxy servers, use the proxy setting. You can set a global proxy for all HTTP(S) operations, for all Git or Forge operations, or for a specific Git repository only.">Configuring proxies</a></li></ul></div></nav></article></article></article></main></body></html>

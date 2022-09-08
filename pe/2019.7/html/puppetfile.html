@@ -1,0 +1,410 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="A&nbsp;Puppetfile specifies detailed information about each environment's Puppet code and data, including where to get that code and data from, where to install it, and whether to update it."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="managing_environment_content_with_puppetfiles"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Managing environment content with a Puppetfile</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="managing_environment_content_with_puppetfiles">
+    <h1 class="title topictitle1" id="ariaid-title1">Managing environment content with a <span class="ph">Puppetfile</span>
+    </h1>
+    
+    <div class="body conbody"><p class="shortdesc">A&nbsp;<span class="ph">Puppetfile</span> specifies
+        detailed information about each environment's <span class="ph">Puppet</span> code and
+        data, including where to get that code and data from, where to install it, and whether to
+        update it.</p>
+        <p class="p">Both <span class="ph">Code Manager</span> and <span class="ph">r10k</span> use a <span class="ph">Puppetfile</span> to
+            install and manage the content of your environments. </p>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="about_puppetfiles">
+    <h2 class="title topictitle2" id="ariaid-title2">The <span class="ph">Puppetfile</span></h2>
+    
+    <div class="body conbody"><p class="shortdesc">The <span class="ph">Puppetfile</span> specifies
+        the modules and data that you want in each environment. The <span class="ph">Puppetfile</span> can specify what version of modules you want, how
+        the modules and data are to be loaded, and where they are placed in the
+        environment.</p>
+        <p class="p">A <span class="ph">Puppetfile</span> is a formatted text file
+            that specifies the modules and data that you want brought into your control repo.
+            Typically, a <span class="ph">Puppetfile</span> controls content such as:</p>
+        <ul class="ul">
+            <li class="li">Modules from the <span class="ph">Forge</span></li>
+            <li class="li">Modules from <span class="ph">Git</span>
+                repositories</li>
+            <li class="li">Data from <span class="ph">Git</span> repositories</li>
+        </ul>
+        <p class="p">For each environment that you want to manage content in, you need a
+                <span class="ph">Puppetfile</span>. Create a base <span class="ph">Puppetfile</span> in your default environment (usually <code class="ph codeph">production</code>). As you create new branches
+            based on your default branch, each environment inherits this base <span class="ph">Puppetfile</span>. You can then edit each environment's <span class="ph">Puppetfile</span> as needed.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="managing_modules_with_code_management">
+   <h2 class="title topictitle2" id="ariaid-title3">Managing modules with a <span class="ph">Puppetfile</span></h2>
+   
+   <div class="body conbody"><p class="shortdesc"> With code management, install and manage your modules only with a <span class="ph">Puppetfile</span>. </p>
+      <p class="p">Almost all <span class="ph">Puppet</span> manifests are kept in modules, collections
+         of <span class="ph">Puppet</span> code and data with a specific directory structure.
+         By default, <span class="ph">Code Manager</span> and <span class="ph">r10k</span>
+         install content in a modules directory (<code class="ph codeph">./modules</code>) in the same directory
+         the <span class="ph">Puppetfile</span> is in. For example, declaring the
+            <code class="ph codeph">puppetlabs-apache</code> module in the <span class="ph">Puppetfile</span> normally installs the module into <code class="ph codeph">./modules/apache</code>. To learn more about
+         modules, see the <a class="xref" href="https://docs.puppet.com/puppet/5.3/modules_fundamentals.html" target="_blank">module</a> documentation.</p>
+      <div class="p"><div class="note important note_important"><span class="note__title">Important:</span> <p class="p">With <span class="ph">Code Manager</span> and <span class="ph">r10k</span>, <strong class="ph b">do
+                  not</strong> use the <code class="ph codeph">puppet module</code> command to install or manage
+               modules. Instead, code management depends on the <span class="ph">Puppetfile</span> in each of your environments to install,
+               update, and manage your modules. If you've installed modules to the live code
+               directory with <code class="ph codeph">puppet module install</code>, <span class="ph">Code Manager</span>&nbsp;deletes them.</p><p class="p">The <span class="ph">Puppetfile</span> does NOT include <span class="ph">Forge</span> module dependency resolution. You must make sure that you have every module needed
+               for all of your specified modules to run. In addition, <span class="ph">Forge</span> module symlinks are unsupported; when you install
+               modules with <span class="ph">r10k</span> or <span class="ph">Code Manager</span>, symlinks are not installed.</p></div></div>
+      <section class="section" id="managing_modules_with_code_management__including_your_own_modules"><h3 class="title sectiontitle">Including your own modules </h3><p class="p">If you develop your own modules, maintain them in version control and include them in your <span class="ph">Puppetfile</span> as you would declare any module from a
+            repository. If you have content in your control repo's module directory that is
+               <em class="ph i">not</em> listed in your <span class="ph">Puppetfile</span>, code management
+            purges it. (The control repo module directory is, by default, <code class="ph codeph">./modules</code>
+            relative to the location of the <span class="ph">Puppetfile</span>.)</p></section>
+      <section class="section"><h3 class="title sectiontitle">Deploying code</h3>
+         
+         <p class="p">When you install or update a module, you must trigger <span class="ph">Code Manager</span> or <span class="ph">r10k</span> to deploy
+            the new or updated code to your environments. </p>
+         <div class="p">With <span class="ph">Code Manager</span>, you can deploy code on the command line or
+            using a webhook: <ul class="ul">
+               <li class="li"><a class="xref" href="puppet_code.html#triggering_code_manager_on_the_command_line" title="The puppet-code command allows you to trigger Code Manager from the command line to deploy your environments.">Triggering Code Manager on the command line</a></li>
+               <li class="li"><a class="xref" href="code_mgr_webhook.html#triggering_code_manager_with_a_webhook" title="To deploy your code, you can trigger Code Manager by hitting a web endpoint, either through a webhook or a custom script. The webhook is the simplest way to trigger Code Manager.">Triggering Code Manager with a webhook</a></li>
+            </ul></div>
+         <div class="p">With <span class="ph">r10k</span>, you can deploy code using the command line:<ul class="ul">
+               <li class="li"><a class="xref" href="r10k_deploy_env.html#deploying_environments_with_r10k" title="Deploy environments on the command line with the r10k command.">Deploying environments with r10k</a></li>
+            </ul></div>
+      </section>
+   </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="creating_a_puppetfile">
+    <h2 class="title topictitle2" id="ariaid-title4">Creating a <span class="ph">Puppetfile</span>
+    </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Your <span class="ph">Puppetfile</span> manages the
+        content you want to maintain in that environment.</p>
+        <p class="p">In a <span class="ph">Puppetfile</span>, you can declare:</p>
+        <ul class="ul">
+            <li class="li">Modules from the <span class="ph">Forge</span>.</li>
+            <li class="li">Modules from a <span class="ph">Git</span>
+                repository.</li>
+            <li class="li">Data or other non-module content (such as <span class="ph">Hiera</span> data) from a <span class="ph">Git</span>
+                repository.</li>
+        </ul>
+        <p class="p">You can declare any or all of this content as needed for each
+            environment. Each module or repository is specified with a `mod` directive, along with
+            the name of the content and other information the <span class="ph">Puppetfile</span> needs so that it can correctly install and
+            update your modules and data.</p>
+        <p class="p">It's best to create your first <span class="ph">Puppetfile</span> in your production branch. Then, as you create branches based on your production
+            branch, edit each branch's <span class="ph">Puppetfile</span> as needed.</p>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="create_a_puppetfile">
+   <h2 class="title topictitle2" id="ariaid-title5">Create a <span class="ph">Puppetfile</span></h2>
+   
+   <div class="body taskbody"><p class="shortdesc">Create a <span class="ph">Puppetfile</span> that manages the content maintained
+      in your environment.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <p class="p">Set up a control repo, with <code class="ph codeph">production</code> as the default branch. To learn more about control repositories,
+            see the <a class="xref" href="https://puppet.com/docs/pe/2019.0/control_repo.html" target="_blank">control
+               repository</a> documentation.</p>
+      </section>
+      <section class="section context">
+         <p class="p">Create a <span class="ph">Puppetfile</span> in your production
+            branch, and then edit it to declare the content in your production environment with the
+               <code class="ph codeph">mod</code> directive.</p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">On your production branch, in the root directory,
+               create a file named <code class="ph codeph">Puppetfile</code>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In a text editor, for example Visual Studio Code (VS Code), edit the <span class="ph">Puppetfile</span>, declaring modules and data content for your
+               environment. Note that <span class="ph">Puppet</span>  has an <a class="xref" href="https://puppet-vscode.github.io/docs/getting-started/" target="_blank">extension</a> for VS Code that supports syntax highlighting of
+               the <span class="ph">Puppet</span>  language. </span>
+            <div class="itemgroup info">You can declare modules from the <span class="ph">Forge</span> or you can
+               declare <span class="ph">Git</span> repositories in your <span class="ph">Puppetfile</span>. See the related topics about declaring
+               content in the <span class="ph">Puppetfile</span> for details and code
+               examples.</div>
+         </li></ol></section>
+      <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>
+         <p class="p">After creating your Puppetfile, configure <span class="ph">Code Manager</span> or <span class="ph">r10k</span>.</p>
+      </section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="puppetfile_change_moddir">
+   <h2 class="title topictitle2" id="ariaid-title6">Change the <span class="ph">Puppetfile</span> module
+      installation directory </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">If needed, you can change the directory to which the <span class="ph">Puppetfile</span> installs all modules.</p>
+      <section class="section context">
+         <p class="p">To specify a module installation path other than the default modules
+            directory (<code class="ph codeph">./modules</code>), use the <code class="ph codeph">moduledir</code> directive.</p>
+         <p class="p">This directive applies to <em class="ph i">all</em>
+            content declared in the <span class="ph">Puppetfile</span>. You must specify this
+            as a relative path at the top of the <span class="ph">Puppetfile</span>, <strong class="ph b">
+               <strong class="ph b">before</strong>
+            </strong> you list any modules.</p>
+         <p class="p">To change the installation paths for only certain modules or data,
+            declare those content sources as <span class="ph">Git</span> repositories and set
+            the <code class="ph codeph">install_path</code> option. This option
+            overrides the <code class="ph codeph">moduledir</code> directive. See
+            the related topic about how to declare content as a <span class="ph">Git</span>
+            repo for instructions.</p>
+      </section>
+      <section><div class="li step p">
+            <span class="ph cmd">Add the <code class="ph codeph">moduledir</code> directive at the top of the <span class="ph">Puppetfile</span>, specifying your module installation
+               directory relative to the location of the <span class="ph">Puppetfile</span>.</span>
+            <div class="itemgroup stepxmp">
+               <pre class="pre codeblock"><code>moduledir 'thirdparty'</code></pre>
+            </div>
+         </div></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="declare_puppet_forge_modules_in_the_puppetfile">
+        <h2 class="title topictitle2" id="ariaid-title7">Declare <span class="ph">Forge</span> modules in the
+                        <span class="ph">Puppetfile</span>
+        </h2>
+        
+        <div class="body taskbody"><p class="shortdesc">Declare <span class="ph">Forge</span> modules in your <span class="ph">Puppetfile</span>, specifying the version and whether or
+                not code management keeps the module updated.</p>
+                <section class="section context"><p class="p">Specify modules
+                                by their full name. You can specify the most recent version of a
+                                module, with or without updates, or you can specify a specific
+                                version of a module.</p><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Some existing <span class="ph">Puppetfile</span>s contain a
+                                                <code class="ph codeph">forge</code> setting that provides
+                                        legacy compatibility with <code class="ph codeph">librarian-puppet</code>. This setting is
+                                        non-operational for <span class="ph">Code Manager</span>
+                                        and <span class="ph">r10k</span>. To configure
+                                        how <span class="ph">Forge</span> modules are
+                                        downloaded, specify <code class="ph codeph">forge_settings</code> in <span class="ph">Hiera</span> instead. See the
+                                        topics about configuring the <span class="ph">Forge</span> settings for <span class="ph">Code Manager</span> or <span class="ph">r10k</span> for
+                                        details.&nbsp;</div></div></section>
+                <section><div class="li step p">
+                                <span class="ph cmd">In your <span class="ph">Puppetfile</span>, specify the
+                                        modules to install with the <code class="ph codeph">mod</code> directive. For each
+                                        module, pass the module name as a string, and optionally,
+                                        specify what version of the module you want to track.</span>
+                                <div class="itemgroup info"><p class="p">If
+                                                you specify no options, code management installs the
+                                                latest version and keeps the module at that version.
+                                                To keep the module updated, specify <code class="ph codeph">:latest</code>. To
+                                                install a specific version of the module and keep it
+                                                at that version, specify the version number as a
+                                                string.</p></div>
+                                <div class="itemgroup stepxmp"><div class="p">
+                                                <pre class="pre codeblock"><code>mod 'puppetlabs/apache'
+mod 'puppetlabs/ntp', :latest
+mod 'puppetlabs/stdlib', '0.10.0'</code></pre>This
+                                                  example:<ul class="ul">
+                                                  <li class="li"><p class="p">Installs the latest version of the apache module,
+                                                  but does not update it.</p></li>
+                                                  <li class="li"><p class="p">Installs the latest version of the ntp module,
+                                                  and updates it when environments are
+                                                  deployed.</p></li>
+                                                  <li class="li"><p class="p">Installs version 0.10.0 of the stdlib module, and
+                                                  does not update it.</p></li>
+                                                </ul>
+                                        </div></div>
+                        </div></section>
+        </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="declare_git_repositories_in_the_puppetfile">
+    <h2 class="title topictitle2" id="ariaid-title8">Declare <span class="ph">Git</span> repositories in the <span class="ph">Puppetfile</span></h2>
+    
+    <div class="body taskbody"><p class="shortdesc">List the modules, data, or other non-module content that
+        you want to install from a Git repository. </p>
+        <section class="section context">
+            <p class="p">To specify any environment content as a <span class="ph">Git</span> repository, use the <code class="ph codeph">mod</code> directive with with the <code class="ph codeph">:git</code> option. This is useful for modules you don't get
+                from the <span class="ph">Forge</span>, such as your own modules, as well as
+                data or other non-module content.&nbsp;</p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">To install content and keep it updated to the
+                    master branch, declare the content name and specify the repository with the
+                        <code class="ph codeph">:git</code> directive. Optionally,
+                    specify an <code class="ph codeph">:install_path</code> for
+                    the content.</span>
+                <div class="itemgroup stepxmp">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>mod 'apache',
+    :git =&gt; 'https://github.com/puppetlabs/puppetlabs-apache'
+mod 'site_data', 
+    :git =&gt; 'git@git.example.com:site_data.git',
+    :install_path =&gt; 'hieradata'
+</code></pre>
+                        This example installs the apache module and keeps that module updated with
+                        the master branch of the listed repository. It also installs site data
+                        content from a <span class="ph">Git</span> repository into the
+                        environment's <code class="ph codeph">./hieradata/site_data</code> subdirectory.</div>
+                </div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> Content is installed in the modules
+                    directory and treated as a module, unless you use the <code class="ph codeph">:install_path option</code>. Use this option with non-module
+                    content to keep your data separate from your modules.</div>
+            </div>
+        </section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title9" id="specify_installation_paths_for_repositories">
+  <h3 class="title topictitle3" id="ariaid-title9">Specify installation paths for repositories </h3>
+  
+  <div class="body taskbody"><p class="shortdesc">You can set individual installation paths for any of the
+    repositories that you declare in the <span class="ph">Puppetfile</span>.</p>
+    <section class="section context">
+      <p class="p">The <code class="ph codeph">:install_path</code>
+        option allows you to separate non-module content in your directory structure or to set
+        specific installation paths for individual modules. When you set this option for a specific
+        repository, it overrides the <code class="ph codeph">moduledir</code>
+        setting. </p>
+    </section>
+    <section><div class="li step p">
+        <span class="ph cmd">To install the content into a subdirectory in the
+          environment, specify the directory with the <code class="ph codeph">install_path</code> option. To install into the root of the environment, specify an
+          empty value.</span>
+        <div class="itemgroup stepxmp">
+          <div class="p">
+            <pre class="pre codeblock"><code>mod 'site_data_1', 
+    :git =&gt; 'git@git.example.com:site_data_1.git',
+    :install_path =&gt; 'hieradata'
+mod 'site_data_2',
+  :git =&gt; 'git@git.example.com:site_data_2.git',
+  :install_path =&gt; ''
+</code></pre>
+            This example installs site data content from the <code class="ph codeph">site_data_1</code> repository into <code class="ph codeph">./hieradata/site_data</code> and content from <code class="ph codeph">site_data_2</code> into <code class="ph codeph">./site_data</code> subdirectory. </div>
+        </div>
+      </div></section>
+  </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title10" id="declare_module_or_data_content_with_ssh_private_key_authentication">
+   <h3 class="title topictitle3" id="ariaid-title10">Declare module or data content with SSH private key authentication </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">To declare content protected by SSH private keys, declare
+      the content as a repository, and then configure the private key setting in your code
+      management tool.</p>
+      <section class="section context">
+         <p class="p"></p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Declare your repository content, specifying the <span class="ph">Git</span> repo by the SSH URL. </span>
+            <div class="itemgroup info">
+               <pre class="pre codeblock"><code>mod 'myco/privatemod',              
+ :git =&gt; 'git@git.example.com:myco/privatemod.git'</code></pre>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Configure the correct private key by setting <span class="ph">Code Manager</span> or <span class="ph">r10k</span>
+               parameters in <span class="ph">Hiera</span>:</span>
+            <div class="itemgroup info">
+               <ul class="ul">
+                  <li class="li">To set a key for all <span class="ph">Git</span>
+                     operations, use the private key setting under <code class="ph codeph">git-settings</code>.</li>
+                  <li class="li">To set a private key for an individual remote, set the
+                     private key in the <code class="ph codeph">repositories</code> hash in <code class="ph codeph">git-settings</code> for each specific remote.</li>
+               </ul>
+            </div>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title11" id="keep_repository_content_at_a_specific_version">
+   <h3 class="title topictitle3" id="ariaid-title11">Keep repository content at a specific version </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">The <span class="ph">Puppetfile</span> can maintain
+      repository content at a specific version.</p>
+      <section class="section context">
+         <p class="p">To specify a particular repository version, declare the version you want to track with
+            your choice of the following options. Setting one of these options maintains the
+            repository at that version and deploys any updates you make to that particular version. </p>
+         <div class="p">
+            <ul class="ul">
+               <li class="li">
+                  <p class="p"><code class="ph codeph">ref</code>:
+                     Specifies the <span class="ph">Git</span> reference to check out. This
+                     option can reference either a tag, a commit, or a branch.</p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">tag</code>:
+                     Specifies the repo by a certain tag value.</p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">commit</code>:
+                     Specifies the repo by a certain commit.</p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">branch</code>:
+                     Specifies a certain branch of the repo.</p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">default_branch</code>: Specifies a default branch to use for deployment
+                     if the specified <code class="ph codeph">ref</code>, <code class="ph codeph">tag</code>, <code class="ph codeph">commit</code>, or <code class="ph codeph">branch</code> cannot be deployed. You must also specify one of the other
+                     version options. This is useful if you are tracking a relative branch of the
+                     control repo.</p>
+               </li>
+            </ul>
+         </div>
+         <p class="p"></p>
+      </section>
+      <section><div class="li step p">
+            <span class="ph cmd">In the <span class="ph">Puppetfile</span>,
+               declare the content, specifying the repository and version you want to track.</span>
+            <div class="itemgroup stepxmp">
+               <p class="p">To install <code class="ph codeph">puppetlabs/apache</code> and specify the '0.9.0' tag, use the
+                     <code class="ph codeph">tag</code> option.</p>
+               <div class="p">
+                  <pre class="pre codeblock"><code>mod 'apache',
+  :git =&gt; 'https://github.com/puppetlabs/puppetlabs-apache',
+  :tag =&gt; '0.9.0'</code></pre>
+               </div>
+            </div>
+            <div class="itemgroup stepxmp">
+               <p class="p">To install <code class="ph codeph">puppetlabs/apache</code> and use the <code class="ph codeph">branch</code> option to track the ‘proxy_match’ branch.</p>
+               <div class="p">
+                  <pre class="pre codeblock"><code>mod 'apache',
+  :git    =&gt; 'https://github.com/puppetlabs/puppetlabs-apache',
+  :branch =&gt; 'proxy_match'</code></pre>
+               </div>
+            </div>
+            <div class="itemgroup stepxmp">
+               <p class="p">To install <code class="ph codeph">puppetlabs/apache</code> and use the <code class="ph codeph">commit</code>
+                  option to track the '8df51aa' commit.</p>
+               <div class="p">
+                  <pre class="pre codeblock"><code>mod 'apache',
+  :git    =&gt; 'https://github.com/puppetlabs/puppetlabs-apache',
+  :commit =&gt; '8df51aa'</code></pre>
+               </div>
+            </div>
+         </div></section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title12" id="declare_content_from_a_relative_control_repo_branch">
+  <h3 class="title topictitle3" id="ariaid-title12">Declare content from a relative control repo branch </h3>
+  
+  <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">branch</code>
+    option also has a special <code class="ph codeph">:control_branch</code>
+    option, which allows you to deploy content from a control repo branch relative to the location
+    of the <span class="ph">Puppetfile</span>. </p>
+    <section class="section context"><p class="p">Normally, <code class="ph codeph">branch</code> tracks a specific named branch of a repo, such as
+        testing. If you set it to <code class="ph codeph">:control_branch</code>,
+        it instead tracks whatever control repo branch the <span class="ph">Puppetfile</span>
+        is in. For example, if your <span class="ph">Puppetfile</span> is in the production
+        branch, content from the production branch is deployed; if a duplicate <span class="ph">Puppetfile</span> is located in testing, content from testing is
+        deployed. This means that as you create new branches, you don't have to edit the inherited
+          <span class="ph">Puppetfile</span> as extensively.</p></section>
+    <section><div class="li step p">
+        <span class="ph cmd">To track a branch within the control repo, declare the
+          content with the <code class="ph codeph">:branch</code> option set to
+            <code class="ph codeph">:control_branch</code>.</span>
+        <div class="itemgroup stepxmp"><div class="p"><pre class="pre codeblock"><code>mod 'hieradata',
+  :git    =&gt; 'git@git.example.com:organization/hieradata.git',
+  :branch =&gt; :control_branch </code></pre></div></div>
+      </div></section>
+  </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title13" id="set_a_default_branch_for_content_deployment">
+   <h3 class="title topictitle3" id="ariaid-title13">Set a default branch for content deployment </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">Set a <code class="ph codeph">default_branch</code> option to specify what branch code management deploys content from
+      if the given option for your repository cannot be deployed.</p>
+      <section class="section context">
+         <p class="p">If you specified a <code class="ph codeph">ref</code>, <code class="ph codeph">tag</code>, <code class="ph codeph">commit</code>, or <code class="ph codeph">branch</code> option for your repository, and it cannot be resolved and deployed,
+            code management can instead deploy the <code class="ph codeph">default_branch</code>. This is mostly useful when you set <code class="ph codeph">branch</code> to the <code class="ph codeph">:control_branch</code> value.</p>
+         <p class="p">If your specified content cannot be resolved and you have not set a
+            default branch, or if the default branch cannot be resolved, code management logs an
+            error and does not deploy or update the content. </p>
+      </section>
+      <section><div class="li step p">
+            <span class="ph cmd">In the <span class="ph">Puppetfile</span>, in
+               the content declaration, set the <code class="ph codeph">default_branch</code> option to the branch you want to deploy if your specified
+               option fails.&nbsp;</span>
+            <div class="itemgroup info">
+               <pre class="pre codeblock"><code># Track control branch and fall-back to master if no matching branch.
+mod 'hieradata',
+     :git    =&gt; 'git@git.example.com:organization/hieradata.git',
+     :branch =&gt; :control_branch,
+     :default_branch =&gt; 'master'</code></pre>
+            </div>
+         </div></section>
+   </div>
+</article></article></article></article></main></body></html>

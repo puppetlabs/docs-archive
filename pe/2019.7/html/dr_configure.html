@@ -1,0 +1,322 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="To configure disaster recovery, you must provision a replica to serve as backup during failovers. If your master is permanently disabled, you can then promote a replica."><meta name="DC.relation" scheme="URI" content="rbac_token_auth_intro.html#generate_a_token_using_puppet_access"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Melissa Amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="dr-configure"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configure disaster recovery</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="dr-configure">
+    <h1 class="title topictitle1" id="ariaid-title1">Configure disaster recovery</h1>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">To configure disaster recovery, you must provision a replica to serve as backup
+        during failovers. If your master is permanently disabled, you can then promote a
+        replica.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>Apply <a class="xref" href="dr_overview.html#dr-requirements" title="Your Puppet infrastructure must meet specific requirements in order to configure disaster recovery.">disaster recovery
+                    system and software requirements</a>.</section>
+        <section class="section context"><div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> The <code class="ph codeph">puppet infrastructure</code> commands, which are used
+                    to configure and manage disaster recovery, require a valid admin RBAC token and
+                    must be run from a root session. Running with elevated privileges via <code class="ph codeph">sudo puppet infrastructure</code> is not sufficient.
+                    Instead, start a root session by running <code class="ph codeph">sudo su
+                        -</code>, and then run the <code class="ph codeph">puppet
+                        infrastructure</code> command. For details about these commands, run
+                        <code class="ph codeph">puppet infrastructure help &lt;ACTION&gt;</code>,
+                    for example, <code class="ph codeph">puppet infrastructure help
+                        provision</code>. &nbsp;</div></div></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#generate_a_token_using_puppet_access" title="Use puppet-access to generate an authentication tokens from the command line of any workstation (Puppet-managed or not), without the need to SSH into the Puppet master.">Generate a token using puppet-access</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="dr-provision-replica">
+    <h2 class="title topictitle2" id="ariaid-title2">Provision and enable a replica </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Provisioning a replica duplicates specific components and services from the master to
+        the replica. Enabling a replica activates most of its duplicated services and components,
+        and instructs agents and infrastructure nodes how to communicate in a failover scenario. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><ul class="ul">
+            <li class="li"><p class="p">Ensure you have a valid admin RBAC
+                token.</p></li>
+            <li class="li"><p class="p">Move any tuning parameters that you set for your master using the console to <span class="ph">Hiera</span>. Using <span class="ph">Hiera</span> ensures configuration is applied to
+                    both your master and replica.</p></li>
+            <li class="li"><p class="p">Back up your classifier hierarchy,
+                        because enabling a replica alters classification.</p></li>
+        </ul></section>
+        <section class="section context">
+            <div class="note note note_note"><span class="note__title">Note:</span> While completing this task, the master is unavailable to serve catalog requests.
+                Time completing this task accordingly.</div></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Ensure that the node you're provisioning as a
+                    replica is set to use the master as its <span class="ph">Puppet Server</span>.</span>
+                <div class="itemgroup info"><p class="p">On the prospective
+                        replica node, in the <code class="ph codeph">/etc/puppetlabs/puppet/puppet.conf</code> file's <code class="ph codeph">main</code> section, set the
+                        server variable to the node name of the master. For example:</p><div class="p"><pre class="pre codeblock"><code>[main]
+certname = &lt;REPLICA NODE NAME&gt; 
+server = &lt;MASTER NODE NAME&gt;</code></pre></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master, as the root user, run <code class="ph codeph">puppet
+                        infrastructure provision replica &lt;REPLICA NODE NAME&gt;
+                    --enable</code></span><div class="itemgroup info">
+                    <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> In installations with compile masters, use the <code class="ph codeph">--skip-agent-config</code> flag with
+                            the <code class="ph codeph">--enable</code> option if you want to:<ul class="ul">
+                                <li class="li">Upgrade a replica without needing to run <span class="ph">Puppet</span> on all agents.</li>
+                                <li class="li">Add disaster recovery to an installation without modifying the configuration of
+                                    existing load balancers.</li>
+                                <li class="li">Manually configure which load balancer agents communicate with
+                                    in geo-diverse installations. See <a class="xref" href="dr_configure.html#dr-geodiverse-agent-comms" title="Typically, when you enable a replica using puppet infrastructure enable replica, the configuration tool automatically sets the same communication parameters for all agents. In geo-diverse installations, with load balancers or compilers in multiple locations, you must manually configure agent communication settings so that agents fail over to the appropriate load balancer or compiler.">Managing agent communication in geo-diverse installations</a>.</li>
+                            </ul></div></div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Copy your secret key file from the master to the replica. The path to the
+                    secret key file is
+                        <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/secrets/keys.json</code>.</span>
+                <div class="itemgroup info">
+                    <div class="note important note_important"><span class="note__title">Important:</span> If you do not copy your secret key file onto your
+                        replica, the replica generates a new secret key when you promote it. The new
+                        key prevents you from accessing credentials for your agentless nodes or
+                        running tasks and plans on agentless nodes. </div>
+                </div>
+            </li><li class="li step stepexpand"><strong>Optional: </strong>
+                <span class="ph cmd">Verify that all services running on the master are also running on the
+                    replica:</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">From the master, run <code class="ph codeph">puppet infrastructure
+                                status --verbose</code> to verify that the replica is
+                            available.</span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">From any managed node, run <code class="ph codeph">puppet agent -t
+                                --noop --server_list=&lt;REPLICA HOSTNAME&gt;</code>. If the
+                            replica is correctly configured, the <span class="ph">Puppet</span> run succeeds and shows no changed resources. </span>
+                    </li>
+                </ol>
+            </li><li class="li step stepexpand"><strong>Optional: </strong>
+                <span class="ph cmd">Deploy updated configuration to agents by running <span class="ph">Puppet</span>, or wait for the next scheduled <span class="ph">Puppet</span> run.</span>
+                <div class="itemgroup info">
+                    <p class="p">If you used the <code class="ph codeph">--skip-agent-config</code> option, you can skip
+                        this step.</p>
+                    <div class="p">
+                        <div class="note note note_note"><span class="note__title">Note:</span> If you use the direct <span class="ph">Puppet</span>
+                    workflow, where agents use cached catalogs, you must manually deploy the new
+                    configuration by running <code class="ph codeph">puppet job run
+                        --no-enforce-environment --query 'nodes {deactivated is null and expired is
+                        null}'</code>
+                </div>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand"><strong>Optional: </strong>
+                <span class="ph cmd">Perform any tests you feel are necessary to verify that <span class="ph">Puppet</span> runs continue to work during failover. For
+                    example, to simulate an outage on the master:</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">Prevent the replica and a test node from contacting the master. For
+                            example, you might temporarily shut down the master or use
+                            <code class="ph codeph">iptables</code> with drop mode.</span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">Run <code class="ph codeph">puppet agent -t</code> on the test node. If the replica
+                            is correctly configured, the <span class="ph">Puppet</span> run
+                            succeeds and shows no changed resources. Runs might take longer than
+                            normal when in failover mode.</span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">Reconnect the replica and test node.</span>
+                    </li>
+                </ol>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#generate_a_token_using_puppet_access" title="Use puppet-access to generate an authentication tokens from the command line of any workstation (Puppet-managed or not), without the need to SSH into the Puppet master.">Generate a token using puppet-access</a></li><li class="linklist"><a class="link" href="backing_up_and_restoring_pe.html#back_up_pe_infrastructure" title="PE backup creates a copy of your Puppet master, including configuration, certificates, code, and PuppetDB.">Back up your infrastructure</a></li><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li><li class="linklist"><a class="link" href="direct_puppet_a_workflow_for_controlling_change.html#direct_puppet_a_workflow_for_controlling_change" title="The orchestrator—used alongside other PE tools, such as Code Manager—allows you to control when and how infrastructure changes are made before they reach your production environment.">Direct Puppet: a workflow for controlling change</a></li><li class="linklist"><a class="link" href="config_intro.html#configure_settings_with_hiera" title="Hiera is a hierarchy-based method of configuration management that relies on a “defaults, with overrides” system. When you add a parameter or setting to your Hiera data, Hiera searches through the data in the order it was written to find the value you want to change. Once found, it overrides the default value with the new parameter or setting. You can use Hiera to manage your PE configuration settings.">Configure settings with Hiera</a></li></ul></div></nav><article class="topic concept nested2" aria-labelledby="ariaid-title3" id="dr-geodiverse-agent-comms">
+   <h3 class="title topictitle3" id="ariaid-title3">Managing agent communication in geo-diverse installations</h3>
+   
+   
+   <div class="body conbody"><p class="shortdesc">Typically, when you enable a replica using <code class="ph codeph">puppet infrastructure enable replica</code>, the
+      configuration tool automatically sets the same communication parameters for all agents. In
+         <dfn class="term">geo-diverse installations</dfn>, with load balancers or
+      compilers in multiple locations, you must manually configure agent communication settings so
+      that agents fail over to the appropriate load balancer or compiler. </p>
+      <div class="p">To skip automatically configuring which <span class="ph">Puppet</span> servers and
+            <span class="ph">PCP</span> brokers agents communicate with, use the <code class="ph codeph">--skip-agent-config</code> flag when you provision and enable a
+         replica, for example:
+         <pre class="pre codeblock"><code>puppet infrastructure provision replica example.puppet.com --enable --skip-agent-config</code></pre></div>
+      <p class="p">To manually configure which load balancer or compiler agents communicate
+         with, use one of these options:</p>
+      <ul class="ul">
+         <li class="li">CSR attributes <ol class="ol">
+               <li class="li">
+                  <p class="p">For each node, include a CSR attribute that identifies the
+                     location of the node, for example <code class="ph codeph">pp_region</code> or <code class="ph codeph">pp_datacenter</code>. </p>
+               </li>
+               <li class="li">
+                  <p class="p">Create child groups off of the <span class="ph uicontrol">PE Agent</span> node group for each location. </p>
+               </li>
+               <li class="li">
+                  <p class="p">In each child node group, include the <code class="ph codeph">puppet_enterprise::profile::agent</code> module and set the&nbsp;<code class="ph codeph">server_list</code>&nbsp;parameter to the appropriate load balancer or
+                     compiler hostname. </p>
+               </li>
+               <li class="li">
+                  <p class="p">In each child node group, add a rule that uses the trusted
+                     fact created from the CSR attribute.</p>
+               </li>
+            </ol></li>
+         <li class="li">
+            <span class="ph">Hiera</span>
+            <p class="p">For each node or group of nodes, create a key/value pair that sets
+                  the&nbsp;<code class="ph codeph">puppet_enterprise::profile::agent::server_list</code>&nbsp;parameter to be used
+               by the <span class="ph uicontrol">PE Agent</span> node
+               group.</p>
+         </li>
+         <li class="li">Custom method that sets the <code class="ph codeph">server_list</code> parameter in
+               <code class="ph codeph">puppet.conf</code>.</li>
+      </ul>
+   </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="dr-promote-replica">
+    <h2 class="title topictitle2" id="ariaid-title4">Promote a replica </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">If your master can’t be restored, you can promote the
+        replica to master to establish the replica as the new, permanent master.</p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Verify that the master is permanently offline. </span>
+                <div class="itemgroup info"><p class="p">If the master comes
+                        back online during promotion, your agents can get confused trying to connect
+                        to two active masters.</p></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the replica, as the root user, run <code class="ph codeph"> puppet infrastructure promote replica
+                    </code>
+                </span>
+                <div class="itemgroup info"><p class="p">Promotion can take
+                        up to the amount of time it took to install <span class="ph">PE</span> initially. Don’t make code or classification changes during or after
+                        promotion.</p></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">When promotion is complete, update any systems or
+                    settings that refer to the old master, such as <span class="ph">PE</span>
+                    client tool configurations, <span class="ph">Code Manager</span> hooks, <span class="ph">Razor</span> brokers, and CNAME records.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Deploy updated configuration to nodes by running
+                        <span class="ph">Puppet</span> or waiting for the next scheduled
+                    run.</span>
+                <div class="itemgroup info"><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> If you use the direct <span class="ph">Puppet</span>
+                    workflow, where agents use cached catalogs, you must manually deploy the new
+                    configuration by running <code class="ph codeph">puppet job run
+                        --no-enforce-environment --query 'nodes {deactivated is null and expired is
+                        null}'</code>
+                </div></div></div>
+            </li><li class="li step stepexpand"><strong>Optional: </strong>
+                <span class="ph cmd">Provision a new replica in order to
+                    maintain disaster recovery.</span>
+                <div class="itemgroup info"><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Agent configuration must be updated before
+                            provisioning a new replica. If you re-use your old master’s node name
+                            for the new replica, agents with outdated configuration might use the
+                            new replica as a master before it’s fully provisioned.</div></div></div>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li><li class="linklist"><a class="link" href="direct_puppet_a_workflow_for_controlling_change.html#direct_puppet_a_workflow_for_controlling_change" title="The orchestrator—used alongside other PE tools, such as Code Manager—allows you to control when and how infrastructure changes are made before they reach your production environment.">Direct Puppet: a workflow for controlling change</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="dr-provision-replica-using-failed-master">
+    <h2 class="title topictitle2" id="ariaid-title5">Enable a new replica using a failed master</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">After promoting a replica, you can use your old master as
+        a new replica, effectively swapping the roles of your failed master and promoted
+        replica.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">The
+                    <code class="ph codeph">puppet infrastructure run</code>
+                command leverages built-in <span class="ph">Bolt</span> plans to automate
+                certain management tasks. To use this command, you must be able to connect using SSH
+                from your master to any nodes that the command modifies. You can establish an SSH
+                connection using key forwarding, a local key file, or by specifying keys in <code class="ph codeph">.ssh/config</code> on your master. For more
+                information, see <a class="xref" href="https://puppet.com/docs/bolt/latest/bolt_configuration_options.html#openssh-configuration-options" target="_blank">
+                    <span class="ph">Bolt</span> OpenSSH configuration options</a>.</p></section>
+        <section class="section context">
+            <p class="p">To view all available parameters, use the <code class="ph codeph">--help</code> flag. The logs for all
+                    <code class="ph codeph">puppet infrastructure run</code>
+                <span class="ph">Bolt</span> plans are located at <code class="ph codeph">/var/log/puppetlabs/installer/bolt_info.log</code>.</p>
+            <p class="p">You must be able to reach the failed master via SSH from the
+                current master. </p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">On your promoted replica, as the root user, run <code class="ph codeph">puppet infrastructure
+                        run enable_ha_failover</code>, specifying these parameters:</span>
+                <div class="itemgroup info">
+                    <ul class="ul">
+                        <li class="li">
+                            <p class="p">
+                                <code class="ph codeph">host</code> — Hostname of the failed master. This node
+                                becomes your new replica.</p>
+                        </li>
+                        <li class="li">
+                            <p class="p">
+                                <code class="ph codeph">topology</code> — Architecture used in your environment,
+                                either <code class="ph codeph">mono</code> (standard) or
+                                    <code class="ph codeph">mono-with-compile</code> (large). </p>
+                        </li>
+                        <li class="li">
+                            <p class="p">
+                                <code class="ph codeph">replication_timeout_secs</code> — Optional. The number of
+                                seconds allowed to complete provisioning and enabling of the new
+                                replica before the command fails. </p>
+                        </li>
+                        <li class="li"><code class="ph codeph">tmpdir</code> — Optional. Path to a directory
+                            to use for uploading and executing temporary files.</li>
+                    </ul>
+                </div>
+                <div class="itemgroup stepxmp">For example:
+                    <pre class="pre codeblock"><code>puppet infrastructure run enable_ha_failover host=&lt;FAILED_MASTER_HOSTNAME&gt; topology=mono</code></pre></div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>The failed master is repurposed as a new
+            replica. </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="dr-forget-replica">
+    <h2 class="title topictitle2" id="ariaid-title6">Forget a replica </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Forgetting a replica cleans up classification and database
+        state, preventing degraded performance over time.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">Ensure you have a valid admin RBAC token.</p></section>
+        <section class="section context"><p class="p">Run the <code class="ph codeph">forget</code> command whenever a replica node
+                is destroyed, even if you plan to replace it with a replica with the same name.
+            </p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Verify that the replica to be removed is
+                    permanently offline.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the master, as the root user, run <code class="ph codeph">puppet infrastructure forget
+                        &lt;REPLICA NODE NAME&gt;</code>
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">Delete your secret key file from the replica because leaving sensitive
+                    information on a replica poses a security risk. The path to the secret key file
+                    is
+                        <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/secrets/keys.json</code></span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>The replica is decommissioned, the node is purged as an agent, secret key
+            information is deleted, and a <span class="ph">Puppet</span> run is completed on
+            the master.</section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#generate_a_token_using_puppet_access" title="Use puppet-access to generate an authentication tokens from the command line of any workstation (Puppet-managed or not), without the need to SSH into the Puppet master.">Generate a token using puppet-access</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="dr-reinitialize-replica">
+    <h2 class="title topictitle2" id="ariaid-title7">Reinitialize a replica</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">If you encounter certain errors on your replica after
+        provisioning, you can reinitialize the replica. Reinitializing destroys and re-creates
+        replica databases, as specified. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>Your master must be fully functional and the
+            replica must be able to communicate with the master. </section>
+        <section class="section context"><div class="p"><div class="note caution note_caution"><span class="note__title">CAUTION:</span>  If you reinitialize a functional replica that you
+                    already enabled, the replica is unavailable to serve as backup in a failover
+                    during reinitialization. </div></div><p class="p">Reinitialization is
+                not intended to fix slow queries or intermittent failures. Reinitialize your replica
+                only if it’s inoperational or you see replication errors.</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On the replica, as the root user, reinitialize databases as needed: </span>
+                <div class="itemgroup info">
+                    <ul class="ul">
+                        <li class="li">
+                            <p class="p">All databases: <code class="ph codeph">puppet infrastructure reinitialize
+                                    replica</code>
+                            </p>
+                        </li>
+                        <li class="li">
+                            <p class="p">Specific databases: <code class="ph codeph">puppet infrastructure reinitialize
+                                    replica --db &lt;DATABASE&gt;</code> where
+                                    <code class="ph codeph">&lt;DATABASE&gt;</code> is
+                                    <code class="ph codeph">pe-activity</code>, <code class="ph codeph">pe-classifier</code>,
+                                    <code class="ph codeph">pe-orchestrator</code>, or <code class="ph codeph">pe-rbac</code>.
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Follow prompts to complete the reinitialization.
+                </span>
+            </li></ol></section>
+    </div>
+</article></article></article></main></body></html>

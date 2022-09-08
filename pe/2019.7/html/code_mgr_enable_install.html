@@ -1,0 +1,70 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="To configure Code Manager during a fresh installation of PE, add parameters to the pe.conf file."><meta name="DC.relation" scheme="URI" content="installing_pe.html#configuration_parameters_and_the_pe.conf_file"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="enable_code_manager_during_installation"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Enable Code Manager during installation</title></head><body id="enable_code_manager_during_installation"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+                  <h1 class="title topictitle1" id="ariaid-title1">Enable <span class="ph">Code Manager</span> during
+                                    installation </h1>
+                  
+                  <div class="body taskbody"><p class="shortdesc">To configure <span class="ph">Code Manager</span> during a fresh
+                                    installation of <span class="ph">PE</span>, add
+                                    parameters to the <code class="ph codeph">pe.conf</code> file. </p>
+                                    <section class="section context"><p class="p"> Use these parameters <strong class="ph b">only</strong> with text-mode <span class="ph">PE</span> installation, not
+                                                  with web-based installation. Adding the listed
+                                                  parameters enables and configures file sync and
+                                                  <span class="ph">Code Manager</span>.</p></section>
+                                    <section><ol class="ol steps"><li class="li step stepexpand">
+                                                  <span class="ph cmd">Add the
+                                                  following three parameters to <code class="ph codeph">pe.conf</code>
+                                                  <em class="ph i">before</em>
+                                                  installation, adding your specific URL and
+                                                  directory information:</span>
+                                                  <div class="itemgroup stepxmp"><div class="p"><pre class="pre codeblock no-highlight"><code>"puppet_enterprise::profile::master::r10k_remote": "git@&lt;YOUR.GIT.SERVER.COM&gt;:puppet/control.git"
+
+"puppet_enterprise::profile::master::r10k_private_key": "/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa"
+
+puppet_enterprise::profile::master::code_manager_auto_configure": true
+                  </code></pre></div></div>
+                                                  <div class="itemgroup info"><p class="p">These parameters specify the
+                                                  private key location and the control repo URL, and
+                                                  enables <span class="ph">Code Manager</span> and
+                                                  file sync.</p><ul class="ul">
+                                                  <li class="li"><p class="p">
+                                                  <code class="ph codeph">puppet_enterprise::profile::master::r10k_private_key</code>
+                                                  </p><p class="p">This setting accepts a string that specifies the path to the future location of the SSH private
+                                                  key used to access your <span class="ph">Git</span> repositories.
+                                                  <strong class="ph b">After</strong>
+                                                  <span class="ph">PE</span> installation is
+                                                  completed, place the key in the specified
+                                                  location. You do this in step 3 below.</p></li>
+                                                  <li class="li"><p class="p">
+                                                  <code class="ph codeph">"puppet_enterprise::profile::master::r10k_remote"</code>
+                                                  </p><p class="p">This setting specifies
+                                                  the location of the control repository. It accepts
+                                                  a string that is a valid URL for your <span class="ph">Git</span> control
+                                                  repository.</p></li>
+                                                  <li class="li"><p class="p">
+                                                  <code class="ph codeph">puppet_enterprise::profile::master::code_manager_auto_configure
+                                                  </code>
+                                                  </p><p class="p">This setting configures
+                                                  <span class="ph">Code Manager</span>, the <span class="ph">Git</span> control repository
+                                                  to use for storing code, and the private key for
+                                                  accessing your <span class="ph">Git</span>
+                                                  repos. Accepts the values <code class="ph codeph">true</code> or <code class="ph codeph">false</code> .
+                                                  Set it to <code class="ph codeph">true</code> to enable and configure <span class="ph">Code Manager</span>. A <code class="ph codeph">false</code>
+                                                  setting disables <span class="ph">Code Manager</span> and file
+                                                  sync.</p></li>
+                                                  </ul></div>
+                                                  </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">Complete the
+                                                  installation, following the steps in the
+                                                  text-based installation instructions.</span>
+                                                  </li><li class="li step stepexpand">
+                                                  <span class="ph cmd">After
+                                                  installation is complete, place the SSH private
+                                                  key you created when you set up your control
+                                                  repository in the <code class="ph codeph">r10k_private_key</code>
+                                                  location.</span>
+                                                  </li></ol></section>
+                                    <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div><p class="p">Next, set up
+                                                  authentication.</p></section>
+                  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="installing_pe.html#configuration_parameters_and_the_pe.conf_file" title="A pe.conf file is a HOCON formatted file that declares parameters and values used to install, upgrade, or configure PE. A default pe.conf file is available in the conf.d directory in the installer tarball.">Configuration parameters and the pe.conf file</a></li></ul></div></nav></article></main></body></html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="A catalog is a document that describes the desired state for each resource that Puppet manages on a node. A master typically compiles a catalog from manifests of Puppet code. A static catalog is a specific type of Puppet catalog that includes metadata that specifies the desired state of any file resources containing source attributes pointing to puppet:/// locations on a node."><meta name="DC.relation" scheme="URI" content="config_intro.html#config_intro"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="static_catalogs"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Static catalogs in Puppet Enterprise</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="static_catalogs">
+  <h1 class="title topictitle1" id="ariaid-title1">Static catalogs in <span class="ph">Puppet Enterprise</span>
+  </h1>
+  
+  <div class="body conbody"><p class="shortdesc">A catalog is a document that describes the desired state for
+    each resource that <span class="ph">Puppet</span> manages on a node. A master typically
+    compiles a catalog from manifests of <span class="ph">Puppet</span> code. A static
+    catalog is a specific type of <span class="ph">Puppet</span> catalog that includes
+    metadata that specifies the desired state of any file resources containing <code class="ph codeph">source</code> attributes pointing to <code class="ph codeph">puppet:///</code> locations on a node. </p>
+    <p class="p">The metadata in a static catalog can refer to a specific version of the
+      file (not just the latest version), and can confirm that the agent is applying the appropriate
+      version of the file resource for the catalog. Because the metadata is provided in the catalog,
+      agents make fewer requests to the
+      master.
+    </p>
+    <p class="p">See the open source <span class="ph">Puppet</span> documentation
+      more information
+      about
+        <a class="xref" href="https://puppet.com/docs/puppet/latest/lang_resources.html" target="_blank">Resources</a>, <a class="xref" href="https://docs.puppet.com/puppet/latest/type.html#file" target="_blank">File
+        types</a>, and <a class="xref" href="https://docs.puppet.com/puppet/latest/subsystem_catalog_compilation.html" target="_blank">Catalog compilation</a>. 
+    </p>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#config_intro" title="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances.">Methods for configuring Puppet Enterprise</a></li></ul></div></nav><article class="topic concept nested1" aria-labelledby="ariaid-title2" id="enabling_static_catalogs">
+    <h2 class="title topictitle2" id="ariaid-title2">Enabling static catalogs </h2>
+    
+    <div class="body conbody"><p class="shortdesc">When a master produces a non-static catalog, the catalog
+        doesn't specify the version of file resources. When the agent applies the catalog, it always
+        retrieves the latest version of that file resource, or uses a previously retrieved version
+        if it matches the latest version's contents.</p>
+        <p class="p">This potential problem affects file resources that use the <code class="ph codeph">source</code> attribute. File resources that use
+            the <code class="ph codeph">content</code> attribute are not affected,
+            and their behavior does not change in static catalogs.</p>
+        <p class="p">When a manifest depends on a file whose contents change more
+            frequently than the agent receives new catalogs, a node might apply a version of the
+            referenced file that doesn't match the instructions in the catalog. In <span class="ph">Puppet Enterprise (PE)</span>, such situations are particularly likely if
+            you’ve configured your agents to run off cached catalogs for participation in
+            application orchestration services.</p>
+        <p class="p">Consequently, the agent's <span class="ph">Puppet</span> runs
+            might produce different results each time the agent applies the same catalog. This often
+            causes problems because <span class="ph">Puppet</span> generally expects a
+            catalog to produce the same results each time it's applied, regardless of any code or
+            file content updates on the master.</p>
+        <p class="p">Additionally, each time an agent applies a normal cached catalog that
+            contains file resources sourced from <code class="ph codeph">puppet:///</code> locations, the agent requests file metadata from the master
+            each time the catalog's applied, even though nothing's changed in the cached catalog.
+            This causes the master to perform unnecessary resource-intensive checksum calculations
+            for each file resource.</p>
+        <p class="p">Static catalogs avoid these problems by including metadata that refers
+            to a specific version of the resource's file. This prevents a newer version from being
+            incorrectly applied, and avoids having the agent regenerate the metadata on each <span class="ph">Puppet</span> run. The metadata is delivered in the form of a
+            unique hash maintained, by default, by the file sync service.</p>
+        <p class="p">We call this type of catalog "static" because it contains all of the
+            information that an agent needs to determine whether the node's configuration matches
+            the instructions and state of file resources at the static point in time when the
+            catalog was generated.</p>
+        <section class="section" id="enabling_static_catalogs__summarizing_the_differences_in_catalog_behavior"><h3 class="title sectiontitle">Differences in catalog behavior </h3><p class="p">Without static catalogs enabled:</p><ul class="ul">
+                <li class="li">The agent sends facts to the master and requests a
+                    catalog.</li>
+                <li class="li">The master compiles and returns the agent's catalog.</li>
+                <li class="li">The agent applies the catalog by checking each resource the
+                    catalog describes. If it finds any resources that are not in the desired state,
+                    it makes the necessary changes.</li>
+            </ul><p class="p"> With static catalogs enabled: </p><ul class="ul">
+                <li class="li">The agent sends facts to the master and requests a
+                    catalog.</li>
+                <li class="li">The master compiles and returns the agent's catalog,
+                    including metadata that that specifies the desired state of the node's file
+                    resources.</li>
+                <li class="li">The agent applies the catalog by checking each resource the
+                    catalog describes. If the agent finds any resources that are not in the desired
+                    state, it makes the necessary changes based on the state of the file resources
+                    at the static point in time when the catalog was generated.</li>
+                <li class="li">If you change code on the master, file contents are not
+                    updated until the agent requests a new catalog with new file metadata.</li>
+            </ul></section>
+        <section class="section"><h3 class="title sectiontitle">Enabling file sync</h3><p class="p">In <span class="ph">PE</span>, static catalogs are
+                disabled across all environments for new installations. To use static catalogs in
+                    <span class="ph">PE</span>, you must enable file sync. After file sync is
+                enabled, <span class="ph">Puppet Server</span> automatically creates static
+                catalogs containing file metadata for eligible resources, and agents running <span class="ph">Puppet</span> 1.4.0 or newer can take advantage of the
+                catalogs' new features.</p><p class="p">If you do not enable file sync and
+                    <span class="ph">Code Manager</span>, you can still use static catalogs, but
+                you need to create some custom scripts and set a few parameters in the
+            console.</p></section>
+        <section class="section"><h3 class="title sectiontitle">Enforcing change with static
+                catalogs</h3><p class="p">When you are ready to deploy new <span class="ph">Puppet</span> code and deliver new static catalogs, you
+                don’t need to wait for agents to check in. Use the&nbsp;<span class="ph">Puppet</span> orchestrator&nbsp;to enforce change and
+                deliver new catalogs across your <span class="ph">PE</span> infrastructure,
+                on a per-environment basis.</p></section>
+        <section class="section"><h3 class="title sectiontitle">When aren’t static catalogs
+                applied?</h3><p class="p">In the following scenarios, either agents
+                won't apply static catalogs, or catalogs won't include metadata for file
+                resources.</p><ul class="ul">
+                <li class="li">Static catalogs are globally disabled.</li>
+                <li class="li">
+                    <span class="ph">Code Manager</span> and file sync are disabled, and <code class="ph codeph">code_id</code> and <code class="ph codeph">code_content</code> aren't configured.</li>
+                <li class="li">Your agents aren't running <span class="ph">PE</span>
+                    2016.1 or later (<span class="ph">Puppet</span> agent version 1.4.0 or
+                    later).</li>
+            </ul><p class="p">Additionally, <span class="ph">Puppet</span> won't
+                include metadata for a file resource if it:</p><ul class="ul">
+                <li class="li">Uses the <code class="ph codeph">content</code> attribute instead of the <code class="ph codeph">source</code> attribute.</li>
+                <li class="li">Uses the <code class="ph codeph">source</code> attribute with a non-<span class="ph">Puppet</span>
+                    scheme (for example <code class="ph codeph">source =&gt;
+                        'http://host:port/path/to/file'</code>).</li>
+                <li class="li">Uses the <code class="ph codeph">source</code> attribute without the built-in modules mount point.</li>
+                <li class="li">Uses the <code class="ph codeph">source</code> attribute, but the file on the master is not in <code class="ph codeph">/etc/puppetlabs/code/environments/&lt;environment&gt;/*/*/files/**</code>.
+                    For example, module files are typically in <code class="ph codeph">/etc/puppetlabs/code/environments/&lt;environment&gt;/modules/&lt;module_name&gt;/files/**</code>.</li>
+            </ul><p class="p">Agents continue to process the catalogs in these scenarios,
+                but without the benefits of inlined file metadata or file resource
+            versions.</p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="filesync_about.html#enabling_or_disabling_file_sync" title="File sync is normally enabled or disabled automatically along with Code Manager.">Enabling or disabling file sync</a></li><li class="linklist"><a class="link" href="running_jobs_with_puppet_orchestrator_overview.html#running_jobs_with_puppet_orchestrator_overview" title="With the Puppet orchestrator, you can run three types of &#34;jobs&#34;: on-demand Puppet jobs, task runs, and plan runs.">Running jobs with Puppet orchestrator</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="static_catalogs_global_disable_hiera">
+    <h2 class="title topictitle2" id="ariaid-title3">Disabling static catalogs globally with <span class="ph">Hiera</span>
+    </h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">You can turn off all use of static catalogs with a <span class="ph">Hiera</span> setting.</p>
+        <section class="section context"><p class="p">To disable static
+                catalogs using <span class="ph">Hiera</span>:</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd"> Add the following code to your default <code class="ph codeph">.yaml</code> file and set the parameter to
+                        <code class="ph codeph">false</code>:</span>
+                <div class="itemgroup info"><pre class="pre codeblock"><code>puppet_enterprise::master::static_catalogs: false</code></pre></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">To compile changes, run <code class="ph codeph">puppet agent -t</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="using_static_catalogs_without_file_sync">
+    <h2 class="title topictitle2" id="ariaid-title4">Using static catalogs without file sync </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To use static catalogs without enabling file sync, you
+        must set the <code class="ph codeph">code_id</code> and <code class="ph codeph">code_content</code> parameters in <span class="ph">Puppet</span>, and then configure the <code class="ph codeph">code_id_command</code>, <code class="ph codeph">code_content_command</code>, and <code class="ph codeph">file_sync_enabled</code> parameters in the console.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Set <code class="ph codeph">code_id</code> and <code class="ph codeph">code_content</code> by following the instructions in the <a class="xref" href="https://docs.puppet.com/puppet/5.3/static_catalogs.html#configuring-codeid-and-the-staticfilecontent-endpoint" target="_blank">open source Puppet static catalogs documentation</a>.
+                    Then return to this page to set the remaining parameters.</span>
+            </li><li class="li step">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the <span class="ph uicontrol">PE Infrastructure</span> node group, select
+                    the <span class="ph uicontrol">PE Master</span> node
+                    group.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, locate the <code class="ph codeph">puppet_enterprise::profile::master</code> class, and select
+                        <span class="ph uicontrol">file_sync_enabled</span>
+                    from its <span class="ph uicontrol">Parameter</span>
+                    list.</span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Value</span> field, enter <kbd class="ph userinput">false</kbd>, and click <span class="ph uicontrol">Add parameter</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Select the <span class="ph uicontrol">code_id_command</span> parameter, and in the
+                        <span class="ph uicontrol">Value</span> field, enter
+                    the absolute path to the <code class="ph codeph">code_id</code> script, and click <span class="ph uicontrol">Add parameter</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Select the <span class="ph uicontrol">code_content_command</span> parameter, and in the
+                        <span class="ph uicontrol">Value</span> field, add
+                    the absolute to the <code class="ph codeph">code_content</code> script, and click <span class="ph uicontrol">Add parameter</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Commit changes.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Run <span class="ph">Puppet</span> on the
+                    master.</span>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li></ul></div></nav></article></article></article></main></body></html>

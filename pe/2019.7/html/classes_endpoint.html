@@ -1,0 +1,144 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the classes endpoints to retrieve lists of classes, including classes with specific environments. The output from this endpoint is especially useful for creating new node groups, which usually contain a reference to one or more classes."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Melissa Amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="classes_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Classes endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="classes_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1">Classes endpoint</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">classes</code> endpoints to retrieve lists of classes, including classes with
+        specific environments. The output from this endpoint is especially useful for creating new
+        node groups, which usually contain a reference to one or more classes.</p>
+        <p class="p">The node classifier gets its information about classes from <span class="ph">Puppet</span>, so don't use this endpoint to create, update, or
+            delete classes.</p>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_v1_classes">
+  <h2 class="title topictitle2" id="ariaid-title2">GET /v1/classes </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/classes</code> endpoint to retrieve a list of all classes known to the node
+    classifier.</p>
+    <section class="section"><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> All other operations on classes require using the environment-specific
+        endpoints.</div></div><p class="p">All <code class="ph codeph">/classes</code> endpoints return the classes <em class="ph i">currently
+          known</em> to the node classifier, which retrieves them periodically from the master. To
+        force an update, use the <code class="ph codeph">update_classes</code>
+        endpoint. To determine when classes were last retrieved from the master, use the <code class="ph codeph">last_class_update</code> endpoint.</p></section>
+    <section class="section" id="get_v1_classes__response_format"><h3 class="title sectiontitle">Response
+        format </h3><p class="p">The response is a JSON array of class objects. Each
+        class object contains these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="get_v1_classes__response_format__entry__1">Key </th>
+              <th class="entry" id="get_v1_classes__response_format__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="get_v1_classes__response_format__entry__1"><code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="get_v1_classes__response_format__entry__2"><p class="p">The name of the class (a string).</p></td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_v1_classes__response_format__entry__1"><code class="ph codeph">environment</code>
+              </td>
+              <td class="entry" headers="get_v1_classes__response_format__entry__2"><p class="p">The name of the environment that this class exists in. Note that
+            the same class can exist in different environments and can have different parameters in
+            each environment.</p></td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_v1_classes__response_format__entry__1"><code class="ph codeph">parameters</code>
+              </td>
+              <td class="entry" headers="get_v1_classes__response_format__entry__2"><p class="p">An object describing the parameters and default parameter values for the
+            class. The keys of this object are the parameter names (strings). Each value is the
+            default value for the associated parameter as a string, boolean, number, structured
+            value, or <code class="ph codeph">null</code>. If the value is <code class="ph codeph">null</code>, the parameter is
+            required.</p></td>
+            </tr>
+          </tbody></table><p class="p">This is an example of a class
+      object:</p><pre class="pre codeblock json"><code>{
+  "name": "apache",
+  "environment": "production",
+  "parameters": {
+    "default_mods": true,
+    "default_vhost": true,
+    ...
+  }
+}</code></pre></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_v1_environments_environment_classes">
+   <h2 class="title topictitle2" id="ariaid-title3">GET /v1/environments/&lt;environment&gt;/classes </h2>
+   
+   <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/environments/\&lt;environment\&gt;/classes</code> to retrieve a list of all classes
+      known to the node classifier within the given environment.</p>
+      <section class="section" id="get_v1_environments_environment_classes__response_format"><h3 class="title sectiontitle">Response
+            format </h3><p class="p">The response is a JSON array of class objects. Each
+            class object contains these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="get_v1_environments_environment_classes__response_format__entry__1">Key </th>
+                     <th class="entry" id="get_v1_environments_environment_classes__response_format__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_environments_environment_classes__response_format__entry__1">
+                        <code class="ph codeph">name</code>
+                     </td>
+                     <td class="entry" headers="get_v1_environments_environment_classes__response_format__entry__2"><p class="p">The name of the class (a string).</p></td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_environments_environment_classes__response_format__entry__1">
+                        <code class="ph codeph">environment</code>
+                     </td>
+                     <td class="entry" headers="get_v1_environments_environment_classes__response_format__entry__2"><p class="p">The name of the environment that this class exists in. Note that
+            the same class can exist in different environments and can have different parameters in
+            each environment.</p></td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="get_v1_environments_environment_classes__response_format__entry__1">
+                        <code class="ph codeph">parameters</code>
+                     </td>
+                     <td class="entry" headers="get_v1_environments_environment_classes__response_format__entry__2"><p class="p">An object describing the parameters and default parameter values for the
+            class. The keys of this object are the parameter names (strings). Each value is the
+            default value for the associated parameter as a string, boolean, number, structured
+            value, or <code class="ph codeph">null</code>. If the value is <code class="ph codeph">null</code>, the parameter is
+            required.</p></td>
+                  </tr>
+               </tbody></table></section>
+      <section class="section" id="get_v1_environments_environment_classes__error_responses"><h3 class="title sectiontitle">Error
+            responses </h3><p class="p">This request does not produce error
+            responses.</p></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="get_v1_environments_environment_classes_name">
+    <h2 class="title topictitle2" id="ariaid-title4">GET /v1/environments/&lt;environment&gt;/classes/&lt;name&gt; </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/environments/\&lt;environment\&gt;/classes/\&lt;name\&gt;</code> endpoint to
+        retrieve the class with the given name in the given environment.</p>
+        <section class="section" id="get_v1_environments_environment_classes_name__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">If the class exists, the response is
+                a JSON array of class objects. Each class object contains these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="get_v1_environments_environment_classes_name__response_format__entry__1">Key </th>
+                            <th class="entry" id="get_v1_environments_environment_classes_name__response_format__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_environments_environment_classes_name__response_format__entry__1"><code class="ph codeph">name</code>
+                            </td>
+                            <td class="entry" headers="get_v1_environments_environment_classes_name__response_format__entry__2"><p class="p">The name of the class (a string).</p></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_environments_environment_classes_name__response_format__entry__1"><code class="ph codeph">environment</code>
+                            </td>
+                            <td class="entry" headers="get_v1_environments_environment_classes_name__response_format__entry__2"><p class="p">The name of the environment that this class exists in. Note that
+            the same class can exist in different environments and can have different parameters in
+            each environment.</p></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_environments_environment_classes_name__response_format__entry__1"><code class="ph codeph">parameters</code>
+                            </td>
+                            <td class="entry" headers="get_v1_environments_environment_classes_name__response_format__entry__2"><p class="p">An object describing the parameters and default parameter values for the
+            class. The keys of this object are the parameter names (strings). Each value is the
+            default value for the associated parameter as a string, boolean, number, structured
+            value, or <code class="ph codeph">null</code>. If the value is <code class="ph codeph">null</code>, the parameter is
+            required.</p></td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="get_v1_environments_environment_classes_name__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">If the class with the given name cannot be
+                found, the service returns a <samp class="ph msgph">404 Not
+                    Found</samp> response with an empty body.</p></section>
+    </div>
+</article></article></article></main></body></html>

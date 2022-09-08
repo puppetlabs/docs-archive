@@ -1,0 +1,66 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="A repository is where you store all of the actual bits used by Razor to install a node. Or, in some cases, the external location of bits that you link to. A repo is identified by a unique name."><meta name="DC.relation" scheme="URI" content="provisioning_a_nix_node.html#unique_1898650142"><meta name="DC.relation" scheme="URI" content="using_the_razor_client.html#repository-commands"><meta name="DC.relation" scheme="URI" content="api_reference.html#repositories_api"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="repositories"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Repositories</title></head><body id="repositories"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+      <h1 class="title topictitle1" id="ariaid-title1">Repositories</h1>
+      
+      
+      <div class="body conbody"><p class="shortdesc">A repository is where you store all of the actual bits
+            used by <span class="ph">Razor</span> to install a node. Or, in some cases, the
+            external location of bits that you link to. A repo is identified by a unique name. </p>
+            <p class="p">Instructions for the installation, such as what should be
+                  installed, where to get it, and how to configure it, are contained in tasks.</p>
+            <p class="p">To load a repo onto the server, use the command:</p>
+            <div class="p">
+                  <pre class="pre codeblock"><code>    razor create-repo --name=&lt;repo name&gt; --task &lt;task name&gt; --iso-url &lt;URL&gt;</code></pre>
+            </div>
+            <p class="p">For example:</p>
+            <div class="p">
+                  <pre class="pre codeblock"><code>    razor create-repo --name centos-6.7 --task centos
+       --iso-url http://centos.sonn.com/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso</code></pre>
+            </div>
+            <div class="p">There are three types of repositories that you might want to use,
+                  all created with the <code class="ph codeph">create-repo</code>
+                  command: <ul class="ul">
+                        <li class="li">Repos where <span class="ph">Razor</span>
+                              downloads and unpacks ISOs for you and serves their contents. </li>
+                        <li class="li">Repos that are external, such as a mirror that you
+                              maintain.</li>
+                        <li class="li">Repos where a stub directory is created and you add
+                              the contents manually.</li>
+                  </ul></div>
+            <p class="p">The <code class="ph codeph">task</code>
+                  parameter is mandatory for creating all three of these types of repositories, and
+                  indicates the default installer to use with this repo. You can override a <code class="ph codeph">task</code> parameter at the policy level.
+                  If you're not using a task, reference the stock task <code class="ph codeph">noop</code>.</p>
+            <section class="section"><h2 class="title sectiontitle">Unpack an ISO and serve
+                        its contents</h2><p class="p">This repository is created with
+                        the <code class="ph codeph">--iso-url</code> property.
+                        </p><div class="p">The server downloads and unpacks the ISO image
+                        onto its file
+                        system:<pre class="pre codeblock"><code>    razor create-repo --name centos-6.7 --task centos
+       --iso-url http://centos.sonn.com/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso</code></pre></div></section>
+            <section class="section"><h2 class="title sectiontitle">Point to an existing
+                        resource</h2><p class="p">To make a repository that points to an
+                        existing resource without loading anything onto the <span class="ph">Razor</span> server, provide a <code class="ph codeph">url</code> property when you create the
+                        repository. </p><div class="p">The <code class="ph codeph">url</code> should be serving the unpacked contents of
+                        the install
+                        media.<pre class="pre codeblock"><code>    razor create-repo --name centos-6.7 --task centos
+       --url http://mirror.example.org/centos/6.7/</code></pre></div></section>
+            <section class="section"><h2 class="title sectiontitle">Create a stub
+                        directory</h2><p class="p">For some install media, especially
+                              <span class="ph">Windows</span> install DVDs, <span class="ph">Razor</span> is not able to automatically unpack
+                        the media; this is a known limitation of the library that <span class="ph">Razor</span> uses to unpack ISO images.</p><div class="p">In those cases, it is necessary to first use <code class="ph codeph">create-repo</code> to set up a stub
+                        directory on the <span class="ph">Razor</span> server, then manually
+                        add content to it. The stub directory is created
+                        with:<pre class="pre codeblock"><code>razor create-repo --name win2012r2 --task windows/2012r2 \
+	--no-content true</code></pre></div><p class="p">When this command completes successfully, log into your
+                              <span class="ph">Razor</span> server as root and <code class="ph codeph">cd</code> into your server's
+                        repository directory. The repository directory is specified by the <code class="ph codeph">repo_store_root</code> class
+                        parameter of the <code class="ph codeph">pe_razor</code>
+                        class. By default, the directory is <code class="ph codeph">/opt/puppetlabs/server/data/razor_server/repo</code>.</p><div class="p">
+                        <pre class="pre codeblock"><code># mount -o loop /path/to/windows_server_2012_r2.iso /mnt
+# cp -pr /mnt/* win2012r2
+# umount /mnt</code></pre>
+                  </div></section>
+      </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="provisioning_a_nix_node.html#unique_1898650142" title="Repositories contain – or point to – the operating system to install on a node.">Create a repository</a></li><li class="linklist"><a class="link" href="using_the_razor_client.html#repository-commands" title="Repository commands enable you to create and delete specified repositories from the Razor database and specify the task that installs the contents of a repository.">Repository commands</a></li><li class="linklist"><a class="link" href="api_reference.html#repositories_api" title="These commands enable you to create a new repository or delete a repository from the internal Razor database. You can also ensure that a specified repository uses a specified task.">Repositories API</a></li></ul></div></nav></article></main></body></html>

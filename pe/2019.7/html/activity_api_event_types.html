@@ -1,0 +1,272 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="reference"><meta name="description" content="Activity reporting provides a useful audit trail for actions that change role-based access control (RBAC) entities, such as users, directory groups, and user roles."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="event_types_reported_by_the_activity_service"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Event types reported by the activity service</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="event_types_reported_by_the_activity_service">
+    <h1 class="title topictitle1" id="ariaid-title1">Event types reported by the activity service </h1>
+    
+    <div class="body refbody"><p class="shortdesc">Activity reporting provides a useful audit trail for
+        actions that change role-based access control (RBAC) entities, such as users, directory
+        groups, and user roles. </p>
+        <section class="section" id="event_types_reported_by_the_activity_service__local_users"><h2 class="title sectiontitle">Local users
+                </h2><p class="p">These events are displayed in the console on the
+                    <span class="ph uicontrol">Activity</span> tab for the
+                affected user.</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="event_types_reported_by_the_activity_service__local_users__entry__1">Event </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__local_users__entry__2">Description </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__local_users__entry__3">Example</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__1"><strong class="ph b">Creation</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__2">A new local user is
+                                created. An initial value for each metadata field is reported. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__3"><code class="ph codeph">Created with login set to "jean".</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__1"><strong class="ph b">Metadata</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__2">Any change to the <code class="ph codeph">login</code>, <code class="ph codeph">display name</code>, or <code class="ph codeph">email</code> keys. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__3"><code class="ph codeph">Display name set to "Jean
+                                Jackson".</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__1"><strong class="ph b">Role membership</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__2">A user is added to or
+                                removed from a role. The display name and user ID of the affected
+                                user are displayed. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__3"><code class="ph codeph">User Jean Jackson
+                                    (973c0cee-5ed3-11e4-aa15-123b93f75cba) added to role
+                                    Operators.</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__1"><strong class="ph b">Authentication</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__2">A user logs in. The display
+                                name and user ID of the affected user are displayed. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__3"><code class="ph codeph">User Jean Jackson
+                                    (973c0cee-5ed3-11e4-aa15-123b93f75cba) logged
+                                in.</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__1"><strong class="ph b">Password reset token</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__2">A token is generated for a
+                                user to use when resetting their password. The display name and user
+                                ID of the affected user are shown. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__3"><code class="ph codeph">A password reset token was generated for user Jean
+                                    Jackson (973c0cee-5ed3-11e4-aa15-123b93f75cba).</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__1"><strong class="ph b">Password changed</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__2">A user successfully changes
+                                their password with a token. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__3"><code class="ph codeph">Password reset for user Jean Jackson
+                                    (973c0cee-5ed3-11e4-aa15-123b93f75cba).</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__1"><strong class="ph b">Revocation</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__2">A user is revoked or
+                                reinstated. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__local_users__entry__3"><code class="ph codeph">User revoked.</code></td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="event_types_reported_by_the_activity_service__remote_users"><h2 class="title sectiontitle">Remote
+                users </h2><p class="p">These events are displayed in the console on the
+                    <span class="ph uicontrol">Activity</span> tab for the
+                affected user.</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="event_types_reported_by_the_activity_service__remote_users__entry__1">Event </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__remote_users__entry__2">Description </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__remote_users__entry__3">Example</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__remote_users__entry__1"><strong class="ph b">Role membership</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__remote_users__entry__2">A user is added to or
+                                removed from a role. These events are also shown on the page for the
+                                role. The display name and user ID of the affected user are
+                                displayed. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__remote_users__entry__3"><code class="ph codeph">User Kalo Hill
+                                    (76483e62-5ed4-11e4-aa15-123b93f75cba) added to role
+                                    Viewers.</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__remote_users__entry__1"><strong class="ph b">Revocation</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__remote_users__entry__2">A user is revoked or
+                                reinstated. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__remote_users__entry__3"><code class="ph codeph">User revoked.</code></td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="event_types_reported_by_the_activity_service__directory_groups"><h2 class="title sectiontitle">Directory groups </h2><p class="p">These events are displayed in the
+                console on the <span class="ph uicontrol">Activity</span>
+                tab for the affected group.</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="event_types_reported_by_the_activity_service__directory_groups__entry__1">Event </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__directory_groups__entry__2">Description </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__directory_groups__entry__3">Example</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_groups__entry__1"><strong class="ph b">Importation</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_groups__entry__2">A directory group is
+                                imported. The initial value for each metadata field is reported
+                                (these cannot be updated using the RBAC UI). </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_groups__entry__3"><code class="ph codeph">Created with display name set to
+                                    "Engineers".</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_groups__entry__1"><strong class="ph b">Role membership</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_groups__entry__2">A group is added to or
+                                removed from a role. These events are also shown on the page for the
+                                role. The group's display name and ID are provided. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_groups__entry__3"><code class="ph codeph">Group Engineers
+                                    (7dee3acc-5ed4-11e4-aa15-123b93f75cba) added to role
+                                    Operators.</code></td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="event_types_reported_by_the_activity_service__roles"><h2 class="title sectiontitle">Roles </h2><p class="p">These events are displayed in the console on the <span class="ph uicontrol">Activity</span> tab for the affected
+                role.</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="event_types_reported_by_the_activity_service__roles__entry__1">Event </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__roles__entry__2">Description </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__roles__entry__3">Example</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__1"><strong class="ph b">Metadata</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__2">A role's <code class="ph codeph">display name</code> or <code class="ph codeph">description</code> changes. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__3"><code class="ph codeph">Description set to "Sysadmins with full privileges
+                                    for node groups."</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__1"><strong class="ph b">Members</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__2">A group is added to or
+                                removed from a role. The display name and ID of the user or group
+                                are provided. These events are also displayed on the page for the
+                                affected user or group. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__3"><code class="ph codeph">User Kalo Hill
+                                    (76483e62-5ed4-11e4-aa15-123b93f75cba) removed from role
+                                    Operators.</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__1"><strong class="ph b">Permissions</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__2">A permission is added to or
+                                removed from a role. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__3"><code class="ph codeph">Permission
+                                    users:edit:76483e62-5ed4-11e4-aa15-123b93f75cba added to role
+                                    Operators.</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__1"><strong class="ph b">Delete</strong></td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__2">A role has been removed. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__roles__entry__3">The Delete event is
+                                recorded and available only through the activity service API, not
+                                the <span class="ph uicontrol">Activity</span> tab.</td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="event_types_reported_by_the_activity_service__orchestration"><h2 class="title sectiontitle">Orchestration </h2><p class="p">These events are displayed in the
+                console on the <span class="ph uicontrol">Activity</span>
+                tab for the affected node.</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="event_types_reported_by_the_activity_service__orchestration__entry__1">Event </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__orchestration__entry__2">Description </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__orchestration__entry__3">Example</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__orchestration__entry__1"><strong class="ph b">Agent runs</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__orchestration__entry__2">Puppet runs as part of an
+                                orchestration job. This includes runs started from the orchestrator
+                                or the PE console. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__orchestration__entry__3"><code class="ph codeph">Request Puppet agent run on node.example.com via
+                                    orchestrator job 12.</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__orchestration__entry__1"><strong class="ph b">Task runs</strong></td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__orchestration__entry__2">Tasks run as orchestration
+                                jobs set up in the console or on the command line.</td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__orchestration__entry__3"><code class="ph codeph">Request echo task on
+                                    neptune.example.com via orchestrator job 9,607</code></td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="event_types_reported_by_the_activity_service__authentication_tokens"><h2 class="title sectiontitle">Authentication tokens </h2><p class="p">These events are displayed in
+                the console on the <span class="ph uicontrol">Activity</span> tab on the affected user's page.</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="event_types_reported_by_the_activity_service__authentication_tokens__entry__1">Event </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__authentication_tokens__entry__2">Description </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__authentication_tokens__entry__3">Example</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__authentication_tokens__entry__1"><strong class="ph b">Creation</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__authentication_tokens__entry__2">A new token is generated.
+                                These events are exposed in the console on the <span class="ph uicontrol">Activity</span> tab for the user
+                                who owns the token. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__authentication_tokens__entry__3"><code class="ph codeph">Amari Perez (c84bae61-f668-4a18-9a4a-5e33a97b716c)
+                                    generated an authentication token.</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__authentication_tokens__entry__1"><strong class="ph b">Direct revocation</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__authentication_tokens__entry__2">A successful token
+                                revocation request. These events are exposed in the console on the
+                                    <span class="ph uicontrol">Activity</span> tab for the user performing the
+                                revocation. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__authentication_tokens__entry__3"><code class="ph codeph">Administrator
+                                    (42bf351c-f9ec-40af-84ad-e976fec7f4bd) revoked an authentication
+                                    token belonging to Amari Perez
+                                    (c84bae61-f668-4a18-9a4a-5e33a97b716c), issued at
+                                    2016-02-17T21:53:23.000Z and expiring at
+                                    2016-02-17T21:58:23.000Z.</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__authentication_tokens__entry__1"><strong class="ph b">Revocation by username</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__authentication_tokens__entry__2">All tokens for a username
+                                are revoked. These events are exposed in the console on the
+                                    <span class="ph uicontrol">Activity</span> tab for the user performing the
+                                revocation. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__authentication_tokens__entry__3"><code class="ph codeph">Administrator
+                                    (42bf351c-f9ec-40af-84ad-e976fec7f4bd) revoked all
+                                    authentication tokens belonging to Amari Perez
+                                    (c84bae61-f668-4a18-9a4a-5e33a97b716c).</code></td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="event_types_reported_by_the_activity_service__directory_service_settings"><h2 class="title sectiontitle">Directory service settings </h2><p class="p">These events
+                are not exposed in the console. The activity service API must be used to see these
+                events.</p><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="event_types_reported_by_the_activity_service__directory_service_settings__entry__1">Event </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__directory_service_settings__entry__2">Description </th>
+                            <th class="entry" id="event_types_reported_by_the_activity_service__directory_service_settings__entry__3">Example</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_service_settings__entry__1"><strong class="ph b">Update settings (except password)</strong>
+                            </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_service_settings__entry__2">A setting is changed in the
+                                directory service settings. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_service_settings__entry__3"><code class="ph codeph">User rdn set to "ou=users".</code></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_service_settings__entry__1"><strong class="ph b">Update directory service password</strong></td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_service_settings__entry__2">The directory service
+                                password is changed. </td>
+                            <td class="entry" headers="event_types_reported_by_the_activity_service__directory_service_settings__entry__3"><code class="ph codeph">Password updated.</code></td>
+                        </tr>
+                    </tbody></table></section>
+    </div>
+</article></article></main></body></html>

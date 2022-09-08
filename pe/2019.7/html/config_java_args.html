@@ -1,0 +1,227 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="You might need to increase the Java Virtual Machine (JVM) memory allocated to Java services to improve performance in your Puppet Enterprise (PE) deployment."><meta name="DC.relation" scheme="URI" content="config_intro.html#config_intro"><meta name="DC.relation" scheme="URI" content="tuning_standard.html#tuning_standard"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="config_java_args"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configuring Java arguments</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="config_java_args">
+    <h1 class="title topictitle1" id="ariaid-title1">Configuring Java arguments</h1>
+    
+    <div class="body conbody"><p class="shortdesc">You might need to increase the Java Virtual Machine (JVM)
+        memory allocated to Java services to improve performance in your <span class="ph">Puppet Enterprise (PE)</span> deployment. </p>
+        <div class="p">
+            <div class="note important note_important"><span class="note__title">Important:</span> When you enable disaster recovery, you
+                must use <span class="ph">Hiera</span> or <code class="ph codeph">pe.conf</code> only — not the console — to specify configuration parameters.
+                Using <code class="ph codeph">pe.conf</code> or <span class="ph">Hiera</span> ensures that configuration is applied to both your master and replica. </div>
+        </div>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#config_intro" title="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances.">Methods for configuring Puppet Enterprise</a></li><li class="linklist"><a class="link" href="tuning_standard.html#tuning_standard" title="Use these guidelines to configure your installation to maximize its use of available system (CPU and RAM) resources.">Tuning standard installations</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="increase_the_java_heap_size_for_pe_java_services">
+   <h2 class="title topictitle2" id="ariaid-title2">Increase the Java heap size for <span class="ph">PE</span>
+      Java services </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">The Java heap size is the Java Virtual Machine (JVM) memory
+      allocated to Java services in <span class="ph">Puppet Enterprise (PE)</span>. You can use any
+      configuration method you choose. We will use the console to change the Java heap size for
+      console services, <span class="ph">Puppet Server</span>, orchestration services, or <span class="ph">PuppetDB</span> in the examples below.</p>
+      <section class="section context"><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Ensure that you have sufficient free memory before increasing the
+               memory that is used by a service. The increases shown below are only
+            examples.</div></div></section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>. In the <span class="ph uicontrol">PE
+                  Infrastructure</span> node group, select the node group that corresponds to
+               the service you're increasing heap size for.</span>
+            <div class="itemgroup info">
+               <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__1">Service </th>
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__2">Node group </th>
+                        </tr>
+                     </thead><tbody class="tbody">
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__1">pe-console-services </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__2"> PE Console </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__1">
+                              <span class="ph">Puppet Server</span>
+                           </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__2"> PE Master </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__1">pe-orchestration-services </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__2"> PE Orchestrator </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__1">
+                              <span class="ph">PuppetDB</span>
+                           </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__2"> PE PuppetDB </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__1">
+                              <span class="ph">ActiveMQ</span>
+                           </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__2"> PE ActiveMQ Broker </td>
+                        </tr>
+                     </tbody></table>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Configuration</span> and scroll down to the appropriate class.</span>
+            <div class="itemgroup info">
+               <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__13">Node group </th>
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__14">Class </th>
+                        </tr>
+                     </thead><tbody class="tbody">
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__13"> PE Console </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__14">
+                              <code class="ph codeph">puppet_enterprise::profile::console</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__13"> PE Master </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__14">
+                              <code class="ph codeph">puppet_enterprise::profile::master</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__13"> PE Orchestrator </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__14">
+                              <code class="ph codeph">puppet_enterprise::profile::orchestrator</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__13"> PE PuppetDB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__14">
+                              <code class="ph codeph">puppet_enterprise::profile::puppetdb</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__13"> PE ActiveMQ Broker </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__14">
+                              <code class="ph codeph">puppet_enterprise::profile::amq::broker</code>
+                           </td>
+                        </tr>
+                     </tbody></table>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click the <span class="ph uicontrol">Parameter name</span> list and select <code class="ph codeph">java_args</code>. Increase the heap size by replacing the parameter with the
+               appropriate JSON string.</span>
+            <div class="itemgroup info"><table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__25">Service </th>
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__26">Default heap
+                              size </th>
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__27">New heap size </th>
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__28">JSON string
+                           </th>
+                        </tr>
+                     </thead><tbody class="tbody">
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__25">pe-console-services </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__26">256 MB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__27">512 MB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__28">
+                              <code class="ph codeph">{"Xmx": "512m", "Xms":
+                                 "512m"}</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__25">
+                              <span class="ph">Puppet Server</span>
+                           </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__26">2 GB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__27">4 GB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__28">
+                              <code class="ph codeph">{"Xmx": "4096m", "Xms":
+                                 "4096m"}</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__25">orchestration-services </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__26">192 MB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__27">1000 MB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__28">
+                              <code class="ph codeph">{"Xmx": "1000m", "Xms":
+                                 "1000m"}</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__25">
+                              <span class="ph">PuppetDB</span>
+                           </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__26">256 MB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__27">512 MB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__28">
+                              <code class="ph codeph">{"Xmx": "512m", "Xms":
+                                 "512m"}</code>
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__25">
+                              <span class="ph">ActiveMQ</span>
+                           </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__26">512 MB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__27">1024 MB </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__28">
+                              <code class="ph codeph">{"Xmx": "1024m", "Xms":
+                                 "1024m"}</code>
+                           </td>
+                        </tr>
+                     </tbody></table></div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Add Parameter</span> and then commit changes.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Run <span class="ph">Puppet</span> on the
+               appropriate nodes to apply the change. If you're running it on the console node, the
+               console will be unavailable briefly while <code class="ph codeph">pe-console-services</code> restarts.</span>
+            <div class="itemgroup info"><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__49">Service </th>
+                           <th class="entry align-left" id="increase_the_java_heap_size_for_pe_java_services__entry__50">Node </th>
+                        </tr>
+                     </thead><tbody class="tbody">
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__49">pe-console-services </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__50">console
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__49">
+                              <span class="ph">Puppet Server</span>
+                           </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__50"> master and
+                              compile masters </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__49">pe-orchestration-services </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__50"> master
+                           </td>
+                        </tr>
+                        <tr class="row">
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__49">
+                              <span class="ph">PuppetDB</span>
+                           </td>
+                           <td class="entry align-left" headers="increase_the_java_heap_size_for_pe_java_services__entry__50">
+                              <span class="ph">PuppetDB</span>
+                           </td>
+                        </tr>
+                     </tbody></table></div>
+         </li></ol></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="disable_java_garbage_collection_logging">
+    <h2 class="title topictitle2" id="ariaid-title3">Disable Java garbage collection logging </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Java garbage collection logs can be useful when diagnosing
+        performance issues with JVM-based <span class="ph">PE</span> services. Garbage
+        collection logs are enabled by default, and the results are captured in the support script,
+        but you can disable them.</p>
+        <section><div class="li step p">
+                <span class="ph cmd">Use Hiera or pe.conf to disable garbage collection
+                    logging by adding or changing the following parameters, as needed:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>puppet_enterprise::console_services::enable_gc_logging: false
+puppet_enterprise::master::puppetserver::enable_gc_logging: false
+puppet_enterprise::profile::orchestrator::enable_gc_logging: false
+puppet_enterprise::puppetdb::enable_gc_logging: false
+puppet_enterprise::profile::amq::broker::enable_gc_logging: false</code></pre></div></div>
+            </div></section>
+    </div>
+</article></article></article></main></body></html>

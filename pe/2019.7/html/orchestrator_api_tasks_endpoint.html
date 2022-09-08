@@ -1,0 +1,266 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the /tasks endpoint to view details about the tasks pre-installed by PE and those you've installed."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Mindy Moreland <mindy.moreland@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrator_api_tasks_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet orchestrator API: tasks endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="orchestrator_api_tasks_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">Puppet</span> orchestrator API: tasks
+        endpoint</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">/tasks</code> endpoint to view details about the tasks pre-installed by
+        PE and those you've installed. </p>
+        <p class="p"></p>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="orchestrator_api_get_tasks">
+  <h2 class="title topictitle2" id="ariaid-title2">GET /tasks</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">Lists all tasks in a given environment. </p>
+    <section class="section"><h3 class="title sectiontitle">Parameters</h3><p class="p">The request accepts this query parameter:</p><div class="p"><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+              <tr class="row">
+                <th class="entry" id="orchestrator_api_get_tasks__entry__1">Parameter</th>
+                <th class="entry" id="orchestrator_api_get_tasks__entry__2">Definition</th>
+              </tr>
+            </thead><tbody class="tbody">
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks__entry__1">
+                  <code class="ph codeph">environment</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks__entry__2">Returns the tasks in the specified environment. If
+                  unspecified, defaults to <code class="ph codeph">production</code>. </td>
+              </tr>
+            </tbody></table></div></section>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><p class="p">The response is a JSON object that lists each known task with a link to
+        additional information, and uses these keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="orchestrator_api_get_tasks__entry__5">Key</th>
+              <th class="entry" id="orchestrator_api_get_tasks__entry__6">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_tasks__entry__5">
+                <code class="ph codeph">environment</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_tasks__entry__6">A map containing a&nbsp;<code class="ph codeph">name</code>&nbsp;key specifying the environment's
+                name and a&nbsp;<code class="ph codeph">code_id</code>&nbsp;key indicating the code ID where the task is listed.
+              </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_tasks__entry__5">
+                <code class="ph codeph">items</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_tasks__entry__6">Contains an array of all known tasks.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_tasks__entry__5">
+                <code class="ph codeph">id</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_tasks__entry__6">An absolute URL where the task's details are listed.
+              </td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="orchestrator_api_get_tasks__entry__5">
+                <code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="orchestrator_api_get_tasks__entry__6">The full name of the task. </td>
+            </tr>
+          </tbody></table><pre class="pre codeblock"><code>{
+  "environment": {
+    "name": "production",
+    "code_id": "urn:puppet:code-id:1:a86da166c30f871823f9b2ea224796e834840676;production"
+  },
+  "items": [
+    {
+      "id": "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install",
+      "name": "package::install"
+    },
+    {
+      "id": "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/upgrade",
+      "name": "package::upgrade"
+    },
+    {
+      "id": "https://orchestrator.example.com:8143/orchestrator/v1/tasks/exec/init",
+      "name": "exec"
+    }
+  ]
+}</code></pre></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3><div class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict. <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+              <tr class="row">
+                <th class="entry" id="orchestrator_api_get_tasks__entry__15">Key</th>
+                <th class="entry" id="orchestrator_api_get_tasks__entry__16">Definition</th>
+              </tr>
+            </thead><tbody class="tbody">
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks__entry__15">
+                  <code class="ph codeph">puppetlabs.orchestrator/validation-error</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks__entry__16">If the <code class="ph codeph">environment</code> parameter is not a legal environment name,
+                  the server returns a 400 response. </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks__entry__15">
+                  <code class="ph codeph">puppetlabs.orchestrator/unknown-environment</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks__entry__16">If the specified <code class="ph codeph">environment</code> doesn't exist, the server returns a 404
+                  response. </td>
+              </tr>
+            </tbody></table>
+      </div></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="orchestrator_api_get_tasks_module_taskname">
+  <h2 class="title topictitle2" id="ariaid-title3">GET /tasks/:module/:taskname</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">Returns data about a specified task, including metadata and
+    file information. For the default task in a module,&nbsp;<code class="ph codeph">:taskname</code>&nbsp; is &nbsp;<code class="ph codeph">init</code>.</p>
+    <section class="section"><h3 class="title sectiontitle">Parameters</h3><p class="p">The request accepts this query parameter:</p><div class="p">
+        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+              <tr class="row">
+                <th class="entry" id="orchestrator_api_get_tasks_module_taskname__entry__1">Parameter</th>
+                <th class="entry" id="orchestrator_api_get_tasks_module_taskname__entry__2">Definition</th>
+              </tr>
+            </thead><tbody class="tbody">
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__1">
+                  <code class="ph codeph">environment</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__2">Returns the tasks in the specified environment. If
+                  unspecified, defaults to <code class="ph codeph">production</code>. </td>
+              </tr>
+            </tbody></table>
+      </div></section>
+    <section class="section"><h3 class="title sectiontitle">Response format</h3><div class="p">The response is a JSON object that includes information about the
+        specified task, and uses these keys: <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+              <tr class="row">
+                <th class="entry" id="orchestrator_api_get_tasks_module_taskname__entry__5">Key</th>
+                <th class="entry" id="orchestrator_api_get_tasks_module_taskname__entry__6">Definition</th>
+              </tr>
+            </thead><tbody class="tbody">
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__5">
+                  <code class="ph codeph">id</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__6">An absolute URL where the task's details are listed.
+                </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__5">
+                  <code class="ph codeph">name</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__6">The full name of the task. </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__5">
+                  <code class="ph codeph">environment</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__6">A map containing a <code class="ph codeph">name</code> key specifying the environment's name
+                  and a <code class="ph codeph">code_id</code> key
+                  indicating the code ID where the task is listed. </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__5">
+                  <code class="ph codeph">metadata</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__6">A map containing the contents of the <code class="ph codeph">&lt;task&gt;.json</code> file. </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__5">
+                  <code class="ph codeph">files</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__6">An array of the files in the task.</td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__5">
+                  <code class="ph codeph">filename</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__6">The base name of the file.</td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__5">
+                  <code class="ph codeph">uri</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__6">A map containing&nbsp;<code class="ph codeph">path</code>&nbsp;and&nbsp;<code class="ph codeph">params</code>&nbsp;fields to construct a
+                  URL to download the file content. The client determines which host to download the
+                  file from. </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__5">
+                  <code class="ph codeph">sha256</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__6">The SHA-256 hash of the file content, in lowercase
+                  hexadecimal form.</td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__5">
+                  <code class="ph codeph">size_bytes</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__6">The size of the file content in bytes.</td>
+              </tr>
+            </tbody></table>For example:
+        <pre class="pre codeblock"><code>{
+  "id": "https://orchestrator.example.com:8143/orchestrator/v1/tasks/package/install",
+  "name": "package::install",
+  "environment": {
+    "name": "production",
+    "code_id": "urn:puppet:code-id:1:a86da166c30f871823f9b2ea224796e834840676;production"
+  },
+  "metadata": {
+    "description": "Install a package",
+    "supports_noop": true,
+    "input_method": "stdin",
+    "parameters": {
+      "name": {
+        "description": "The package to install",
+        "type": "String[1]"
+      },
+      "provider": {
+        "description": "The provider to use to install the package",
+        "type": "Optional[String[1]]"
+      },
+      "version": {
+        "description": "The version of the package to install, defaults to latest",
+        "type": "Optional[String[1]]"
+      }
+    }
+  },
+  "files": [
+    {
+      "filename": "install",
+      "uri": {
+        "path": "/package/tasks/install",
+        "params": {
+          "environment": "production"
+        }
+      },
+      "sha256": "a9089b5b9720dca38a49db6f164cf8a053a7ea528711325da1c23de94672980f",
+      "size_bytes": 693
+    }
+  ]
+}</code></pre></div></section>
+    <section class="section"><h3 class="title sectiontitle">Error responses</h3><div class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict. <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+              <tr class="row">
+                <th class="entry" id="orchestrator_api_get_tasks_module_taskname__entry__25">Key</th>
+                <th class="entry" id="orchestrator_api_get_tasks_module_taskname__entry__26">Definition</th>
+              </tr>
+            </thead><tbody class="tbody">
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__25">
+                  <code class="ph codeph">puppetlabs.orchestrator/validation-error</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__26">If the <code class="ph codeph">environment</code> parameter is not a legal environment name,
+                  or the module or taskname is invalid,&nbsp;the server returns a 400 response.
+                </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__25">
+                  <code class="ph codeph">puppetlabs.orchestrator/unknown-environment</code>
+                </td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__26">If the specified environment doesn't exist, the server
+                  returns a 404 response. </td>
+              </tr>
+              <tr class="row">
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__25"><code class="ph codeph">puppetlabs.orchestrator/unknown-task</code></td>
+                <td class="entry" headers="orchestrator_api_get_tasks_module_taskname__entry__26">If the specified task doesn't exist within the
+                  specified environment, the server returns a&nbsp;404&nbsp;response.</td>
+              </tr>
+            </tbody></table></div></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a></li></ul></div></nav></article></article></article></main></body></html>

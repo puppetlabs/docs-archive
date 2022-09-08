@@ -1,0 +1,729 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="To customize your Code Manager configuration, set parameters with Hiera."><meta name="DC.relation" scheme="URI" content="config_intro.html#configure_settings_with_hiera"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="customize_code_manager_configuration_in_hiera"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Customize Code Manager configuration in Hiera</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="customize_code_manager_configuration_in_hiera">
+    <h1 class="title topictitle1" id="ariaid-title1">Customize <span class="ph">Code Manager</span>
+        configuration in <span class="ph">Hiera</span>
+    </h1>
+    
+    <div class="body conbody"><p class="shortdesc">To customize your Code Manager configuration, set
+        parameters with <span class="ph">Hiera</span>.</p>
+        <p class="p">Add <span class="ph">Code Manager</span> parameters
+            in the <code class="ph codeph">puppet_enterprise::master::code_manager</code> class with Hiera.</p>
+        <div class="p"><div class="note important note_important"><span class="note__title">Important:</span> <p class="p">Do
+                    not edit the <span class="ph">Code Manager</span>
+                    configuration file manually. <span class="ph">Puppet</span>
+                    manages this configuration file automatically and undoes any manual changes you
+                    make.</p></div></div>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#configure_settings_with_hiera" title="Hiera is a hierarchy-based method of configuration management that relies on a “defaults, with overrides” system. When you add a parameter or setting to your Hiera data, Hiera searches through the data in the order it was written to find the value you want to change. Once found, it overrides the default value with the new parameter or setting. You can use Hiera to manage your PE configuration settings.">Configure settings with Hiera</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="add_code_manager_parameters_in_hiera">
+    <h2 class="title topictitle2" id="ariaid-title2">Add <span class="ph">Code Manager</span> parameters in <span class="ph">Hiera</span>
+    </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To customize your <span class="ph">Code Manager</span> configuration, add
+        parameters to your control repository hierarchy in the <code class="ph codeph">data/common.yaml</code>
+        file.</p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Add the parameter to <code class="ph codeph">data/common.yaml</code> in the format:
+                        <code class="ph codeph">puppet_enterprise::master::code_manager::&lt;parameter&gt;</code></span>
+                <div class="itemgroup stepxmp">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>puppet_enterprise::master::code_manager::deploy_pool_size: 4
+puppet_enterprise::master::code_manager::timeouts_deploy: 300
+</code></pre>
+                    </div>
+                </div>
+                <div class="itemgroup stepresult">
+                    <p class="p">The first parameter in this example increases the size of the default worker
+                        pool, and the second reduces the maximum time allowed for deploying a single
+                        environment.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run <span class="ph">Puppet</span> on the
+                    master to apply changes.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="config_post_env_hooks">
+    <h2 class="title topictitle2" id="ariaid-title3">Configuring post-environment hooks</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Configure post-environment hooks to trigger custom actions
+        after your environment deployment.</p>
+        <p class="p">To configure list of hooks to run after an environment has been
+            deployed, specify the <span class="ph">Code Manager</span><code class="ph codeph"> post_environment_hook</code> setting in <span class="ph">Hiera</span>.</p>
+        <div class="p"> This parameter accepts an array of hashes, with the following keys:
+                <ul class="ul">
+                <li class="li">
+                    <p class="p">
+                        <code class="ph codeph">url</code>
+                    </p>
+                </li>
+                <li class="li">
+                    <p class="p">
+                        <code class="ph codeph">use-client-ssl</code>
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <p class="p">For example, to enable <span class="ph">Code Manager</span> to update classes in the
+            console after deploying code to your environments.</p>
+        <div class="example">
+            <pre class="pre codeblock"><code>puppet_enterprise::master::code_manager::post_environment_hooks: 
+  - url: 'https://console.yourorg.com:4433/classifier-api/v1/update-classes'    
+    use-client-ssl: true </code></pre>
+        </div>
+        <section class="section"><h3 class="title sectiontitle">url</h3>
+            
+            <p class="p">This setting specifies an HTTP URL to send a request to, with the
+                result of the environment deploy. The URL receives a POST with a JSON body with the
+                structure:</p>
+            <pre class="pre codeblock"><code>{
+     "deploy-signature":"482f8d3adc76b5197306c5d4c8aa32aa8315694b",
+     "file-sync":{
+       "environment-commit":"6939889b679fdb1449545c44f26aa06174d25c21",
+       "code-commit":"ce5f7158615759151f77391c7b2b8b497aaebce1"},
+     "environment":"production",
+     "id":3,
+     "status":"complete"
+   }</code></pre>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">use-client-ssl</h3>
+            
+            <p class="p">Specifies whether the client SSL configuration is used for HTTPS
+                connections. If the hook destination is a server using the <span class="ph">Puppet</span> CA, set this to <code class="ph codeph">true</code>; otherwise, set it to <code class="ph codeph">false</code>. Defaults to <code class="ph codeph">false</code>.</p>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="config_garbage_collection">
+    <h2 class="title topictitle2" id="ariaid-title4">Configuring garbage collection</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">By default, <span class="ph">Code Manager</span> retains
+        environment deployments in memory for one hour, but you can adjust this by configuring
+        garbage collection.&nbsp;</p>
+        <p class="p">To configure the frequency of <span class="ph">Code Manager</span>
+            garbage collection, specify the <code class="ph codeph">deploy_ttl</code> parameter in <span class="ph">Hiera</span>. By default,
+            deployments are kept for one hour.</p>
+        <p class="p">Specify the time as a string using any of the following suffixes:</p>
+        <div class="p">
+            <ul class="ul">
+                <li class="li">
+                    <p class="p"><code class="ph codeph">d</code> -
+                        days</p>
+                </li>
+                <li class="li">
+                    <p class="p"><code class="ph codeph">h</code> -
+                        hours</p>
+                </li>
+                <li class="li">
+                    <p class="p"><code class="ph codeph">m</code> -
+                        minutes</p>
+                </li>
+                <li class="li">
+                    <p class="p"><code class="ph codeph">s</code> -
+                        seconds</p>
+                </li>
+                <li class="li">
+                    <p class="p"><code class="ph codeph">ms</code> -
+                        milliseconds</p>
+                </li>
+            </ul>
+        </div>
+        <p class="p">For example, a value of <code class="ph codeph">30d</code> would configure <span class="ph">Code Manager</span> to keep the
+            deployment in memory for 30 days, and a value of <code class="ph codeph">48h</code> would maintain the deployment in memory for 48 hours.</p>
+        <p class="p">If the value of <code class="ph codeph">deploy-ttl</code> is less than the combined values of <code class="ph codeph">timeouts_fetch</code>, <code class="ph codeph">timeouts_sync</code>, and <code class="ph codeph">timeouts_deploy</code>, all completed deployments are retained indefinitely,
+            which might significantly slow the performance of <span class="ph">Code Manager</span>
+            over time.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="config_forge_settings__title-config-forge-settings" id="config_forge_settings">
+    <h2 class="title topictitle2" id="config_forge_settings__title-config-forge-settings">Configuring <span class="ph">Forge</span> settings</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">To configure how <span class="ph">Code Manager</span> downloads modules from the <span class="ph">Forge</span>, specify <code class="ph codeph">forge_settings</code> in <span class="ph">Hiera</span>.</p>
+        <div class="p">This parameter configures where <span class="ph">Forge</span> modules should be installed from, and sets a proxy for
+         all <span class="ph">Forge</span> interactions. The <code class="ph codeph">forge_settings</code> parameter accepts a hash with the following
+         values: <ul class="ul">
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">baseurl</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">proxy</code>
+               </p>
+            </li>
+         </ul></div>
+        <section class="section"><h3 class="title sectiontitle">baseurl</h3>
+            
+            <p class="p">Indicates where <span class="ph">Forge</span> modules should be installed from. Defaults to <code class="ph codeph">https://forgeapi.puppetlabs.com</code>.</p>
+            <pre class="pre codeblock yaml"><code>puppet_enterprise::master::code_manager::forge_settings: 
+  baseurl: 'https://private-forge.mysite'</code></pre>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">proxy</h3><p class="p">Sets the proxy for all <span class="ph">Forge</span> interactions.</p><p class="p"> This setting
+            overrides the global <code class="ph codeph">proxy</code> setting on
+               <span class="ph">Forge</span> operations only. You can set an unauthenticated
+            proxy or an authenticated proxy with either Basic or Digest authentication. See the
+            global <code class="ph codeph">proxy</code> setting for more
+            information and examples.</p><div class="p">
+            <pre class="pre codeblock"><code>proxy: 'http://proxy.example.com:3128'</code></pre>
+         </div></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="config_git_settings">
+    <h2 class="title topictitle2" id="ariaid-title6">Configuring <span class="ph">Git</span> settings</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">To configure <span class="ph">Code Manager</span> to use
+        a private key, a proxy, or multiple repositories with <span class="ph">Git</span>,
+        specify the <code class="ph codeph">git_settings</code>
+        parameter.</p>
+        <div class="p">The <code class="ph codeph">git_settings</code> parameter accepts a hash of the following settings: <ul class="ul">
+                <li class="li">
+                    <p class="p">
+                        <code class="ph codeph">private-key</code>
+                    </p>
+                </li>
+                <li class="li">
+                    <p class="p">
+                        <code class="ph codeph">proxy</code>
+                    </p>
+                </li>
+                <li class="li">
+                    <p class="p">
+                        <code class="ph codeph">repositories</code>
+                    </p>
+                </li>
+            </ul><div class="note note note_note"><span class="note__title">Note:</span> You cannot use the <code class="ph codeph">git_settings</code> hash with the
+                default Code Manager settings for <code class="ph codeph">r10k_private_key</code>.
+                To avoid errors, remove the <code class="ph codeph">r10k_private_key</code> from
+                the <code class="ph codeph">puppet_enterprise::profile::master</code>
+            class.</div></div>
+        <section class="section"><h3 class="title sectiontitle">private-key</h3>
+            
+            <p class="p">Specifies the file containing the default
+         private key used to access control repositories, such as <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa</code>. This file
+         must have read permissions for the <code class="ph codeph">pe-puppet</code> user. The SSH key cannot require a password. This setting is
+         required, but by default, the value is supplied by the master profile in the console.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">proxy</h3><p class="p">Sets a proxy specifically for <span class="ph">Git</span> operations that use an HTTP(S) transport. </p><div class="p">This setting overrides the global <code class="ph codeph">proxy</code> setting on <span class="ph">Git</span> operations
+            only. You can set an unauthenticated proxy or an authenticated proxy with either Basic
+            or Digest authentication. To set a proxy for a specific <span class="ph">Git</span> repository only, set <code class="ph codeph">proxy</code> in the
+               <code class="ph codeph">repositories</code> subsetting of <code class="ph codeph">git_settings</code>. See the global <code class="ph codeph">proxy</code> setting for more information and
+            examples.<pre class="pre codeblock"><code>proxy: 'http://proxy.example.com:3128'</code></pre></div></section>
+        <section class="section"><h3 class="title sectiontitle">repositories</h3>
+            
+            <p class="p">Specifies a list of repositories and their respective private
+                keys. Use this setting if you want to use multiple control repos.</p>
+            <p class="p"> To use multiple control repos, the <code class="ph codeph">sources</code> setting and the <code class="ph codeph">repositories</code> setting must match. Accepts the following
+                settings:</p>
+            <ul class="ul">
+                <li class="li"><code class="ph codeph">remote</code>: The
+                    repository to which these settings apply.</li>
+                <li class="li"><code class="ph codeph">private-key</code>: The file containing the private key to use for this
+                    repository. This file must have read permissions for the <code class="ph codeph">pe-puppet</code> user.</li>
+                <li class="li"><code class="ph codeph">proxy</code>: The
+                        <code class="ph codeph">proxy</code> setting allows you to
+                    set or override the global proxy setting for a single, specific repository. See
+                    the global <code class="ph codeph">proxy</code> setting for
+                    more information and examples.</li>
+            </ul>
+            <p class="p">The <code class="ph codeph">repositories</code>
+                setting accepts a hash in the following format:</p>
+            <div class="p">
+                <pre class="pre codeblock"><code>repositories: 
+  - remote: "jfkennedy@gitserver.puppetlabs.net:repositories/repo_one.git"
+  private-key: "/test_keys/jfkennedy"
+  - remote: "whtaft@gitserver.puppetlabs.net:repositories/repo_two.git"
+  private-key: "/test_keys/whtaft"
+  - remote: "https://git.example.com/git_repos/environments.git"
+  proxy: "https://proxy.example.com:3128"</code></pre>
+            </div>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="config_proxies">
+    <h2 class="title topictitle2" id="ariaid-title7">Configuring proxies</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">To configure proxy servers, use the proxy setting. You can
+        set a global proxy for all HTTP(S) operations, for all <span class="ph">Git</span> or
+            <span class="ph">Forge</span> operations, or for a specific <span class="ph">Git</span> repository only.</p>
+        <section class="section"><h3 class="title sectiontitle">proxy</h3><p class="p">To set a proxy for all operations occurring over an
+            HTTP(S) transport, set the global <code class="ph codeph">proxy</code>
+            setting. You can also set an authenticated proxy with either Basic or Digest
+            authentication.</p><p class="p">To override this setting for <span class="ph">Git</span> or <span class="ph">Forge</span> operations
+            only, set the <code class="ph codeph">proxy</code> subsetting under
+            the <code class="ph codeph">git_settings</code> or <code class="ph codeph">forge_settings</code> parameters. To override for a specific
+               <span class="ph">Git</span> repository, set a proxy in the <code class="ph codeph">repositories</code> list of <code class="ph codeph">git_settings</code>. To override this setting with no proxy for <span class="ph">Git</span>, <span class="ph">Forge</span>, or a particular
+            repository, set that specific <code class="ph codeph">proxy</code>
+            setting to an empty string.</p><p class="p">In this example, the first proxy is
+            set up without authentication, and the second proxy uses authentication:
+         </p><pre class="pre codeblock"><code>proxy: 'http://proxy.example.com:3128'
+proxy: 'http://user:password@proxy.example.com:3128'
+</code></pre></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="config_sources">
+    <h2 class="title topictitle2" id="ariaid-title8">Configuring sources</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">If you are managing more than one repository with <span class="ph">Code Manager</span>, specify a map of your source
+        repositories.</p>
+        <p class="p">Use the <code class="ph codeph">source</code>
+            parameter to specify a map of sources. Configure this setting if you are managing more
+            than just <span class="ph">Puppet</span> environments, such as when you
+            are also managing <span class="ph">Hiera</span> data in its own control
+            repository. </p>
+        <p class="p">To use multiple control repos, the <code class="ph codeph">sources</code> setting and the <code class="ph codeph">repositories</code> setting must match. </p>
+        <p class="p">If <code class="ph codeph">sources</code> is set,
+            you cannot use the global <code class="ph codeph">remote</code>
+            setting. If you are using multiple sources, use the prefix option to prevent
+            collisions.</p>
+        <p class="p">The <code class="ph codeph">sources</code> setting
+            accepts a hash with the following subsettings:</p>
+        <ul class="ul">
+            <li class="li">remote</li>
+            <li class="li">prefix</li>
+        </ul>
+        <pre class="pre codeblock yaml"><code>myorg: 
+  remote: "git://git-server.site/myorg/main-modules"
+  prefix: true
+mysource: 
+  remote: "git://git-server.site/mysource/main-modules"
+  prefix: "testing"</code></pre>
+        <section class="section"><h3 class="title sectiontitle">remote</h3>
+            
+            <p class="p">Specifies the location from which you fetch the source repository.
+                The remote must be able to be fetched without any interactive input. That is, you
+                cannot be prompted for usernames or passwords in order to fetch the remote.</p>
+            <p class="p">Accepts a string that is any valid URL that <span class="ph">r10k</span> can clone, such as <code class="ph codeph">git://git-server.site/my-org/main-modules</code>.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">prefix</h3><p class="p">Specifies a string to prefix to environment names.
+            Alternatively, if <code class="ph codeph">prefix</code> is set to
+               <code class="ph codeph">true</code>, the source's name is used.
+            This prevents collisions when multiple sources are deployed into the same
+            directory.</p><p class="p">For example, with two "main-modules" environments
+            set up in the same base directory, the prefix setting differentiates the environments:
+            the first is named "myorg-main-modules", and the second is "testing-main-modules".</p><div class="p">
+            <pre class="pre codeblock"><code>myorg: 
+     remote: "git://git-server.site/myorg/main-modules"
+     prefix: true
+   mysource: 
+     remote: "git://git-server.site/mysource/main-modules"
+     prefix: "testing"</code></pre>
+         </div></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title9" id="code_manager_parameters">
+   <h2 class="title topictitle2" id="ariaid-title9">
+      <span class="ph">Code Manager</span> parameters </h2>
+   
+   <div class="body refbody"><p class="shortdesc">
+      <span class="ph">Code Manager</span> parameters </p>
+      <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+               <tr class="row">
+                  <th class="entry" id="code_manager_parameters__entry__1">Parameter</th>
+                  <th class="entry" id="code_manager_parameters__entry__2">Description</th>
+                  <th class="entry" id="code_manager_parameters__entry__3">Value</th>
+                  <th class="entry" id="code_manager_parameters__entry__4">Default</th>
+               </tr>
+            </thead><tbody class="tbody">
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">remote</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">The location of the <span class="ph">Git</span> control repository. Either the <code class="ph codeph">remote</code> or <code class="ph codeph">sources</code>
+                     parameters must be specified. If <code class="ph codeph">remote</code> is already specified in the master profile, that value is
+                     used here. If both the <code class="ph codeph">sources</code>
+                     and <code class="ph codeph">remote</code> keys are specified,
+                     the <code class="ph codeph">sources</code> key overrides
+                        <code class="ph codeph">remote</code>. </td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">A string that is a valid SSH URL for your <span class="ph">Git</span> remote.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">No default.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">authenticate_webhook</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">Turns on RBAC authentication for the <code class="ph codeph">/v1/webhook</code> endpoint. </td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">Boolean.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">true</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">cachedir</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">The path to the location where <span class="ph">Code Manager</span> caches <span class="ph">Git</span>
+                     repositories.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">A valid file path.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__4"><code class="ph codeph">/opt/puppetlabs/server/data/code-manager/cache</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">certname</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">The certname of the <span class="ph">Puppet</span> signed certs to use for SSL.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">A valid certname.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__4"> Defaults to <code class="ph codeph">$::clientcert</code>. </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">data</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">The path to the directory where <span class="ph">Code Manager</span> stores internal file content.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">A valid file path.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">/opt/puppetlabs/server/data/code-manager</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">deploy_pool_size</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">Specifies the number of threads in the worker pool;
+                     this dictates how many deploy processes can run in parallel.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">An integer.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">2</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">deploy_ttl</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">Specifies the length of time completed deployments
+                     are retained before garbage collection. For usage details, see configuring
+                     garbage collection.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">The time as a string, using any of the following
+                        suffixes:</p>
+                     <div class="p">
+                        <ul class="ul">
+                           <li class="li">
+                              <p class="p"><code class="ph codeph">d</code> - days </p>
+                           </li>
+                           <li class="li">
+                              <p class="p"><code class="ph codeph">h</code> - hours </p>
+                           </li>
+                           <li class="li">
+                              <p class="p"><code class="ph codeph">m</code> - minutes </p>
+                           </li>
+                           <li class="li">
+                              <p class="p"><code class="ph codeph">s</code> - seconds </p>
+                           </li>
+                           <li class="li">
+                              <p class="p"><code class="ph codeph">ms</code> - milliseconds </p>
+                           </li>
+                        </ul>
+                     </div>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4"><code class="ph codeph">1h</code>
+                     (one hour) </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">hostcrl</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">The path to the SSL CRL. </td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">A valid file path.</p>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">$puppet_enterprise::params::hostcrl</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">localcacert</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">The path to the SSL CA cert. </td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">A valid file path.</p>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">$puppet_enterprise::params::localcacert</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">post_environment_hooks</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">A list of hooks to run after an environment has been
+                     deployed. Specifies: <ul class="ul">
+                        <li class="li">
+                           <p class="p">an HTTP URL to send deployment results to,</p>
+                        </li>
+                        <li class="li">
+                           <p class="p">Whether to use client SSL for HTTPS connections</p>
+                        </li>
+                     </ul>For usage details, see configuring post-environment hooks.&nbsp; </td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <div class="p">An array of hashes that can include the keys: <ul class="ul">
+                           <li class="li">
+                              <p class="p">
+                                 <code class="ph codeph">url</code>
+                              </p>
+                           </li>
+                           <li class="li">
+                              <p class="p">
+                                 <code class="ph codeph">use-client-ssl</code>
+                              </p>
+                           </li>
+                        </ul></div>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">No default.</td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">timeouts_deploy</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">Maximum execution time (in seconds) for deploying a
+                     single environment.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">An integer</p>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">600</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">timeouts_fetch</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">Maximum execution time (in seconds) for updating the
+                     control repo state.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">An integer.</p>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">30</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1"><code class="ph codeph">timeouts_hook</code>&nbsp; </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">Maximum time (in seconds) to wait for a single
+                     post-environment hook URL to respond. Used for both the socket connect timeout
+                     and the read timeout, so the longest total timeout would be twice the specified
+                     value.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">An integer.</p>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">30</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">timeouts_shutdown</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">Maximum time (in seconds) to wait for in-progress
+                     deploys to complete when shutting down the service.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">An integer.</p>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">610</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">timeouts_sync</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">Maximum time (in seconds) that a request sent with a
+                        <code class="ph codeph">wait</code> parameter must wait
+                     for all compilers to receive deployed code before timing out. </td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">An integer.</p>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">60</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">webserver_ssl_host</code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">The host that <span class="ph">Code Manager</span>
+                     listens on.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">An IP address</p>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">0.0.0.0</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="code_manager_parameters__entry__1">
+                     <code class="ph codeph">webserver_ssl_port </code>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__2">The port that <span class="ph">Code Manager</span>
+                     listens on. Port 8170 must be open if you're using <span class="ph">Code Manager</span>.</td>
+                  <td class="entry" headers="code_manager_parameters__entry__3">
+                     <p class="p">A port number.</p>
+                  </td>
+                  <td class="entry" headers="code_manager_parameters__entry__4">
+                     <code class="ph codeph">8170</code>
+                  </td>
+               </tr>
+            </tbody></table>
+      <section class="section"><h3 class="title sectiontitle">
+            <span class="ph">r10k</span> specific parameters&nbsp;</h3>
+         
+         <p class="p">These parameters are specific to <span class="ph">r10k</span>,
+            which&nbsp; <span class="ph">Code Manager</span> uses in the background.</p>
+         <div class="p">
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="code_manager_parameters__entry__73">Parameter</th>
+                        <th class="entry" id="code_manager_parameters__entry__74">Description</th>
+                        <th class="entry" id="code_manager_parameters__entry__75">Value</th>
+                        <th class="entry" id="code_manager_parameters__entry__76">Default</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="code_manager_parameters__entry__73">
+                           <code class="ph codeph">environmentdir</code>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__74">The single directory to which <span class="ph">Code Manager</span> deploys all sources. If <code class="ph codeph">file_sync_auto_commit</code> is set
+                           to <code class="ph codeph">true</code>, this defaults
+                              to<code class="ph codeph">/etc/puppetlabs/code-staging/environments</code>. See <code class="ph codeph">file_sync_auto_commit</code>.</td>
+                        <td class="entry" headers="code_manager_parameters__entry__75">Directory</td>
+                        <td class="entry" headers="code_manager_parameters__entry__76">
+                           <code class="ph codeph">/etc/puppetlabs/code-staging/environments</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_manager_parameters__entry__73">
+                           <code class="ph codeph">forge_settings</code>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__74">Contains settings for downloading modules from
+                           the <span class="ph">Forge</span>. See <a class="xref" href="code_mgr_customizing.html#config_forge_settings" title="To configure how Code Manager downloads modules from the Forge, specify forge_settings in Hiera.">Configuring Forge
+                              settings</a> for usage details.</td>
+                        <td class="entry" headers="code_manager_parameters__entry__75">
+                           <div class="p">Accepts a hash of: <ul class="ul">
+                                 <li class="li">
+                                    <p class="p">
+                                       <code class="ph codeph">baseurl</code>
+                                    </p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p">
+                                       <code class="ph codeph">proxy</code>
+                                    </p>
+                                 </li>
+                              </ul></div>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__76">No default.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_manager_parameters__entry__73">
+                           <code class="ph codeph">invalid_branches</code>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__74">Specifies, for all sources, how branch names
+                           that cannot be cleanly mapped to <span class="ph">Puppet</span>
+                           environments are handled. </td>
+                        <td class="entry" headers="code_manager_parameters__entry__75">
+                           <ul class="ul">
+                              <li class="li">
+                                 <p class="p">'correct': Replaces non-word characters with
+                                    underscores and gives no warning.</p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">'error': Ignores branches with non-word
+                                    characters and issues an error.</p>
+                              </li>
+                           </ul>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__76">'error'</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_manager_parameters__entry__73">
+                           <code class="ph codeph">git_settings</code>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__74">Configures settings for <span class="ph">Git</span>: <ul class="ul">
+                              <li class="li">
+                                 <p class="p">Specifies the file containing the default
+                                    private key used to access control repositories.</p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">Sets or overrides the global proxy setting
+                                    specifically for <span class="ph">Git</span> operations
+                                    that use an HTTP(S) transport. </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">Specifies a list of repositories and their
+                                    respective private keys.</p>
+                              </li>
+                           </ul> See <a class="xref" href="code_mgr_customizing.html#config_git_settings" title="To configure Code Manager to use a private key, a proxy, or multiple repositories with Git, specify the git_settings parameter.">Configuring Git
+                              settings</a> for usage details.</td>
+                        <td class="entry" headers="code_manager_parameters__entry__75">Accepts a hash of: <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">private-key</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">proxy</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">repositories</code>
+                                 </p>
+                              </li>
+                           </ul></td>
+                        <td class="entry" headers="code_manager_parameters__entry__76"> Default <code class="ph codeph">private-key</code> value as set in console. No other default
+                           settings.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_manager_parameters__entry__73">
+                           <code class="ph codeph">proxy</code>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__74">
+                           <p class="p">Configures a proxy server to use for all operations
+                              that occur over an HTTP(S) transport.</p>
+                           <p class="p">See <a class="xref" href="code_mgr_customizing.html#config_proxies" title="To configure proxy servers, use the proxy setting. You can set a global proxy for all HTTP(S) operations, for all Git or Forge operations, or for a specific Git repository only.">Configuring proxies</a>
+                              for usage details.</p>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__75">Accepts: <ul class="ul">
+                              <li class="li">
+                                 <p class="p">A proxy server.</p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">An authenticated proxy with Basic or Digest
+                                    authentication.</p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">An empty value.</p>
+                              </li>
+                           </ul></td>
+                        <td class="entry" headers="code_manager_parameters__entry__76">No default.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="code_manager_parameters__entry__73">
+                           <code class="ph codeph">sources</code>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__74">
+                           <p class="p">Specifies a map of sources to be passed to <span class="ph">r10k</span>. Use if you are managing more than
+                              just <span class="ph">Puppet</span> environments. </p>
+                           <p class="p">See <a class="xref" href="code_mgr_customizing.html#config_sources" title="If you are managing more than one repository with Code Manager, specify a map of your source repositories.">Configuring sources</a>
+                              for usage details.</p>
+                        </td>
+                        <td class="entry" headers="code_manager_parameters__entry__75">A hash of: <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">remote</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">prefix</code>
+                                 </p>
+                              </li>
+                           </ul></td>
+                        <td class="entry" headers="code_manager_parameters__entry__76">No default.</td>
+                     </tr>
+                  </tbody></table>
+         </div>
+      </section>
+   </div>
+</article></article></article></main></body></html>

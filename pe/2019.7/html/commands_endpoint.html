@@ -1,0 +1,61 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the commands endpoint to unpin specified nodes from all groups they’re pinned to."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Melissa Amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="commands_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Commands endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="commands_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1">Commands endpoint</h1>
+    <p class="shortdesc">Use the commands endpoint to unpin specified nodes from
+        all groups they’re pinned to. </p>
+    
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="post_v1_commands_unpin_from_all">
+ <h2 class="title topictitle2" id="ariaid-title2">POST /v1/commands/unpin-from-all </h2>
+ 
+ <div class="body refbody"><p class="shortdesc">Use the /v1/commands/unpin-from-all to unpin specified nodes
+  from all groups they’re pinned to. Nodes that are dynamically classified using rules aren't
+  affected. </p>
+  <section class="section"><div class="p">Nodes are unpinned from only those groups
+    for which you have view and edit permissions. Because group permissions are applied
+    hierarchically, you must have <span class="ph uicontrol">Create, edit, and
+     delete child groups</span> or <span class="ph uicontrol">Edit child
+     group rules</span> permissions for the parent groups of the groups you want to unpin the
+    node from.<div class="note note note_note"><span class="note__title">Note:</span> As number of groups increases, response time
+     can increase significantly with the <code class="ph codeph">unpin-from-all</code> endpoint.</div></div></section>
+  <section class="section" id="post_v1_commands_unpin_from_all__request_format"><h3 class="title sectiontitle">Request format
+    </h3><p class="p">The request body must be a JSON object describing the nodes to
+    unpin, using the following key:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+      <tr class="row">
+       <th class="entry" id="post_v1_commands_unpin_from_all__request_format__entry__1">Key </th>
+       <th class="entry" id="post_v1_commands_unpin_from_all__request_format__entry__2">Definition</th>
+      </tr>
+     </thead><tbody class="tbody">
+      <tr class="row">
+       <td class="entry" headers="post_v1_commands_unpin_from_all__request_format__entry__1"><code class="ph codeph">nodes</code>
+       </td>
+       <td class="entry" headers="post_v1_commands_unpin_from_all__request_format__entry__2">The certname of the nodes (required).</td>
+      </tr>
+     </tbody></table><p class="p">For
+   example:</p><pre class="pre codeblock"><code>{"nodes": ["foo", "bar"]}</code></pre></section>
+  <section class="section" id="post_v1_commands_unpin_from_all__response_format"><h3 class="title sectiontitle">Response
+    format </h3><p class="p">If unpinning is successful, the service returns a list of
+    nodes with the groups they were unpinned from. If a node wasn't pinned to any groups, it's not
+    included in the
+   response.</p><pre class="pre codeblock"><code>{"nodes": [{"name": "foo",
+            "groups": [{"id": "8310b045-c244-4008-88d0-b49573c84d2d",
+                        "name": "Webservers",
+                        "environment": "production"},
+                       {"id": "84b19b51-6db5-4897-9409-a4a3a94b7f09",
+                        "name": "Test",
+                        "environment": "test"}]},
+           {"name": "bar",
+            "groups": [{"id": "84b19b51-6db5-4897-9409-a4a3a94b7f09",
+                        "name": "Test",
+                        "environment": "test"}]}]}</code></pre>
+   <div class="p">Assuming token is set as an environment variable, the example below unpins "host1.example" and
+    "host2.example":<pre class="pre codeblock"><code>curl -k -H "X-Authentication:$TOKEN" \
+    -H "Content-Type: application/json" \
+    https://&lt;DNS NAME OF CONSOLE&gt;:4433/classifier-api/v1/commands/unpin-from-all -X POST \
+    -d '{"nodes": ["host1.example", "host2.example"]}'</code></pre></div>
+   <div class="p">The classifier responds with information about each group it is removed from:
+    <pre class="pre codeblock"><code>{"nodes":
+   [{"name":"host1.example","groups":[{"id":"2d83d860-19b4-4f7b-8b70-e5ee4d8646db","name":"test","environment":"production"}]}, 
+    {"name":"host2.example","groups":[{"id":"2d83d860-19b4-4f7b-8b70-e5ee4d8646db","name":"test","environment":"production"}]}]}</code></pre></div></section>
+ </div>
+</article></article></article></main></body></html>

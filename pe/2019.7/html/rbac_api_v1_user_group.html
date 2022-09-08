@@ -1,0 +1,199 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Groups are used to assign roles to a group of users, which is vastly more efficient than managing roles for each user individually. The groups endpoints enable you to get lists of groups, and to add a new directory group."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="user_group_endpoints_api_v1"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>User group endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="user_group_endpoints_api_v1">
+    <h1 class="title topictitle1" id="ariaid-title1">User group endpoints </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Groups are used to assign roles to a group of users, which
+        is vastly more efficient than managing roles for each user individually. The <code class="ph codeph">groups</code> endpoints enable you to get lists of
+        groups, and to add a new directory group.</p>
+        <div class="p"><div class="note remember note_remember"><span class="note__title">Remember:</span> Group membership is
+                determined by the directory service hierarchy and as such, local users cannot be in
+                directory groups.</div></div>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="user_group_keys">
+    <h2 class="title topictitle2" id="ariaid-title2">User group keys </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The following keys are used with the RBAC v1 API's <code class="ph codeph">groups</code> endpoints. </p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="user_group_keys__entry__1">Key </th>
+                        <th class="entry" id="user_group_keys__entry__2">Explanation </th>
+                        <th class="entry" id="user_group_keys__entry__3">Example </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="user_group_keys__entry__1"><code class="ph codeph">id</code>
+                        </td>
+                        <td class="entry" headers="user_group_keys__entry__2">A UUID string identifying the
+                            group. </td>
+                        <td class="entry" headers="user_group_keys__entry__3"><code class="ph codeph">"c099d420-5557-11e4-916c-0800200c9a66"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_group_keys__entry__1"><code class="ph codeph">login</code>
+                        </td>
+                        <td class="entry" headers="user_group_keys__entry__2">the identifier for the user
+                            group on the directory server. </td>
+                        <td class="entry" headers="user_group_keys__entry__3"><code class="ph codeph">"poets"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_group_keys__entry__1"><code class="ph codeph">display_name</code></td>
+                        <td class="entry" headers="user_group_keys__entry__2">The group's name as a string. </td>
+                        <td class="entry" headers="user_group_keys__entry__3"><code class="ph codeph">"Poets"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_group_keys__entry__1"><code class="ph codeph">role_ids</code>
+                        </td>
+                        <td class="entry" headers="user_group_keys__entry__2">An array of role IDs indicating
+                            which roles should be inherited by the group's members. An empty array
+                            is valid. This is the only field that can be updated via RBAC; the rest
+                            are immutable or synced from the directory service. </td>
+                        <td class="entry" headers="user_group_keys__entry__3"><code class="ph codeph">[3 6 5]</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_group_keys__entry__1"><p class="p"><code class="ph codeph">is_group</code></p><p class="p"><code class="ph codeph">is_remote</code></p><p class="p"><code class="ph codeph">is_superuser</code></p></td>
+                        <td class="entry" headers="user_group_keys__entry__2">These flags indicate that the
+                            group is a group. </td>
+                        <td class="entry" headers="user_group_keys__entry__3"><code class="ph codeph">true</code>, <code class="ph codeph">true</code>, <code class="ph codeph">false</code>, respectively</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_group_keys__entry__1"><code class="ph codeph">is_revoked</code>
+                        </td>
+                        <td class="entry" headers="user_group_keys__entry__2">Setting this flag to <code class="ph codeph">true</code> currently does nothing
+                            for a group. </td>
+                        <td class="entry" headers="user_group_keys__entry__3"><code class="ph codeph">true</code>/<code class="ph codeph">false</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_group_keys__entry__1"><code class="ph codeph">user_ids</code>
+                        </td>
+                        <td class="entry" headers="user_group_keys__entry__2">An array of UUIDs indicating
+                            which users inherit roles from this group. </td>
+                        <td class="entry" headers="user_group_keys__entry__3"><code class="ph codeph">["3a96d280-54c9-11e4-916c-0800200c9a66"]</code>
+                        </td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_groups">
+  <h2 class="title topictitle2" id="ariaid-title3">GET /groups </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Fetches all groups. Supports filtering by ID through query
+    parameters. Authentication is required.</p>
+    <section class="section" id="get_groups__request_format"><h3 class="title sectiontitle">Request
+        format </h3><p class="p">The following requests all the groups:</p><div class="p"><pre class="pre codeblock"><code>GET /groups</code></pre></div><p class="p">To request only some groups, add a comma-separated list of group
+        IDs:</p><div class="p"><pre class="pre codeblock"><code>GET /groups?id=65a068a0-588a-11e4-8ed6-0800200c9a66,75370a30-588a-11e4-8ed6-0800200c9a66</code></pre></div></section>
+    <section class="section" id="get_groups__response_format"><h3 class="title sectiontitle">Response
+        format </h3><p class="p">The response is a JSON object that lists the metadata
+        for all requested groups.</p><p class="p">For example:
+      </p><pre class="pre codeblock json"><code>[{
+  "id": "65a068a0-588a-11e4-8ed6-0800200c9a66",
+  "login": "hamsters",
+  "display_name": "Hamster club",
+  "role_ids": [2, 3],
+  "is_group" : true,
+  "is_remote" : true,
+  "is_superuser" : false,
+  "user_ids": ["07d9c8e0-5887-11e4-8ed6-0800200c9a66"]}
+},{
+  "id": "75370a30-588a-11e4-8ed6-0800200c9a66",
+  "login": "chinchilla",
+  "display_name": "Chinchilla club",
+  "role_ids": [2, 1],
+  "is_group" : true,
+  "is_remote" : true,
+  "is_superuser" : false,
+  "user_ids": ["1cadd0e0-5887-11e4-8ed6-0800200c9a66","5c1ab4b0-588b-11e4-8ed6-0800200c9a66"]
+},{
+  "id": "ccdbde50-588a-11e4-8ed6-0800200c9a66",
+  "login": "wombats",
+  "display_name": "Wombat club",
+  "role_ids": [2, 3],
+  "is_group" : true,
+  "is_remote" : true,
+  "is_superuser" : false,
+  "user_ids": []
+}]</code></pre></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="get_groups_lt_sid_gt">
+    <h2 class="title topictitle2" id="ariaid-title4">GET /groups/&lt;sid&gt; </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Fetches a single group by its subject ID (sid).
+        Authentication is required.</p>
+        <section class="section" id="get_groups_lt_sid_gt__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">The response contains an ID for the
+                group and a list of <code class="ph codeph">role_ids</code> the
+                group is directly assigned to.</p><p class="p">For directory groups, the
+                response contains the display name, the login field, a list of <code class="ph codeph">role_ids</code> directly assigned to the group, and
+                    <code class="ph codeph">user_ids</code> containing IDs of the
+                remote users that belong to that group. </p><p class="p">For
+            example:</p><pre class="pre codeblock json"><code>{"id": "65a068a0-588a-11e4-8ed6-0800200c9a66",
+"login": "hamsters",
+"display_name": "Hamster club",
+"role_ids": [2, 3],
+"is_group" : true,
+"is_remote" : true,
+"is_superuser" : false,
+"user_ids": ["07d9c8e0-5887-11e4-8ed6-0800200c9a66"]}</code></pre></section>
+        <section class="section" id="get_groups_lt_sid_gt__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">If the user who submits the GET request has
+                not successfully authenticated, a 401 Unauthorized response is returned. </p><p class="p">If the current user does not have the appropriate user
+                permissions to request the group data, a 403 Forbidden response is returned.
+            </p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="post_groups">
+    <h2 class="title topictitle2" id="ariaid-title5">POST /groups </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Creates a new remote group and attaches to the new group
+        any roles specified in its roles list. Authentication is required.</p>
+        <section class="section" id="post_groups__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">Accepts a JSON body containing an entry for
+                    <code class="ph codeph">login</code>, and an array of <code class="ph codeph">role_ids</code> to assign to the group
+                initially.</p><p class="p">For
+            example:</p><pre class="pre codeblock json"><code>{"login":"Augmentators",
+"role_ids": [1,2,3]}</code></pre></section>
+        <section class="section" id="post_groups__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">If the create operation is
+                successful, a 201 Created response with a location header that points to the new
+                resource is returned.</p></section>
+        <section class="section" id="post_groups__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">If the login for the group conflicts with an
+                existing group login, a 409 Conflict response is returned. </p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="put_groups_lt_sid_gt">
+    <h2 class="title topictitle2" id="ariaid-title6">PUT /groups/&lt;sid&gt; </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Replaces the group with the specified ID (sid) with a new
+        group object. Authentication is required.</p>
+        <section class="section" id="put_groups_lt_sid_gt__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">Accepts an updated group object containing all
+                the keys that were received from the API initially. The only updatable field is
+                    <code class="ph codeph">role_ids</code>. An empty roles array
+                indicates a desire to remove the group from all the roles it was directly assigned
+                to. Any other changed values are ignored.</p><p class="p">For
+            example:</p><pre class="pre codeblock json"><code>{"id": "75370a30-588a-11e4-8ed6-0800200c9a66",
+"login": "chinchilla",
+"display_name": "Chinchillas",
+**"role_ids": [2, 1],**
+"is_group" : true,
+"is_remote" : true,
+"is_superuser" : false,
+"user_ids": ["1cadd0e0-5887-11e4-8ed6-0800200c9a66","5c1ab4b0-588b-11e4-8ed6-0800200c9a66"]}</code></pre></section>
+        <section class="section" id="put_groups_lt_sid_gt__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">If the operation is successful, a 200
+                OK response including a group object with updated roles is returned.</p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="delete_groups_lt_sid_gt">
+    <h2 class="title topictitle2" id="ariaid-title7">DELETE /groups/&lt;sid&gt;</h2>
+    
+    <div class="body refbody"><p class="shortdesc">Deletes the user group with the specified ID (sid) from
+        RBAC without making any changes to the directory service. Authentication
+        required.</p>
+        <section class="section" id="delete_groups_lt_sid_gt__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">If the user group is successfully
+                deleted, a 204 No Content with an empty body is returned.</p></section>
+        <section class="section" id="delete_groups_lt_sid_gt__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">If the current user does not have the
+                    <code class="ph codeph">user_groups:delete</code> permission
+                for this user group, a 403 Forbidden response is returned. </p><p class="p">If a group with the provided identifier does not exist, a 404 Not Found response is
+                returned. </p></section>
+    </div>
+</article></article></article></main></body></html>

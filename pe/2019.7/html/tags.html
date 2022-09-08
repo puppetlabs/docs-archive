@@ -1,0 +1,197 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="A tag consists of a unique name and a rule. Tags match a node if evaluating the node against the tag's facts results in true. Tag matching is case sensitive."><meta name="DC.relation" scheme="URI" content="provisioning_a_windows_node.html#create-tags"><meta name="DC.relation" scheme="URI" content="using_the_razor_client.html#tag_commands"><meta name="DC.relation" scheme="URI" content="api_reference.html#tags_api"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="tags"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Tags</title></head><body id="tags"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+   <h1 class="title topictitle1" id="ariaid-title1">Tags</h1>
+   
+   
+   <div class="body conbody"><p class="shortdesc">A tag consists of a unique <code class="ph codeph">name</code> and a <code class="ph codeph">rule</code>.
+      Tags match a node if evaluating the node against the tag's facts results in <code class="ph codeph">true</code>. Tag matching is case sensitive.</p>
+      <div class="p">For example, to create a tag, <em class="ph i">small</em>,
+         that matches any machine with less than 4GB of
+         memory:<pre class="pre codeblock"><code>    razor create-tag --name small
+      --rule '["&lt;", ["num", ["fact", "memorysize_mb"]], 4128]'</code></pre></div>
+      <section class="section"><h2 class="title sectiontitle">Tag rules</h2><p class="p">Rule expressions are of the form <code class="ph codeph">op
+               arg1 arg2 ... argn]</code> where <code class="ph codeph">op</code> is one of the accepted [operators, and <code class="ph codeph">arg1</code> through <code class="ph codeph">argn</code> are the arguments for the operator. If the arguments are expressions
+            themselves, they're evaluated before <code class="ph codeph">op</code>.</p><div class="p">Here are some example tag rules: <ul class="ul">
+               <li class="li">
+                  <p class="p">To match nodes with more than 10 processors: <code class="ph codeph">["&gt;", ["num", ["fact",
+                        "processorcount"]], 10]</code>
+                  </p>
+               </li>
+               <li class="li">
+                  <p class="p">To match nodes with specified MAC addresses: <code class="ph codeph">["has_macaddress", "de:ea:db:ee:f0:00",
+                        "de:ea:db:ee:f0:01"]</code>
+                  </p>
+               </li>
+            </ul></div></section>
+      <section class="section"><h2 class="title sectiontitle">Tag operators</h2><div class="p">The expression language supports these operators: <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="tags__entry__1">Operator </th>
+                        <th class="entry" id="tags__entry__2">Returns </th>
+                        <th class="entry" id="tags__entry__3">Aliases</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["=", arg1, arg2]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if the specified arguments
+                           are equal. </td>
+                        <td class="entry" headers="tags__entry__3">
+                           <code class="ph codeph">"eq"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["!=", arg1, arg2]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if the specified arguments
+                           are not equal. </td>
+                        <td class="entry" headers="tags__entry__3">
+                           <code class="ph codeph">"neq"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["and", arg1, ..., argn]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if all arguments are true. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["or", arg1, ..., argn]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if any argument is true. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["not", arg]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if the argument evaluates
+                           to <code class="ph codeph">false</code> or <code class="ph codeph">nil</code>. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["fact", arg1 (, arg2)]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">The <code class="ph codeph">arg1</code> fact for the node. The optional <code class="ph codeph">arg2</code> is used if the <code class="ph codeph">arg1</code> fact isn't present. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["metadata", arg1 (,
+                              arg2)]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">The <code class="ph codeph">arg</code> metadata entry for the node. The optional
+                              <code class="ph codeph">arg2</code> is used if the
+                              <code class="ph codeph">arg1</code> fact isn't
+                           present. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["tag", arg]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if the node has the
+                           specified tag. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["has_macaddress", arg1, arg2
+                              ..., argn]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if any facts that start
+                           with "macaddress" matches one of <code class="ph codeph">arg1</code> ... <code class="ph codeph">argn</code>. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["has_macaddress_like", arg1, arg2 ..., argn]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if the hardware MAC
+                           address matches one of <code class="ph codeph">arg1</code> ... <code class="ph codeph">argn</code> as regular expressions. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["in", arg1, arg2, ...,
+                              argn]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if <code class="ph codeph">arg1</code> matches one of <code class="ph codeph">arg2</code> ... <code class="ph codeph">argn</code>. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["num", arg1]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2"><code class="ph codeph">arg1</code> as a numeric value, or raises an error. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["&gt;", arg1, arg2]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if <code class="ph codeph">arg1</code> is greater than <code class="ph codeph">arg2</code>. </td>
+                        <td class="entry" headers="tags__entry__3">
+                           <code class="ph codeph">"gt"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["&lt;", arg1, arg2]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if <code class="ph codeph">arg1</code> is less than <code class="ph codeph">arg2</code>. </td>
+                        <td class="entry" headers="tags__entry__3">
+                           <code class="ph codeph">"lt"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["&gt;=", arg1, arg2]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if <code class="ph codeph">arg1</code> is greater than or equal to
+                              <code class="ph codeph">arg2</code>. </td>
+                        <td class="entry" headers="tags__entry__3">
+                           <code class="ph codeph">"gte"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["&lt;=", arg1, arg2]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if <code class="ph codeph">arg1</code> is less than or equal to <code class="ph codeph">arg2</code>. </td>
+                        <td class="entry" headers="tags__entry__3">
+                           <code class="ph codeph">"lte"</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["like", arg1, arg2]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">True if <code class="ph codeph">arg1</code> matches the
+                           pattern of <code class="ph codeph">arg2</code>, interpreted as a regular expression. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["lower", arg]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">The lowercase version of the
+                           string <code class="ph codeph">arg</code>. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="tags__entry__1">
+                           <code class="ph codeph">["upper", arg]</code>
+                        </td>
+                        <td class="entry" headers="tags__entry__2">The uppercase version of the
+                           string <code class="ph codeph">arg</code>. </td>
+                        <td class="entry" headers="tags__entry__3"></td>
+                     </tr>
+                  </tbody></table></div></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="provisioning_a_windows_node.html#create-tags" title="Tags let you group nodes based on their characteristics. You can then apply policies based on tags to install appropriate operating systems on tagged nodes. If you don’t specify tags for a policy, the policy binds to any node.">(Optional) Create tags</a></li><li class="linklist"><a class="link" href="using_the_razor_client.html#tag_commands" title="Tag commands enable you to create new tags, set the rules used to apply the tag to nodes, change the rule of a specified tag, or delete a specified tag.">Tag commands</a></li><li class="linklist"><a class="link" href="api_reference.html#tags_api" title="These commands enable you to create a tag, delete a tag, or change the rule for a tag.">Tags API</a></li></ul></div></nav></article></main></body></html>

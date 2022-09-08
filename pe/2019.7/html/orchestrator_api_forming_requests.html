@@ -1,0 +1,32 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Instructions on interacting with this API."><meta name="DC.relation" scheme="URI" content="rbac_token_auth_intro.html#token_based_authentication"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrator_api_forming_requests"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet orchestrator API: forming requests</title></head><body id="orchestrator_api_forming_requests"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+  <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">Puppet</span> orchestrator API: forming
+    requests </h1>
+  
+  <div class="body conbody"><p class="shortdesc">Instructions on interacting with this API. </p>
+    <div class="p">By default, the orchestrator service listens on port <code class="ph codeph">8143</code>, and all endpoints are relative to the <code class="ph codeph">/orchestrator/v1</code> path. So, for example, the full URL for the
+        <code class="ph codeph">jobs</code> endpoint on localhost would be <code class="ph codeph">https://localhost:8143/orchestrator/v1/jobs</code>.<div class="note tip note_tip"><span class="note__title">Tip:</span> The orchestrator API accepts well-formed HTTP(S)
+        requests.</div></div>
+    <section class="section"><h2 class="title sectiontitle">Authenticating to the
+        orchestrator API with a token </h2><p class="p">You need to authenticate
+        requests to the orchestrators’s API. You can do this using user authentication tokens.
+        </p><p class="p">For detailed information about authentication tokens, see <a class="xref" href="rbac_token_auth_intro.html#token_based_authentication" title="Authentication tokens allow a user to enter their credentials once, then receive an alphanumeric &#34;token&#34; to use to access different services or parts of the system infrastructure. Authentication tokens are tied to the permissions granted to the user through RBAC, and provide the user with the appropriate access to HTTP requests.">Token-based authentication</a>. The following example shows how to use a token in an API request. </p><p class="p">To use the <code class="ph codeph">jobs</code> endpoint of the orchestrator API to get a list of all jobs that exist in
+        the orchestrator, along with their associated metadata, you'd first generate a token with
+        the puppet-access tool. You'd then copy that token and replace <code class="ph codeph">&lt;TOKEN&gt;</code> with that string in the following
+      request:</p><pre class="pre codeblock"><code>curl -k -X GET https://&lt;HOSTNAME&gt;:&lt;PORT&gt;/orchestrator/v1/jobs -H 'X-Authentication:&lt;TOKEN&gt;'</code></pre></section>
+    <section class="section" id="orchestrator_api_forming_requests__example_token_usage_deploy_an_environment"><h2 class="title sectiontitle">Example token usage: deploy an environment </h2><p class="p">If
+        you want to deploy an environment with the orchestrator's API, you can form a request with
+        the token you generated earlier. For
+        example:</p><pre class="pre codeblock"><code>curl -k -H 'X-Authentication:&lt;TOKEN&gt;' https://&lt;HOSTNAME&gt;:&lt;PORT&gt;/orchestrator/v1/command/deploy -X POST -d '{"environment":"production"}' -H "Content-Type: application/json"</code></pre><p class="p">This returns a JSON structure that includes a link to the new job started
+        by the orchestrator.
+        </p><pre class="pre codeblock json"><code>{
+  "job" : {
+    "id" : "https://orchestrator.vm:8143/orchestrator/v1/jobs/81",
+    "name" : "81"
+  }
+}</code></pre><p class="p">You can make an additional request to get more information about the job.
+        For
+      example:</p><pre class="pre codeblock"><code>curl -k -X GET https://&lt;HOSTNAME&gt;:&lt;PORT&gt;/orchestrator/v1/jobs/81 -H 'X-Authentication:&lt;TOKEN&gt;'</code></pre></section>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#token_based_authentication" title="Authentication tokens allow a user to enter their credentials once, then receive an alphanumeric &#34;token&#34; to use to access different services or parts of the system infrastructure. Authentication tokens are tied to the permissions granted to the user through RBAC, and provide the user with the appropriate access to HTTP requests.">Token-based authentication</a></li></ul></div></nav></article></main></body></html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="If you used Razor in a previous Puppet Enterprise environment, upgrade Razor to keep your Puppet Enterprise and Razor versions synched."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="upgrading_razor"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Upgrading Razor</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="upgrading_razor">
+    <h1 class="title topictitle1" id="ariaid-title1">Upgrading <span class="ph">Razor</span></h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">If you used <span class="ph">Razor</span> in a
+        previous <span class="ph">Puppet Enterprise</span> environment, upgrade <span class="ph">Razor</span> to keep your <span class="ph">Puppet Enterprise</span> and
+            <span class="ph">Razor</span> versions synched.</p>
+        <p class="p">After a <span class="ph">Puppet Enterprise</span> upgrade,
+                the&nbsp;<code class="ph codeph">pe_razor</code>&nbsp;class
+            continues to operate normally, but we recommend upgrading <span class="ph">Razor</span> as soon as possible to avoid unintended
+            effects.</p>
+        <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> If nodes are actively
+                provisioning during upgrade, provisioning might fail. You can resume provisioning
+                    after&nbsp;<code class="ph codeph">pe-razor-server</code>&nbsp;restarts.</div></div>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="upgrade_from_2015-2-x_or_later">
+   <h2 class="title topictitle2" id="ariaid-title2">Upgrade <span class="ph">Razor</span> from <span class="ph">Puppet Enterprise</span> 2015.2.x or later</h2>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Upgrading from 2015.2.x or later is a mostly automated
+      process that replaces the software repository, installs software packages, and migrates the
+         <span class="ph">Razor</span> database. Upgrading to 2016.2 or later requires manual
+      migration of any custom configuration from your config.yaml file to parameters in
+         the&nbsp;<code class="ph codeph">pe_razor</code>&nbsp;class.</p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <p class="p">If you’re upgrading to <span class="ph">Puppet Enterprise</span> 2016.2
+            or later and you’ve modified your <code class="ph codeph">config.yaml</code> file – for example, by changing&nbsp;<code class="ph codeph">protect_new_nodes</code>&nbsp;or customizing tasks, brokers, or hooks
+            – make a note of the modified settings.</p>
+      </section>
+      <section class="section context">For instructions on upgrading <span class="ph">Razor</span> from <span class="ph">Puppet Enterprise</span> 3.8, see
+         earlier versions of the <span class="ph">Razor</span> documentation.&nbsp;</section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Upgrade the master.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Upgrade the agent on the <span class="ph">Razor</span> server node.</span>
+            <div class="itemgroup stepresult">
+               <p class="p">The&nbsp;<code class="ph codeph">pe-razor-server</code>&nbsp;service automatically restarts.</p>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">(Optional) If you’re upgrading to 2016.2 or later,
+               transfer any customized configurations to parameters in the&nbsp;<code class="ph codeph">pe_razor</code>&nbsp;class.</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note note note_note"><span class="note__title">Note:</span> To prevent accidentally overwriting
+                     machines during upgrade, the default for <code class="ph codeph"> protect_new_nodes</code>&nbsp;was changed to&nbsp;<code class="ph codeph">true</code>&nbsp;in <span class="ph">Puppet Enterprise</span> 2016.2 and later. If your environment and
+                     workflows rely on provisioning all new nodes, you must manually
+                        change&nbsp;<code class="ph codeph">protect_new_nodes</code>&nbsp;to&nbsp;<code class="ph codeph">false</code>&nbsp;after upgrade, then run puppet and restart
+                     the <code class="ph codeph">pe-razor-server</code>
+                     service.</div>
+               </div>
+            </div>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <div class="note tip note_tip"><span class="note__title">Tip:</span> You can run <code class="ph codeph">razor --version</code> to verify that the upgrade was successful.</div>
+      </section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li></ul></div></nav></article></article></article></main></body></html>

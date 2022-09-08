@@ -1,0 +1,1711 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="You can install Puppet Enterprise agents on *nix, Windows, and macOS."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="installing_agents"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Installing agents</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="installing_agents">
+         <h1 class="title topictitle1" id="ariaid-title1">Installing agents</h1>
+         
+         
+         <div class="body conbody"><p class="shortdesc">You can install <span class="ph">Puppet Enterprise</span> agents on <span class="ph">*nix</span>, <span class="ph">Windows</span>,
+                  and <span class="ph">macOS</span>.</p><p class="p">To install FIPS-compliant <span class="ph">PE</span> agents, install the agent on a <a class="xref" href="supported_operating_systems.html#supported_operating_systems_and_devices" title="When choosing an operating system, first consider the machine's role. Different roles support different operating systems and architectures.">supported
+                                    platform</a> with FIPS mode enabled. </p>
+                  <p class="p">Agents are installed from a package repo hosted on your master. The <span class="ph">PE</span> package management repo is created
+                           during installation of the master and serves packages over HTTPS using
+                           the same port as the master (8140). This means agents don't require any
+                           new ports to be open other than the one they already need to communicate
+                           with the master.</p>
+                  <p class="p">After installing agents, you must sign their certificates.</p>
+         </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="using_install_script">
+    <h2 class="title topictitle2" id="ariaid-title2">Using the install script&nbsp;</h2>
+    
+    <div class="body conbody"><p class="shortdesc">The install script installs and configures the agent on target nodes using
+        installation packages from the <span class="ph">PE</span> package management
+        repo.</p>
+        <section class="section">
+            <div class="p">The agent install script performs these actions: <ul class="ul">
+                    <li class="li">
+                        <p class="p">Detects the operating system on which it's running,
+                            sets up an apt, yum, or zipper repo that refers back to the master, and
+                            then pulls down and installs the <code class="ph codeph">puppet-agent</code> packages. If the install script can't find
+                            agent packages corresponding to the agent's platform, it fails with an
+                            error telling you which <code class="ph codeph">pe_repo</code> class you need to add to the master.</p>
+                    </li>
+                    <li class="li">
+                        <div class="p">Downloads a tarball of plugins from the master. This feature is
+                            controlled by the settings <code class="ph codeph">pe_repo::enable_bulk_pluginsync</code> and <code class="ph codeph">pe_repo::enable_windows_bulk_pluginsync</code>, which is set to
+                            <code class="ph codeph">true</code> (enabled) by default. Depending on how many modules you have installed, bulk plug-in sync can speed agent
+                            installation significantly. <div class="note note note_note"><span class="note__title">Note:</span> If your master runs in a different environment
+                                from your agent nodes, you might see some reduced benefit from bulk plug-in
+                                sync. The plug-in tarball is created based on the plug-ins running on the master
+                                agent, which might not match the plug-ins required for agents in a different
+                                environment.</div></div>
+                    </li>
+                    <li class="li">
+                        <p class="p">Creates a basic <code class="ph codeph">puppet.conf</code> file.</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">Kicks off a <span class="ph">Puppet</span> run.</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="p">Automatic downloading of agent installer packages and plugins using the
+                    <code class="ph codeph">pe_repo</code> class requires an internet connection. <div class="note tip note_tip"><span class="note__title">Tip:</span> If your master uses a proxy server to access the internet, prior to
+                    installation, specify <code class="ph codeph">pe_repo::http_proxy_host</code> and
+                        <code class="ph codeph">pe_repo::http_proxy_port</code> in <code class="ph codeph">pe.conf</code>, <span class="ph">Hiera</span>, or in the console, in the <code class="ph codeph">pe_repo</code> class of the <span class="ph uicontrol">PE
+                        Master</span> node group. 
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <p class="p">You can customize agent installation by providing as flags to the
+                script any number of these options, in any order: </p>
+            <div class="p">
+                <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="using_install_script__entry__1">Option</th>
+                                <th class="entry" id="using_install_script__entry__2">Example</th>
+                                <th class="entry" id="using_install_script__entry__3">Result</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__1">
+                                    <code class="ph codeph">puppet.conf</code>
+                                    settings</td>
+                                <td class="entry" headers="using_install_script__entry__2">
+                                    <pre class="pre codeblock"><code>agent:splay=true
+agent:certname=node1.corp.net
+agent:environment=development</code></pre>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__3">The&nbsp;<code class="ph codeph">puppet.conf</code> file looks like this:
+                                    <pre class="pre codeblock"><code>[agent]
+certname = node1.corp.net
+splay = true
+environment = development</code></pre>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__1">CSR attribute settings</td>
+                                <td class="entry" headers="using_install_script__entry__2">
+                                    <pre class="pre codeblock"><code>extension_requests:pp_role=webserver
+custom_attributes:challengePassword=abc123</code></pre>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__3">The installer creates a <code class="ph codeph">csr_attributes.yaml</code>
+                                    file before installing with this content:
+                                    <pre class="pre codeblock"><code>---
+custom_attributes:
+ challengePassword: abc123
+extension_requests:
+ pp_role: webserver</code></pre>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__1">MSI properties (<span class="ph">Windows</span>
+                                    only)</td>
+                                <td class="entry" headers="using_install_script__entry__2">
+                                    <pre class="pre codeblock"><code>-PuppetAgentAccountUser ‘pup_adm’
+-PuppetAgentAccountPassword ‘secret’</code></pre>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__3">The <span class="ph">Puppet</span> service runs as
+                                        <kbd class="ph userinput">pup_adm</kbd> with a password of
+                                        <kbd class="ph userinput">secret</kbd>.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__1">
+                                    <span class="ph">Puppet</span> service status</td>
+                                <td class="entry" headers="using_install_script__entry__2">
+                                    <div class="p">
+                                        <span class="ph">*nix</span>: <pre class="pre codeblock"><code>--puppet-service-ensure stopped
+--puppet-service-enable false</code></pre>
+                                        <span class="ph">Windows</span>
+                                        <pre class="pre codeblock"><code>-PuppetServiceEnsure stopped
+-PuppetServiceEnable false</code></pre>
+                                    </div>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__3">The <span class="ph">Puppet</span> service is stopped
+                                    and doesn't boot after installation. An initial <span class="ph">Puppet</span> run doesn't occur after
+                                    installation.</td>
+                            </tr>
+                        </tbody></table>
+            </div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">puppet.conf</code> settings</h3>
+            
+            <p class="p">You can specify any agent configuration option using the install
+                script. Configuration settings are added to <code class="ph codeph">puppet.conf</code>.</p>
+            <div class="p">These are the most commonly specified agent config options: <ul class="ul">
+                    <li class="li">
+                        <p class="p">server</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">certname</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">environment</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">splay</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">splaylimit</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">noop</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="p">
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> On <span class="ph">Enterprise Linux</span> systems, if you have a proxy
+                    between the agent and the master, you can specify <code class="ph codeph">http_proxy_host</code> , for example <code class="ph codeph">-s
+                        agent:http_proxy_host=&lt;PROXY_FQDN&gt;</code>.</div>
+            </div>
+            <p class="p">See the <a class="xref" href="https://puppet.com/docs/puppet/6.10/configuration.html" target="_blank">Configuration Reference</a> for details. </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">CSR attribute settings </h3>
+            
+            <p class="p">These settings are added to <code class="ph codeph">puppet.conf</code> and included in the <code class="ph codeph">custom_attributes</code> and <code class="ph codeph">extension_requests</code> sections of <code class="ph codeph">csr_attributes.yaml</code>. </p>
+            <p class="p">You can pass as many parameters as needed. Follow the <code class="ph codeph">section:key=value</code> pattern and leave one
+                space between parameters. </p>
+            <p class="p">See the <a class="xref" href="https://puppet.com/docs/puppet/6.10/config_file_csr_attributes.html" target="_blank">csr_attributes.yaml</a> reference for details. </p>
+            <div class="p">
+                <span class="ph">*nix</span> install script with example agent setup and
+                certificate signing parameters:
+                <pre class="pre codeblock"><code>curl -k https://master.example.com:8140/packages/current/install.bash | sudo bash -s agent:certname=&lt;certnameOtherThanFQDN&gt; custom_attributes:challengePassword=&lt;passwordForAutosignerScript&gt; extension_requests:pp_role=&lt;puppetNodeRole&gt;</code></pre>
+            </div>
+            <div class="p">
+                <span class="ph">Windows</span> install script with example agent setup and
+                certificate signing parameters:
+                <pre class="pre codeblock"><code>[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; $webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('https://&lt;PUPPET MASTER FQDN&gt;:8140/packages/current/install.ps1', 'install.ps1'); .\install.ps1 agent:certname=&lt;certnameOtherThanFQDN&gt; custom_attributes:challengePassword=&lt;passwordForAutosignerScript&gt; extension_requests:pp_role=&lt;puppetNodeRole&gt;</code></pre>
+            </div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">MSI properties (<span class="ph">Windows</span>)</h3>
+            
+            <p class="p">For <span class="ph">Windows</span>, you can set these MSI properties, with or
+                without additional agent configuration settings.</p>
+            <div class="p">
+                <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="using_install_script__entry__16">MSI Property</th>
+                                <th class="entry" id="using_install_script__entry__17">
+                                    <span class="ph">PowerShell</span> flag</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__16">
+                                    <code class="ph codeph">INSTALLDIR</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__17">
+                                    <code class="ph codeph">-InstallDir</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__16">
+                                    <code class="ph codeph">PUPPET_AGENT_ACCOUNT_USER</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__17">
+                                    <code class="ph codeph">-PuppetAgentAccountUser</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__16">
+                                    <code class="ph codeph">PUPPET_AGENT_ACCOUNT_PASSWORD</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__17">
+                                    <code class="ph codeph">-PuppetAgentAccountPassword</code>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__16">
+                                    <code class="ph codeph">PUPPET_AGENT_ACCOUNT_DOMAIN</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__17">
+                                    <code class="ph codeph">-PuppetAgentAccountDomain</code>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <div class="p">
+                <span class="ph">Windows</span> install script with MSI properties and agent
+                configuration settings:&nbsp;
+                <pre class="pre codeblock"><code>[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; $webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('https://&lt;MASTER HOSTNAME&gt;:8140/packages/current/install.ps1', 'install.ps1'); .\install.ps1 -PuppetAgentAccountUser "svcPuppet" -PuppetAgentAccountPassword "s3kr3t_P@ssword" agent:splay=true agent:environment=development</code></pre>
+            </div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">
+                <span class="ph">Puppet</span> service status</h3>
+            
+            <p class="p">By default, the install script starts the <span class="ph">Puppet</span> agent
+                service and kicks off a <span class="ph">Puppet</span> run. If you want to
+                manually trigger a <span class="ph">Puppet</span> run, or you're using a
+                provisioning system that requires non-default behavior, you can control whether the
+                service is running and enabled. &nbsp;</p>
+            <div class="p">
+                <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="using_install_script__entry__26">Option</th>
+                                <th class="entry" id="using_install_script__entry__27">
+                                    <span class="ph">*nix</span>
+                                </th>
+                                <th class="entry" id="using_install_script__entry__28">
+                                    <span class="ph">Windows</span>
+                                </th>
+                                <th class="entry" id="using_install_script__entry__29">Values</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__26">
+                                    <code class="ph codeph">ensure</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__27">
+                                    <code class="ph codeph">--puppet-service-ensure &lt;VALUE&gt;</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__28">
+                                    <code class="ph codeph">-PuppetServiceEnsure &lt;VALUE&gt;</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__29">
+                                    <ul class="ul">
+                                        <li class="li">
+                                            <p class="p">running</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">stopped</p>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="using_install_script__entry__26">
+                                    <code class="ph codeph">enable</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__27">
+                                    <code class="ph codeph">--puppet-service-enable &lt;VALUE&gt;</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__28">
+                                    <code class="ph codeph">-PuppetServiceEnable &lt;VALUE&gt;</code>
+                                </td>
+                                <td class="entry" headers="using_install_script__entry__29">
+                                    <ul class="ul">
+                                        <li class="li">
+                                            <p class="p">true</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">false</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">manual (Windows only)</p>
+                                        </li>
+                                        <li class="li">
+                                            <p class="p">mask</p>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody></table>For example: </div>
+            <div class="p">
+                <strong class="ph b">
+                    <span class="ph">*nix</span>
+                </strong>
+                <pre class="pre codeblock"><code>curl -k https://master.example.com:8140/packages/current/install.bash | sudo bash -s -- --puppet-service-ensure stopped</code></pre>
+                <strong class="ph b">
+                    <span class="ph">Windows</span>
+                </strong>
+                <pre class="pre codeblock"><code>[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; $webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('https://&lt;PUPPET MASTER FQDN&gt;:8140/packages/current/install.ps1', 'install.ps1'); .\install.ps1 -PuppetServiceEnsure stopped</code></pre>
+            </div>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="installing_nix_agents">
+        <h2 class="title topictitle2" id="ariaid-title3">Install <span class="ph">*nix</span> agents </h2>
+        
+        <div class="body conbody"><p class="shortdesc">
+                <span class="ph">PE</span> has package management tools to help you easily
+                install and configure agents. You can also use standard <span class="ph">*nix</span> package management tools.</p>
+                <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> <div class="p">You must enable TLSv1 to
+                install agents on these platforms: <ul class="ul">
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">AIX</span>
+                        </p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">CentOS</span> 5</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">RHEL</span> 5</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">SLES 11</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">Solaris</span> 10</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">Windows</span> Server 2008r2</p>
+                    </li>
+                </ul>
+            </div></div></div>
+        </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="enable_tlsv1.html" title="TLSv1 and TLSv1.1 are disabled by default in PE.">Enable TLSv1</a></li></ul></div></nav><article class="topic task nested2" aria-labelledby="ariaid-title4" id="install_agent_console">
+   <h3 class="title topictitle3" id="ariaid-title4">Install agents from the console</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">You can use the console to leverage tasks that install <span class="ph">*nix</span> or <span class="ph">Windows</span> agents on target
+      nodes. </p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <p class="p">Add classes to the <span class="ph uicontrol">PE
+               Master</span> node group for each agent platform used in your environment. For
+            example, <code class="ph codeph">pe_repo::platform::el_7_x86_64</code>.</p>
+         <p class="p">Make sure you have permission to run the appropriate task to install
+            agents on all nodes:</p>
+         <div class="p">
+            <ul class="ul">
+               <li class="li">
+                  <p class="p"><span class="ph">*nix</span> targets use the task
+                     pe_bootstrap::linux</p>
+               </li>
+               <li class="li">
+                  <p class="p"><span class="ph">Windows</span> targets use the task
+                     pe_bootstrap::windows</p>
+               </li>
+            </ul>
+         </div>
+         <div class="p">For <span class="ph">Windows</span> targets, this task
+            requires: <ul class="ul" id="install_agent_console__ul_bjl_jkx_nhb">
+               <li class="li">
+                  <span class="ph">Windows</span> 2008 SP2 or newer </li>
+               <li class="li">
+                  <span class="ph">PowerShell</span> version 3 or higher</li>
+               <li class="li">
+                  <span class="ph">Microsoft</span> .NET Framework 4.5 or higher</li>
+            </ul></div>
+      </section>
+      <section class="section context"></section>
+      <section><ol class="ol steps"><li class="li step stepexpand" id="install_agent_console__step_ekc_qxy_jkb">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Inventory</span>.</span>
+         </li><li class="li step stepexpand" id="install_agent_console__step_b2k_qxy_jkb">
+            <span class="ph cmd">Click <span class="ph uicontrol">Install agents</span>.</span>
+         </li><li class="li step stepexpand" id="install_agent_console__step_wvp_qxy_jkb">
+            <span class="ph cmd">Select a transport method. </span>
+            <ul class="ul choices">
+               <li class="li choice"><span class="ph uicontrol">SSH</span> for <span class="ph">*nix</span> targets </li>
+               <li class="li choice"><span class="ph uicontrol">WinRM</span> for <span class="ph">Windows</span>
+                  targets </li>
+            </ul>
+         </li><li class="li step stepexpand" id="install_agent_console__step_izw_qxy_jkb">
+            <span class="ph cmd">Enter the target host names and the credentials required to access them. If you use
+               an SSH key, include begin and end tags.</span>
+         </li><li class="li step stepexpand" id="install_agent_console__step_nk2_rxy_jkb">
+            <span class="ph cmd">Click <span class="ph uicontrol">Add nodes</span>. </span>
+            <div class="itemgroup info">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Click <span class="ph uicontrol">Installation job started</span> to view the
+                  job details for the task. </div>
+            </div>
+            <div class="itemgroup stepresult">Agents are installed on the target nodes and then automatically submit
+               certificate signing requests (CSR) to the master. The list of unsigned certificates
+               is updated with new targets.</div>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="install_nix_agents_pe_package_management">
+    <h3 class="title topictitle3" id="ariaid-title5">Install <span class="ph">*nix</span> agents with <span class="ph">PE</span> package management </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">
+        <span class="ph">PE</span> provides its own package management to help you install
+        agents in your infrastructure.</p>
+        <section class="section context">
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> The <code class="ph codeph">&lt;MASTER HOSTNAME&gt;</code> portion of the installer
+                script—as provided in the following example—refers to the FQDN of the master. The
+                FQDN must be fully resolvable by the machine on which you're installing or upgrading
+                the agent.</div>
+            </div>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">If you're installing an agent with a different OS
+                    than the master, add the appropriate class for the repo that contains the agent
+                    packages.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Master</span> group.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab in the <span class="ph uicontrol">Class name</span> field,
+                            enter <code class="ph codeph">pe_repo</code> and
+                            select the repo class from the list of classes.</span>
+                        <div class="itemgroup info">
+                            <div class="p">
+                                <div class="note note note_note"><span class="note__title">Note:</span> The repo classes are listed
+                                    as <code class="ph codeph">pe_repo::platform::&lt;AGENT_OS_VERSION_ARCHITECTURE&gt;</code>.</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Click <span class="ph uicontrol">Add class</span>, and commit changes.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Run <code class="ph codeph">puppet agent -t</code> to configure the master node using the
+                            newly assigned class.</span>
+                        <div class="itemgroup info">
+                            <p class="p">The new repo is created in <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE
+                                    VERSION&gt;/&lt;PLATFORM&gt;/</code>.</p>
+                        </div>
+                    </li>
+                </ol>
+            </li><li class="li step">
+                <span class="ph cmd">SSH into the node where you want to install the
+                    agent, and run the installation command appropriate to your environment.</span>
+                <ul class="ul choices">
+                    <li class="li choice">Curl <pre class="pre codeblock"><code>curl -k https://&lt;MASTER HOSTNAME&gt;:8140/packages/current/install.bash | sudo bash</code></pre>
+                        <div class="note tip note_tip"><span class="note__title">Tip:</span> On <span class="ph">AIX</span>
+                            versions 7.10 and earlier, which don't support the <code class="ph codeph">-k</code> option, use
+                                <code class="ph codeph">--tlsv1</code> instead. If neither <code class="ph codeph">-k</code> or <code class="ph codeph">--tlsv1</code> is supported,
+                            you must install using a manually transferred certificate. </div>
+                    </li>
+                    <li class="li choice">
+                        <span class="ph">RHEL</span> 5 and <span class="ph">CentOS</span> 5
+                        <pre class="pre codeblock"><code>curl -k --tlsv1 https://&gt;MASTER_HOSTNAME&gt;:8140/packages/current/install.bash | sudo bash</code></pre>
+                    </li>
+                    <li class="li choice">wget
+                        <pre class="pre codeblock"><code>wget -O - -q --no-check-certificate https://&lt;MASTER HOSTNAME&gt;:8140/packages/current/install.bash | sudo bash</code></pre>
+                    </li>
+                    <li class="li choice">
+                        <span class="ph">Solaris</span> 10 (run as root)
+                        <pre class="pre codeblock"><code>export PATH=$PATH:/opt/sfw/bin
+wget -O - -q --no-check-certificate --secure-protocol=TLSv1 https://&lt;MASTER HOSTNAME&gt;:8140/packages/current/install.bash | bash</code></pre>
+                    </li>
+                </ul>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="install_nix_agents_with_your_own_package_management">
+    <h3 class="title topictitle3" id="ariaid-title6">Install <span class="ph">*nix</span> agents with your own
+        package management </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">If you choose not to use <span class="ph">PE</span>
+        package management to install agents, you can use your own package management
+        tools.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">
+                <a class="xref" href="https://puppet.com/misc/pe-files/pe_repo" target="_blank">Download</a>
+                the appropriate agent tarball. </p>
+        </section>
+        <section class="section context">
+            <p class="p">Agent packages can be found on the master in <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE
+                    VERSION&gt;/</code>. This directory contains the platform specific repository
+                file structure for agent packages. For example, if your master is running on <span class="ph">CentOS</span> 7, in <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE VERSION&gt;/</code>,
+                there's a directory <code class="ph codeph">el-7-x86_64</code>,
+                which contains the directories with all the packages needed to install an agent.</p>
+            <p class="p">If your nodes are running an operating system or architecture that
+                is different from the master, download the appropriate agent package, extract the
+                agent packages into the appropriate repo, and then install the agents on your nodes
+                just as you would any other package, for example <code class="ph codeph">yum install puppet-agent</code>.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Add the agent package to your own package
+                    management and distribution system.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Configure the package manager on your agent node
+                    (Yum, Apt) to point to that repo.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Install the agent using the command appropriate to
+                    your environment.</span>
+                <ul class="ul choices">
+                    <li class="li choice">Yum
+                        <pre class="pre codeblock"><code>sudo yum install puppet-agent</code></pre>
+                    </li>
+                    <li class="li choice">Apt
+                        <pre class="pre codeblock"><code>sudo apt-get install puppet-agent</code></pre>
+                    </li>
+                </ul>
+            </li><li class="li step">
+                <span class="ph cmd">Configure the agent as needed: <code class="ph codeph">puppet config set</code></span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title7" id="install_nix_agents_using_a_manually_transferred_certificate">
+   <h3 class="title topictitle3" id="ariaid-title7">Install <span class="ph">*nix</span> agents using a manually
+      transferred certificate </h3>
+   
+   <div class="body taskbody"><p class="shortdesc">If you choose not to or can't use <code class="ph codeph">curl -k</code> to trust the master during agent installation, you can
+      manually transfer the master CA certificate to any machines you want to install agents on, and
+      then run the installation script against that cert.</p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">On the machine that you're installing the agent on,
+               create the directory <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs</code>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">On the master, navigate to <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/</code> and transfer <code class="ph codeph">ca.pem</code> to the certs directory you created
+               on the agent node.&nbsp;</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">On the agent node, verify file permissions: <code class="ph codeph">chmod 444
+                  /etc/puppetlabs/puppet/ssl/certs/ca.pem</code></span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Run the installation command, using the <code class="ph codeph">--cacert</code> flag to point to the cert:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code>   curl --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem https://&lt;MASTER HOSTNAME&gt;:8140/packages/current/install.bash | sudo bash</code></pre>
+               </div>
+            </div>
+         </li></ol></section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title8" id="install_nix_agents_no_internet">
+    <h3 class="title topictitle3" id="ariaid-title8">Install <span class="ph">*nix</span> agents without internet
+        access </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">If you don't have access to the internet beyond your
+        infrastructure, you can download the appropriate agent tarball from an internet-connected
+        system and then install using the package management solution of your choice. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">
+                <a class="xref" href="https://puppet.com/misc/pe-files/pe_repo" target="_blank">Download</a>
+                the appropriate agent tarball. </p>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On your master, copy the agent tarball to
+                        <code class="ph codeph">/opt/puppetlabs/server/data/staging/pe_repo-puppet-agent-&lt;AGENT_VERSION&gt;/</code>,
+                    for example
+                        <code class="ph codeph">/opt/puppetlabs/server/data/staging/pe_repo-puppet-agent-5.5.17/</code></span>
+            </li><li class="li step">
+                <span class="ph cmd">Run Puppet: <code class="ph codeph">puppet agent -t</code></span>
+            </li><li class="li step">
+                <span class="ph cmd">Follow the steps to <a class="xref" href="upgrading_agents.html#upgrade_agents_script" title="To upgrade an individual node, for example to test or troubleshoot, you can upgrade directly from the node using a script. This method relies on a package repository hosted on your master.">Upgrade agents using a script</a>.</span>
+            </li></ol></section>
+    </div>
+<article class="topic task nested3" aria-labelledby="ariaid-title9" id="install_nix_agents_pe_package_management_no_internet">
+    <h4 class="title topictitle4" id="ariaid-title9">Install <span class="ph">*nix</span> agents with <span class="ph">PE</span> package management without internet access </h4>
+    
+    <div class="body taskbody"><p class="shortdesc">Use <span class="ph">PE</span> package management
+        to install agents when you don't have internet access beyond your
+        infrastructure.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On your master, copy the agent tarball to
+                        <code class="ph codeph">/opt/puppetlabs/server/data/staging/pe_repo-puppet-agent-&lt;AGENT_VERSION&gt;</code>,
+                    for example
+                        <code class="ph codeph">opt/puppetlabs/server/data/staging/pe_repo-puppet-agent-5.5.17/</code></span>
+            </li><li class="li step">
+                <span class="ph cmd">If you're installing an agent with a different OS than the master, add the
+                    appropriate class for the repo that contains the agent packages.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Master</span> group.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab in the <span class="ph uicontrol">Class
+                                name</span> field, enter <code class="ph codeph">pe_repo</code> and select
+                            the repo class from the list of classes.</span>
+                        <div class="itemgroup info">
+                            <div class="p">
+                                <div class="note note note_note"><span class="note__title">Note:</span> The repo classes are listed as
+                                        <code class="ph codeph">pe_repo::platform::&lt;AGENT_OS_VERSION_ARCHITECTURE&gt;</code>.</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Click <span class="ph uicontrol">Add class</span>, and commit changes.</span>
+                    </li>
+                </ol>
+            </li><li class="li step">
+                <span class="ph cmd">Run <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent
+                    -t</code></span>
+            </li><li class="li step">
+                <span class="ph cmd">Follow the steps for <a class="xref" href="installing_agents.html#install_nix_agents_pe_package_management" title="PE provides its own package management to help you install agents in your infrastructure.">Install *nix agents with PE package management</a>. </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested3" aria-labelledby="ariaid-title10" id="install_nix_agents_with_your_own_package_management_no_internet">
+    <h4 class="title topictitle4" id="ariaid-title10">Install <span class="ph">*nix</span> agents with your own
+        package management without internet access </h4>
+    
+    <div class="body taskbody"><p class="shortdesc">Use your own package management to install agents when you
+        don't have internet access beyond your infrastructure.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Add the agent package to your own package
+                    management and distribution system.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Disable the <span class="ph">PE</span>-hosted repo.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Master</span> group.</span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, find <code class="ph codeph">pe_repo</code> class (as well as
+                            any class that begins <code class="ph codeph">pe_repo::</code>), and click <span class="ph uicontrol">Remove this class</span>.</span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">Commit changes.</span>
+                    </li>
+                </ol>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested3" aria-labelledby="ariaid-title11" id="set_compilers_to_install_agents_from_your_own_package_management">
+    <h4 class="title topictitle4" id="ariaid-title11">Install <span class="ph">*nix</span> agents from compilers
+        using your own package management without internet access</h4>
+    
+    <div class="body taskbody"><p class="shortdesc">If your infrastructure relies on compilers to install
+        agents, you don’t have to copy the agent package to each compiler. Instead, use the console
+        to specify a path to the agent package on your package management server.</p>
+        <section class="section context"><p class="p"></p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Add the agent package to your own package
+                    management and distribution system.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Set the <code class="ph codeph">base_path</code> parameter of the <code class="ph codeph">pe_repo</code> class to your package management server.&nbsp;</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Master</span> group.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, find the <code class="ph codeph">pe_repo</code> class and specify
+                            the parameter.</span>
+                        <div class="itemgroup info"><div class="p"><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                            <tr class="row">
+                                                <th class="entry" id="set_compilers_to_install_agents_from_your_own_package_management__entry__1">
+                                                  <span class="ph uicontrol">Parameter</span>
+                                                </th>
+                                                <th class="entry" id="set_compilers_to_install_agents_from_your_own_package_management__entry__2">
+                                                  <span class="ph uicontrol">Value</span>
+                                                </th>
+                                            </tr>
+                                        </thead><tbody class="tbody">
+                                            <tr class="row">
+                                                <td class="entry" headers="set_compilers_to_install_agents_from_your_own_package_management__entry__1">
+                                                  <span class="ph uicontrol">base_path</span>
+                                                </td>
+                                                <td class="entry" headers="set_compilers_to_install_agents_from_your_own_package_management__entry__2">FQDN of your package
+                                                  management server.</td>
+                                            </tr>
+                                        </tbody></table></div></div>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Click <span class="ph uicontrol">Add parameter</span> and commit changes.</span>
+                    </li>
+                </ol>
+            </li></ol></section>
+    </div>
+</article></article></article><article class="topic concept nested1" aria-labelledby="ariaid-title12" id="installing_windows_agents">
+    <h2 class="title topictitle2" id="ariaid-title12">Install <span class="ph">Windows</span> agents </h2>
+    
+    <div class="body conbody"><p class="shortdesc">You can install <span class="ph">Windows</span>
+        agents with <span class="ph">PE</span> package management, with a manually
+        transferred certificate, or with the <span class="ph">Windows</span> .msi package. </p>
+        <div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> 
+                <div class="p">You must enable TLSv1 to
+                install agents on these platforms: <ul class="ul">
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">AIX</span>
+                        </p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">CentOS</span> 5</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">RHEL</span> 5</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">SLES 11</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">Solaris</span> 10</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">
+                            <span class="ph">Windows</span> Server 2008r2</p>
+                    </li>
+                </ul>
+            </div>
+            </div>
+        </div>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="enable_tlsv1.html" title="TLSv1 and TLSv1.1 are disabled by default in PE.">Enable TLSv1</a></li></ul></div></nav><article class="topic task nested2" aria-labelledby="ariaid-title13" id="unique_485118496">
+   <h3 class="title topictitle3" id="ariaid-title13">Install agents from the console</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">You can use the console to leverage tasks that install <span class="ph">*nix</span> or <span class="ph">Windows</span> agents on target
+      nodes. </p>
+      <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+         <p class="p">Add classes to the <span class="ph uicontrol">PE
+               Master</span> node group for each agent platform used in your environment. For
+            example, <code class="ph codeph">pe_repo::platform::el_7_x86_64</code>.</p>
+         <p class="p">Make sure you have permission to run the appropriate task to install
+            agents on all nodes:</p>
+         <div class="p">
+            <ul class="ul">
+               <li class="li">
+                  <p class="p"><span class="ph">*nix</span> targets use the task
+                     pe_bootstrap::linux</p>
+               </li>
+               <li class="li">
+                  <p class="p"><span class="ph">Windows</span> targets use the task
+                     pe_bootstrap::windows</p>
+               </li>
+            </ul>
+         </div>
+         <div class="p">For <span class="ph">Windows</span> targets, this task
+            requires: <ul class="ul" id="unique_485118496__ul_bjl_jkx_nhb">
+               <li class="li">
+                  <span class="ph">Windows</span> 2008 SP2 or newer </li>
+               <li class="li">
+                  <span class="ph">PowerShell</span> version 3 or higher</li>
+               <li class="li">
+                  <span class="ph">Microsoft</span> .NET Framework 4.5 or higher</li>
+            </ul></div>
+      </section>
+      <section class="section context"></section>
+      <section><ol class="ol steps"><li class="li step stepexpand" id="unique_485118496__step_ekc_qxy_jkb">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Inventory</span>.</span>
+         </li><li class="li step stepexpand" id="unique_485118496__step_b2k_qxy_jkb">
+            <span class="ph cmd">Click <span class="ph uicontrol">Install agents</span>.</span>
+         </li><li class="li step stepexpand" id="unique_485118496__step_wvp_qxy_jkb">
+            <span class="ph cmd">Select a transport method. </span>
+            <ul class="ul choices">
+               <li class="li choice"><span class="ph uicontrol">SSH</span> for <span class="ph">*nix</span> targets </li>
+               <li class="li choice"><span class="ph uicontrol">WinRM</span> for <span class="ph">Windows</span>
+                  targets </li>
+            </ul>
+         </li><li class="li step stepexpand" id="unique_485118496__step_izw_qxy_jkb">
+            <span class="ph cmd">Enter the target host names and the credentials required to access them. If you use
+               an SSH key, include begin and end tags.</span>
+         </li><li class="li step stepexpand" id="unique_485118496__step_nk2_rxy_jkb">
+            <span class="ph cmd">Click <span class="ph uicontrol">Add nodes</span>. </span>
+            <div class="itemgroup info">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Click <span class="ph uicontrol">Installation job started</span> to view the
+                  job details for the task. </div>
+            </div>
+            <div class="itemgroup stepresult">Agents are installed on the target nodes and then automatically submit
+               certificate signing requests (CSR) to the master. The list of unsigned certificates
+               is updated with new targets.</div>
+         </li></ol></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="adding_and_removing_nodes.html#managing_certificate_signing_requests_console" title="A certificate signing request appears in the console on the Unsigned certs page after you add an agent node to inventory. Accept or reject submitted requests individually or in a batch.">Managing certificate signing requests in the console</a></li><li class="linklist"><a class="link" href="adding_and_removing_nodes.html#managing_certificate_signing_requests_cli" title="You can view, approve, and reject node requests using the command line.">Managing certificate signing requests on the command line</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title14" id="install_windows_agents_with_pe_package_management">
+    <h3 class="title topictitle3" id="ariaid-title14">Install <span class="ph">Windows</span> agents with <span class="ph">PE</span> package management </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">To install a <span class="ph">Windows</span> agent
+        with <span class="ph">PE</span> package management, you use the <code class="ph codeph">pe_repo</code> class to distribute an installation package to
+        agents. You can use this method with or without internet access.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <div class="p">If your master doesn't have internet access, <a class="xref" href="https://puppet.com/misc/pe-files/pe_repo" target="_blank">download</a> the appropriate agent package and save it on
+                your master in the location appropriate for your agent systems: <ul class="ul">
+                    <li class="li">
+                        <p class="p">32-bit systems — <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE_VERSION&gt;/windows-i386-&lt;AGENT_VERSION&gt;/</code>
+                        </p>
+                    </li>
+                    <li class="li">
+                        <p class="p">64-bit systems — <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE_VERSION&gt;/windows-x86_64-&lt;AGENT_VERSION&gt;/</code>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section class="section context">
+            <p class="p">You must use PowerShell 2.0 or later to install <span class="ph">Windows</span> agents with <span class="ph">PE</span>
+                package management.</p>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> The <code class="ph codeph">&lt;MASTER HOSTNAME&gt;</code> portion of the installer
+                script—as provided in the following example—refers to the FQDN of the master. The
+                FQDN must be fully resolvable by the machine on which you're installing or upgrading
+                the agent.</div>
+            </div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the <span class="ph uicontrol">PE Infrastructure</span> group, select the
+                        <span class="ph uicontrol">PE Master</span>
+                    group.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab in the <span class="ph uicontrol">Class name</span> field, select <span class="ph uicontrol">pe_repo</span> and select the appropriate
+                    repo class from the list of classes.</span>
+                <ul class="ul choices">
+                    <li class="li choice">64-bit (x86_64) — <span class="ph uicontrol">pe_repo::platform::windows_x86_64</span>.</li>
+                    <li class="li choice">32-bit (i386) — <span class="ph uicontrol">pe_repo::platform::windows_i386</span>.</li>
+                </ul>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add class</span> and commit changes.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master, run <span class="ph">Puppet</span> to configure the newly assigned
+                    class.</span>
+                <div class="itemgroup stepresult">
+                    <p class="p">The new repository is created on the master at <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE
+                            VERSION&gt;/&lt;PLATFORM&gt;/</code>.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the node, open an administrative PowerShell
+                    window, and install:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>[System.Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; [Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; $webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('https://&lt;MASTER_HOST&gt;:8140/packages/current/install.ps1', 'install.ps1'); .\install.ps1 -v
+</code></pre>
+                    </div>
+                    <div class="p"><span class="ph">Microsoft</span>
+                        <span class="ph">Windows</span> Server 2008r2 only:
+                        <pre class="pre codeblock"><code>[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; $webClient = New-Object System.Net.WebClient; $webClient.DownloadFile('https://&lt;MASTER_HOST&gt;:8140/packages/current/install.ps1', 'install.ps1'); .\install.ps1 -v
+</code></pre>
+                    </div>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p">After running the installer, you see the following output, which
+                indicates the agent was successfully installed.</p>
+            <pre class="pre codeblock Puppet"><code>Notice: /Service[puppet]/ensure: ensure changed 'stopped' to 'running'
+service { 'puppet':
+  ensure =&gt; 'running',
+  enable =&gt; 'true',
+}</code></pre>
+        </section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title15" id="install_windows_agents_using_a_manually_transferred_certificate">
+    <h3 class="title topictitle3" id="ariaid-title15">Install <span class="ph">Windows</span> agents using a
+        manually transferred certificate</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">If you need to perform a secure installation on <span class="ph">Windows</span> nodes, you can manually transfer the master CA
+        certificate to target nodes, and run a specialized installation script against that
+        cert.</p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Transfer the installation script and the CA
+                    certificate from your master to the node you're installing.</span>
+                <div class="itemgroup info"><div class="p"><table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                                    <tr class="row">
+                                        <th class="entry" id="install_windows_agents_using_a_manually_transferred_certificate__entry__1">File</th>
+                                        <th class="entry" id="install_windows_agents_using_a_manually_transferred_certificate__entry__2">Location on master</th>
+                                        <th class="entry" id="install_windows_agents_using_a_manually_transferred_certificate__entry__3">Location on target
+                                            node</th>
+                                    </tr>
+                                </thead><tbody class="tbody">
+                                    <tr class="row">
+                                        <td class="entry" headers="install_windows_agents_using_a_manually_transferred_certificate__entry__1">Installation script (<code class="ph codeph">install.ps1</code>)</td>
+                                        <td class="entry" headers="install_windows_agents_using_a_manually_transferred_certificate__entry__2"><code class="ph codeph">/opt/puppetlabs/server/data/packages/public/</code></td>
+                                        <td class="entry" headers="install_windows_agents_using_a_manually_transferred_certificate__entry__3">Any accessible local
+                                            directory.</td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="entry" headers="install_windows_agents_using_a_manually_transferred_certificate__entry__1">CA certificate (<code class="ph codeph">ca.pem</code>)</td>
+                                        <td class="entry" headers="install_windows_agents_using_a_manually_transferred_certificate__entry__2"><code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/</code></td>
+                                        <td class="entry" headers="install_windows_agents_using_a_manually_transferred_certificate__entry__3"><code class="ph codeph">C:\ProgramData\PuppetLabs\puppet\etc\ssl\certs\</code></td>
+                                    </tr>
+                                </tbody></table></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run the installation script, using the <code class="ph codeph">-UsePuppetCA</code> flag:
+                        <code class="ph codeph">.\install.ps1
+                        -UsePuppetCA</code></span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title16" id="install_windows_agents_with_the_msi_package">
+    <h3 class="title topictitle3" id="ariaid-title16">Install <span class="ph">Windows</span> agents with the
+        .msi package</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Use the <span class="ph">Windows</span> .msi
+        package if you need to specify agent configuration details during installation, or if you
+        need to install <span class="ph">Windows</span> agents locally without internet
+        access. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p"><a class="xref" href="https://puppet.com/download-puppet-enterprise" target="_blank">Download</a> the .msi package.</p>
+            <div class="p">
+                <div class="note tip note_tip"><span class="note__title">Tip:</span> To install on nodes that don't have internet
+                    access, save the .msi package to the appropriate location for your system: <ul class="ul">
+                        <li class="li">
+                            <p class="p">32-bit systems — <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE_VERSION&gt;/windows-i386-&lt;AGENT_VERSION&gt;/</code>
+                            </p>
+                        </li>
+                        <li class="li">
+                            <p class="p">64-bit systems — <code class="ph codeph">/opt/puppetlabs/server/data/packages/public/&lt;PE_VERSION&gt;/windows-x86_64-&lt;AGENT_VERSION&gt;/</code>
+                            </p>
+                        </li>
+                    </ul></div>
+            </div>
+        </section>
+    </div>
+
+
+<article class="topic task nested3" aria-labelledby="ariaid-title17" id="install_windows_agents_with_the_installer">
+      <h4 class="title topictitle4" id="ariaid-title17">Install <span class="ph">Windows</span> agents with the
+            installer</h4>
+      
+      <div class="body taskbody"><p class="shortdesc">Use the MSI installer for a more automated installation
+            process. The installer can configure <code class="ph codeph">puppet.conf</code>, create CSR attributes, and configure the agent to talk to
+            your master. </p>
+            <section><ol class="ol steps"><li class="li step">
+                        <span class="ph cmd">Run the installer as administrator.</span>
+                  </li><li class="li step">
+                        <span class="ph cmd">When prompted, provide the hostname of
+                              your master, for example <kbd class="ph userinput">puppet</kbd>.</span>
+                  </li></ol></section>
+      </div>
+</article><article class="topic task nested3" aria-labelledby="ariaid-title18" id="install_windows_msiexec_CLI">
+    <h4 class="title topictitle4" id="ariaid-title18">Install <span class="ph">Windows</span> agents using <code class="ph codeph">msiexec</code> from
+        the command line</h4>
+    
+    <div class="body taskbody"><p class="shortdesc">Install the MSI manually from the the command line if you need to customize
+            <code class="ph codeph">puppet.conf</code>, CSR attributes, or certain agent properties.
+            
+    </p>
+        <section><div class="li step p">
+                <span class="ph cmd">On the command line of the node that you want to install the agent on, run the
+                    install command:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>msiexec /qn /norestart /i &lt;PACKAGE_NAME&gt;.msi</code></pre>
+                    </div>
+                </div>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <div class="note tip note_tip"><span class="note__title">Tip:</span> You can specify <code class="ph codeph">/l*v install.txt</code> to log
+                            the progress of the installation to a file.</div>
+                    </div>
+                </div>
+            </div></section>
+    </div>
+</article><article class="topic reference nested3" aria-labelledby="ariaid-title19" id="msi_properties">
+    <h4 class="title topictitle4" id="ariaid-title19">MSI properties </h4>
+    
+    <div class="body refbody"><p class="shortdesc">If you install <span class="ph">Windows</span> agents from the command line
+        using the .msi package, you can optionally specify these properties. 
+    </p>
+        <section class="section"><div class="note important note_important"><span class="note__title">Important:</span> If you set a non-default value for
+                    <code class="ph codeph">PUPPET_MASTER_SERVER</code>, <code class="ph codeph">PUPPET_CA_SERVER</code>,
+                    <code class="ph codeph">PUPPET_AGENT_CERTNAME</code>, or
+                    <code class="ph codeph">PUPPET_AGENT_ENVIRONMENT</code>, the installer replaces the existing
+                value in <code class="ph codeph">puppet.conf</code> and re-uses the value at upgrade unless you
+                specify a new value. Therefore, if you've customized these properties, don't change
+                the setting directly in <code class="ph codeph">puppet.conf</code>; instead, re-run the installer
+                and set a new value at installation.</div><table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="msi_properties__entry__1">Property </th>
+                            <th class="entry" id="msi_properties__entry__2">Definition</th>
+                            <th class="entry" id="msi_properties__entry__3">Setting in <code class="ph codeph">pe.conf</code>
+                            </th>
+                            <th class="entry" id="msi_properties__entry__4">Default</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">INSTALLDIR </code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2">Location to install <span class="ph">Puppet</span> and its dependencies.</td>
+                            <td class="entry" headers="msi_properties__entry__3">n/a </td>
+                            <td class="entry" headers="msi_properties__entry__4">
+                                <ul class="ul">
+                                    <li class="li">
+                                        <p class="p">32-bit — <code class="ph codeph">C:\Program Files\Puppet
+                                                Labs\Puppet</code>
+                                        </p>
+                                    </li>
+                                    <li class="li">
+                                        <p class="p">64-bit — <code class="ph codeph">C:\Program Files \Puppet
+                                                Labs\Puppet</code>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">PUPPET_MASTER_SERVER</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2">Hostname where the master can be reached. </td>
+                            <td class="entry" headers="msi_properties__entry__3">
+                                <code class="ph codeph">server</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__4">
+                                <code class="ph codeph">puppet</code>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">PUPPET_CA_SERVER</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2">Hostname where the CA master can be reached, if
+                                you're using multiple masters and only one of them is acting as the
+                                CA. </td>
+                            <td class="entry" headers="msi_properties__entry__3">
+                                <code class="ph codeph">ca_server</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__4">Value of <code class="ph codeph">PUPPET_MASTER_SERVER</code>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">PUPPET_AGENT_CERTNAME</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2">
+                                <p class="p">Node's certificate name, and the name it uses when requesting
+                                    catalogs. </p>
+                                <p class="p">For best compatibility, limit the value of
+                                        <code class="ph codeph">certname</code> to lowercase letters, numbers,
+                                    periods, underscores, and dashes.</p>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__3">
+                                <code class="ph codeph">certname</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__4">Value of <code class="ph codeph">facter fdqn</code>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">PUPPET_AGENT_ENVIRONMENT</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2"> Node's environment. <div class="note note note_note"><span class="note__title">Note:</span> If a value
+                                    for the <code class="ph codeph">environment</code> variable already exists in
+                                        <code class="ph codeph">puppet.conf</code>, specifying it during
+                                    installation does not override that value.</div>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__3">
+                                <code class="ph codeph">environment</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__4">
+                                <code class="ph codeph">production</code>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">PUPPET_AGENT_STARTUP_MODE</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2">Whether and how the agent service is allowed to
+                                run. Allowed values are: <ul class="ul">
+                                    <li class="li">
+                                        <code class="ph codeph">Automatic</code> — Agent starts up when <span class="ph">Windows</span> starts and remains
+                                        running in the background. </li>
+                                    <li class="li">
+                                        <code class="ph codeph">Manual</code> — Agent can be started in the
+                                        services console or with <code class="ph codeph">net start</code> on the
+                                        command line. </li>
+                                    <li class="li">
+                                        <code class="ph codeph">Disabled</code> — Agent is installed but disabled.
+                                        You must change its startup type in the services console
+                                        before you can start the service. </li>
+                                </ul>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__3">n/a </td>
+                            <td class="entry" headers="msi_properties__entry__4">
+                                <code class="ph codeph">Automatic</code>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">PUPPET_AGENT_ACCOUNT_USER</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2">
+                                <p class="p">
+                                    <span class="ph">Windows</span> user account the agent
+                                    service uses. This property is useful if the agent needs to
+                                    access files on UNC shares, because the default
+                                        <code class="ph codeph">LocalService</code> account can't access these
+                                    network resources.</p>
+                                <p class="p">The user account must already exist<strong class="ph b">,</strong> and can be either a
+                                    local or domain user. The installer allows domain users even if
+                                    they have not accessed the machine before. The installer grants
+                                        <code class="ph codeph">Logon as Service</code> to the user, and if the
+                                    user isn't already a local administrator, the installer adds it
+                                    to the <code class="ph codeph">Administrators</code> group.</p>
+                                <p class="p">This property must be combined with
+                                        <code class="ph codeph">PUPPET_AGENT_ACCOUNT_PASSWORD</code> and
+                                        <code class="ph codeph">PUPPET_AGENT_ACCOUNT_DOMAIN</code>. </p>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__3">n/a </td>
+                            <td class="entry" headers="msi_properties__entry__4">
+                                <code class="ph codeph">LocalSystem</code>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">PUPPET_AGENT_ACCOUNT_PASSWORD</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2">Password for the agent's user account.</td>
+                            <td class="entry" headers="msi_properties__entry__3">n/a </td>
+                            <td class="entry" headers="msi_properties__entry__4">No Value</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">PUPPET_AGENT_ACCOUNT_DOMAIN</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2">Domain of the agent's user account.</td>
+                            <td class="entry" headers="msi_properties__entry__3">n/a </td>
+                            <td class="entry" headers="msi_properties__entry__4">
+                                <code class="ph codeph">.</code>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="msi_properties__entry__1">
+                                <code class="ph codeph">REINSTALLMODE</code>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__2">A <a class="xref" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa371182(v=vs.85).aspx" target="_blank">default MSI property</a> used to control the
+                                behavior of file copies during installation.<div class="note important note_important"><span class="note__title">Important:</span> If you need to downgrade agents, use
+                                        <code class="ph codeph">REINSTALLMODE=amus</code> when calling
+                                        <code class="ph codeph">msiexec.exe</code> at the command line to prevent
+                                    removing files that the application needs. </div>
+                            </td>
+                            <td class="entry" headers="msi_properties__entry__3">n/a</td>
+                            <td class="entry" headers="msi_properties__entry__4">
+                                <p class="p">amus as of puppet-agent 1.10.10 and puppet-agent 5.3.4</p>
+                                <p class="p">omus in prior releases</p>
+                            </td>
+                        </tr>
+                    </tbody></table></section>
+        <div class="example">To install the agent with the master at
+            <code class="ph codeph">puppet.acme.com</code>:<pre class="pre codeblock"><code>msiexec /qn /norestart /i puppet.msi PUPPET_MASTER_SERVER=puppet.acme.com</code></pre>
+        </div>
+        <div class="example">To install the agent to a domain user
+            <code class="ph codeph">ExampleCorp\bob</code>:<pre class="pre codeblock"><code>msiexec /qn /norestart /i puppet-&lt;VERSION&gt;.msi PUPPET_AGENT_ACCOUNT_DOMAIN=ExampleCorp PUPPET_AGENT_ACCOUNT_USER=bob PUPPET_AGENT_ACCOUNT_PASSWORD=password</code></pre>
+        </div>
+    </div>
+</article></article><article class="topic concept nested2" aria-labelledby="ariaid-title20" id="windows_agent_installation_details">
+    <h3 class="title topictitle3" id="ariaid-title20"><span class="ph">Windows</span> agent installation details </h3>
+    
+    <div class="body conbody"><p class="shortdesc"><span class="ph">Windows</span> nodes can fetch
+        configurations from a master and apply manifests locally, and respond to orchestration
+        commands. </p>
+        <div class="p">After installing a <span class="ph">Windows</span> node, the
+                <span class="ph uicontrol">Start Menu</span> contains a
+                <span class="ph uicontrol">Puppet</span> folder with
+            shortcuts for running the agent manually, running <span class="ph">Facter</span>,
+            and opening a command prompt for use with <span class="ph">Puppet</span> tools.
+                <div class="note note note_note"><span class="note__title">Note:</span> You must run <span class="ph">Puppet</span> with elevated privileges. Select <span class="ph uicontrol">Run as administrator</span> when opening
+                the command prompt.</div></div>
+        <p class="p">The agent runs as a <span class="ph">Windows</span> service. By
+            default, the agent fetches and applies configurations every 30 minutes. The agent
+            service can be started and stopped independently using either the service control
+            manager UI or the command line <code class="ph codeph">sc.exe</code>
+            utility.</p>
+        <p class="p"><span class="ph">Puppet</span> is automatically added to the
+            machine's <code class="ph codeph">PATH</code> environment variable, so
+            you can open any command line and run <code class="ph codeph">puppet</code>, <code class="ph codeph">facter</code> and the
+            other batch files that are in the <code class="ph codeph">bin</code>
+            directory of the <span class="ph">Puppet</span> installation. Items necessary for
+            the <span class="ph">Puppet</span> environment are also added to the shell, but
+            only for the duration of execution of each of the particular commands.</p>
+        <p class="p">The installer includes <span class="ph">Ruby</span>, gems, and
+                <span class="ph">Facter</span>. If you have existing copies of these
+            applications, such as <span class="ph">Ruby</span>, they aren't affected by the
+            re-distributed version included with <span class="ph">Puppet</span>.</p>
+        <section class="section"><h4 class="title sectiontitle">Program directory</h4><p class="p">Unless overridden during installation, <span class="ph">PE</span> and its dependencies are installed in <code class="ph codeph">Program Files</code> at <code class="ph codeph">\Puppet Labs\Puppet</code>.</p><p class="p">You can locate the <code class="ph codeph">Program Files</code>
+                directory using the <code class="ph codeph">PROGRAMFILES</code>
+                variable or the <code class="ph codeph">PROGRAMFILES(X86)</code>
+                variable. </p><p class="p">The program directory contains these
+                subdirectories.</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="windows_agent_installation_details__entry__1">Subdirectory </th>
+                            <th class="entry" id="windows_agent_installation_details__entry__2">Contents</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="windows_agent_installation_details__entry__1"><code class="ph codeph">bin</code>
+                            </td>
+                            <td class="entry" headers="windows_agent_installation_details__entry__2">scripts for running <span class="ph">Puppet</span> and <span class="ph">Facter</span></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="windows_agent_installation_details__entry__1"><code class="ph codeph">facter</code>
+                            </td>
+                            <td class="entry" headers="windows_agent_installation_details__entry__2"><span class="ph">Facter</span> source</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="windows_agent_installation_details__entry__1"><code class="ph codeph">hiera</code>
+                            </td>
+                            <td class="entry" headers="windows_agent_installation_details__entry__2">
+                                <span class="ph">Hiera</span> source</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="windows_agent_installation_details__entry__1"><code class="ph codeph">misc</code>
+                            </td>
+                            <td class="entry" headers="windows_agent_installation_details__entry__2">resources</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="windows_agent_installation_details__entry__1"><code class="ph codeph">puppet</code>
+                            </td>
+                            <td class="entry" headers="windows_agent_installation_details__entry__2"><span class="ph">Puppet</span> source</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="windows_agent_installation_details__entry__1"><code class="ph codeph">service</code>
+                            </td>
+                            <td class="entry" headers="windows_agent_installation_details__entry__2">code to run the agent as a
+                                service</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="windows_agent_installation_details__entry__1"><code class="ph codeph">sys</code>
+                            </td>
+                            <td class="entry" headers="windows_agent_installation_details__entry__2"><span class="ph">Ruby</span> and other tools</td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section"><h4 class="title sectiontitle">Data directory</h4><p class="p"><span class="ph">PE</span> stores settings, manifests, and
+                generated data — such as logs and catalogs — in the data directory. The data
+                directory contains two subdirectories for the various components:</p><ul class="ul">
+                <li class="li"><code class="ph codeph">etc</code> (the
+                        <code class="ph codeph">$confdir</code>): Contains
+                    configuration files, manifests, certificates, and other important files.</li>
+                <li class="li"><code class="ph codeph">var</code> (the
+                        <code class="ph codeph">$vardir</code>): Contains
+                    generated data and logs.</li>
+            </ul><p class="p">When you run <span class="ph">Puppet</span> with
+                elevated privileges as intended, the data directory is located in the <code class="ph codeph">COMMON_APPDATA.aspx</code> folder. This folder
+                is typically located at <code class="ph codeph">C:\ProgramData\PuppetLabs\</code>. Because the common app data directory is a
+                system folder, it is hidden by default. </p><p class="p">If you run <span class="ph">Puppet</span> without elevated privileges, it uses a <code class="ph codeph">.puppet</code> directory in the current user's
+                home folder as its data directory, which can result in unexpected
+            settings.</p></section>
+    </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title21" id="installing-mac-os-x-agents">
+    <h2 class="title topictitle2" id="ariaid-title21">Install <span class="ph">macOS</span> agents</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">You can install <span class="ph">macOS</span>
+        agents with <span class="ph">PE</span> package management, from Finder, or from the
+        command line. 
+    </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">
+                <a class="xref" href="https://puppet.com/misc/pe-files/pe_repo" target="_blank">Download</a>
+                the appropriate agent tarball. </p>
+        </section>
+        <section class="section context">
+            <p class="p">To install <span class="ph">macOS</span> agents with <span class="ph">PE</span> package management, follow the steps to <a class="xref" href="installing_agents.html#install_nix_agents_pe_package_management" title="PE provides its own package management to help you install agents in your infrastructure.">Install *nix agents with PE package management</a>. </p>
+            <div class="p">
+                <div class="note important note_important"><span class="note__title">Important:</span> For <span class="ph">macOS</span> agents, the certname is derived from the name of the machine (such as
+                    My-Example-Mac). To prevent installation issues, make sure the name of the node
+                    uses lowercases letters. If you don’t want to change your computer’s name, you
+                    can enter the agent certname in all lowercase letters when prompted by the
+                    installer.</div>
+            </div>
+        </section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title22" id="install_macosx_agents_from_finder">
+    <h3 class="title topictitle3" id="ariaid-title22">Install <span class="ph">macOS</span> agents from Finder </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">You can use Finder to install the agent on your <span class="ph">macOS</span>
+        machine. 
+    </p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Open the agent package .dmg and click the installer .pkg.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Follow prompts in the installer dialog. </span>
+                <div class="itemgroup info"><p class="p">You must include the master hostname and the agent certname. </p></div>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title23" id="install_macosx_agents_from_the_command_line">
+    <h3 class="title topictitle3" id="ariaid-title23">Install <span class="ph">macOS</span> agents from the command line </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">You can use the command line to install the agent on a <span class="ph">macOS</span> machine. 
+    </p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">SSH into the node as a root or sudo user.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Mount the disk image: <code class="ph codeph">sudo hdiutil mount &lt;DMGFILE&gt;</code>
+                </span>
+                <div class="itemgroup stepresult"><p class="p">A line appears ending with
+                            <code class="ph codeph">/Volumes/puppet-agent-VERSION</code>. This directory location
+                        is the mount point for the virtual volume created from the disk
+                    image.</p></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Change to the directory indicated as the mount point in the previous step, for
+                    example: <code class="ph codeph">cd /Volumes/puppet-agent-VERSION</code>
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Install the agent package: <code class="ph codeph">sudo installer -pkg
+                        puppet-agent-installer.pkg -target /</code>
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Verify the installation: <code class="ph codeph">/opt/puppetlabs/bin/puppet --version</code>
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Configure the agent to connect to the master:
+                        <code class="ph codeph">/opt/puppetlabs/bin/puppet config set server
+                        &lt;MASTER_HOSTNAME&gt;</code>
+                </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Configure the agent certname: <code class="ph codeph">/opt/puppetlabs/bin/puppet config set
+                        certname &lt;AGENT_CERTNAME&gt;</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title24" id="macosx_agent_installation_details">
+    <h3 class="title topictitle3" id="ariaid-title24">
+        <span class="ph">macOS</span> agent installation details</h3>
+    
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">macOS</span> agents include core <span class="ph">Puppet</span> functionality, plus platform-specific capabilities like package installation, service
+        management with LaunchD, facts inventory with the System Profiler, and directory services
+        integration.</p>
+        <p class="p"></p>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title25" id="installing_non_root_agents">
+    <h2 class="title topictitle2" id="ariaid-title25">Install non-root agents </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Running agents without root privileges can assist teams
+        using <span class="ph">PE</span> to work autonomously. </p>
+        <p class="p">For example, your infrastructure’s platform might be maintained by one
+            team with root privileges while your infrastructure’s applications are managed by a
+            separate team (or teams) with diminished privileges. If the application team wants to be
+            able to manage its part of the infrastructure independently, they can run <span class="ph">Puppet</span> without root privileges. </p>
+        <p class="p">
+            <span class="ph">PE</span> is installed with root privileges, so you need a root
+            user to install and configure non-root access to a master. The root user who performs
+            this installation can then set up non-root users on the master and any nodes running an
+            agent.</p>
+        <p class="p">Non-root users can perform a reduced set of management tasks,
+            including configuring settings, configuring <span class="ph">Facter</span>
+            external facts, running <code class="ph codeph">puppet agent
+                --test</code>, and running <span class="ph">Puppet</span> with
+            non-privileged cron jobs or a similar scheduling service. Non-root users can also
+            classify nodes by writing or editing manifests in the directories where they have write
+            privileges.</p>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title26" id="install_nonroot_nix_agents">
+    <h3 class="title topictitle3" id="ariaid-title26">Install non-root <span class="ph">*nix</span> agents</h3>
+    <div class="body taskbody">
+        <section class="section context">
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> Unless specified
+                    otherwise, perform these steps as a root user.</div>
+            </div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Install the agent on each node that you want to
+                    operate as a non-root user.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Log in to the agent node and add the non-root
+                    user:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>puppet resource user &lt;UNIQUE NON-ROOT USERNAME&gt; ensure=present managehome=true</code></pre>
+                    </div>
+                    <div class="p">
+                        <div class="note note note_note"><span class="note__title">Note:</span> Each non-root user
+                    must have a unique name.</div>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Set the non-root user password. </span>
+                <div class="itemgroup stepxmp">
+                    <p class="p">For example, on most <span class="ph">*nix</span>
+                        systems: <code class="ph codeph">passwd
+                            &lt;USERNAME&gt;</code></p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Stop the <code class="ph codeph">puppet</code> service: </span>
+                <div class="itemgroup info"><div class="p">
+                        <pre class="pre codeblock"><code>puppet resource service puppet ensure=stopped enable=false</code></pre>
+                    </div><p class="p">By default, the <code class="ph codeph">puppet</code> service runs automatically as a root user, so it must
+                        be disabled. </p></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Disable the <span class="ph">Puppet Execution Protocol</span> agent.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the
+                                <span class="ph uicontrol">PE
+                                Infrastructure</span> group, select the <span class="ph uicontrol">PE Agent</span> group.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, select the
+                                <span class="ph uicontrol">puppet_enterprise::profile::agent</span> class, specify
+                            parameters, click <span class="ph uicontrol">Add
+                                parameter</span>, and then commit changes.&nbsp;</span>
+                        <div class="itemgroup info">
+                            <div class="p">
+                                <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                            <tr class="row">
+                                                <th class="entry" id="install_nonroot_nix_agents__entry__1">Parameter</th>
+                                                <th class="entry" id="install_nonroot_nix_agents__entry__2">Value</th>
+                                            </tr>
+                                        </thead><tbody class="tbody">
+                                            <tr class="row">
+                                                <td class="entry" headers="install_nonroot_nix_agents__entry__1">
+                                                  <span class="ph uicontrol">pxp_enabled</span>
+                                                </td>
+                                                <td class="entry" headers="install_nonroot_nix_agents__entry__2">
+                                                  <kbd class="ph userinput">false</kbd>
+                                                </td>
+                                            </tr>
+                                        </tbody></table>
+                            </div>
+                        </div>
+                    </li>
+                </ol>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Change to the non-root user and generate a
+                    certificate signing request: </span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>puppet agent -t --certname "&lt;UNIQUE NON-ROOT USERNAME.HOSTNAME&gt;" --server "&lt;MASTER HOSTNAME&gt;"</code></pre>
+                    </div>
+                    <div class="p">
+                        <div class="note tip note_tip"><span class="note__title">Tip:</span> If you wish to use <code class="ph codeph">su - &lt;NON-ROOT USERNAME&gt;</code> to
+                            switch between accounts, make sure to use the <code class="ph codeph">-</code> (<code class="ph codeph">-l</code> in some unix variants) argument so that full login
+                            privileges are correctly granted. Otherwise you might see permission
+                            denied errors when trying to apply a catalog.</div>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master or in the console, approve the
+                    certificate signing request.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the agent node as the non-root user, set the
+                    node's certname and the master hostname, and then run <span class="ph">Puppet</span>.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>puppet config set certname &lt;UNIQUE NON-ROOT USERNAME.HOSTNAME&gt; --section agent</code></pre>
+                        <pre class="pre codeblock"><code>puppet config set server &lt;PUPPET MASTER HOSTNAME&gt; --section agent</code></pre>
+                        <pre class="pre codeblock"><code>puppet agent -t</code></pre>
+                    </div>
+                </div>
+                <div class="itemgroup stepresult">
+                    <div class="p">The configuration specified in the catalog is applied to
+                        the node. <div class="note tip note_tip"><span class="note__title">Tip:</span> If you see <span class="ph">Facter</span> facts being created in the
+                            non-root user’s home directory, you have successfully created a
+                            functional non-root agent.</div>
+                    </div>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p"></p>
+        </section>
+        <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>
+            <div class="p">To confirm that the non-root agent is correctly configured, verify
+                that: <ul class="ul">
+                    <li class="li">
+                        <p class="p">The agent can request certificates and apply the
+                            catalog from the master when a non-root user runs <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent -t</code>
+                        </p>
+                    </li>
+                    <li class="li">
+                        <p class="p">The agent service is not running:&nbsp;<code class="ph codeph">service puppet status</code>
+                        </p>
+                    </li>
+                    <li class="li">
+                        <p class="p">Non-root users can collect existing facts by running
+                                <code class="ph codeph">facter</code> on the
+                            agent, and they can define new, external facts. </p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title27" id="install_nonroot_windows_agents">
+    <h3 class="title topictitle3" id="ariaid-title27">Install non-root <span class="ph">Windows</span>
+        agents</h3>
+    <div class="body taskbody">
+        <section class="section context">
+            <div class="note note note_note"><span class="note__title">Note:</span> Unless specified
+                    otherwise, perform these steps as a root user.</div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Install the agent on each node that you want to
+                    operate as a non-root user.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Log in to the agent node and add the non-root
+                    user: </span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>puppet resource user &lt;UNIQUE NON-ADMIN USERNAME&gt; ensure=present managehome=true password="puppet" groups="Users"</code></pre>
+                    <div class="note note note_note"><span class="note__title">Note:</span> Each non-root user
+                    must have a unique name.</div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Stop the <code class="ph codeph">puppet</code> service: </span>
+                <div class="itemgroup info"><div class="p">
+                        <pre class="pre codeblock"><code>puppet resource service puppet ensure=stopped enable=false</code></pre>
+                    </div><p class="p">By default, the <code class="ph codeph">puppet</code> service runs automatically as a root user, so it must
+                        be disabled. </p></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Change to the non-root user and generate a
+                    certificate signing request: </span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>puppet agent -t --certname "&lt;UNIQUE NON-ADMIN USERNAME&gt;" --server "&lt;MASTER HOSTNAME&gt;"</code></pre>
+                        <div class="note important note_important"><span class="note__title">Important:</span> This <span class="ph">Puppet</span> run submits a cert request to the
+                            master and creates a <code class="ph codeph">/.puppet</code> directory structure in the non-root user’s home
+                            directory. If this directory is not created automatically, you must
+                            manually create it before continuing.</div>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">As the non-root user, create a configuration file
+                    at <code class="ph codeph">%USERPROFILE%/.puppet/puppet.conf</code> to specify the agent certname
+                    and the hostname of the master:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>[main]
+certname = &lt;UNIQUE NON-ADMIN USERNAME.hostname&gt;
+server = &lt;MASTER HOSTNAME&gt;</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">As the non-root user, submit a cert request:
+                        <code class="ph codeph">puppet agent -t</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master or in the console, approve the
+                    certificate signing request. </span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <div class="note important note_important"><span class="note__title">Important:</span> It's possible to sign the root
+                            user certificate in order to allow that user to also manage the node.
+                            However, this introduces the possibility of unwanted behavior and
+                            security issues. For example, if your site.pp has no default node
+                            configuration, running the agent as non-admin could lead to unwanted
+                            node definitions getting generated using alt hostnames, a potential
+                            security issue. If you deploy this scenario, ensure the root and
+                            non-root users never try to manage the same resources, have clear-cut
+                            node definitions, ensure that classes scope correctly, and so
+                            forth.</div>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the agent node as the non-root user, run <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent -t</code>.</span>
+                <div class="itemgroup stepresult">
+                    <p class="p">The configuration specified in the catalog is applied to
+                        the node. </p>
+                </div>
+            </li></ol></section>
+    </div>
+</article><article class="topic reference nested2" aria-labelledby="ariaid-title28" id="non-root_user_functionality">
+   <h3 class="title topictitle3" id="ariaid-title28">Non-root user functionality </h3>
+   
+   <div class="body refbody"><p class="shortdesc">Non-root users can use a subset of functionality. Any
+      operation that requires root privileges, such as installing system packages, can't be managed
+      by a non-root agent.</p>
+      <section class="section"><h4 class="title sectiontitle"><span class="ph">*nix</span> non-root functionality</h4><p class="p">On
+               <span class="ph">*nix</span> systems, as non-root agent you can enforce these
+            resource types:</p><ul class="ul">
+            <li class="li"><code class="ph codeph">cron</code> (only
+               non-root cron jobs can be viewed or set)</li>
+            <li class="li"><code class="ph codeph">exec</code> (cannot
+               run as another user or group)</li>
+            <li class="li"><code class="ph codeph">file</code> (only if
+               the non-root user has read/write privileges)</li>
+            <li class="li">
+               <code class="ph codeph">notify</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">schedule</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">ssh_key</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">ssh_authorized_key</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">service</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">augeas</code>
+            </li>
+         </ul><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> When running a cron job
+               as non-root user, using the <code class="ph codeph">-u</code> flag
+               to set a user with root privileges causes the job to fail, resulting in this error
+               message:
+               <pre class="pre codeblock"><code> Notice: /Stage[main]/Main/Node[nonrootuser]/Cron[illegal_action]/ensure: created must be privileged to use -u</code></pre></div>You
+            can also inspect these resource types (use <code class="ph codeph">puppet resource &lt;resource type&gt;</code>):</div><ul class="ul">
+            <li class="li">
+               <code class="ph codeph">host</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">mount</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">package</code>
+            </li>
+         </ul></section>
+      <section class="section"><h4 class="title sectiontitle"><span class="ph">Windows</span> non-root functionality</h4><p class="p">On <span class="ph">Windows</span> systems as non-admin user, you can enforce
+            these types :</p><ul class="ul">
+            <li class="li">
+               <code class="ph codeph">exec</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">file</code>
+            </li>
+         </ul><div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> A non-root agent on <span class="ph">Windows</span> is extremely limited as compared to non-root
+                  <span class="ph">*nix</span>. While you can use the above resources, you are
+               limited on usage based on what the agent user has access to do (which isn't much).
+               For instance, you can't create a file\directory in <code class="ph codeph">C:\Windows</code> unless your user has permission to do so.</div>
+         </div><p class="p">You can also inspect these resource types (use <code class="ph codeph">puppet resource &lt;resource type&gt;</code>):</p><ul class="ul">
+            <li class="li">
+               <code class="ph codeph">host</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">package</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">user</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">group</code>
+            </li>
+            <li class="li">
+               <code class="ph codeph">service</code>
+            </li>
+         </ul></section>
+   </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title29" id="managing_CSRs">
+    <h2 class="title topictitle2" id="ariaid-title29">Managing certificate signing requests</h2>
+    
+    <div class="body conbody"><p class="shortdesc">When you install a <span class="ph">Puppet</span> agent on a node, the agent
+        automatically submits a certificate signing request (CSR) to the master. You must accept
+        this request to bring before the node under PE management can be added your deployment. This
+        allows <span class="ph">Puppet</span> to run on the node and enforce your
+        configuration, which in turn adds node information to <span class="ph">PuppetDB</span> and makes the node available throughout the console. </p>
+        <p class="p">You can approve certificate requests from the <span class="ph">PE</span> console or the command line. If DNS altnames are set
+            up for agent nodes, you must approve the CSRs on use the command line interface .</p>
+        <div class="note note note_note"><span class="note__title">Note:</span>  Specific user permissions are required to manage certificate
+            requests: <ul class="ul" id="managing_CSRs__ul_dkx_d31_3hb">
+                <li class="li">To accept or reject CSRs in the console or on the command
+                    line, you need the permission <span class="ph uicontrol">Certificate requests: Accept and reject</span>. </li>
+                <li class="li">To manage certificate requests in the console, you also need
+                    the permission <span class="ph uicontrol">Console:
+                        View</span>.</li>
+            </ul>
+        </div>
+    </div>
+<article class="topic concept nested2" aria-labelledby="ariaid-title30" id="managing_certificate_signing_requests_console">
+  <h3 class="title topictitle3" id="ariaid-title30">Managing certificate signing requests in the console</h3>
+  
+  <div class="body conbody"><p class="shortdesc">A certificate signing request appears in the console on the <span class="ph uicontrol">Unsigned
+      certs</span> page after you add an agent node to inventory. Accept or reject submitted
+    requests individually or in a batch.</p>
+    <ul class="ul" id="managing_certificate_signing_requests_console__ul_cv3_l4z_hhb">
+      <li class="li">To manage requests individually, click <span class="ph uicontrol">Accept </span> or <span class="ph uicontrol">Reject</span>.</li>
+      <li class="li">To manage the entire list of requests, click <span class="ph uicontrol">Accept All</span> or <span class="ph uicontrol">Reject All</span>. Nodes are processed in batches. If you close the
+        browser window or navigate to another website while processing is in progress, only the
+        current batch is processed.</li>
+    </ul>
+    <p class="p">After you accept the certificate signing request, the node appears in the console after the
+      next <span class="ph">Puppet</span> run. To make a node available immediately after you
+      approve the request, run <span class="ph">Puppet</span> on demand.</p>
+  </div>
+</article><article class="topic concept nested2" aria-labelledby="ariaid-title31" id="managing_certificate_signing_requests_cli">
+    <h3 class="title topictitle3" id="ariaid-title31">Managing certificate signing requests on the command line</h3>
+    
+    <div class="body conbody"><p class="shortdesc">You can view, approve, and reject node requests using the command line.
+            </p>
+        <div class="p">To view pending node requests on the command line:
+            <pre class="pre codeblock"><code>$ sudo puppetserver ca list
+</code></pre></div>
+        <div class="p">To sign a pending request:
+            <pre class="pre codeblock"><code>$ sudo puppetserver ca sign &lt;NAME&gt;
+</code></pre></div>
+        <div class="note note note_note"><span class="note__title">Note:</span> You can use the <span class="ph">Puppet Server</span> CA CLI to sign certificates
+            with altnames or auth extensions by default. </div>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title32" id="configuring_agents">
+    <h2 class="title topictitle2" id="ariaid-title32">Configuring agents </h2>
+    
+    <div class="body conbody"><p class="shortdesc">You can add additional configuration to agents by editing
+            <code class="ph codeph">/etc/puppetlabs/puppet/puppet.conf</code> directly, or by using the
+            <code class="ph codeph">puppet config set</code> sub-command, which edits <code class="ph codeph">puppet.conf</code>
+        automatically. </p>
+        <p class="p">For example, to point the agent at a master called <code class="ph codeph">master.example.com</code>,
+            run <code class="ph codeph">puppet config set server master.example.com</code>. This command adds the
+            setting <code class="ph codeph">server = puppetmaster.example.com</code> to the
+                <code class="ph codeph">[main]</code> section of <code class="ph codeph">puppet.conf</code>. </p>
+        <p class="p">To set the certname for the agent, run <code class="ph codeph">/opt/puppetlabs/bin/puppet config set
+                certname agent.example.com</code>. </p>
+    </div>
+</article></article></article></main></body></html>

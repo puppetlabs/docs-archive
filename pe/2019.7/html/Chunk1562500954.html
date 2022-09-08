@@ -1,0 +1,52 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Modules are self-contained, shareable bundles of code and data. Each module manages a specific task in your infrastructure, like installing and configuring a piece of software. You can write your own modules or download pre-built modules from the Forge. While you can use any module available on the Forge, PE customers can take advantage of supported modules. These modules are designed to make common services easier, and are tested and maintained by Puppet. A lot of your infrastructure will be supported by modules, so it is important to learn how to install, build, and use them."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="add_modules"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Add a module</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="add_modules">
+    <h1 class="title topictitle1" id="ariaid-title1">Add a module</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Modules are self-contained, shareable bundles of code and data. Each module manages a
+        specific task in your infrastructure, like installing and configuring a piece of software.
+        You can write your own modules or download pre-built modules from the <span class="ph">Forge</span>. While you can use any module available on the <span class="ph">Forge</span>, <span class="ph">PE</span> customers can take
+        advantage of supported modules. These modules are designed to make common services easier,
+        and are tested and maintained by <span class="ph">Puppet</span>. A lot of your
+        infrastructure will be supported by modules, so it is important to learn how to install,
+        build, and use them.</p>
+        <p class="p"></p>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="task_mgj_v5d_hjb">
+    <h2 class="title topictitle2" id="ariaid-title2">Install the <code class="ph codeph">IIS</code> module </h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">To get you started working with modules, install the <code class="ph codeph">puppetlabs/iis</code>
+        module, which automates installing, configuring, and managing IIS services.</p>
+        <section class="section prereq" id="task_mgj_v5d_hjb__prereq_tp2_bt5_nkb"><div class="tasklabeltitle tasklabel">Before you begin</div>These instructions assume you've installed <span class="ph">PE</span> and at least one <span class="ph">Windows</span> agent node.</section>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Go to the <a class="xref" href="https://forge.puppet.com/puppetlabs/iis" target="_blank">IIS module in the Forge</a>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Follow the instructions in the <span class="ph uicontrol">r10k or Code Manager</span> drop
+                    down to add the module declaration to your <span class="ph">Puppetfile</span>.</span>
+                <div class="itemgroup info">
+                    <p class="p">If you don’t specify options, <span class="ph">Code Manager</span> installs
+                        the latest version and does not update it automatically. To always have the
+                        latest version installed, specify <code class="ph codeph">:latest</code> and it will
+                        update automatically when a new version is released. To install a specific
+                        version of the module that does not update automatically, specify the
+                        version number as a string. </p>
+                    <div class="p">For example, to install version 7.0.0 of the IIS module that will not update,
+                        and its dependencies, use the following
+                        code:<pre class="pre codeblock"><code>mod 'puppetlabs/iis, '7.0.0'
+mod ‘puppetlabs/pwshlib’, ‘0.4.0’</code></pre></div>
+                    <p class="p">The <code class="ph codeph">puppetlabs/pwshlib</code> module is a dependency
+                        of the IIS module. You can see the dependencies for each module by clicking
+                        the <strong class="ph b">Dependencies</strong> tab on a <a class="xref" href="https://forge.puppet.com/puppetlabs/iis/dependencies" target="_blank">module’s Forge page</a>.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">SSH into your master and deploy code running the <code class="ph codeph">puppet-code deploy
+                        --all</code> command.</span>
+            </li></ol></section>
+        <section class="section result" id="task_mgj_v5d_hjb__result_kw4_t2v_nkb"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p">You have just installed a <span class="ph">Puppet</span> module! </p>
+        </section>
+    </div>
+</article></article></article></main></body></html>

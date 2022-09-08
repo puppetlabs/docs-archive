@@ -1,0 +1,198 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="You’re likely to encounter some errors when using the RBAC API. You’ll want to familiarize yourself with the error response descriptions and the general error responses."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="rbac_service_errors_api_v1"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>RBAC service errors</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="rbac_service_errors_api_v1">
+    <h1 class="title topictitle1" id="ariaid-title1">RBAC service errors </h1>
+    
+    <div class="body conbody"><p class="shortdesc">You’re likely to encounter some errors when using the RBAC
+        API. You’ll want to familiarize yourself with the error response descriptions and the
+        general error responses.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="error_response_format">
+    <h2 class="title topictitle2" id="ariaid-title2">Error response format </h2>
+    
+    <div class="body refbody"><p class="shortdesc">When the client specifies an <code class="ph codeph">accept</code> header in the request with type <code class="ph codeph">application/json</code>, the RBAC service returns errors in a standard
+        format. </p>
+        <section class="section"><p class="p">Each response is an object
+                containing the following keys:</p></section>
+        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="error_response_format__entry__1">Key </th>
+                        <th class="entry" id="error_response_format__entry__2">Definition</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="error_response_format__entry__1"><code class="ph codeph">kind</code>
+                        </td>
+                        <td class="entry" headers="error_response_format__entry__2">A string classifying the error.
+                            It should be the same for all errors that have the same type of
+                            information in their <code class="ph codeph">details</code> key.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="error_response_format__entry__1"><code class="ph codeph">msg</code>
+                        </td>
+                        <td class="entry" headers="error_response_format__entry__2">A human-readable message
+                            describing the error.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="error_response_format__entry__1"><code class="ph codeph">details</code></td>
+                        <td class="entry" headers="error_response_format__entry__2">Additional machine-readable
+                            information about the error condition. The format of this key's value
+                            varies between kinds of errors, but is the same for each kind of
+                            error.</td>
+                    </tr>
+                </tbody></table>
+        <section class="section"><p class="p">When returning errors in <code class="ph codeph">text/html</code>, the body is the contents of
+                the <code class="ph codeph">msg</code> field.</p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="general_error_responses">
+    <h2 class="title topictitle2" id="ariaid-title3">General error responses </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Any endpoint accepting a JSON body can return several
+        kinds of 400 Bad Request responses.</p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="general_error_responses__entry__1">Response </th>
+                        <th class="entry" id="general_error_responses__entry__2">Status </th>
+                        <th class="entry" id="general_error_responses__entry__3">Description </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">malformed-request</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">400 </td>
+                        <td class="entry" headers="general_error_responses__entry__3">The submitted data is not valid
+                            JSON. The <code class="ph codeph">details</code> key
+                            consists of one field, <code class="ph codeph">error</code>, which contains the error message from the JSON
+                            parser. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">schema-violation</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">400 </td>
+                        <td class="entry" headers="general_error_responses__entry__3"><p class="p">The
+                                submitted data has an unexpected structure, such as invalid fields
+                                or missing required fields. The <code class="ph codeph">msg</code> contains a description of the
+                                problem. The <code class="ph codeph">details</code> are an object with three keys:</p><div class="p"><ul class="ul">
+                                    <li class="li"><p class="p"><code class="ph codeph">submitted</code>: The
+                                            submitted data as it was seen during schema
+                                            validation.</p></li>
+                                    <li class="li"><p class="p"><code class="ph codeph">schema</code>: The expected
+                                            structure of the data.</p></li>
+                                    <li class="li"><p class="p"><code class="ph codeph">error</code>: A structured
+                                            description of the error.</p></li>
+                                </ul></div></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">inconsistent-id</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">400 </td>
+                        <td class="entry" headers="general_error_responses__entry__3">Data was submitted to an
+                            endpoint where the ID of the object is a part of the URL and the
+                            submitted data contains an <code class="ph codeph">id</code> field with a different value. The <code class="ph codeph">details</code> key consists of two fields,
+                                <code class="ph codeph">url-id</code> and <code class="ph codeph">body-id</code>, showing the IDs
+                            from both sources. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">invalid-id-filter</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">400 </td>
+                        <td class="entry" headers="general_error_responses__entry__3">A URL contains a filter on the
+                            ID with an invalid format. No details are given with this error.
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">invalid-uuid</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">400 </td>
+                        <td class="entry" headers="general_error_responses__entry__3">An invalid UUID was submitted.
+                            No details are given with this error. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">user-unauthenticated</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">401 </td>
+                        <td class="entry" headers="general_error_responses__entry__3">An unauthenticated user
+                            attempted to access a route that requires authentication. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">user-revoked</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">401 </td>
+                        <td class="entry" headers="general_error_responses__entry__3">A user who has been revoked
+                            attempted to access a route that requires authentication. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">api-user-login</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">401 </td>
+                        <td class="entry" headers="general_error_responses__entry__3">A person attempted to log in as
+                            the api_user with a password (api_user does not support
+                            username/password authentication). </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">remote-user-conflict</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">401 </td>
+                        <td class="entry" headers="general_error_responses__entry__3"><p class="p">A remote
+                                user who is not yet known to RBAC attempted to authenticate, but a
+                                local user with that login already exists.</p><p class="p">The solution is to change either the local user's login in RBAC, or
+                                to change the remote user's login, either by changing the <code class="ph codeph">user_lookup_attr </code>in the
+                                DS settings or by changing the value in the directory service
+                                itself. </p></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">permission-denied</code>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">403 </td>
+                        <td class="entry" headers="general_error_responses__entry__3">A user attempted an action that
+                            they are not permitted to perform. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">admin-user-immutable</code><p class="p"><code class="ph codeph">admin-user-not-in-admin-role</code></p><p class="p"><code class="ph codeph">default-roles-immutable</code></p>
+                        </td>
+                        <td class="entry" headers="general_error_responses__entry__2">403 </td>
+                        <td class="entry" headers="general_error_responses__entry__3">A user attempted to edit
+                            metadata or associations belonging to the default roles
+                            ("Administrators", "Operators", "Code Deployers", or "Viewers") or
+                            default users ("admin" or "api_user") that they are not allowed to
+                            change.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">conflict</code></td>
+                        <td class="entry" headers="general_error_responses__entry__2">409</td>
+                        <td class="entry" headers="general_error_responses__entry__3">A value for a field that is
+                            supposed to be unique was submitted to the service and another object
+                            has that value. For example, when a user is created with the same login
+                            as an existing user.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">invalid-associated-id</code></td>
+                        <td class="entry" headers="general_error_responses__entry__2">422</td>
+                        <td class="entry" headers="general_error_responses__entry__3">An object was submitted with a
+                            list of associated IDs (for example, <code class="ph codeph">user_ids</code>) and one or more of those IDs does
+                            not correspond to an object of the correct type.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><p class="p"><code class="ph codeph">no-such-user-LDAP</code></p><p class="p"><code class="ph codeph">no-such-group-LDAP</code></p></td>
+                        <td class="entry" headers="general_error_responses__entry__2">422</td>
+                        <td class="entry" headers="general_error_responses__entry__3">An object was submitted with a
+                            list of associated IDs (for example, <code class="ph codeph">user_ids</code>) and one or more of those IDs does
+                            not correspond to an object of the correct type.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">non-unique-lookup-attr</code></td>
+                        <td class="entry" headers="general_error_responses__entry__2">422</td>
+                        <td class="entry" headers="general_error_responses__entry__3">A login was attempted but
+                            multiple users are found via LDAP for the given username. The directory
+                            service settings must use a <code class="ph codeph">user_lookup_attr</code> that is guaranteed to be unique within
+                            the provided user's RDN.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="general_error_responses__entry__1"><code class="ph codeph">server-error</code></td>
+                        <td class="entry" headers="general_error_responses__entry__2">500</td>
+                        <td class="entry" headers="general_error_responses__entry__3">Occurs when the server throws
+                            an unspecified exception. A message and stack trace should be available
+                            in the logs.</td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article></article></article></main></body></html>

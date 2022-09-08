@@ -1,0 +1,284 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="RBAC enables you to manage local users as well as those who are created remotely, on a directory service. With the users endpoints, you can get lists of users and create new local users."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="user_endpoints_api_v1"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Users endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="user_endpoints_api_v1">
+    <h1 class="title topictitle1" id="ariaid-title1">Users endpoints</h1>
+    
+    <div class="body conbody"><p class="shortdesc">RBAC enables you to manage local users as well as those
+        who are created remotely, on a directory service. With the <code class="ph codeph">users</code> endpoints, you can get lists of users and create new local
+        users.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="user_keys">
+    <h2 class="title topictitle2" id="ariaid-title2">Users keys </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The following keys are used with the RBAC v1 API's <code class="ph codeph">users</code> endpoints. </p>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="user_keys__entry__1">Key </th>
+                        <th class="entry" id="user_keys__entry__2">Explanation </th>
+                        <th class="entry" id="user_keys__entry__3">Example </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><code class="ph codeph">id</code>
+                        </td>
+                        <td class="entry" headers="user_keys__entry__2">A UUID string identifying the
+                            user. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">"4fee7450-54c7-11e4-916c-0800200c9a66"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><code class="ph codeph">login</code>
+                        </td>
+                        <td class="entry" headers="user_keys__entry__2">A string used by the user to
+                            log in. Must be unique among users and groups. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">"admin"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><code class="ph codeph">email</code>
+                        </td>
+                        <td class="entry" headers="user_keys__entry__2">An email address string. Not
+                            currently utilized by any code in PE. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">"hill@example.com"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><code class="ph codeph">display_name</code></td>
+                        <td class="entry" headers="user_keys__entry__2">The user's name as a string. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">"Kalo Hill"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><code class="ph codeph">role_ids</code>
+                        </td>
+                        <td class="entry" headers="user_keys__entry__2">An array of role IDs indicating
+                            which roles should be directly assigned to the user. An empty array is
+                            valid. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">[3 6 5]</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><p class="p"><code class="ph codeph">is_group</code></p><p class="p"><code class="ph codeph">is_remote</code></p><p class="p"><code class="ph codeph">is_superuser</code></p></td>
+                        <td class="entry" headers="user_keys__entry__2">These flags indicate the type
+                            of user. <code class="ph codeph">is_group</code>
+                            should always be false for a user. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">true</code>/<code class="ph codeph">false</code></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><code class="ph codeph">is_revoked</code>
+                        </td>
+                        <td class="entry" headers="user_keys__entry__2">Setting this flag to <code class="ph codeph">true</code> prevents the user from
+                            accessing any routes until the flag is unset or the user's password is
+                            reset via token. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">true</code>/<code class="ph codeph">false</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><code class="ph codeph">last_login</code>
+                        </td>
+                        <td class="entry" headers="user_keys__entry__2">This is a timestamp in
+                            UTC-based ISO-8601 format (YYYY-MM-DDThh:mm:ssZ) indicating when the
+                            user last logged in. If the user has never logged in, this value is
+                            null. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">"2014-05-04T02:32:00Z"</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><p class="p"><code class="ph codeph">inherited_role_ids</code></p><p class="p">(remote users
+                                only) </p></td>
+                        <td class="entry" headers="user_keys__entry__2">An array of role IDs indicating
+                            which roles a remote user inherits from their groups. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">[9 1 3]</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_keys__entry__1"><p class="p"><code class="ph codeph">group_ids</code></p><p class="p">(remote users only) </p></td>
+                        <td class="entry" headers="user_keys__entry__2">An array of UUIDs indicating
+                            which groups a remote user inherits roles from. </td>
+                        <td class="entry" headers="user_keys__entry__3"><code class="ph codeph">["3a96d280-54c9-11e4-916c-0800200c9a66"]</code>
+                        </td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_users">
+  <h2 class="title topictitle2" id="ariaid-title3">GET /users </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Fetches all users, both local and remote (including the
+    superuser). Supports filtering by ID through query parameters. Authentication is
+    required.</p>
+    <section class="section" id="get_users__request_format"><h3 class="title sectiontitle">Request
+        format </h3><p class="p">To request all the users:</p><div class="p"><pre class="pre codeblock"><code>GET /users</code></pre></div><p class="p">To request specific users, add a comma-separated list of user IDs:</p><div class="p"><pre class="pre codeblock"><code>GET /users?id=fe62d770-5886-11e4-8ed6-0800200c9a66,1cadd0e0-5887-11e4-8ed6-0800200c9a66</code></pre></div></section>
+    <section class="section" id="get_users__response_format"><h3 class="title sectiontitle">Response
+        format </h3><p class="p">The response is a JSON object that lists the metadata
+        for all requested users. </p><p class="p">For
+      example:</p><pre class="pre codeblock json"><code>[{
+  "id": "fe62d770-5886-11e4-8ed6-0800200c9a66",
+  "login": "Kalo",
+  "email": "kalohill@example.com",
+  "display_name": "Kalo Hill",
+  "role_ids": [1,2,3...],
+  "is_group" : false,
+  "is_remote" : false,
+  "is_superuser" : true,
+  "is_revoked": false,
+  "last_login": "2014-05-04T02:32:00Z"
+},{
+  "id": "07d9c8e0-5887-11e4-8ed6-0800200c9a66",
+  "login": "Jean",
+  "email": "jeanjackson@example.com",
+  "display_name": "Jean Jackson",
+  "role_ids": [2, 3],
+  "inherited_role_ids": [5],
+  "is_group" : false,
+  "is_remote" : true,
+  "is_superuser" : false,
+  "group_ids": ["2ca57e30-5887-11e4-8ed6-0800200c9a66"],
+  "is_revoked": false,
+  "last_login": "2014-05-04T02:32:00Z"
+},{
+  "id": "1cadd0e0-5887-11e4-8ed6-0800200c9a66",
+  "login": "Amari",
+  "email": "amariperez@example.com",
+  "display_name": "Amari Perez",
+  "role_ids": [2, 3],
+  "inherited_role_ids": [5],
+  "is_group" : false,
+  "is_remote" : true,
+  "is_superuser" : false,
+  "group_ids": ["2ca57e30-5887-11e4-8ed6-0800200c9a66"],
+  "is_revoked": false,
+  "last_login": "2014-05-04T02:32:00Z"
+}]</code></pre></section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="get_users_lt_sid_gt">
+    <h2 class="title topictitle2" id="ariaid-title4">GET /users/&lt;sid&gt;</h2>
+    
+    <div class="body refbody"><p class="shortdesc">Fetches a single user by its subject ID (sid).
+        Authentication is required.</p>
+        <section class="section" id="get_users_lt_sid_gt__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">For all users, the user contains an
+                ID, a login, an email, a display name, a list of role-ids the user is directly
+                assigned to, and the last login time in UTC-based ISO-8601 format
+                (YYYY-MM-DDThh:mm:ssZ), or null if the user has not logged in yet. It also contains
+                an "is_revoked" field, which, when set to true, prevents a user from
+                authenticating.</p><p class="p">For
+                example:</p><pre class="pre codeblock json"><code>{"id": "fe62d770-5886-11e4-8ed6-0800200c9a66",
+"login": "Amari",
+"email": "amariperez@example.com",
+"display_name": "Amari Perez",
+"role_ids": [1,2,3...],
+"is_group" : false,
+"is_remote" : false,
+"is_superuser" : false,
+"is_revoked": false,
+"last_login": "2014-05-04T02:32:00Z"}</code></pre><p class="p">For remote users, the response additionally contains a field
+                indicating the IDs of the groups the user inherits roles from and the list of
+                inherited role IDs.</p><p class="p">For
+            example:</p><pre class="pre codeblock json"><code>{"id": "07d9c8e0-5887-11e4-8ed6-0800200c9a66",
+"login": "Jean",
+"email": "jeanjackson@example.com",
+"display_name": "Jean Jackson",
+"role_ids": [2,3...],
+"inherited_role_ids": [],
+"is_group" : false,
+"is_remote" : true,
+"is_superuser" : false,
+"group_ids": ["b28b8790-5889-11e4-8ed6-0800200c9a66"],
+"is_revoked": false,
+"last_login": "2014-05-04T02:32:00Z"}</code></pre></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title5" id="get_users_current">
+    <h2 class="title topictitle2" id="ariaid-title5">GET /users/current </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Fetches the data about the current authenticated user,
+        with the exact same behavior as <code class="ph codeph">GET
+            /users/&lt;sid&gt;</code>, except that <code class="ph codeph">&lt;sid&gt;</code> is assumed from the authentication context. Authentication is
+        required.</p></div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title6" id="post_users">
+    <h2 class="title topictitle2" id="ariaid-title6">POST /users </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Creates a new local user. You can add the new user to user
+        roles by specifying an array of roles in <code class="ph codeph">role_ids</code>. You can set a password for the user in <code class="ph codeph">password</code>. For the password to work in the PE console, it needs to
+        be a minimum of six characters. Authentication is required.</p>
+        <section class="section" id="post_users__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">Accepts a JSON body containing entries for
+                    <code class="ph codeph">email</code>, <code class="ph codeph">display_name</code>, <code class="ph codeph">login</code>, <code class="ph codeph">role_ids</code>, and <code class="ph codeph">password</code>. The password field is optional. The created account is not
+                useful until the password is set.</p><p class="p">For
+            example:</p><pre class="pre codeblock json"><code>{"login":"Kalo",
+"email":"kalohill@example.com",
+"display_name":"Kalo Hill",
+"role_ids": [1,2,3],
+"password": "yabbadabba"}</code></pre></section>
+        <section class="section" id="post_users__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">If the create operation is
+                successful, a 201 Created response with a location header that points to the new
+                resource is returned.</p></section>
+        <section class="section" id="post_users__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">If the email or login for the user conflicts
+                with an existing user's login, a 409 Conflict response is returned. </p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title7" id="put_users_lt_sid_gt">
+    <h2 class="title topictitle2" id="ariaid-title7">PUT /users/&lt;sid&gt; </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Replaces the user with the specified ID (sid) with a new
+        user object. Authentication is required.</p>
+        <section class="section" id="put_users_lt_sid_gt__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">Accepts an updated user object with all keys
+                provided when the object is received from the API. The behavior varies based on user
+                type. All types have a <code class="ph codeph">role_id</code>
+                array that indicates all the roles the user should belong to. An empty roles array
+                removes all roles directly assigned to the group.</p><p class="p">The below
+                examples show what keys must be submitted. Keys marked with asterisks are the only
+                ones that can be changed via the API.</p><p class="p">An example for a
+                local
+                user:</p><pre class="pre codeblock json"><code>{"id": "c8b2c380-5889-11e4-8ed6-0800200c9a66",
+**"login": "Amari",**
+**"email": "amariperez@example.com",**
+**"display_name": "Amari Perez",**
+**"role_ids": [1, 2, 3],**
+"is_group" : false,
+"is_remote" : false,
+"is_superuser" : false,
+**"is_revoked": false,**
+"last_login": "2014-05-04T02:32:00Z"}</code></pre><p class="p">An example for a remote
+            user:</p><pre class="pre codeblock json"><code>{"id": "3271fde0-588a-11e4-8ed6-0800200c9a66",
+"login": "Jean",
+"email": "jeanjackson@example.com",
+"display_name": "Jean Jackson",
+**"role_ids": [4, 1],**
+"inherited_role_ids": [],
+"group_ids: [],
+"is_group" : false,
+"is_remote" : true,
+"is_superuser" : false,
+**"is_revoked": false,**
+"last_login": "2014-05-04T02:32:00Z"}</code></pre></section>
+        <section class="section" id="put_users_lt_sid_gt__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">The request returns a 200 OK
+                response, along with the user object with the changes made.</p></section>
+        <section class="section" id="put_users_lt_sid_gt__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">If the login for the user conflicts with an
+                existing user login, a 409 Conflict response is returned. </p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title8" id="delete_users_lt_sid_gt">
+ <h2 class="title topictitle2" id="ariaid-title8">DELETE /users/&lt;sid&gt; </h2>
+ 
+ <div class="body refbody"><p class="shortdesc">Deletes the user with the specified ID (sid), regardless of
+  whether they are a user defined in RBAC or a user defined by a directory service. In the case of
+  directory service users, while this action removes a user from the console, that user is still
+  able to log in (at which point they are re-added to the console) if they are not revoked.
+  Authentication is required.</p>
+  <section class="section"><div class="p"><div class="note remember note_remember"><span class="note__title">Remember:</span> The <code class="ph codeph">admin</code> user and the <code class="ph codeph">api_user</code> cannot be deleted.</div></div></section>
+  <section class="section"><h3 class="title sectiontitle">Request format</h3><div class="p">For example, to delete a user with the ID 3982a629-1278-4e38-883e-12a7cac91535 by
+    using a curl
+    command:<pre class="pre codeblock"><code>curl -X DELETE \
+ --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem \
+ --cert /opt/puppet/share/puppet-dashboard/certs/pe-internal-dashboard.cert.pem \
+ --key /opt/puppet/share/puppet-dashboard/certs/pe-internal-dashboard.private_key.pem \
+ https://$(hostname -f):4433/rbac-api/v1/users/3982a629-1278-4e38-883e-12a7cac91535
+</code></pre></div></section>
+  <section class="section" id="delete_users_lt_sid_gt__response_format"><h3 class="title sectiontitle">Response
+    format </h3><p class="p">If the user is successfully deleted, a 204 No Content
+    response with an empty body is returned.</p></section>
+  <section class="section" id="delete_users_lt_sid_gt__error_responses"><h3 class="title sectiontitle">Error
+    responses </h3><p class="p">If the current user does not have the <code class="ph codeph">users:edit</code> permission for this user group, a 403 Forbidden
+    response is returned. </p><p class="p">If a user with the provided identifier does not
+    exist, a 404 Not Found response is returned. </p></section>
+ </div>
+</article></article></article></main></body></html>

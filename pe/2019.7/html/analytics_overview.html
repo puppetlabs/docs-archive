@@ -1,0 +1,242 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Some components automatically collect data about how you use Puppet Enterprise. If you want to opt out of providing this data, you can do so, either during or after installing."><meta name="DC.relation" scheme="URI" content="config_intro.html#config_intro"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="analytics_overview"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Analytics data collection</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="analytics_overview">
+    <h1 class="title topictitle1" id="ariaid-title1">Analytics data collection </h1>
+    <p class="shortdesc">Some components automatically collect data about how you
+        use <span class="ph">Puppet Enterprise</span>. If you want to opt out of providing this data,
+        you can do so, either during or after installing.</p>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#config_intro" title="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances.">Methods for configuring Puppet Enterprise</a></li></ul></div></nav><article class="topic concept nested1" aria-labelledby="ariaid-title2" id="what_data_does_pe_collect">
+    <h2 class="title topictitle2" id="ariaid-title2">What data does <span class="ph">Puppet Enterprise</span> collect? </h2>
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">Puppet Enterprise (PE)</span> collects the following data when <span class="ph">Puppet Server</span> starts or restarts, and again every 24
+        hours.</p>
+        <p class="p">License, version, master, and agent information:</p>
+        <ul class="ul">
+            <li class="li">License UUID</li>
+            <li class="li">Number of licensed nodes</li>
+            <li class="li">Product name</li>
+            <li class="li">
+                <span class="ph">PE</span> version</li>
+            <li class="li">Master's operating system</li>
+            <li class="li">Master's public IP address</li>
+            <li class="li">Whether the master is running on <span class="ph">Microsoft</span> Azure</li>
+            <li class="li">The hypervisor the master is running on, if applicable</li>
+            <li class="li">Number of nodes in deployment</li>
+            <li class="li">Agent operating systems</li>
+            <li class="li">Number of agents running each operating system</li>
+            <li class="li">Agent versions</li>
+            <li class="li">Number of agents running each version of <span class="ph">Puppet</span> agent</li>
+            <li class="li">All-in-One (AIO) <code class="ph codeph">puppet-agent</code> package versions</li>
+            <li class="li">Number of agents running on <span class="ph">Microsoft</span> Azure or Google Cloud Platform, if
+                applicable</li>
+            <li class="li">Number of configured high availability replicas, if
+                applicable</li>
+        </ul>
+        <p class="p">
+            <span class="ph">Puppet Enterprise</span> feature use information:</p>
+        <ul class="ul">
+            <li class="li">Number of node groups in use</li>
+            <li class="li">Number of nodes used in orchestrator jobs after last
+                orchestrator restart</li>
+            <li class="li">Mean nodes per orchestrator job</li>
+            <li class="li">Maximum nodes per orchestrator job</li>
+            <li class="li">Minimum nodes per orchestrator job</li>
+            <li class="li">Total orchestrator jobs created after last orchestrator
+                restart</li>
+            <li class="li">Number of non-default user roles in use</li>
+            <li class="li">Type of certificate autosigning in use</li>
+            <li class="li"> Number of nodes in the job that were run over <span class="ph">Puppet Communications
+                                                  Protocol</span>
+            </li>
+            <li class="li"> Number of nodes in the job that were run over SSH. </li>
+            <li class="li"> Number of nodes in the job that were run over WinRM. </li>
+            <li class="li">List of <span class="ph">Puppet</span> task jobs </li>
+            <li class="li">List of <span class="ph">Puppet</span> deploy jobs </li>
+            <li class="li">List of <span class="ph">Puppet</span> task jobs run by plans </li>
+            <li class="li">List of file upload jobs run by plans </li>
+            <li class="li">List of script jobs run by plans </li>
+            <li class="li">List of command jobs run by plans </li>
+            <li class="li">List of wait jobs run by plans</li>
+            <li class="li">How nodes were selected for the job</li>
+            <li class="li">Whether the job was started by the <span class="ph">PE</span> admin account </li>
+            <li class="li">Number of nodes in the job</li>
+            <li class="li">Length of description applied to the job</li>
+            <li class="li">Length of time the job ran</li>
+            <li class="li">User agent used to start the job (to distinguish between the
+                console, command line, and API)</li>
+            <li class="li">UUID used to correlate multiple jobs run by the same user</li>
+            <li class="li">Time the task job was run</li>
+            <li class="li">How nodes were selected for the job</li>
+            <li class="li">Whether the job was started by the <span class="ph">PE</span> admin account </li>
+            <li class="li">Number of nodes in the job</li>
+            <li class="li">Length of description applied to the job</li>
+            <li class="li">Whether the job was asked to override agent-configured
+                no-operation (no-op) mode</li>
+            <li class="li">Whether app-management was enabled in the orchestrator for this
+                job </li>
+            <li class="li">Time the deploy job was run</li>
+            <li class="li">Type of version control system webhook</li>
+            <li class="li">Whether the request was to deploy all environments</li>
+            <li class="li">Whether code-manager will wait for all deploys to finish or
+                error to return a response</li>
+            <li class="li">Whether the deploy is a dry-run</li>
+            <li class="li">List of environments requested to deploy</li>
+            <li class="li">List of deploy requests</li>
+            <li class="li">Total time elapsed for all deploys to finish or error</li>
+            <li class="li">List of total wait times for deploys specifying <code class="ph codeph">--wait</code> option</li>
+            <li class="li">Name of environment deployed</li>
+            <li class="li">Time needed for r10k to run</li>
+            <li class="li">Time spent committing to file sync</li>
+            <li class="li">Time elapsed for all environment hooks to run</li>
+            <li class="li">List of individual environment deploys</li>
+            <li class="li">
+                <p class="p">Puppet classes applied from publicly available modules, with
+                    node counts per class</p>
+            </li>
+        </ul>
+        <p class="p">Backup and Restore information:</p>
+        <ul class="ul" id="what_data_does_pe_collect__ul_ql4_wgl_4gb">
+            <li class="li">Whether user used <code class="ph codeph">--force</code> option when running restore</li>
+            <li class="li">Scope of restore</li>
+            <li class="li">Time in seconds for various restore functions</li>
+            <li class="li">Time to check for disk space to restore</li>
+            <li class="li">Time to stop <span class="ph">PE</span> related
+                services</li>
+            <li class="li">Time to restore <span class="ph">PE</span> file system
+                components</li>
+            <li class="li">Time to migrate <span class="ph">PE</span> configuration
+                for new server</li>
+            <li class="li">Time to configure <span class="ph">PE</span> on newly
+                restored master</li>
+            <li class="li">Time to update <span class="ph">PE</span> classification
+                for new server</li>
+            <li class="li">Time to deactivate the old master node</li>
+            <li class="li">Time to restore the pe-orchestrator database</li>
+            <li class="li">Time to restore the pe-rbac database</li>
+            <li class="li">Time to restore the pe-classifier database</li>
+            <li class="li">Time to restore the pe-activity database</li>
+            <li class="li">Time to restore the pe-puppetdb database</li>
+            <li class="li">Total time to restore</li>
+            <li class="li">List of puppet backup restore jobs</li>
+            <li class="li">Whether user used <code class="ph codeph">--force</code> option when running <code class="ph codeph">puppet-backup create</code>
+            </li>
+            <li class="li">Whether user used <code class="ph codeph">--dir</code> option when running <code class="ph codeph">puppet-backup create</code>
+            </li>
+            <li class="li">Whether user used <code class="ph codeph">--name</code> option when running <code class="ph codeph">puppet-backup create</code>
+            </li>
+            <li class="li">Scope of backup</li>
+            <li class="li">Time in seconds for various back up functions</li>
+            <li class="li">Time needed to estimate backup size, disk space needed, and disk
+                space available</li>
+            <li class="li">Time to create file system backup</li>
+            <li class="li">Time to back up the pe-orchestrator database</li>
+            <li class="li">Time to back up the pe-rbac database</li>
+            <li class="li">Time to back up the pe-classifier database</li>
+            <li class="li">Time to back up the pe-activity database</li>
+            <li class="li">Time to back up the pe-puppetdb database</li>
+            <li class="li">Time to compress archive file to backup directory</li>
+            <li class="li">Time to back up <span class="ph">PE</span> related
+                classification</li>
+            <li class="li">Total time to back up</li>
+            <li class="li">List of <code class="ph codeph">puppet-backup
+                    create</code> jobs</li>
+        </ul>
+        <p class="p">
+            <span class="ph">Puppet Server</span> performance information:</p>
+        <ul class="ul">
+            <li class="li">Total number of <span class="ph">JRuby</span>
+                instances</li>
+            <li class="li">Maximum number of active <span class="ph">JRuby</span>
+                instances</li>
+            <li class="li">Maximum number of requests per <span class="ph">JRuby</span> instance</li>
+            <li class="li">Average number of instances not in use over the process’s
+                lifetime</li>
+            <li class="li">Average wait time to lock the <span class="ph">JRuby</span> pool</li>
+            <li class="li">Average time the <span class="ph">JRuby</span> pool held
+                a lock</li>
+            <li class="li">Average time an instance spent handling requests</li>
+            <li class="li">Average time spent waiting to reserve an instance from the <span class="ph">JRuby</span> pool</li>
+            <li class="li">Number of requests that timed out while waiting for a <span class="ph">JRuby</span> instance</li>
+            <li class="li">Amount of memory the JVM starts with</li>
+            <li class="li">Maximum amount of memory the JVM is allowed to request from the
+                operating system</li>
+        </ul>
+        <div class="p">Installer information: <ul class="ul">
+                <li class="li">Installation method (express, text, web, repair)</li>
+                <li class="li">Current version, if upgrading</li>
+                <li class="li">Target version</li>
+                <li class="li">Success or failure, and limited information on the type of
+                    failure, if an</li>
+            </ul>
+        </div>
+        <p class="p">If <span class="ph">PE</span> is installed using an <span class="ph">Amazon Web Services</span> Marketplace Image:</p>
+        <ul class="ul">
+            <li class="li">The marketplace name</li>
+            <li class="li">Marketplace image billing mode (bring your own license or pay as
+                you go)</li>
+        </ul>
+        <p class="p">While in use, the console collects the following information:</p>
+        <ul class="ul">
+            <li class="li">Pageviews</li>
+            <li class="li">Link and button clicks</li>
+            <li class="li">Page load time</li>
+            <li class="li">User language</li>
+            <li class="li">Screen resolution</li>
+            <li class="li">Viewport size</li>
+            <li class="li">Anonymized IP address</li>
+        </ul>
+        <p class="p">The console <em class="ph i">does not</em> collect user
+            inputs such as node or group names, user names, rules, parameters, or variables</p>
+        <p class="p">The collected data is tied to a unique, anonymized identifier for each
+            master and your site as a whole. No personally identifiable information is collected,
+            and the data we collect is never used or shared outside <span class="ph">Puppet, Inc.</span>
+        </p>
+        <section class="section" id="what_data_does_pe_collect__how_does_sharing_this_data_benefit_pe_users"><h3 class="title sectiontitle">How does sharing this data benefit you? </h3><p class="p">We use the data to identify organizations that could be affected by a
+                security issue, alert them to the issue, and provide them with steps to take or
+                fixes to download. In addition, the data helps us understand how people use the
+                product, which helps us improve the product to meet your needs.</p></section>
+        <section class="section" id="what_data_does_pe_collect__how_does_puppet_use_the_collected_data"><h3 class="title sectiontitle">How does <span class="ph">Puppet</span> use the
+                collected data? </h3><p class="p">The data we collect is one of many
+                methods we use for learning about our customers. For example, knowing how many nodes
+                you manage helps us develop more realistic product testing. And learning which
+                operating systems are the most and the least used helps us decide where to
+                prioritize new functionality. By collecting data, we begin to understand you as a
+                customer.</p></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="opt_out_during_the_installation_process">
+    <h2 class="title topictitle2" id="ariaid-title3">Opt out during the installation process </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To opt out of data collection during installation, you can set the <code class="ph codeph">DISABLE_ANALYTICS</code> environment variable when you run the
+        installer script.</p>
+        <section class="section context"><p class="p">Setting the <code class="ph codeph">DISABLE_ANALYTICS</code>
+                environment variable during installation sets <code class="ph codeph">puppet_enterprise::send_analytics_data: false</code> in
+                    <code class="ph codeph">pe.conf</code>, opting
+                you out of data collection.</p></section>
+        <section><div class="li step p">
+                <span class="ph cmd">Follow the instructions for your chosen
+                    installation method, adding <code class="ph codeph">DISABLE_ANALYTICS=1</code> when you call the installer
+                    script, for example:</span>
+                <div class="itemgroup stepxmp"><div class="p"><pre class="pre codeblock"><code>sudo DISABLE_ANALYTICS=1 ./puppet-enterprise-installer</code></pre></div></div>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="analytics_opt_out_after_install">
+    <h2 class="title topictitle2" id="ariaid-title4">Opt out after installing </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">If you've already installed <span class="ph">PE</span> and want to disable data collection, follow these
+        steps.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and then click <span class="ph uicontrol">PE Infrastructure</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, on the <code class="ph codeph">puppet_enterprise::profile::master</code> class, add <code class="ph codeph">send_analytics_data</code> as a parameter
+                    and set the <span class="ph uicontrol">Value</span> to
+                        <code class="ph codeph">false</code>. </span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">Inventory</span> page, select your master node and click <span class="ph uicontrol">Run Puppet</span>. </span>
+            </li><li class="li step">
+                <span class="ph cmd">Select your console node and click <span class="ph uicontrol">Run Puppet</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">After <span class="ph">Puppet</span> runs to enforce the changes on the master and
+                console nodes, you have opted out of data collection.</p></section>
+    </div>
+</article></article></article></main></body></html>

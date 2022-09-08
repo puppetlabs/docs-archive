@@ -1,0 +1,567 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Keep regular backups of your PE infrastructure. Backups allow you to more easily migrate to a new master, troubleshoot, and quickly recover in the case of system failures."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Jean Bond <jean@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="concept-4797"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Backing up and restoring Puppet Enterprise</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="concept-4797">
+    <h1 class="title topictitle1" id="ariaid-title1">Backing up and restoring <span class="ph">Puppet Enterprise</span>
+    </h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Keep regular backups of your <span class="ph">PE</span> infrastructure. Backups allow you to more easily migrate
+        to a new master, troubleshoot, and quickly recover in the case of system
+        failures.</p>
+        <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> These instructions are for standard installations only. </div><div class="note important note_important"><span class="note__title">Important:</span> Always store your backups in a safe location that you can access if
+                your master fails. Backup files are not encrypted, so secure these as you would any
+                sensitive information.</div>You can use the <code class="ph codeph">puppet-backup</code> command to back up and restore your master. You can't use
+            this command to back up compilers. By default, the backup command creates a backup of:<ul class="ul">
+                <li class="li">
+                    <p class="p">Your <span class="ph">PE</span> configuration, including license,
+                        classification, and RBAC settings. However, configuration backup does not
+                        include <span class="ph">Puppet</span> gems or <span class="ph">Puppet Server</span> gems.</p>
+                </li>
+                <li class="li">
+                    <p class="p">
+                        <span class="ph">PE</span> CA certificates and the full SSL
+                        directory.</p>
+                </li>
+                <li class="li">
+                    <p class="p">The <span class="ph">Puppet</span> code deployed to your code
+                        directory at backup time.</p>
+                </li>
+                <li class="li">
+                    <p class="p">
+                        <span class="ph">PuppetDB</span> data, including facts, catalogs and
+                        historical reports.</p>
+                </li>
+            </ul>
+        </div>
+        <p class="p">Each time you create a new backup, <span class="ph">PE</span>
+            creates a single, timestamped backup file, named in the format <code class="ph codeph">pe_backup-&lt;TIMESTAMP&gt;.tgz</code>. This file
+            includes everything you're backing up. By default, <span class="ph">PE</span>
+            writes backup files to <code class="ph codeph">/var/puppetlabs/backups</code>, but you can change this location when you run the
+            backup command. When you restore, specify the backup file you want to restore from.</p>
+        <p class="p">If you are restoring to a previously existing master, uninstall and
+            reinstall <span class="ph">PE</span> before restoring your infrastructure. If you
+            are restoring or migrating your infrastructure to a master with a different hostname
+            than the previous master, you'll redirect your agents to the new master during the
+            restore process. In both cases, the freshly installed <span class="ph">PE</span>
+            must be the same <span class="ph">PE</span> version that was in use when you
+            backed up the files. </p>
+        <p class="p">By default, backup and restore functions include your <span class="ph">Puppet</span> configuration, certificates, code, and <span class="ph">PuppetDB</span>. However, you can limit the scope of backup and
+            restore with command line options. This allows you to back up to or restore from
+            multiple files. This is useful if you want to back up some parts of your infrastructure
+            more often than others.</p>
+        <p class="p">For example, if you have frequent code changes, you might back up the
+            code more often than you back up the rest of your infrastructure. When you limit backup
+            scope, the backup file contains only the specified parts of your infrastructure. Be sure
+            to give your backup file a name that identifies the scope so that you always know what a
+            given file contains.</p>
+        <p class="p">During restore, you must restore all scopes: code, configuration,
+            certificates, and <span class="ph">PuppetDB</span>. However, you can restore each
+            scope from different files, either by restoring from backup files with limited scope or
+            by limiting the scope of the restore. For example, by specifying scope when you run the
+            restore command, you could restore code, configuration, and certificates from one backup
+            file and <span class="ph">PuppetDB</span> from a different one.</p>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="back_up_pe_infrastructure">
+   <h2 class="title topictitle2" id="ariaid-title2">Back up your infrastructure</h2>
+   
+   
+   <div class="body taskbody"><p class="shortdesc"><span class="ph">PE</span> backup creates a copy of your <span class="ph">Puppet</span> master, including configuration, certificates, code, and
+         <span class="ph">PuppetDB</span>.</p>
+      <section class="section context">By default, <span class="ph">PE</span> backs up files to <code class="ph codeph">/var/puppetlabs/backups</code> and names them with a timestamp. See the
+         backup and restore <a class="xref" href="backing_up_and_restoring_pe.html#backup_and_restore_reference" title="Use these options to change the backup and restore scope and other options for the puppet-backup command.&nbsp;">reference</a> for a
+         complete list of options for customizing your backup.</section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">On your master logged in as root, run <code class="ph codeph">puppet-backup create
+                  --dir=&lt;BACKUP_DIRECTORY&gt;</code>, specifying a separate disk as your backup
+               directory.</span>
+            <div class="itemgroup info">Backup can take up to several hours depending on the size of <span class="ph">PuppetDB</span>.</div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Back up the inventory service secret key located at
+                  <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/secrets/keys.json</code></span>
+            <div class="itemgroup info">Secure the key as you would any sensitive information. <div class="note caution note_caution"><span class="note__title">CAUTION:</span> The
+                  backup command does not include the secret key. You must back up this information
+                  separately. </div></div>
+         </li></ol></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="installing_pe.html#configuration_parameters_and_the_pe.conf_file" title="A pe.conf file is a HOCON formatted file that declares parameters and values used to install, upgrade, or configure PE. A default pe.conf file is available in the conf.d directory in the installer tarball.">Configuration parameters and the pe.conf file</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="restore_pe_infrastructure">
+    <h2 class="title topictitle2" id="ariaid-title3">Restore your infrastructure</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Use the restore commands to migrate your <span class="ph">PE</span> master to a new host or to recover from system
+        failure.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Remember that you must restore files to a fresh installation of
+                the same version of <span class="ph">PE</span> used in your backup file.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">If you are restoring to an existing master, purge
+                    any existing <span class="ph">PE</span> installation from it.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">On the master, uninstall <span class="ph">PE</span> by running <code class="ph codeph">sudo /opt/puppetlabs/bin/puppet-enterprise-uninstaller
+                                -p -d</code>
+                        </span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">Ensure that the directories <code class="ph codeph">/opt/puppetlabs/</code> and <code class="ph codeph">/etc/puppetlabs/</code> are no longer present on
+                            the system.</span>
+                    </li>
+                </ol>
+                <div class="itemgroup stepresult">
+                    <p class="p">For details about uninstalling <span class="ph">PE</span>, see the <a class="xref" href="uninstalling.html#uninstalling" title="Puppet Enterprise includes a script for uninstalling. You can uninstall component infrastructure nodes or from agent nodes.">uninstalling</a> documentation.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Install <span class="ph">PE</span> on the
+                    master you are restoring to. This must be the same <span class="ph">PE</span> version that was used for the backup
+                    files.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">If you don't have the <span class="ph">PE</span> installer script on the machine you
+                            want to restore to, download the installer tarball to the machine from
+                            the <a class="xref" href="https://puppet.com/download-puppet-enterprise" target="_blank">download</a> site, and unpack it by running
+                                <code class="ph codeph">tar -xf
+                                &lt;TARBALL_FILENAME&gt;</code>
+                        </span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">Navigate to the directory containing the
+                            install script. The installer script is located in the <span class="ph">PE</span> directory created when you unpacked
+                            the tarball. </span>
+                    </li>
+                    <li class="li substep">
+                        <span class="ph cmd">Install <span class="ph">PE</span>
+                            by running <code class="ph codeph">sudo
+                                ./puppet-enterprise-installer</code>
+                        </span>
+                    </li>
+                </ol>
+                <div class="itemgroup stepresult">
+                    <p class="p">For details about the <span class="ph">PE</span>
+                        installation process, see the <a class="xref" href="installing_pe.html#installing_pe" title="Installing PE begins with setting up a standard installation: a master, console, and PuppetDB operating on a single node. From here, you can scale up to the large or extra-large installation as your infrastructure grows, or customize configuration as needed.">installing</a> documentation. </p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master logged in as root, restore your <span class="ph">PE</span> infrastructure by running <code class="ph codeph">puppet-backup restore
+                        &lt;BACKUP-FILENAME&gt;</code>
+                </span>
+                <div class="itemgroup info">
+                    <p class="p">To change the default command behavior, pass option flags
+                        and values to the command. See the command <a class="xref" href="backing_up_and_restoring_pe.html#backup_and_restore_reference" title="Use these options to change the backup and restore scope and other options for the puppet-backup command.&nbsp;">reference</a> for a complete
+                        list of options.</p>
+                    <div class="p">For example, to restore your scope, certificates, and code
+                        from one backup file, but your <span class="ph">PuppetDB</span> data
+                        from another, pass the <code class="ph codeph">--scope</code>
+                        option:<pre class="pre codeblock"><code>puppet-backup restore pe_backup-2018-03-03_20.07.15_UTC.tgz --scope=config,certs,code
+
+puppet-backup restore pe_backup-2018-04-04_20.07.15_UTC.tgz --scope=puppetdb</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Restore your backup of the secret key used to
+                    encrypt and decrypt sensitive data stored in the inventory service. </span>
+                <div class="itemgroup info">The secret key is stored at: <code class="ph codeph">/etc/puppetlabs/orchestration-services/conf.d/secrets/keys.json</code>
+                    <div class="note caution note_caution"><span class="note__title">CAUTION:</span> The restore command does not include
+                        the secret key. You must restore this information separately. </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Ensure the secret key ownership is <code class="ph codeph">pe-orchestration-services:pe-orchestration-services</code>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Restart the pe-orchestration-services
+                    service.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">If you restored <span class="ph">PE</span> onto a master with a different hostname than the original
+                    installation, and you have not configured the <code class="ph codeph">dns_alt_names</code> setting in the <code class="ph codeph">pe.conf</code> file, redirect your agents to the new
+                    master. An easy way to do this is by running a task with the <span class="ph">Bolt</span> task runner.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Download and <a class="xref" href="https://puppet.com/docs/bolt/0.x/bolt_installing.html" target="_blank">install</a>
+                            <span class="ph">Bolt</span> , if you don't already have it
+                            installed.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Update the <code class="ph codeph">puppet.conf</code> file to point all agents at the new master by
+                            running:</span>
+                        <div class="itemgroup info">
+                            <pre class="pre codeblock"><code>bolt task run puppet_conf action=set section=agent setting=server value=&lt;RESTORE_HOSTNAME&gt; --nodes &lt;COMMA-SEPARATED LIST OF NODES&gt;
+bolt task run puppet_conf action=set section=main setting=server value=&lt;RESTORE_HOSTNAME&gt; --nodes &lt;COMMA-SEPARATED LIST OF NODES&gt;</code></pre>
+                        </div>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Run <code class="ph codeph">puppet agent -t --no-use_cached_catalog</code>  on the
+                            newly restored master <strong class="ph b">twice</strong> to apply changes and then restart services.</span>
+                    </li>
+                    <li class="li substep substepexpand">
+                        <span class="ph cmd">Run <code class="ph codeph">puppet agent -t --no-use_cached_catalog</code> on all
+                            agent nodes to test connection to the new master.</span>
+                    </li>
+                </ol>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">If your infrastructure had <span class="ph">Code Manager</span> enabled when your backup file was created, deploy
+                    your code by running:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>puppet access login
+puppet code deploy --all --wait       </code></pre>
+                    </div>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p"></p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="installing_pe.html#configuration_parameters_and_the_pe.conf_file" title="A pe.conf file is a HOCON formatted file that declares parameters and values used to install, upgrade, or configure PE. A default pe.conf file is available in the conf.d directory in the installer tarball.">Configuration parameters and the pe.conf file</a></li><li class="linklist"><a class="link" href="installing_pe.html#installing_pe" title="Installing PE begins with setting up a standard installation: a master, console, and PuppetDB operating on a single node. From here, you can scale up to the large or extra-large installation as your infrastructure grows, or customize configuration as needed.">Installing Puppet Enterprise</a></li><li class="linklist"><a class="link" href="uninstalling.html#uninstalling" title="Puppet Enterprise includes a script for uninstalling. You can uninstall component infrastructure nodes or from agent nodes.">Uninstalling</a></li></ul></div></nav></article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="backup_and_restore_reference">
+   <h2 class="title topictitle2" id="ariaid-title4">Backup and restore reference</h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">Use these options to change the backup and restore scope
+      and other options for the <code class="ph codeph">puppet-backup</code> command.&nbsp;</p>
+      <section class="section">
+         <div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> Backup commands must be run as root.</div>
+         </div>
+      </section>
+      <section class="section"><h3 class="title sectiontitle">puppet-backup create</h3>
+         
+         <p class="p">Run the <code class="ph codeph">puppet-backup create</code> command to create backup files of your <span class="ph">PE</span> infrastructure.</p>
+         <div class="p">Usage:<pre class="pre codeblock"><code>puppet-backup create [--dir=&lt;DIRECTORY_PATH&gt;] [--name=&lt;BACKUP_NAME&gt;.tgz] [--scope=&lt;SCOPE_LIST&gt;] [--force]</code></pre>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="backup_and_restore_reference__entry__1">Option</th>
+                        <th class="entry" id="backup_and_restore_reference__entry__2">Description</th>
+                        <th class="entry" id="backup_and_restore_reference__entry__3">Values</th>
+                        <th class="entry" id="backup_and_restore_reference__entry__4">Default</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__1">
+                           <code class="ph codeph">--dir=BACKUP_DIR</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__2">Specifies the directory to write the backup
+                           file to.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__3">A valid filepath that the pe-postgres user has
+                           write permission for.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__4">
+                           <code class="ph codeph">/var/puppetlabs/backups/</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__1">
+                           <code class="ph codeph">--name=BACKUP_NAME.tgz</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__2">Specifies the name for the backup
+                           file.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__3">A string designating a file name.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__4">
+                           <code class="ph codeph">pe_backup-&lt;TIMESTAMP&gt;.tgz</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__1">
+                           <code class="ph codeph">--pe-environment=ENVIRONMENT</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__2">Specifies the environment to back up. To
+                           ensure configuration is recovered correctly, this must be the environment
+                           where your master is located.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__3">A valid environment name.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__4">
+                           <code class="ph codeph">production</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__1">
+                           <code class="ph codeph">--scope=SCOPE</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__2"> Scope of backup to create.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__3">Either <code class="ph codeph">all</code> or any combination of the other available
+                           scopes, as a comma-separated list: <ul class="ul">
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">config</code>: <span class="ph">PE</span> configuration including
+                                    license, classification, and RBAC settings. Does not include <span class="ph">Puppet</span> gems or <span class="ph">Puppet Server</span> gems. </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">certs</code>: <span class="ph">PE</span> CA certificates and full SSL
+                                    directory </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">code</code>: <span class="ph">Puppet</span> code deployed to your
+                                    codedir at backup time. </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">puppetdb</code>: <span class="ph">PuppetDB</span> data, including facts,
+                                    catalogs, and historical reports </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">all</code>: All listed scopes. </p>
+                              </li>
+                           </ul>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__4">
+                           <code class="ph codeph">all</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__1">
+                           <code class="ph codeph">--force</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__2"> Bypass validation checks and ignore
+                           warnings.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__3">None.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__4">If you don't specify <code class="ph codeph">--force</code>, <span class="ph">PE</span> verifies that the destination directory
+                           exists and has enough space for the backup process. </td>
+                     </tr>
+                  </tbody></table>For example, to create a backup of <span class="ph">PuppetDB</span> only
+            and give it a name that shows the scope of the
+            file:<pre class="pre codeblock"><code>puppet-backup create --scope=puppetdb --name=puppetdb_backup_03032018.tgz</code></pre></div>
+      </section>
+      <section class="section"><h3 class="title sectiontitle">puppet-backup restore</h3>
+         
+         <p class="p">Run the <code class="ph codeph">puppet-backup restore</code> command to restore your <span class="ph">PE</span> infrastructure from backup files.</p>
+         <div class="p">Usage:<pre class="pre codeblock"><code>puppet-backup restore &lt;PATH/TO/BACKUP_FILE.tgz&gt; [--scope=&lt;SCOPE_LIST&gt;] [--force]</code></pre>
+            <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="backup_and_restore_reference__entry__25">Option</th>
+                        <th class="entry" id="backup_and_restore_reference__entry__26">Description</th>
+                        <th class="entry" id="backup_and_restore_reference__entry__27">Values</th>
+                        <th class="entry" id="backup_and_restore_reference__entry__28">Default</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__25">
+                           <code class="ph codeph">--pe-environment=ENVIRONMENT</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__26">Specifies the environment to restore.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__27"> A valid environment name for which you have
+                           an existing backup. </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__28">
+                           <code class="ph codeph">production</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__25">
+                           <code class="ph codeph">--scope=SCOPE</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__26"> Scope of backup to restore. All scopes must
+                           eventually be restored, but you can restore different scopes from
+                           different backup files with successive restore commands.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__27">Either <code class="ph codeph">all</code> or any combination of the other available
+                           scopes, as a comma-separated list: <ul class="ul">
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">config</code>: <span class="ph">PE</span> configuration including
+                                    license, classification, and RBAC settings. Does not include <span class="ph">Puppet</span> gems or <span class="ph">Puppet Server</span> gems. </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">certs</code>: <span class="ph">PE</span> CA certificates and full SSL
+                                    directory </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">code</code>: <span class="ph">Puppet</span> code deployed to your
+                                    codedir at backup time. </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">puppetdb</code>: <span class="ph">PuppetDB</span> data, including facts,
+                                    catalogs, and historical reports </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p"><code class="ph codeph">all</code>: All listed scopes. </p>
+                              </li>
+                           </ul>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__28">
+                           <code class="ph codeph">all</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__25">
+                           <code class="ph codeph">--force</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__26"> Bypass validation checks and ignore
+                           warnings.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__27">None.</td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__28">If you don't specify <code class="ph codeph">--force</code>, <span class="ph">PE</span> verifies that the destination directory
+                           exists and has enough space for the restore process. Returns warnings for
+                           insufficient space or invalid locations. </td>
+                     </tr>
+                  </tbody></table>For example, to restore <span class="ph">PuppetDB</span> from one backup
+            file and restore configuration, certificates, and code from another backup
+            file:<pre class="pre codeblock"><code>puppet-backup restore /mybackups/pe_backup_03032018.tgz --scope=puppetdb
+
+puppet-backup restore /mybackups/pe_backup_04042018.tgz --scope=config,certs,code</code></pre></div>
+      </section>
+      <section class="section"><h3 class="title sectiontitle">Directories and data backed up</h3>
+         
+         <div class="p">
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="backup_and_restore_reference__entry__41">Scope</th>
+                        <th class="entry" id="backup_and_restore_reference__entry__42">Directories and databases backed up</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__41">
+                           <code class="ph codeph">certs</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__42">
+                           <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">/etc/puppetlabs/puppet/ssl/</code>
+                                 </p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__41">
+                           <code class="ph codeph">code</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__42">
+                           <ul class="ul">
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">/etc/puppetlabs/code/</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">/etc/puppetlabs/code-staging/</code>
+                                 </p>
+                              </li>
+                              <li class="li">
+                                 <p class="p">
+                                    <code class="ph codeph">/opt/puppetlabs/server/data/puppetserver/filesync/storage/
+                                    </code>
+                                 </p>
+                              </li>
+                           </ul>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__41">
+                           <code class="ph codeph">config</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__42">
+                           <div class="p">
+                              <ul class="ul">
+                                 <li class="li">
+                                    <p class="p">Orchestrator database</p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p"> RBAC database </p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p"> Classifier database </p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p"><code class="ph codeph">/etc/puppetlabs/ </code>, except:</p>
+                                    <ul class="ul">
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/etc/puppetlabs/code/</code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/etc/puppetlabs/code-staging/</code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/etc/puppetlabs/puppet/ssl</code>
+                                          </p>
+                                       </li>
+                                    </ul>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p"><code class="ph codeph">/opt/puppetlabs/</code> , except:</p>
+                                    <ul class="ul">
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/puppet </code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/server/pe_build</code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/server/data/packages</code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/server/apps</code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/server/data/postgresql</code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/server/data/enterprise/modules</code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/server/data/puppetserver/vendored-jruby-gems</code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/bin </code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/client-tools </code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/server/share </code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/server/data/puppetserver/filesync/storage
+                                             </code>
+                                          </p>
+                                       </li>
+                                       <li class="li">
+                                          <p class="p">
+                                             <code class="ph codeph">/opt/puppetlabs/server/data/puppetserver/filesync/client
+                                             </code>
+                                          </p>
+                                       </li>
+                                    </ul>
+                                 </li>
+                              </ul>
+                           </div>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="backup_and_restore_reference__entry__41">
+                           <code class="ph codeph">puppetdb</code>
+                        </td>
+                        <td class="entry" headers="backup_and_restore_reference__entry__42">
+                           <div class="p">
+                              <ul class="ul">
+                                 <li class="li">
+                                    <p class="p"> PuppetDB </p>
+                                 </li>
+                                 <li class="li">
+                                    <p class="p">
+                                       <code class="ph codeph">/opt/puppetlabs/server/data/puppetdb</code>
+                                    </p>
+                                 </li>
+                              </ul>
+                           </div>
+                        </td>
+                     </tr>
+                  </tbody></table>
+         </div>
+      </section>
+   </div>
+</article></article></article></main></body></html>

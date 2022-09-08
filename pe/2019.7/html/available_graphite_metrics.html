@@ -1,0 +1,504 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="reference"><meta name="description" content="These HTTP and Puppet profiler metrics are available from the Puppet Server and can be added to your metrics reporting."><meta name="DC.relation" scheme="URI" content="available_graphite_metrics.html#modifying_exported_metrics"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="available_graphite_metrics"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Available Graphite metrics</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="available_graphite_metrics">
+   <h1 class="title topictitle1" id="ariaid-title1">Available Graphite metrics</h1>
+   
+   <div class="body refbody"><p class="shortdesc">These HTTP and Puppet profiler metrics are available from
+      the Puppet Server and can be added to your metrics reporting.</p>
+      <section class="section"><h2 class="title sectiontitle">Graphite metrics
+            properties</h2><p class="p"> Each metric is prefixed with <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;</code>; for instance, the
+            Grafana dashboard file refers to the <code class="ph codeph">num-cpus</code> metric as <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.num-cpus</code>.</p><p class="p">Additionally, metrics might be suffixed by fields, such as <code class="ph codeph">count</code> or <code class="ph codeph">mean</code>, that return more specific data points. For instance, the <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.compiler.mean</code> metric returns only the
+            mean length of time it takes Puppet Server to compile a catalog.</p><p class="p">To aid with reference, metrics in the list below are segmented into three
+            groups:</p><ul class="ul">
+            <li class="li">
+               <p class="p"><strong class="ph b">Statistical metrics:</strong> Metrics
+                  that have all eight of these statistical analysis fields, in addition to the
+                  top-level metric:</p>
+               <ul class="ul">
+                  <li class="li">
+                     <p class="p"><code class="ph codeph">max</code>: Its
+                        maximum measured value.</p>
+                  </li>
+                  <li class="li">
+                     <p class="p"><code class="ph codeph">min</code>: Its
+                        minimum measured value.</p>
+                  </li>
+                  <li class="li">
+                     <p class="p"><code class="ph codeph">mean</code>:
+                        Its mean, or average, value.</p>
+                  </li>
+                  <li class="li">
+                     <p class="p"><code class="ph codeph">stddev</code>:
+                        Its standard deviation from the mean.</p>
+                  </li>
+                  <li class="li">
+                     <p class="p"><code class="ph codeph">count</code>:
+                        An incremental counter.</p>
+                  </li>
+                  <li class="li">
+                     <p class="p"><code class="ph codeph">p50</code>: The
+                        value of its 50th percentile, or median.</p>
+                  </li>
+                  <li class="li">
+                     <p class="p"><code class="ph codeph">p75</code>: The
+                        value of its 75th percentile.</p>
+                  </li>
+                  <li class="li">
+                     <p class="p"><code class="ph codeph">p95</code>: The
+                        value of its 95th percentile.</p>
+                  </li>
+               </ul>
+            </li>
+            <li class="li">
+               <p class="p"><strong class="ph b">Counters only:</strong> Metrics that
+                  only count a value, or only have a <code class="ph codeph">count</code> field.</p>
+            </li>
+            <li class="li">
+               <p class="p"><strong class="ph b">Other:</strong> Metrics that have
+                  unique sets of available fields.</p>
+            </li>
+         </ul><div class="note note note_note"><span class="note__title">Note:</span> <p class="p">Puppet Server can export
+               many metrics–so many that past versions of Puppet Enterprise could overwhelm Grafana
+               servers. As of Puppet Enterprise 2016.4, Puppet Server exports only a subset of its
+               available metrics by default. This set is designed to report the most relevant Puppet
+               Server metrics for administrators monitoring its performance and stability.</p>
+            <p class="p">To add to the default list of exported metrics, see Modifying
+               Puppet Server's exported metrics.</p>
+            <p class="p">Puppet Server exports each metric in the lists below by
+               default.</p>
+         </div></section>
+      <section class="section"><h2 class="title sectiontitle">Statistical metrics</h2><div class="p">Compiler metrics: <ul class="ul">
+               <li class="li"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.compiler</code>: The time spent compiling
+                  catalogs. This metric represents the sum of the <code class="ph codeph">compiler.compile</code>, <code class="ph codeph">static_compile</code>, <code class="ph codeph">find_facts</code>, and <code class="ph codeph">find_node</code> fields. <ul class="ul">
+                     <li class="li">
+                        <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.compiler.compile</code>: The
+                           total time spent compiling dynamic (non-static) catalogs. </p>
+                        <p class="p">To measure specific nodes and environments, see
+                           Modifying Puppet Server's exported metrics.</p>
+                     </li>
+                     <li class="li">
+                        <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.compiler.find_facts</code>: The
+                           time spent parsing facts. </p>
+                     </li>
+                     <li class="li">
+                        <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.compiler.find_node</code>: The
+                           time spent retrieving node data. If the Node Classifier (or another ENC)
+                           is configured, this includes the time spent communicating with it. </p>
+                     </li>
+                     <li class="li">
+                        <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.compiler.static_compile</code>:
+                           The time spent compiling static catalogs. </p>
+                     </li>
+                     <li class="li">
+                        <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.compiler.static_compile_inlining</code>:
+                           The time spent inlining metadata for static catalogs. </p>
+                     </li>
+                     <li class="li">
+                        <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.compiler.static_compile_postprocessing</code>:
+                           The time spent post-processing static catalogs. </p>
+                     </li>
+                  </ul>
+               </li>
+            </ul></div><div class="p">File sync metrics: <ul class="ul">
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.file-sync-client.clone-timer</code>:
+                     The time spent by file sync clients on compilers initially cloning repositories
+                     on the master. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.file-sync-client.fetch-timer</code>:
+                     The time spent by file sync clients on compilers fetching repository updates
+                     from the master. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.file-sync-client.sync-clean-check-timer</code>:
+                     The time spent by file sync clients on compilers checking whether the
+                     repositories are clean. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.file-sync-client.sync-timer</code>:
+                     The time spent by file sync clients on compilers synchronizing code from the
+                     private datadir to the live codedir. </p>
+               </li>
+               <li class="li">
+                  <p class="p">
+                     <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.file-sync-storage.commit-add-rm-timer</code>
+                  </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.file-sync-storage.commit-timer</code>:
+                     The time spent committing code on the master into the file sync repository.
+                  </p>
+               </li>
+            </ul></div><div class="p">Function metrics: <ul class="ul">
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.functions</code>: The amount of time
+                     during catalog compilation spent in function calls. The <code class="ph codeph">functions</code> metric can also report any of the
+                     statistical metrics fields for a single function by specifying the function
+                     name as a field. </p>
+                  <p class="p">For example, to report the mean time spent in a function
+                     call during catalog compilation, use <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.functions.&lt;FUNCTION-NAME&gt;.mean</code>.
+                  </p>
+               </li>
+            </ul></div><div class="p">HTTP metrics: <ul class="ul">
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.active-histo</code>: A histogram
+                     of active HTTP requests over time. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-catalog-/*/-requests</code>:
+                     The time Puppet Server has spent handling catalog requests, including time
+                     spent waiting for an available JRuby instance. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-environment-/*/-requests</code>:
+                     The time Puppet Server has spent handling environment requests, including time
+                     spent waiting for an available JRuby instance. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-environment_classes-/*/-requests</code>:
+                     The time spent handling requests to the <code class="ph codeph">environment_classes</code> API endpoint, which the Node Classifier uses
+                     to refresh classes. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-environments-requests</code>:
+                     The time spent handling requests to the <code class="ph codeph">environments</code> API endpoint requests made by the Orchestrator </p>
+               </li>
+               <li class="li">
+                  <p class="p">The following metrics measure the time spent handling
+                     file-related API endpoints:</p>
+                  <ul class="ul">
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-file_bucket_file-/*/-requests</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-file_content-/*/-requests</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-file_metadata-/*/-requests</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-file_metadatas-/*/-requests</code>
+                        </p>
+                     </li>
+                  </ul>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-node-/*/-requests</code>:
+                     The time spent handling node requests, which are sent to the Node Classifier. A
+                     bottleneck here might indicate an issue with the Node Classifier or PuppetDB.
+                  </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-report-/*/-requests</code>:
+                     The time spent handling report requests. A bottleneck here might indicate an
+                     issue with PuppetDB. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-static_file_content-/*/-requests</code>:
+                     The time spent handling requests to the <code class="ph codeph">static_file_content</code> API endpoint used by Direct Puppet with file
+                     sync. </p>
+               </li>
+            </ul></div><div class="p">JRuby metrics: Puppet Server uses an embedded JRuby
+            interpreter to execute Ruby code. JRuby spawns parallel instances known as JRubies to
+            execute Ruby code, which occurs during most Puppet Server activities. See Tuning JRuby
+            on Puppet Server for details on adjusting JRuby settings. <ul class="ul">
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.borrow-timer</code>: The time
+                     spent with a borrowed JRuby. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.free-jrubies-histo</code>: A
+                     histogram of free JRubies over time. This metric's average value must be
+                     greater than 1; if it isn't, more JRubies or another compiler might be needed
+                     to keep up with requests. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.lock-held-timer</code>: The time
+                     spent holding the JRuby lock. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.lock-wait-timer</code>: The time
+                     spent waiting to acquire the JRuby lock. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.requested-jrubies-histo</code>:
+                     A histogram of requested JRubies over time. This increases as the number of
+                     free JRubies, or the <code class="ph codeph">free-jrubies-histo</code> metric, decreases, which can suggest that the
+                     server's capacity is being depleted. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.wait-timer</code>: The time
+                     spent waiting to borrow a JRuby. </p>
+               </li>
+            </ul></div><p class="p">PuppetDB metrics: The following metrics measure the time
+            that Puppet Server spends sending or receiving data from PuppetDB.</p><ul class="ul">
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.puppetdb.catalog.save</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.puppetdb.command.submit</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.puppetdb.facts.find</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.puppetdb.facts.search</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.puppetdb.report.process</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.puppetdb.resource.search</code>
+               </p>
+            </li>
+         </ul></section>
+      <section class="section"><h2 class="title sectiontitle">Counters only</h2><div class="p">HTTP metrics: <ul class="ul">
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.active-requests</code>: The
+                     number of active HTTP requests. </p>
+               </li>
+               <li class="li">
+                  <p class="p">The following counter metrics report the percentage of each
+                     HTTP API endpoint's share of total handled HTTP requests.</p>
+                  <ul class="ul">
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-catalog-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-environment-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-environment_classes-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-environments-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-file_bucket_file-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-file_content-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-file_metadata-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-file_metadatas-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-node-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-report-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-resource_type-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-resource_types-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-static_file_content-/*/-percentage</code>
+                        </p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.puppet-v3-status-/*/-percentage</code>
+                        </p>
+                     </li>
+                  </ul>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.http.total-requests</code>: The total
+                     requests handled by Puppet Server. </p>
+               </li>
+            </ul></div><div class="p">JRuby metrics: <ul class="ul">
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.borrow-count</code>: The number
+                     of successfully borrowed JRubies. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.borrow-retry-count</code>: The
+                     number of attempts to borrow a JRuby that must be retried. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.borrow-timeout-count</code>: The
+                     number of attempts to borrow a JRuby that resulted in a timeout. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.request-count</code>: The number
+                     of requested JRubies. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.return-count</code>: The number
+                     of JRubies successfully returned to the pool. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.num-free-jrubies</code>: The
+                     number of free JRuby instances. If this number is often 0, more requests are
+                     coming in than the server has available JRuby instances. To alleviate this,
+                     increase the number of JRuby instances on the Server or add additional
+                     compilers. </p>
+               </li>
+               <li class="li">
+                  <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.jruby.num-jrubies</code>: The total
+                     number of JRuby instances on the server, governed by the <code class="ph codeph">max-active-instances</code> setting. See Tuning
+                     JRuby on Puppet Server for details. </p>
+               </li>
+            </ul></div></section>
+      <section class="section"><h2 class="title sectiontitle">Other metrics</h2><p class="p">These metrics measure raw resource availability and capacity.</p><ul class="ul">
+            <li class="li">
+               <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.num-cpus</code>: The number of available
+                  CPUs on the server.</p>
+            </li>
+            <li class="li">
+               <p class="p"><code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.uptime</code>: The Puppet Server
+                  process's uptime.</p>
+            </li>
+            <li class="li">
+               <p class="p">Total, heap, and non-heap memory that's committed (<code class="ph codeph">committed</code>), initialized (<code class="ph codeph">init</code>), and used (<code class="ph codeph">used</code>), and the maximum amount of memory that
+                  can be used (<code class="ph codeph">max</code>).</p>
+               <ul class="ul">
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.total.committed</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.total.init</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.total.used</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.total.max</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.heap.committed</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.heap.init</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.heap.used</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.heap.max</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.non-heap.committed</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.non-heap.init</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.non-heap.used</code>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;.memory.non-heap.max</code>
+                     </p>
+                  </li>
+               </ul>
+            </li>
+         </ul></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="available_graphite_metrics.html#modifying_exported_metrics" title="In addition to the default metrics, you can also export metrics measuring specific environments and nodes managed by Puppet Server.">Modifying exported metrics</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="modifying_exported_metrics">
+    <h2 class="title topictitle2" id="ariaid-title2">Modifying exported metrics </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">In addition to the default metrics, you can also export
+        metrics measuring specific environments and nodes managed by Puppet Server.</p>
+        <section class="section context">
+            <p class="p">The <code class="ph codeph">$metrics_puppetserver_metrics_allowed</code> class parameter in the <code class="ph codeph">puppet_enterprise::profile::master</code>
+                class takes an array of metrics as strings. To export additional metrics, add them
+                to this array.</p>
+            <p class="p">Optional metrics include:</p>
+            <ul class="ul">
+                <li class="li">
+                    <p class="p"><code class="ph codeph">compiler.compile.&lt;ENVIRONMENT&gt;</code> and <code class="ph codeph">compiler.compile.&lt;ENVIRONMENT&gt;.&lt;NODE-NAME&gt;</code>, and
+                        all statistical fields suffixed to these (such as <code class="ph codeph">compiler.compile.&lt;ENVIRONMENT&gt;.mean</code>).</p>
+                </li>
+                <li class="li">
+                    <p class="p"><code class="ph codeph">compiler.compile.evaluate_resources.&lt;RESOURCE&gt;</code>: Time
+                        spent evaluating a specific resource during catalog compilation.</p>
+                </li>
+            </ul>
+        </section>
+        <section><div class="li stepsection"><p class="p">Omit the <code class="ph codeph">puppetlabs.&lt;MASTER-HOSTNAME&gt;</code>
+                    prefix and field suffixes (such as <code class="ph codeph">.count</code> or <code class="ph codeph">.mean</code>)
+                    from metrics. Instead, suffix the environment or node name as a field to the
+                    metric.</p></div><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">For example, to track the compilation time for the
+                        <code class="ph codeph">production</code> environment, add
+                        <code class="ph codeph">compiler.compile.production</code>
+                    to the <code class="ph codeph">metrics-allowed</code>
+                    list.</span>
+            </li><li class="li step">
+                <span class="ph cmd">To track only the <code class="ph codeph">my.node.localdomain</code> node in the <code class="ph codeph">production</code> environment, add <code class="ph codeph">compiler.compile.production.my.node.localdomain</code> to the <code class="ph codeph">metrics-allowed</code> list.</span>
+            </li></ol></section>
+    </div>
+</article></article></article></main></body></html>

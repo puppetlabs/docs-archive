@@ -1,0 +1,258 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise (PE) is built on the Puppet platform which has several components: Puppet, Puppet Server, Facter, Hiera, and PuppetDB. This page describes each of these platform components, and links to the component docs."><meta name="DC.relation" scheme="URI" content="managing_puppet_code.html"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="osp_documentation_for_pe"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet platform documentation for PE</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="osp_documentation_for_pe">
+    <h1 class="title topictitle1" id="ariaid-title1">
+        <span class="ph">Puppet</span> platform documentation for <span class="ph">PE</span></h1>
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">Puppet Enterprise (PE)</span> is built on the <span class="ph">Puppet</span> platform which has several components: <span class="ph">Puppet</span>, <span class="ph">Puppet Server</span>, <span class="ph">Facter</span>, <span class="ph">Hiera</span>, and <span class="ph">PuppetDB</span>. This page describes each of these platform
+        components, and links to the component docs.</p>
+        <section class="section"><h2 class="title sectiontitle">
+                <span class="ph">Puppet</span>
+            </h2>
+            
+            <ul class="ul">
+                <li class="li">
+                    <p class="p">
+                        <a class="xref" href="https://puppet.com/docs/puppet/6.10/" target="_blank">
+                            <span class="ph">Puppet</span> docs</a>
+                    </p>
+                </li>
+            </ul>
+            <p class="p">
+                <span class="ph">Puppet</span> is the core of our configuration management
+                platform. It consists of a programming language for describing desired system
+                states, an agent that can enforce desired states, and several other tools and
+                services.</p>
+            <p class="p">Right now, you’re reading the <span class="ph">PE</span>
+                manual; the <span class="ph">Puppet</span> reference manual is a separate
+                section of our docs site. After you’ve followed a link there, you can use the
+                navigation sidebar to browse other sections of the manual.</p>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> The <span class="ph">Puppet</span>
+                    manual has information about installing the open source release of <span class="ph">Puppet</span>. As a <span class="ph">PE</span>
+                    user, ignore those pages.</div>
+            </div>
+            <div class="p">The following pages are good starting points for getting familiar
+                with <span class="ph">Puppet</span>: <dl class="dl">
+                    
+                        <dt class="dt dlterm">Language</dt>
+                        <dd class="dd">
+                            <ul class="ul">
+                                <li class="li">
+                                    <a class="xref" href="https://puppet.com/docs/puppet/6.10/lang_summary.html" target="_blank">An outline of how the <span class="ph">Puppet</span> language works. </a>
+                                    <ul class="ul">
+                                        <li class="li">
+                                            <a class="xref" href="https://puppet.com/docs/puppet/6.10/lang_resources.html" target="_blank">Resources</a>,&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/lang_variables.html" target="_blank">variables</a>,&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/lang_conditional.html" target="_blank">conditional statements</a>,
+                                            and&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/lang_relationships.html" target="_blank">relationships and
+                                            ordering</a>&nbsp;are the fundamental pieces of the
+                                                <span class="ph">Puppet</span> language.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="li">
+                                    <a class="xref" href="https://puppet.com/docs/puppet/6.10/lang_classes.html" target="_blank">Classes</a>&nbsp;and&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/lang_defined_types.html" target="_blank">defined types</a>&nbsp;are how you
+                                    organize <span class="ph">Puppet</span> code into useful
+                                    chunks. Classes are the main unit of <span class="ph">Puppet</span> code you’ll be interacting
+                                    with on a daily basis. You can assign classes to nodes in the
+                                        <span class="ph">PE</span> console. </li>
+                                <li class="li">
+                                    <a class="xref" href="https://puppet.com/docs/puppet/6.10/lang_facts_and_builtin_vars.html" target="_blank">Facts and built-in
+                                    variables</a>&nbsp;explains the special variables you can use
+                                    in your <span class="ph">Puppet</span> manifests. </li>
+                            </ul>
+                        </dd>
+                    
+                    
+                        <dt class="dt dlterm">Modules</dt>
+                        <dd class="dd">
+                            <ul class="ul">
+                                <li class="li">Most <span class="ph">Puppet</span>
+                                    code goes in modules. We explain how modules work&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/modules_fundamentals.html" target="_blank">here.</a>
+                                </li>
+                                <li class="li">There are also guides to&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/modules_installing.html" target="_blank">installing modules</a>&nbsp;and&nbsp;
+                                        <a class="xref" href="https://puppet.com/docs/puppet/6.10/modules_publishing.html" target="_blank">publishing modules</a>&nbsp;on the <span class="ph">Forge</span>. </li>
+                                <li class="li">Use the code management features included in
+                                        <span class="ph">PE</span> to control your modules
+                                    instead of installing by hand. See&nbsp;Managing and deploying
+                                    Puppet code&nbsp;(in the <span class="ph">PE</span>
+                                    manual) for more details. </li>
+                            </ul>
+                        </dd>
+                    
+                    
+                        <dt class="dt dlterm">Services and commands</dt>
+                        <dd class="dd">
+                            <ul class="ul">
+                                <li class="li">
+                                    <a class="xref" href="https://puppet.com/docs/puppet/6.10/architecture.html" target="_blank">An overview of Puppet’s
+                                        architecture.</a>
+                                </li>
+                                <li class="li">
+                                    <a class="xref" href="https://puppet.com/docs/puppet/6.10/services_commands.html" target="_blank">A list of the main services and commands
+                                        you’ll interact with.</a>
+                                </li>
+                                <li class="li">
+                                    <a class="xref" href="https://puppet.com/docs/puppet/6.10/services_commands_windows.html" target="_blank">Notes on running Puppet’s commands on
+                                        Windows.</a>
+                                </li>
+                            </ul>
+                        </dd>
+                    
+                    
+                        <dt class="dt dlterm">Built-in resource types and functions</dt>
+                        <dd class="dd">
+                            <ul class="ul">
+                                <li class="li">
+                                    <a class="xref" href="https://puppet.com/docs/puppet/6.10/type.html" target="_blank">The resource type reference</a>&nbsp;has
+                                    info about all of the built-in <span class="ph">Puppet</span> resource types. </li>
+                                <li class="li">
+                                    <a class="xref" href="https://puppet.com/docs/puppet/6.10/function.html" target="_blank">The function reference</a>&nbsp;does the
+                                    same for the built-in functions. </li>
+                            </ul>
+                        </dd>
+                    
+                    
+                        <dt class="dt dlterm">Important directories and files</dt>
+                        <dd class="dd">
+                            <ul class="ul">
+                                <li class="li">Most of your <span class="ph">Puppet</span> content goes in
+                                    environments. Find out more about environments&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/environments.html" target="_blank">here.</a>
+                                </li>
+                                <li class="li">The&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/dirs_codedir.html" target="_blank">codedir</a>&nbsp;contains code and data
+                                    and the&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/dirs_confdir.html" target="_blank">confdir</a>&nbsp;contains config files.
+                                    The&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/dirs_modulepath.html" target="_blank">modulepath</a>&nbsp;and the&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/dirs_manifest.html" target="_blank">main manifest</a>&nbsp;both depend on
+                                    the current environment. </li>
+                            </ul>
+                        </dd>
+                    
+                    
+                        <dt class="dt dlterm">Configuration</dt>
+                        <dd class="dd">
+                            <ul class="ul">
+                                <li class="li">The main config file for <span class="ph">Puppet</span> is&nbsp;<code class="ph codeph">/etc/puppetlabs/puppet/puppet.conf</code>. Learn more
+                                    about&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/config_about_settings.html" target="_blank">
+                                        <span class="ph">Puppet</span>’s settings</a>,
+                                    and&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/config_file_main.html" target="_blank">about <code class="ph codeph">puppet.conf</code></a>&nbsp;itself. </li>
+                                <li class="li">There are also a bunch of other config files
+                                    used for special purposes. Go to the&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/config_file_main.html" target="_blank">page about <code class="ph codeph">puppet.conf</code></a>&nbsp;and check
+                                    the navigation sidebar for a full list. </li>
+                            </ul>
+                        </dd>
+                    
+                </dl>
+            </div>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">
+                <span class="ph">Puppet Server</span>
+            </h2>
+            
+            <div class="p">
+                <ul class="ul">
+                    <li class="li">
+                        <a class="xref" href="https://puppet.com/docs/puppetserver/latest/" target="_blank">
+                            <span class="ph">Puppet Server</span> docs</a>
+                    </li>
+                </ul>
+            </div>
+            <p class="p">
+                <span class="ph">Puppet Server</span> is the JVM application that provides the core
+                    <span class="ph">Puppet</span> HTTPS services. Whenever <span class="ph">Puppet</span> agent checks in to request a configuration
+                catalog for a node, it contacts <span class="ph">Puppet Server</span>.</p>
+            <p class="p">For the most part, <span class="ph">PE</span> users don’t
+                need to directly manage <span class="ph">Puppet Server</span>, and the <span class="ph">Puppet</span> reference manual (above) has all the important
+                info about how <span class="ph">Puppet Server</span> evaluates the <span class="ph">Puppet</span> language and loads environments and modules.
+                However, some users might need to access the&nbsp; <a class="xref" href="https://puppet.com/docs/puppetserver/latest/admin-api/v1/environment-cache.html" target="_blank">environment cache</a>&nbsp;and&nbsp; <a class="xref" href="https://puppet.com/docs/puppetserver/latest/admin-api/v1/jruby-pool.html" target="_blank">JRuby pool</a>&nbsp;administrative APIs, and there’s lots of
+                interesting background information in the rest of the <span class="ph">Puppet Server</span> docs. </p>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> The <span class="ph">Puppet Server</span>
+                    manual has information about installing the open source release of <span class="ph">Puppet Server</span>. As a <span class="ph">PE</span>
+                    user, ignore those pages. Additionally, the <span class="ph">Puppet Server</span> config files in <span class="ph">PE</span> are managed with a built-in
+                        <span class="ph">Puppet</span> module; to change most settings, set
+                    the appropriate class parameters in the console.</div>
+            </div>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">
+                <span class="ph">Facter</span>
+            </h2>
+            
+            <div class="p">
+                <ul class="ul">
+                    <li class="li">
+                        <a class="xref" href="https://puppet.com/docs/facter/3.12/" target="_blank">
+                            <span class="ph">Facter</span> docs</a>
+                    </li>
+                </ul>
+            </div>
+            <p class="p">
+                <span class="ph">Facter</span> is a system profiling tool. <span class="ph">Puppet</span> agent uses it to send important system info to
+                    <span class="ph">Puppet Server</span>, which can access that info when
+                compiling that node’s catalog.</p>
+            <ul class="ul">
+                <li class="li">For a list of variables you can use in your code, check out
+                    the&nbsp; <a class="xref" href="https://puppet.com/docs/facter/3.12/core_facts.html" target="_blank">core facts reference</a>. </li>
+                <li class="li">You can also write your own custom facts. See the&nbsp;
+                        <a class="xref" href="https://puppet.com/docs/facter/3.12/fact_overview.html" target="_blank">custom fact overview</a>&nbsp;and the&nbsp; <a class="xref" href="https://puppet.com/docs/facter/3.12/custom_facts.html" target="_blank">custom fact walkthrough</a>. </li>
+            </ul>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">
+                <span class="ph">Hiera</span>
+            </h2>
+            
+            <div class="p">
+                <ul class="ul">
+                    <li class="li">
+                        <a class="xref" href="https://puppet.com/docs/puppet/6.10/hiera_intro.html" target="_blank">
+                            <span class="ph">Hiera</span> docs</a>
+                    </li>
+                </ul>
+            </div>
+            <p class="p">
+                <span class="ph">Hiera</span> is a hierarchical data lookup tool. You can use
+                it to configure your <span class="ph">Puppet</span> classes.</p>
+            <p class="p">Start with the&nbsp; <a class="xref" href="https://puppet.com/docs/puppet/6.10/hiera_intro.html" target="_blank">overview</a>&nbsp;and use the navigation sidebar to get around. </p>
+            <p class="p"><strong class="ph b">Note:</strong>&nbsp;Hiera 5&nbsp;is a
+                backwards-compatible evolution of Hiera, which is built into Puppet. To provide some
+                backwards-compatible features, it uses the classic Hiera 3 codebase. This means
+                “Hiera” is still version 3.x, even though this Puppet Enterprise version uses Hiera
+                5.</p>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">
+                <span class="ph">PuppetDB</span>
+            </h2>
+            
+            <div class="p">
+                <ul class="ul">
+                    <li class="li">
+                        <a class="xref" href="https://puppet.com/docs/puppetdb/latest/" target="_blank">
+                            <span class="ph">PuppetDB</span> docs</a>
+                    </li>
+                </ul>
+            </div>
+            <p class="p">
+                <span class="ph">PuppetDB</span> collects the data <span class="ph">Puppet</span> generates, and offers a powerful query API for
+                analyzing that data. It’s the foundation of the <span class="ph">PE</span>
+                console, and you can also use the API to build your own applications.</p>
+            <p class="p">If you’re interacting with <span class="ph">PuppetDB</span>
+                directly, you’ll mostly be using the query API.</p>
+            <ul class="ul">
+                <li class="li">
+                    <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/tutorial.html" target="_blank">The query tutorial page</a>&nbsp;walks you through the
+                    process of building and executing a query. </li>
+                <li class="li">
+                    <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/v4/query.html" target="_blank">The query structure page</a>&nbsp;explains the
+                    fundamentals of using the query API. </li>
+                <li class="li">
+                    <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/curl.html" target="_blank">The cURL tips page</a>&nbsp;has useful information about
+                    testing the API from the command line. </li>
+                <li class="li">You can use the navigation sidebar to browse the rest of the
+                    query API docs.</li>
+            </ul>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> The <span class="ph">PuppetDB</span>
+                    manual has information about installing the open source release of <span class="ph">PuppetDB</span>. As a <span class="ph">PE</span>
+                    user, ignore those pages.</div>
+            </div>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="managing_puppet_code.html" title="Puppet Enterprise (PE) includes built-in tools for managing and deploying your Puppet infrastructure. Code Manager and r10k are code management tools that automatically install modules, create and maintain environments, and deploy new code to your masters, all based on version control of your Puppet code and data.">Managing and deploying Puppet code</a></li></ul></div></nav></article></article></main></body></html>

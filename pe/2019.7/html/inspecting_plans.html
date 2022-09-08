@@ -1,0 +1,32 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="View the plans you have installed and which ones you have permissions to run, as well as details about individual plans."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="inspecting_plans"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Inspecting plans</title></head><body id="inspecting_plans"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+  <h1 class="title topictitle1" id="ariaid-title1">Inspecting plans</h1>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">View the plans you have installed and which ones you have
+    permissions to run, as well as details about individual plans.</p>
+    <div class="p">Log into your master or client tools workstation and run one of the following commands to see
+      information about your plan inventory:<ul class="ul">
+        <li class="li"><code class="ph codeph">puppet plan show</code> - View a list of your permitted plans. </li>
+      </ul><ul class="ul">
+        <li class="li"><code class="ph codeph">puppet plan show --all</code> - View a list of all installed plans.</li>
+      </ul></div>
+    <p class="p">Use the command <code class="ph codeph">puppet plan show &lt;PLAN NAME&gt;</code> to view plan metadata. The
+      output includes the command format and parameters available to use for an individual plan. </p>
+    <div class="p">For example, this plan allows a <code class="ph codeph">$nodes</code> parameter and a
+        <code class="ph codeph">$version</code> parameter, specified as data types <code class="ph codeph">TargetSpec</code> and
+        <code class="ph codeph">Integer</code>.
+      <pre class="pre codeblock"><code>plan infra::upgrade_apache (
+  TargetSpec $nodes,
+  Integer $version,
+){
+run_task(‘package’, $nodes, name =&gt; ‘apache’, action =&gt; ‘upgrade’, version
+ =&gt; $version)
+}</code></pre></div>
+    <p class="p">To view plan metadata in the console, choose which plan you want to run in the
+        <span class="ph uicontrol">Plan</span> field and click on the <span class="ph uicontrol">View plan metadata</span>
+      link.</p>
+  </div>
+</article></main></body></html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the environments endpoint to retrieve information about environments in the node classifier. The output tells you either which environments are available or whether a named environment exists. The output can be helpful when creating new node groups, which must be associated with an environment. The node classifier gets its information about environments from Puppet, so do not use this endpoint to create, update, or delete them."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="environments_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Environments endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="environments_endpoint">
+            <h1 class="title topictitle1" id="ariaid-title1">Environments endpoint </h1>
+            
+            <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">environments</code> endpoint to retrieve information about
+                        environments in the node classifier. The output tells you either which
+                        environments are available or whether a named environment exists. The output
+                        can be helpful when creating new node groups, which must be associated with
+                        an environment. The node classifier gets its information about environments
+                        from <span class="ph">Puppet</span>, so do not use this endpoint to
+                        create, update, or delete them.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_v1_environments">
+    <h2 class="title topictitle2" id="ariaid-title2">GET /v1/environments </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/environments</code> endpoint to retrieve a list of all environments known to the
+        node classifier.</p>
+        <section class="section" id="get_v1_environments__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">The response is a JSON array of
+                environment objects, using the following keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="get_v1_environments__response_format__entry__1">Key </th>
+                            <th class="entry" id="get_v1_environments__response_format__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_environments__response_format__entry__1"><code class="ph codeph">name</code></td>
+                            <td class="entry" headers="get_v1_environments__response_format__entry__2">The name of the environment
+                                (a string).</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_environments__response_format__entry__1"><code class="ph codeph">sync_succeeded</code>
+                            </td>
+                            <td class="entry" headers="get_v1_environments__response_format__entry__2">Whether the environment
+                                synched successfully during the last class synchronization (a
+                                Boolean).</td>
+                        </tr>
+                    </tbody></table></section>
+        <section class="section" id="get_v1_environments__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">No error responses specific to this request
+                are expected.</p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_v1_environments_name">
+    <h2 class="title topictitle2" id="ariaid-title3">GET /v1/environments/&lt;name&gt; </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/environments/\&lt;name\&gt;</code> endpoint to retrieve the environment with the
+        given name. The main use of this endpoint is to check if an environment actually exists. </p>
+        <section class="section" id="get_v1_environments_name__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">If the environment exists, the
+                service returns a <code class="ph codeph">200</code> response with
+                an environment object in JSON format.</p></section>
+        <section class="section" id="get_v1_environments_name__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">If the environment with the given name
+                cannot be found, the service returns a <code class="ph codeph">404:
+                    Not Found</code> response with an empty body.</p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="put_v1_environments_name">
+    <h2 class="title topictitle2" id="ariaid-title4">PUT /v1/environments/&lt;name&gt; </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/environments/\&lt;name\&gt;</code> endpoint to create a new environment with the
+        given name.</p>
+        <section class="section" id="put_v1_environments_name__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">No further information is required in the
+                request besides the <code class="ph codeph">name</code> portion of
+                the URL.</p></section>
+        <section class="section" id="put_v1_environments_name__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">If the environment is created
+                successfully, the service returns a <code class="ph codeph">201:
+                    Created</code> response whose body is the environment object in JSON
+                format.</p></section>
+        <section class="section" id="put_v1_environments_name__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">No error responses specific to this
+                operation are expected.</p></section>
+    </div>
+</article></article></article></main></body></html>

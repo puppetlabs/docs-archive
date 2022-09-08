@@ -1,0 +1,90 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise includes an optional, enabled-by-default web endpoint for Java Management Extension (JMX) metrics, namely managed beans (MBeans)."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="metrics_api"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>The metrics API</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="metrics_api">
+    <h1 class="title topictitle1" id="ariaid-title1">The metrics API </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Puppet Enterprise includes an optional, enabled-by-default
+        web endpoint for Java Management Extension (JMX) metrics, namely managed beans
+        (MBeans).</p>
+        <p class="p">These endpoints include:</p>
+        <ul class="ul">
+            <li class="li"><code class="ph codeph">GET
+                    /metrics/v1/mbeans</code></li>
+            <li class="li"><code class="ph codeph">POST
+                    /metrics/v1/mbeans</code></li>
+            <li class="li"><code class="ph codeph">GET
+                    /metrics/v1/mbeans/&lt;name&gt;</code></li>
+        </ul>
+        <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> These API endpoints are a tech
+                preview. The metrics described here are returned only when passing the <code class="ph codeph">level=debug</code> URL parameter, and the
+                structure of the returned data might change in future versions.To disable this
+                endpoint, set <code class="ph codeph">puppet_enterprise::master::puppetserver::metrics_webservice_enabled:
+                    false</code> in Hiera.</div></div>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="get_metrics_v1_mbeans">
+    <h2 class="title topictitle2" id="ariaid-title2">GET /metrics/v1/mbeans </h2>
+    
+    <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">GET
+            /metrics/v1/mbeans</code> endpoint lists available MBeans.</p>
+        <section class="section" id="get_metrics_v1_mbeans__response_keys"><h3 class="title sectiontitle">Response
+                keys </h3><ul class="ul">
+                <li class="li">The key is the name of a valid MBean.</li>
+                <li class="li">The value is a URI to use when requesting that MBean's
+                    attributes.</li>
+            </ul></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="post_metrics_v1_mbeans">
+    <h2 class="title topictitle2" id="ariaid-title3">POST /metrics/v1/mbeans </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">POST
+            /metrics/v1/mbeans</code> endpoint retrieves requested MBean metrics.</p>
+        <section class="section" id="post_metrics_v1_mbeans__query_parameters"><h3 class="title sectiontitle">Query
+                parameters </h3><p class="p">The query doesn't require any parameters,
+                but the request body must contain a JSON object whose values are metric names, or a
+                JSON array of metric names, or a JSON string containing a single metric's
+                name.</p><p class="p">For a list of metric names, make a <code class="ph codeph">GET</code> request to <code class="ph codeph">/metrics/v1/mbeans</code>.</p></section>
+        <section class="section" id="post_metrics_v1_mbeans__response_keys"><h3 class="title sectiontitle">Response
+                keys </h3><p class="p">The response format, though always JSON, depends
+                on the request format:</p><ul class="ul">
+                <li class="li">Requests with a JSON object return a JSON object where the
+                    values of the original object are transformed into the Mbeans' attributes for
+                    the metric names.</li>
+                <li class="li">Requests with a JSON array return a JSON array where the
+                    items of the original array are transformed into the Mbeans' attributes for the
+                    metric names.</li>
+                <li class="li">Requests with a JSON string return the a JSON object of the
+                    Mbean's attributes for the given metric name.</li>
+            </ul></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="get_metrics_v1_mbeans_name">
+  <h2 class="title topictitle2" id="ariaid-title4">GET /metrics/v1/mbeans/&lt;name&gt; </h2>
+  
+  <div class="body refbody"><p class="shortdesc">The <code class="ph codeph">GET
+      /metrics/v1/mbeans/&lt;name&gt;</code> endpoint reports on a single metric.</p>
+    <section class="section" id="get_metrics_v1_mbeans_name__query_parameters"><h3 class="title sectiontitle">Query
+        parameters </h3><p class="p">The query doesn't require any parameters, but the
+        endpoint itself must correspond to one of the metrics returned by a <code class="ph codeph">GET</code> request to <code class="ph codeph">/metrics/v1/mbeans</code>.</p></section>
+    <section class="section" id="get_metrics_v1_mbeans_name__response_keys"><h3 class="title sectiontitle">Response keys
+        </h3><p class="p">The endpoint's responses contain a JSON object mapping strings
+        to values. The keys and values returned in the response vary based on the specified
+        metric.</p><p class="p">For example:</p><p class="p">Use <code class="ph codeph">curl</code> from localhost to request data on MBean memory
+        usage:</p><pre class="pre codeblock"><code>curl 'http://localhost:8080/metrics/v1/mbeans/java.lang:type=Memory'</code></pre><p class="p">The response contains a JSON object representing the
+      data:</p><pre class="pre codeblock json"><code>{
+  "ObjectPendingFinalizationCount" : 0,
+  "HeapMemoryUsage" : {
+    "committed" : 807403520,
+    "init" : 268435456,
+    "max" : 3817865216,
+    "used" : 129257096
+  },
+  "NonHeapMemoryUsage" : {
+    "committed" : 85590016,
+    "init" : 24576000,
+    "max" : 184549376,
+    "used" : 85364904
+  },
+  "Verbose" : false,
+  "ObjectName" : "java.lang:type=Memory"
+}</code></pre></section>
+  </div>
+</article></article></article></main></body></html>

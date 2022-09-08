@@ -1,0 +1,60 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="Run ad hoc plans from the console."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="running_plans_in_the_console"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Running plans from the console</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="running_plans_in_the_console">
+    <h1 class="title topictitle1" id="ariaid-title1">Running plans from the console </h1>
+    
+    
+
+    <div class="body taskbody"><p class="shortdesc">Run ad hoc plans from the console.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Install
+                                                  the plans you want to use.</p>
+            <p class="p">Make
+                                                  sure you have permission to run the plans.</p>
+        </section>
+        <section class="section context">
+            <p class="p">When you set up a job to run a plan from the console, the
+                orchestrator creates a job ID to track the job, shows the nodes included in the job,
+                and runs the plan on those nodes in the appropriate order. <span class="ph">Puppet</span> compiles a new catalog for each node included
+                in the job. </p>
+            <div class="note note note_note"><span class="note__title">Note:</span> Running a plan does not update your Puppet
+                                                  configuration. If you run a plan that changes the
+                                                  state of a resource that <span class="ph">Puppet</span> is managing
+                                                  (such as upgrading a service or package), a
+                                                  subsequent <span class="ph">Puppet</span>
+                                                  run changes the state of that resource back to
+                                                  what is defined in your <span class="ph">Puppet</span>
+                                                  configuration.</div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                                        <span class="ph cmd">In the console, in the
+                                                  <span class="ph uicontrol">Orchestration</span> section,
+                                                  click <span class="ph uicontrol">Plan</span>.</span>
+                              </li><li class="li step stepexpand">
+                                        <span class="ph cmd">Click <span class="ph uicontrol">Run a plan</span> in the upper
+                                                  right corner of the <span class="ph uicontrol">Plans</span>
+                                                  page.</span>
+                              </li><li class="li step stepexpand">
+                                        <span class="ph cmd">Under <span class="ph uicontrol">Code environment</span>, select
+                                                  the environment where you installed the module
+                                                  containing the plan you want to run. For example,
+                                                  <span class="ph uicontrol">production</span>.</span>
+                              </li><li class="li step stepexpand"><strong>Optional: </strong>
+                                                  <span class="ph cmd">Under <span class="ph uicontrol">Job
+                                                  description</span>, name the job that is
+                                                  running the plan something unique so you can find
+                                                  it later in the job details page. </span>
+                                                  </li><li class="li step stepexpand">
+                <span class="ph cmd">Select any parameters you want to include. For
+                    example, <span class="ph uicontrol">nodes</span>.</span>
+                <div class="itemgroup info">
+                    <div class="note note note_note"><span class="note__title">Note:</span> To find out what parameters can be included in a
+                        plan, view the plan using the command line. For more information, see <a class="xref" href="inspecting_plans.html" title="View the plans you have installed and which ones you have permissions to run, as well as details about individual plans.">Inspecting plans</a></div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">After you have added parameters, click <span class="ph uicontrol">Run job</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>Your plan status and output will appear on the <span class="ph uicontrol">Plans</span>
+            page.</section>
+    </div>
+</article></article></main></body></html>

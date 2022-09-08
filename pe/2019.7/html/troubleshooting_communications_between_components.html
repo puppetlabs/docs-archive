@@ -1,0 +1,176 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="If agent nodes can't retrieve configurations, check for communication, certificate, DNS , and NTP issues."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="troubleshooting_communications_between_components"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Troubleshooting connections between components</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="troubleshooting_communications_between_components">
+    <h1 class="title topictitle1" id="ariaid-title1">Troubleshooting connections between components </h1>
+    
+    <div class="body conbody"><p class="shortdesc">If agent nodes can't retrieve configurations, check for
+        communication, certificate, DNS , and NTP issues.</p></div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="agents_cant_reach_the_puppet_master">
+    <h2 class="title topictitle2" id="ariaid-title2">Agents can't reach the <span class="ph">Puppet</span>
+        master</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Agent nodes must be able to communicate with the <span class="ph">Puppet</span> master in order to retrieve
+        configurations.</p>
+        <section class="section context">
+            <p class="p">If agents can't reach the <span class="ph">Puppet</span>
+                master, running <code class="ph codeph">telnet &lt;puppet master's
+                    hostname&gt; 8140</code> returns the error "Name or service not known."</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Verify that the <span class="ph">Puppet</span> master server is reachable at a DNS name
+                    your agents recognize.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Verify that the <code class="ph codeph">pe-puppetserver</code> service is running.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="agents_dont_have_signed_certificates">
+    <h2 class="title topictitle2" id="ariaid-title3">Agents don't have signed certificates</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Agent certificates must be signed by the <span class="ph">Puppet</span> master.</p>
+        <section class="section context"><p class="p">If the node's <span class="ph">Puppet</span> agent logs have a warning about unverified
+                peer certificates in the current SSL session, the agent has submitted a certificate
+                signing request that hasn't yet been signed.</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the master, view a list of pending certificate
+                    requests: <code class="ph codeph">puppet cert list</code>
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">Sign a specified node's certificate: <code class="ph codeph">puppetserver ca sign &lt;NODE
+                        NAME&gt;</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="agents_arent_using_the_masters_valid_dns_name">
+    <h2 class="title topictitle2" id="ariaid-title4">Agents aren't using the master's valid DNS name</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Agents trust the master only if they contact it at one of
+        the valid hostnames specified when the master was installed.</p>
+        <section class="section context">
+            <p class="p">On the node, if the results of <code class="ph codeph">puppet agent --configprint server</code> don't return one of the
+                valid DNS names you chose during installation of the master, the node and master
+                can't establish communication.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">To edit the master's hostname on nodes, in <code class="ph codeph">/etc/puppetlabs/puppet/puppet.conf</code>,
+                    change the <code class="ph codeph">server</code> setting to a
+                    valid DNS name.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">To reset the master's valid DNS names, run:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>/etc/init.d/pe-nginx stop
+puppet cert clean &lt;MASTER_CERTNAME&gt;
+puppet cert generate &lt;MASTER_CERTNAME&gt; --dns_alt_names=&lt;COMMA-SEPARATED_LIST_OF_DNS_NAMES&gt;
+/etc/init.d/pe-nginx start</code></pre></div></div>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="time_is_out_of_sync_">
+    <h2 class="title topictitle2" id="ariaid-title5">Time is out of sync </h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">The date and time must be in sync on the <span class="ph">Puppet</span> master and agent nodes.</p>
+        <section class="section context">
+            <p class="p">If time is out of sync on nodes, running <code class="ph codeph">date</code> returns incorrect or inconsistent dates.</p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">Get time in sync by setting up NTP. Keep in mind
+                    that NTP can behave unreliably on virtual machines.</span>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="node_certificates_have_invalid_dates">
+    <h2 class="title topictitle2" id="ariaid-title6">Node certificates have invalid dates</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">The date and time must be in sync when certificates are
+        created.</p>
+        <section class="section context"><p class="p">If certificates were
+                signed out of sync, running <code class="ph codeph">openssl x509
+                    -text -noout -in $(puppet config print --section master ssldir)/certs/&lt;NODE
+                    NAME&gt;.pem</code> returns invalid dates, such as certificates dated in the
+                future.</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the master, delete certificates with invalid
+                    dates: <code class="ph codeph">puppet cert clean &lt;NODE
+                        NAME&gt;</code>
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">On nodes with invalid certificates, delete the SSL
+                    directory: <code class="ph codeph">rm -r $(puppet config print
+                        --section master ssldir</code>
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">On agent nodes, generate a new certificate
+                    request: <code class="ph codeph">puppet agent --test</code>
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">On the master, sign the request: <code class="ph codeph">puppetserver ca sign &lt;NODE NAME&gt;</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="a_node_is_re-using_a_certname">
+                        <h2 class="title topictitle2" id="ariaid-title7">A node is re-using a certname</h2>
+                        
+                        
+                        <div class="body taskbody"><p class="shortdesc">If a node re-uses an old node's
+                                                certname and the master retains the previous node's
+                                                certificate, the new node is unable to request a new
+                                                certificate.</p>
+                                                <section class="section context"><p class="p"></p></section>
+                                                <section><ol class="ol steps"><li class="li step">
+                                                  <span class="ph cmd">On the master,
+                                                  clear the node's certificate: <code class="ph codeph">puppetserver ca clean
+                                                  &lt;NODE NAME&gt;</code>
+                                                  </span>
+                                                  </li><li class="li step">
+                                                  <span class="ph cmd">On agent node,
+                                                  generate a new certificate request: <code class="ph codeph">puppet agent
+                                                  --test</code>
+                                                  </span>
+                                                  </li><li class="li step">
+                                                  <span class="ph cmd">On the master,
+                                                  sign the request: <code class="ph codeph">puppetserver ca sign &lt;NODE
+                                                  NAME&gt;</code>
+                                                  </span>
+                                                  </li></ol></section>
+                        </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="task-4315">
+  <h2 class="title topictitle2" id="ariaid-title8">Agents can't reach the filebucket server</h2>
+  
+  
+  <div class="body taskbody"><p class="shortdesc">If the master is installed with a certname that doesn't
+    match its hostname, agents can't back up files to the filebucket on the <span class="ph">Puppet</span> master.</p>
+    <section class="section context">
+      <p class="p">If agents log errors like "could not back up," nodes are likely
+        attempting to back up files to the wrong hostname.</p>
+    </section>
+    <section><div class="li step p">
+        <span class="ph cmd">On the master, edit <code class="ph codeph">/etc/puppetlabs/code/environments/production/manifests/site.pp</code> so that
+          filebucket <code class="ph codeph">server</code> attribute points to the
+          correct hostname:</span>
+        <div class="itemgroup info">
+          <div class="p">
+            <pre class="pre codeblock ruby"><code># Define filebucket 'main':
+filebucket { 'main':
+  server =&gt; '&lt;PUPPET_MASTER_DNS_NAME&gt;',
+  path   =&gt; false,
+}</code></pre>
+          </div>
+        </div>
+      </div></section>
+    <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+      <p class="p">Changing the filebucket server attribute on the master fixes the error
+        on all agent nodes.</p>
+    </section>
+  </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title9" id="orchestrator_cant_connect_to_pe_bolt_server">
+      <h2 class="title topictitle2" id="ariaid-title9">Orchestrator can't connect to <span class="ph">PE</span>
+            <span class="ph">Bolt</span> server</h2>
+      
+      
+      <div class="body taskbody"><p class="shortdesc">Debug a faulty connection between the orchestrator and
+                  <span class="ph">PE</span>
+            <span class="ph">Bolt</span> server by setting the <code class="ph codeph">bolt_server_loglevel</code> in the <code class="ph codeph">puppet_enterprise::profile::bolt_server</code> class and running
+                  <span class="ph">Puppet</span>, or by manually updating <code class="ph codeph">loglevel</code> in <code class="ph codeph">/etc/puppetlabs/bolt-server/conf.d/bolt-server.conf</code>. The server logs
+            are located at <code class="ph codeph">/var/log/puppetlabs/bolt-server/bolt-server.log</code>.</p></div>
+</article></article></article></main></body></html>

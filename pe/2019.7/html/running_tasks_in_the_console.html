@@ -1,0 +1,772 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Run ad-hoc tasks on target machines to upgrade packages, restart services, or perform any other type of single-action executions on your nodes."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Isaac Eldridge <isaac.eldridge@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="running-tasks-console"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Running tasks from the console</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="running-tasks-console">
+    <h1 class="title topictitle1" id="ariaid-title1">Running tasks from the console</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Run ad-hoc tasks on target machines to upgrade packages,
+        restart services, or perform any other type of single-action executions on your nodes. </p>
+        <p class="p">When you set up a job to run a task from the console, the orchestrator
+            creates a job ID to track the job, shows you all nodes included in the job, and runs the
+            tasks on those nodes in the appropriate order. <span class="ph">Puppet</span>
+            compiles a new catalog for each node included in the job.</p>
+        <p class="p">There are three ways to specify the job target (the nodes you want to
+            run tasks on):</p>
+        <ul class="ul">
+            <li class="li">
+                <p class="p">A static node list</p>
+            </li>
+            <li class="li">
+                <p class="p">A <span class="ph">Puppet Query Language
+                                                  (PQL)</span> query</p>
+            </li>
+            <li class="li">
+                <p class="p">A node group</p>
+            </li>
+        </ul>
+        <p class="p">You can't combine these methods, and if you switch from one to the
+            other, the target list clears and starts over. In other words, if you create a target
+            list by using a node list, switching to a <span class="ph">PQL</span> query
+            clears the node list. You can do a one-time conversion of a <span class="ph">PQL</span> query to a static node list if you want to add or
+            remove nodes from the query results.</p>
+        <div class="p">
+            <div class="note important note_important"><span class="note__title">Important:</span> Running a task does not update your <span class="ph">Puppet</span> configuration. If you run a task that changes
+                the state of a resource that <span class="ph">Puppet</span> is managing (such
+                as upgrading a service or package), a subsequent <span class="ph">Puppet</span> run changes the state of that resource back to what is defined in your <span class="ph">Puppet</span> configuration. For example, if you use a task
+                to update the version of a managed package, the version of that package is reset to
+                whatever is specified in the relevant manifest on the next <span class="ph">Puppet</span> run.</div>
+        </div>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="run-task-node-list">
+    <h2 class="title topictitle2" id="ariaid-title2">Run a task on a node list</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Create a list of target nodes when you need to run a task
+        on a specific set of nodes that isn't easily defined by a <span class="ph">PQL</span>
+        query.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you have
+            permission to run the tasks.</p>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> You can add network devices to
+            a node list when you have installed modules for device transports in your production
+            environment. You can find such modules in <a class="xref" href="https://forge.puppet.com/" target="_blank">Puppet Forge</a>.</div>
+        </section>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, in the <span class="ph uicontrol">Orchestration</span> section, click
+                  <span class="ph uicontrol">Tasks</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run a task</span> in the upper right corner of the
+                  <span class="ph uicontrol">Tasks</span> page.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Code environment</span> field, select the environment where
+               you installed the module containing the task you want to run. This defaults to
+                  <code class="ph codeph">production</code>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Task</span> field, select a task to run, for example <code class="ph codeph">service</code>. </span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If the tasks you expect are not available,
+                  you either have no tasks installed, or you don't have the correct permissions to
+                  run them.</div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Set any parameters and values for the task. Click
+                  <span class="ph uicontrol">Add parameter</span> for each
+               parameter-value pair you add.</span>
+            <div class="itemgroup info">
+               <p class="p">If you chose the <code class="ph codeph">service</code> task, then you have two required parameters.
+                  For <span class="ph uicontrol">action</span>, you can
+                  choose <code class="ph codeph">restart</code>.
+                  For <span class="ph uicontrol">service</span>, enter
+                     <kbd class="ph userinput">nginx</kbd>.</p>
+               <div class="note note note_note"><span class="note__title">Note:</span> Parameters marked with an asterisk (<code class="ph codeph">*</code>) are required. Optional
+                  parameters are available in a dropdown. If there are no required or optional
+                  parameters, you can add arbitrary parameters provided those parameters are allowed
+                  in the task.<p class="p">Express values as strings, arrays, objects,
+                     integers, or booleans (true or false). You must express empty strings as two
+                     double quotes with no space (<code class="ph codeph">""</code>). Wrap boolean values in double quotes (for
+                     example, <code class="ph codeph">"false"</code>).</p></div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd" id="run-task-node-list__d83e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="run-task-node-list__d83e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select <span class="ph uicontrol">Node list</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Create the node list.</span>
+            <ol type="a" class="ol substeps">
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Expand the <span class="ph uicontrol">Inventory nodes</span> target.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Enter the name of the node you want to find and
+                     click <span class="ph uicontrol">Search</span>. </span>
+                  <div class="itemgroup info">
+                     <div class="note note note_note"><span class="note__title">Note:</span> The search does not handle regular
+                        expressions.</div>
+                  </div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">From the list of results, select the nodes that
+                     you want to add to your list. They are added to a table below.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Repeat the search to add other nodes. You can
+                     select nodes from multiple searches to create the node list.</span>
+                  <div class="itemgroup info">
+                     <div class="note tip note_tip"><span class="note__title">Tip:</span> To remove a node from the table, select
+                        the checkbox next to it and click <span class="ph uicontrol">Remove selected</span>.</div>
+                  </div>
+               </li>
+            </ol>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">After you have selected all your target nodes, click
+                  <span class="ph uicontrol">Run job</span> or <span class="ph uicontrol">Schedule job</span>. </span>
+            <div class="itemgroup stepresult">
+               <p class="p">Your task run appears on the <span class="ph uicontrol">Tasks</span> page. Click the
+                     <span class="ph uicontrol">Run #</span> to view the results and output. </p>
+            </div>
+         </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="run-task-ssh">
+    <h2 class="title topictitle2" id="ariaid-title3">Run a task over SSH</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Use the SSH protocol to run tasks on target nodes that do
+        not have the <span class="ph">Puppet</span> agent installed.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you have permission to run the tasks
+            on all nodes.</p>
+        </section>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, in the <span class="ph uicontrol">Orchestration</span> section, click
+                  <span class="ph uicontrol">Tasks</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run a task</span> in the upper right corner of the
+                  <span class="ph uicontrol">Tasks</span> page.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Code environment</span> field, select the environment where
+               you installed the module containing the task you want to run. This defaults to
+                  <code class="ph codeph">production</code>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Task</span> field, select a task to run, for example <code class="ph codeph">service</code>. </span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If the tasks you expect are not available,
+                  you either have no tasks installed, or you don't have the correct permissions to
+                  run them.</div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Set any parameters and values for the task. Click
+                  <span class="ph uicontrol">Add parameter</span> for each
+               parameter-value pair you add.</span>
+            <div class="itemgroup info">
+               <p class="p">If you chose the <code class="ph codeph">service</code> task, then you have two required parameters.
+                  For <span class="ph uicontrol">action</span>, you can
+                  choose <code class="ph codeph">restart</code>.
+                  For <span class="ph uicontrol">service</span>, enter
+                     <kbd class="ph userinput">nginx</kbd>.</p>
+               <div class="note note note_note"><span class="note__title">Note:</span> Parameters marked with an asterisk (<code class="ph codeph">*</code>) are required. Optional
+                  parameters are available in a dropdown. If there are no required or optional
+                  parameters, you can add arbitrary parameters provided those parameters are allowed
+                  in the task.<p class="p">Express values as strings, arrays, objects,
+                     integers, or booleans (true or false). You must express empty strings as two
+                     double quotes with no space (<code class="ph codeph">""</code>). Wrap boolean values in double quotes (for
+                     example, <code class="ph codeph">"false"</code>).</p></div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd" id="run-task-ssh__d83e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="run-task-ssh__d83e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select <span class="ph uicontrol">Node list</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Create the node list.</span>
+            <ol type="a" class="ol substeps">
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Expand the <span class="ph uicontrol">SSH nodes</span> target.</span>
+                  <div class="itemgroup info">
+                     <div class="note note note_note"><span class="note__title">Note:</span> This target is available only for tasks
+                        permitted to run on all nodes.</div>
+                  </div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Enter the target host names and the credentials
+                     required to access them. If you use an SSH key, include begin and end
+                     tags.</span>
+               </li>
+               <li class="li substep substepexpand"><strong>Optional: </strong>
+                  <span class="ph cmd">Select additional target options.</span>
+                  <div class="itemgroup stepxmp">For example, to add a target port
+                     number, select <span class="ph uicontrol">Target
+                        port</span> from the drop-down list, enter the number, and click
+                        <span class="ph uicontrol">Add</span>. </div>
+               </li>
+               <li class="li substep substepexpand" id="run-task-ssh__d83e761">
+                  <span class="ph cmd">Click <span class="ph uicontrol">Add nodes</span>. They are added to a table
+                     below.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd" id="run-task-ssh__d83e772">Repeat these steps to add
+                     other nodes. You can add SSH nodes with different credentials to create the
+                     node list.</span>
+                  <div class="itemgroup info" id="run-task-ssh__d83e775">
+                     <div class="note tip note_tip"><span class="note__title">Tip:</span> To remove a node from the table, select
+                        the checkbox next to it and click <span class="ph uicontrol">Remove selected</span>.</div>
+                  </div>
+               </li>
+            </ol>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">After you have selected all your target nodes, click
+                  <span class="ph uicontrol">Run job</span> or <span class="ph uicontrol">Schedule job</span>. </span>
+            <div class="itemgroup stepresult">
+               <p class="p">Your task run appears on the <span class="ph uicontrol">Tasks</span> page. Click the
+                     <span class="ph uicontrol">Run #</span> to view the results and output. </p>
+            </div>
+         </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="run-task-winrm">
+    <h2 class="title topictitle2" id="ariaid-title4">Run a task over WinRM</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Use the Windows Remote Management (WinRM) to run tasks on
+        target nodes that do not have the <span class="ph">Puppet</span> agent
+        installed.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you have permission to run the tasks
+            on all nodes.</p>
+        </section>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, in the <span class="ph uicontrol">Orchestration</span> section, click
+                  <span class="ph uicontrol">Tasks</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run a task</span> in the upper right corner of the
+                  <span class="ph uicontrol">Tasks</span> page.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Code environment</span> field, select the environment where
+               you installed the module containing the task you want to run. This defaults to
+                  <code class="ph codeph">production</code>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Task</span> field, select a task to run, for example <code class="ph codeph">service</code>. </span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If the tasks you expect are not available,
+                  you either have no tasks installed, or you don't have the correct permissions to
+                  run them.</div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Set any parameters and values for the task. Click
+                  <span class="ph uicontrol">Add parameter</span> for each
+               parameter-value pair you add.</span>
+            <div class="itemgroup info">
+               <p class="p">If you chose the <code class="ph codeph">service</code> task, then you have two required parameters.
+                  For <span class="ph uicontrol">action</span>, you can
+                  choose <code class="ph codeph">restart</code>.
+                  For <span class="ph uicontrol">service</span>, enter
+                     <kbd class="ph userinput">nginx</kbd>.</p>
+               <div class="note note note_note"><span class="note__title">Note:</span> Parameters marked with an asterisk (<code class="ph codeph">*</code>) are required. Optional
+                  parameters are available in a dropdown. If there are no required or optional
+                  parameters, you can add arbitrary parameters provided those parameters are allowed
+                  in the task.<p class="p">Express values as strings, arrays, objects,
+                     integers, or booleans (true or false). You must express empty strings as two
+                     double quotes with no space (<code class="ph codeph">""</code>). Wrap boolean values in double quotes (for
+                     example, <code class="ph codeph">"false"</code>).</p></div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd" id="run-task-winrm__d765e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="run-task-winrm__d765e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select <span class="ph uicontrol">Node list</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Create the node list.</span>
+            <ol type="a" class="ol substeps" id="run-task-winrm__d765e654">
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Expand the <span class="ph uicontrol">WinRM nodes</span> target.</span>
+                  <div class="itemgroup info">
+                     <div class="note note note_note"><span class="note__title">Note:</span> This target is available only for tasks
+                        permitted to run on all nodes.</div>
+                  </div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Enter the target host names and the credentials
+                     required to access them.</span>
+               </li>
+               <li class="li substep substepexpand"><strong>Optional: </strong>
+                  <span class="ph cmd">Select additional target options.</span>
+                  <div class="itemgroup stepxmp">For example, to add a target port
+                     number, select <span class="ph uicontrol">Target
+                        Port</span> from the drop-down list, enter the number, and click
+                        <span class="ph uicontrol">Add</span>. </div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Click <span class="ph uicontrol">Add nodes</span>. They are added to a table
+                     below.</span>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Repeat these steps to add other nodes. You can
+                     add nodes with different credentials to create the node list.</span>
+                  <div class="itemgroup info">
+                     <div class="note tip note_tip"><span class="note__title">Tip:</span> To remove a node from the table, select
+                        the checkbox next to it and click <span class="ph uicontrol">Remove selected</span>.</div>
+                  </div>
+               </li>
+            </ol>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">After you have selected all your target nodes, click
+                  <span class="ph uicontrol">Run job</span> or <span class="ph uicontrol">Schedule job</span>. </span>
+            <div class="itemgroup stepresult">
+               <p class="p">Your task run appears on the <span class="ph uicontrol">Tasks</span> page. Click the
+                     <span class="ph uicontrol">Run #</span> to view the results and output. </p>
+            </div>
+         </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="run-task-pql-query-console">
+    <h2 class="title topictitle2" id="ariaid-title5">Run a task on a <span class="ph">PQL</span> query</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Create a <span class="ph">PQL</span> query to run
+        tasks on nodes that meet specific conditions.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+            <p class="p">Make sure you have permissions to run tasks and
+               <span class="ph">PQL</span> queries. </p>
+        </section>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, in the <span class="ph uicontrol">Orchestration</span> section, click
+                  <span class="ph uicontrol">Tasks</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run a task</span> in the upper right corner of the
+                  <span class="ph uicontrol">Tasks</span> page.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Code environment</span> field, select the environment where
+               you installed the module containing the task you want to run. This defaults to
+                  <code class="ph codeph">production</code>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Task</span> field, select a task to run, for example <code class="ph codeph">service</code>. </span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If the tasks you expect are not available,
+                  you either have no tasks installed, or you don't have the correct permissions to
+                  run them.</div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Set any parameters and values for the task. Click
+                  <span class="ph uicontrol">Add parameter</span> for each
+               parameter-value pair you add.</span>
+            <div class="itemgroup info">
+               <p class="p">If you chose the <code class="ph codeph">service</code> task, then you have two required parameters.
+                  For <span class="ph uicontrol">action</span>, you can
+                  choose <code class="ph codeph">restart</code>.
+                  For <span class="ph uicontrol">service</span>, enter
+                     <kbd class="ph userinput">nginx</kbd>.</p>
+               <div class="note note note_note"><span class="note__title">Note:</span> Parameters marked with an asterisk (<code class="ph codeph">*</code>) are required. Optional
+                  parameters are available in a dropdown. If there are no required or optional
+                  parameters, you can add arbitrary parameters provided those parameters are allowed
+                  in the task.<p class="p">Express values as strings, arrays, objects,
+                     integers, or booleans (true or false). You must express empty strings as two
+                     double quotes with no space (<code class="ph codeph">""</code>). Wrap boolean values in double quotes (for
+                     example, <code class="ph codeph">"false"</code>).</p></div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd" id="run-task-pql-query-console__d765e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="run-task-pql-query-console__d765e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select <span class="ph uicontrol">PQL query</span>.</span>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">Specify a target by doing one of the
+                    following:</span>
+                <ul class="ul choices">
+                    <li class="li choice">Enter a query that selects the target
+                        you want. See the <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/v4/pql.html" target="_blank">Puppet Query Language (PQL) reference</a> for more
+                        information.</li>
+                    <li class="li choice">Click <span class="ph uicontrol">Common queries</span>. Select one of the queries
+                        and replace the defaults in the braces (<code class="ph codeph">{ }</code>) with values that specify the target you
+                        want. <div class="p">
+                            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                                        <tr class="row">
+                                            <th class="entry" id="run-task-pql-query-console__entry__1">Target </th>
+                                            <th class="entry" id="run-task-pql-query-console__entry__2">PQL
+                                                query</th>
+                                        </tr>
+                                    </thead><tbody class="tbody">
+                                        <tr class="row">
+                                            <td class="entry" headers="run-task-pql-query-console__entry__1">All nodes </td>
+                                            <td class="entry" headers="run-task-pql-query-console__entry__2">
+                                                <code class="ph codeph">nodes[certname] { }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run-task-pql-query-console__entry__1">Nodes with
+                                                a specific resource (example: httpd) </td>
+                                            <td class="entry" headers="run-task-pql-query-console__entry__2">
+                                                <code class="ph codeph">resources[certname] { type = "Service" and title
+                                                  = "httpd" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run-task-pql-query-console__entry__1">Nodes with
+                                                a specific fact and value (example: OS name is <span class="ph">CentOS</span>) </td>
+                                            <td class="entry" headers="run-task-pql-query-console__entry__2">
+                                                <code class="ph codeph">inventory[certname] { facts.os.name =
+                                                  "&lt;OS&gt;" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run-task-pql-query-console__entry__1">Nodes with
+                                                a specific report status (example: last run failed) </td>
+                                            <td class="entry" headers="run-task-pql-query-console__entry__2">
+                                                <code class="ph codeph">reports[certname] { latest_report_status =
+                                                  "failed" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run-task-pql-query-console__entry__1">Nodes with
+                                                a specific class (example: <span class="ph">Apache</span>) </td>
+                                            <td class="entry" headers="run-task-pql-query-console__entry__2">
+                                                <code class="ph codeph">resources[certname] { type = "Class" and title =
+                                                  "Apache" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run-task-pql-query-console__entry__1">Nodes
+                                                assigned to a specific environment (example:
+                                                production) </td>
+                                            <td class="entry" headers="run-task-pql-query-console__entry__2">
+                                                <code class="ph codeph">nodes[certname] { catalog_environment =
+                                                  "production" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run-task-pql-query-console__entry__1">Nodes with
+                                                a specific version of a resource type (example:
+                                                OpenSSL is v1.1.0e) </td>
+                                            <td class="entry" headers="run-task-pql-query-console__entry__2">
+                                                <code class="ph codeph">resources[certname] {type = "Package" and
+                                                  title="openssl" and parameters.ensure =
+                                                  "1.0.1e-51.el7_2.7" }</code>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="entry" headers="run-task-pql-query-console__entry__1">Nodes with
+                                                a specific resource and operating system (example:
+                                                httpd and <span class="ph">CentOS</span>) </td>
+                                            <td class="entry" headers="run-task-pql-query-console__entry__2">
+                                                <code class="ph codeph">inventory[certname] { facts.operatingsystem =
+                                                  "CentOS" and resources { type = "Service" and
+                                                  title = "httpd" } }</code>
+                                            </td>
+                                        </tr>
+                                    </tbody></table>
+                        </div>
+                    </li>
+                </ul>
+            </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Submit query</span> and click <span class="ph uicontrol">Refresh</span> to update the node results.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">If you change or edit the query after it runs, click
+                  <span class="ph uicontrol">Submit query</span>
+               again.</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd"> To convert the <span class="ph">PQL</span>
+               query target results to a node list, for use as a node list target, click <span class="ph uicontrol">Convert query to static node
+               list</span>.</span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If you select this option, the job target becomes a node
+                  list. You can add or remove nodes from the node list before running the job, but
+                  you cannot edit the query.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">After you have selected all your target nodes, click
+                  <span class="ph uicontrol">Run job</span> or <span class="ph uicontrol">Schedule job</span>. </span>
+            <div class="itemgroup stepresult">
+               <p class="p">Your task run appears on the <span class="ph uicontrol">Tasks</span> page. Click the
+                     <span class="ph uicontrol">Run #</span> to view the results and output. </p>
+            </div>
+         </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <div class="p">
+                <div class="note important note_important"><span class="note__title">Important:</span> When you run this job, the PQL query
+                    runs again, and the job might run on a different set of nodes than what is
+                    currently displayed. If you want the job to run only on the list as displayed,
+                    convert the query to a static node list before you run the job.</div>
+            </div>
+        </section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title6" id="add_custom_pql_queries">
+    <h3 class="title topictitle3" id="ariaid-title6">Add custom PQL queries to the console</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Add your own PQL queries to the console and quickly access them when running jobs. </p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On your Master, as root, copy the
+                        <code class="ph codeph">custom_pql_queries.json.example</code> file and remove the
+                        <code class="ph codeph">example</code> suffix.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>cp
+/etc/puppetlabs/console-services/custom_pql_queries.json.example 
+/etc/puppetlabs/console-services/custom_pql_queries.json</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Edit the file contents to include your own PQL queries or remove any existing
+                    queries.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Refresh the console UI in your browser.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>You can now see your custom queries in the PQL drop down options when running
+            jobs.</section>
+    </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="run-task-node-group-console">
+    <h2 class="title topictitle2" id="ariaid-title7">Run a task on a node group</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Similar to running a task on a list of nodes that you
+        create in the console, you can run a task on a node group.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you have
+            permission to run the tasks.</p>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+        </section>
+        <section class="section context">
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> If you do not have permissions to view a
+                    node group, or the node group doesn't have any matching nodes, that node group
+                    won't be listed as an option for viewing. In addition, a node group does not
+                    appear if no rules have been specified for it. </div>
+            </div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, in the <span class="ph uicontrol">Orchestration</span> section, click
+                  <span class="ph uicontrol">Tasks</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Run a task</span> in the upper right corner of the
+                  <span class="ph uicontrol">Tasks</span> page.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Code environment</span> field, select the environment where
+               you installed the module containing the task you want to run. This defaults to
+                  <code class="ph codeph">production</code>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Task</span> field, select a task to run, for example <code class="ph codeph">service</code>. </span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If the tasks you expect are not available,
+                  you either have no tasks installed, or you don't have the correct permissions to
+                  run them.</div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Set any parameters and values for the task. Click
+                  <span class="ph uicontrol">Add parameter</span> for each
+               parameter-value pair you add.</span>
+            <div class="itemgroup info">
+               <p class="p">If you chose the <code class="ph codeph">service</code> task, then you have two required parameters.
+                  For <span class="ph uicontrol">action</span>, you can
+                  choose <code class="ph codeph">restart</code>.
+                  For <span class="ph uicontrol">service</span>, enter
+                     <kbd class="ph userinput">nginx</kbd>.</p>
+               <div class="note note note_note"><span class="note__title">Note:</span> Parameters marked with an asterisk (<code class="ph codeph">*</code>) are required. Optional
+                  parameters are available in a dropdown. If there are no required or optional
+                  parameters, you can add arbitrary parameters provided those parameters are allowed
+                  in the task.<p class="p">Express values as strings, arrays, objects,
+                     integers, or booleans (true or false). You must express empty strings as two
+                     double quotes with no space (<code class="ph codeph">""</code>). Wrap boolean values in double quotes (for
+                     example, <code class="ph codeph">"false"</code>).</p></div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd" id="run-task-node-group-console__d83e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="run-task-node-group-console__d83e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select <span class="ph uicontrol">Node group</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Choose a node group </span> box, type or select a node group, and click
+                  <span class="ph uicontrol">Select</span>.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">After you have selected all your target nodes, click
+                  <span class="ph uicontrol">Run job</span> or <span class="ph uicontrol">Schedule job</span>. </span>
+            <div class="itemgroup stepresult">
+               <p class="p">Your task run appears on the <span class="ph uicontrol">Tasks</span> page. Click the
+                     <span class="ph uicontrol">Run #</span> to view the results and output. </p>
+            </div>
+         </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="schedule-task">
+    <h2 class="title topictitle2" id="ariaid-title8">Schedule a task</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Schedule a job to run a task at a particular date and time
+        or on a regular schedule. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <p class="p">Install the tasks you want to use.</p>
+            <p class="p">Make sure you
+            have access to the nodes you want to target. </p>
+        </section>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, in the <span class="ph uicontrol">Orchestration</span> section, click
+                  <span class="ph uicontrol">Tasks</span>.</span>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Task</span> field, select a task to run, for example <code class="ph codeph">service</code>. </span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If the tasks you expect are not available,
+                  you either have no tasks installed, or you don't have the correct permissions to
+                  run them.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Set any parameters and values for the task. Click
+                  <span class="ph uicontrol">Add parameter</span> for each
+               parameter-value pair you add.</span>
+            <div class="itemgroup info">
+               <p class="p">If you chose the <code class="ph codeph">service</code> task, then you have two required parameters.
+                  For <span class="ph uicontrol">action</span>, you can
+                  choose <code class="ph codeph">restart</code>.
+                  For <span class="ph uicontrol">service</span>, enter
+                     <kbd class="ph userinput">nginx</kbd>.</p>
+               <div class="note note note_note"><span class="note__title">Note:</span> Parameters marked with an asterisk (<code class="ph codeph">*</code>) are required. Optional
+                  parameters are available in a dropdown. If there are no required or optional
+                  parameters, you can add arbitrary parameters provided those parameters are allowed
+                  in the task.<p class="p">Express values as strings, arrays, objects,
+                     integers, or booleans (true or false). You must express empty strings as two
+                     double quotes with no space (<code class="ph codeph">""</code>). Wrap boolean values in double quotes (for
+                     example, <code class="ph codeph">"false"</code>).</p></div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd" id="schedule-task__d765e299">Under <span class="ph uicontrol">Schedule</span>, select
+                  <span class="ph uicontrol">Later</span> and choose a start date, time, time zone, and
+               frequency for the job to run. </span>
+            <div class="itemgroup info" id="schedule-task__d765e308">
+               <div class="note tip note_tip"><span class="note__title">Tip:</span> Based on the configuration of your console, the default time zone is
+                  either UTC, Coordinated Universal Time, or the local time, UTC offset, of your
+                  browser.</div>
+            </div>
+         </li><li class="li step stepexpand"><strong>Optional: </strong>
+            <span class="ph cmd">To repeat the job on a regular schedule, change the
+               run frequency from <span class="ph uicontrol">Once</span> to
+                  <span class="ph uicontrol">Hourly</span>, <span class="ph uicontrol">Daily</span>, or <span class="ph uicontrol">Weekly</span>. </span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> If a recurring job runs longer than the
+                  selected frequency, the following job waits to start until the next available time
+                  interval.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">From the list of target types, select the category of
+               nodes you want to target. </span>
+            <ul class="ul choices" id="schedule-task__d765e350">
+               <li class="li choice">
+                  <span class="ph uicontrol">Node list</span> Add individual
+                  nodes by name.</li>
+               <li class="li choice">
+                  <span class="ph uicontrol">PQL Query</span> Use the <span class="ph">Puppet</span> query language to retrieve a list of
+                  nodes.</li>
+               <li class="li choice">
+                  <span class="ph uicontrol">Node group</span> Select an
+                  existing node group.</li>
+            </ul>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Schedule job</span>. </span>
+                <div class="itemgroup stepresult">
+                    <p class="p">Your task appears on the <span class="ph uicontrol">Scheduled task</span> tab of the <span class="ph uicontrol">Jobs</span> page.</p>
+                </div>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_console.html#console_and_console_services_parameters" title="Use these parameters to customize the behavior of the console and console-services. Parameters that begin with puppet_enterprise::profile can be modified from the console itself. See the configuration methods documents for more information on how to change parameters in the console or Hiera.">Console and console-services parameters</a></li><li class="linklist"><a class="link" href="running_tasks_in_the_console.html#delete_scheduled_job" title="Delete a job that is scheduled to run at a later time.">Delete a scheduled job</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title9" id="stop_a_job">
+                <h2 class="title topictitle2" id="ariaid-title9">Stop a job in progress</h2>
+                
+                <div class="body taskbody"><p class="shortdesc">You can stop a job if, for example, you
+                                realize you need to reconfigure a class or push a configuration
+                                change that the job needs.</p>
+                                <section class="section context"><p class="p">When you stop an on-demand <span class="ph">Puppet</span> run, runs that are underway
+        finish, and runs that have not started are canceled.</p></section>
+                                <section><div class="li step p">
+                                                  <span class="ph cmd">To stop a
+                                                  job:</span>
+                                                  <ul class="ul choices">
+                                                  <li class="li choice">In the console, go to the
+              <span class="ph uicontrol">Jobs</span> page and select the <span class="ph uicontrol">Puppet run</span> tab.
+            From the list of jobs, find the one you want and click <span class="ph uicontrol">Stop</span>. </li>
+                                                  <li class="li choice">On the
+                                                  command line, press <span class="ph uicontrol">CTRL + C</span>.</li>
+                                                  </ul>
+                                                </div></section>
+                </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title10" id="delete_scheduled_job">
+    <h2 class="title topictitle2" id="ariaid-title10">Delete a scheduled job</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Delete a job that is scheduled to run at a later time. </p>
+        <section class="section context">
+            <div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> You must have the
+                    appropriate role-based permissions to delete another user's scheduled job.
+                </div></div>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, open the <span class="ph uicontrol">Jobs</span> page. </span>
+            </li><li class="li step">
+                <span class="ph cmd">Click the <span class="ph uicontrol">Scheduled Puppet Run</span> tab.</span>
+            </li><li class="li step">
+                <span class="ph cmd">From the list of jobs, find the one you want to
+                    delete and click <span class="ph uicontrol">Remove</span>.</span>
+            </li></ol></section>
+    </div>
+</article></article></article></main></body></html>

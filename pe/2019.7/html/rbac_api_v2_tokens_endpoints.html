@@ -1,0 +1,239 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="A user’s access to PE services can be controlled using authentication tokens. Users can revoke authentication tokens using the&nbsp;tokens endpoints."><meta name="DC.relation" scheme="URI" content="rbac_token_auth_intro.html#token_based_authentication"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Mindy Moreland <mindy.moreland@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="rbac_api_v2_tokens_endpoints"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Tokens endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="rbac_api_v2_tokens_endpoints">
+    <h1 class="title topictitle1" id="ariaid-title1">Tokens endpoints</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">A user’s access to PE services can be controlled using
+        authentication tokens. Users can revoke authentication tokens using the&nbsp;<code class="ph codeph">tokens</code> endpoints.</p>
+        <p class="p"></p>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#token_based_authentication" title="Authentication tokens allow a user to enter their credentials once, then receive an alphanumeric &#34;token&#34; to use to access different services or parts of the system infrastructure. Authentication tokens are tied to the permissions granted to the user through RBAC, and provide the user with the appropriate access to HTTP requests.">Token-based authentication</a></li></ul></div></nav><article class="topic reference nested1" aria-labelledby="ariaid-title2" id="delete_tokens">
+ <h2 class="title topictitle2" id="ariaid-title2">DELETE /tokens </h2>
+ 
+ <div class="body refbody"><p class="shortdesc">Use this endpoint to revoke one or more authentication
+  tokens, ensuring the tokens can no longer be used with RBAC. </p>
+  <section class="section" id="delete_tokens__parameters"><h3 class="title sectiontitle">Parameters
+    </h3><p class="p">The tokens must be specified using at least one of the following
+    parameters:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+      <tr class="row">
+       <th class="entry" id="delete_tokens__parameters__entry__1">Parameter </th>
+       <th class="entry" id="delete_tokens__parameters__entry__2">Value</th>
+      </tr>
+     </thead><tbody class="tbody">
+      <tr class="row">
+       <td class="entry" headers="delete_tokens__parameters__entry__1">
+        <code class="ph codeph">revoke_tokens</code>
+       </td>
+       <td class="entry" headers="delete_tokens__parameters__entry__2">A list of complete authentication tokens to be
+        revoked.</td>
+      </tr>
+      <tr class="row">
+       <td class="entry" headers="delete_tokens__parameters__entry__1">
+        <code class="ph codeph">revoke_tokens_by_usernames</code>
+       </td>
+       <td class="entry" headers="delete_tokens__parameters__entry__2">A list of usernames whose tokens are to be
+        revoked.</td>
+      </tr>
+      <tr class="row">
+       <td class="entry" headers="delete_tokens__parameters__entry__1">
+        <code class="ph codeph">revoke_tokens_by_labels</code>
+       </td>
+       <td class="entry" headers="delete_tokens__parameters__entry__2">A list of the labels of tokens to revoke (only
+        tokens owned by the user making the request can be revoked in this manner).</td>
+      </tr>
+     </tbody></table><p class="p">You can supply parameters either as query parameters or as
+    JSON-encoded in the body. If you include them as query parameters, separate the tokens, labels,
+    or usernames by
+    commas:</p><pre class="pre codeblock"><code>/tokens?revoke_tokens_by_usernames=&lt;USER NAME&gt;,&lt;USER NAME&gt;
+</code></pre><p class="p">If you encoded them in the body, supply them as a JSON
+    array:</p><pre class="pre codeblock"><code>{"revoke_tokens_by_usernames": ["&lt;USER NAME&gt;", "&lt;USER NAME&gt;"]}
+</code></pre><p class="p">If you provide a parameter as both a query parameter and in the JSON body,
+    the values from the two sources are combined. It is not an error to specify the same token using
+    multiple means (such as by providing the entire token to the <code class="ph codeph">revoke_tokens</code> parameter and also including its label in the value of
+     <code class="ph codeph">revoke_tokens_by_labels</code>).</p><p class="p">In the case of an error, malformed or otherwise input, or bad request data, the
+    endpoint still attempts to revoke as many tokens as possible. This means it's possible to
+    encounter multiple error conditions in a single request, such as if there were malformed
+    usernames supplied in the request <em class="ph i">and</em> a database error
+    occurred when trying to revoke the well-formed usernames.</p><p class="p">All
+    operations on this endpoint are idempotent—it is not an error to revoke the same token two or
+    more times.</p><p class="p">Any user can revoke any token by supplying the complete
+    token in the <code class="ph codeph">revoke_tokens</code> query parameter or
+    request body field.</p><p class="p">To revoke tokens by username, the user making the
+    request must have the "Users Revoke" permission for that user.</p></section>
+  <section class="section" id="delete_tokens__example_json_body"><h3 class="title sectiontitle">Example
+    JSON body </h3><p class="p">The following is an example JSON body using each of the
+    available
+   parameters.</p><pre class="pre codeblock json"><code>{"revoke_tokens": ["eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTQzOTQ5Mzg0NiwiZXhwIjoxNDM5NDk0MTQ2LCJzdWIiOnsibG9naW4iOiJhZG1pbiIsImlkIjoiNDJiZjM1MWMtZjllYy00MGFmLTg0YWQtZTk3NmZlYzdmNGJkIn19.gCXZVMJ1TwRKMKCV3OESK-tMGtAALp_vBONSQQ2zU5ihWfsDU4mmmefbelR1CzA2TWrsv62DpJhtSc3iMLsSyjcUjsP6I87kjw3XFtjcB79kx5G0olhReEzkZ9wsvoR3Ha55VD2LEhfoUl8Q0jqlGRCnWUsbUeORYLkBpWpyOkbgww1UZXBLCcdMIxVcxa4xfDdGCcRT_dIB7tEtkHWH_DgA2Hbc3AMhE_9S1T_W563y9ObD58lPgFNMFr2qkFjVLQpDkKnQF1AaCDHIj-aODfSvzf9l35IE7vi97s-9fFcHUFPzboyz60GDyRJVSOwohTWpNJMlAfx0UBitgqCYXnE4rr8wKBoeOXoeEQezJZ1MJlQdi9cMzqB7t2i02uHJWmnVKio4WM1BukikjXtftnLIcJiQwpnENnXS9WmaIhpFTuKqeXRJbRN979HTEmGTArdQMpllE-u8-q0TqeN3ke4azDxdIqfhZ7H10-jDR0C5yeSBGWfX-0KEbp42cGz8lA6rrIHpSaajRWUg9yTHeUkT2crh6878orCLgfoBLDh-rOBTLeIua16sasH-ggpdHqVkTFOomEXM6UTJlp1NpuP01rNr9JMlxWhI8WpExH1l_-136D1NJm32kwo-oV6GzXRx70xq_N2CwIwObw-X1S5aUUC4KkyPtDmNvnvC1n4"]
+    "revoke_tokens_by_labels": ["Workstation Token", "VPS Token"],
+    "revoke_tokens_by_usernames": ["&lt;USER NAME&gt;", "&lt;USER NAME&gt;"]}</code></pre></section>
+  <section class="section" id="delete_tokens__response_codes"><h3 class="title sectiontitle">Response codes
+    </h3><div class="p">The server uses the following response codes: <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+       <tr class="row">
+        <th class="entry" id="delete_tokens__response_codes__entry__1">Code</th>
+        <th class="entry" id="delete_tokens__response_codes__entry__2">Definition</th>
+       </tr>
+      </thead><tbody class="tbody">
+       <tr class="row">
+        <td class="entry" headers="delete_tokens__response_codes__entry__1">204 No Content</td>
+        <td class="entry" headers="delete_tokens__response_codes__entry__2">Sent if all operations are successful.</td>
+       </tr>
+       <tr class="row">
+        <td class="entry" headers="delete_tokens__response_codes__entry__1">500 Application Error</td>
+        <td class="entry" headers="delete_tokens__response_codes__entry__2">Sent if there was a database error when trying to revoke
+         tokens.</td>
+       </tr>
+       <tr class="row">
+        <td class="entry" headers="delete_tokens__response_codes__entry__1">403</td>
+        <td class="entry" headers="delete_tokens__response_codes__entry__2">Sent if the user lacks the permission to revoke one of the
+         supplied usernames and no database error occurred.</td>
+       </tr>
+       <tr class="row">
+        <td class="entry" headers="delete_tokens__response_codes__entry__1">400 Malformed</td>
+        <td class="entry" headers="delete_tokens__response_codes__entry__2"><p class="p">Sent if one these conditions are
+          true:</p><div class="p"><ul class="ul">
+           <li class="li"><p class="p">At least one of the tokens, usernames, or
+             labels is malformed.</p></li>
+           <li class="li"><p class="p">At least one of the usernames does not
+             exist in the RBAC database.</p></li>
+           <li class="li"><p class="p">Neither <code class="ph codeph">revoke_tokens</code>, <code class="ph codeph">revoke_tokens_by_usernames</code>, nor <code class="ph codeph">revoke_tokens_by_labels</code> is supplied. </p></li>
+           <li class="li"><p class="p">There are unrecognized query parameters or
+             fields in the request body, and the user has all necessary permissions and no database
+             error occurred.</p></li>
+          </ul></div></td>
+       </tr>
+      </tbody></table>
+   </div><p class="p">All error responses follow the standard JSON error format, meaning they
+    have <code class="ph codeph">kind</code>, <code class="ph codeph">msg</code>, and <code class="ph codeph">details</code>
+    keys.</p><p class="p">The <code class="ph codeph">kind</code> key is
+     <code class="ph codeph">puppetlabs.rbac/database-token-error</code> if the
+    response is a 500, <code class="ph codeph">permission-denied</code> if the
+    response is a 403, and <code class="ph codeph">malformed-token-request</code>
+    if the response is a 400.</p><p class="p">The <code class="ph codeph">msg</code> key contains an English-language description of the problems encountered while
+    processing the request and performing the revocations, ending with either "No tokens were
+    revoked" or "All other tokens were successfully revoked", depending on whether any operations
+    were successful.</p><p class="p">The <code class="ph codeph">details</code> key contains an object with arrays in the <code class="ph codeph">malformed_tokens</code>, <code class="ph codeph">malformed_usernames</code>, <code class="ph codeph">malformed_labels</code>, <code class="ph codeph">nonexistent_usernames</code>, <code class="ph codeph">permission_denied_usernames</code>, and <code class="ph codeph">unrecognized_parameters</code> fields, as well as the Boolean field <code class="ph codeph">other_tokens_revoked</code>.</p><p class="p">The arrays all
+    contain bad input from the request, and the <code class="ph codeph">other_tokens_revoked</code> field's value indicates whether any of the revocations specified
+    in the request were successful or not.</p></section>
+  <section class="section" id="delete_tokens__example_error_body"><h3 class="title sectiontitle">Example
+    error body </h3><p class="p">The server returns an error body resembling the
+    following:</p><pre class="pre codeblock json"><code>{"kind": "malformed-request",
+     "msg": "The following user does not exist: FormerEmployee. All other tokens were successfully revoked.",
+     "details": {"malformed_tokens": [],
+                 "malformed_labels": [],
+                 "malformed_usernames": [],
+                 "nonexistent_usernames": ["FormerEmployee"],
+                 "permission_denied_usernames": [],
+                 "unrecognized_parameters": [],
+                 "other_tokens_revoked": true}}</code></pre></section>
+ </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="delete_tokens_lt_token_gt">
+   <h2 class="title topictitle2" id="ariaid-title3">DELETE /tokens/&lt;token&gt;</h2>
+   
+   <div class="body refbody"><p class="shortdesc">Use this endpoint to revoke a single token, ensuring that
+      it can no longer be used with RBAC. Authentication is required.</p>
+      <section class="section"><p class="p">This endpoint is equivalent to DELETE
+               <code class="ph codeph">/tokens?revoke_tokens={TOKEN}</code>.</p><p class="p">This API can be used only by the admin or API user.</p></section>
+      <section class="section" id="delete_tokens_lt_token_gt__response_codes"><h3 class="title sectiontitle">Response
+            codes </h3><p class="p">The server uses the following response
+            codes:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                  <tr class="row">
+                     <th class="entry" id="delete_tokens_lt_token_gt__response_codes__entry__1">Code </th>
+                     <th class="entry" id="delete_tokens_lt_token_gt__response_codes__entry__2">Definition</th>
+                  </tr>
+               </thead><tbody class="tbody">
+                  <tr class="row">
+                     <td class="entry" headers="delete_tokens_lt_token_gt__response_codes__entry__1"> 204 No Content </td>
+                     <td class="entry" headers="delete_tokens_lt_token_gt__response_codes__entry__2">Sent if all operations are
+                        successful.</td>
+                  </tr>
+                  <tr class="row">
+                     <td class="entry" headers="delete_tokens_lt_token_gt__response_codes__entry__1"> 400 Malformed</td>
+                     <td class="entry" headers="delete_tokens_lt_token_gt__response_codes__entry__2">Sent if the token is
+                        malformed.</td>
+                  </tr>
+               </tbody></table><p class="p">The error response is identical to DELETE <code class="ph codeph">/tokens</code>.</p></section>
+      <section class="section" id="delete_tokens_lt_token_gt__example_error_body"><h3 class="title sectiontitle">Example error body </h3><p class="p">The error response from this endpoint
+            is identical to DELETE <code class="ph codeph">/tokens</code>.</p><pre class="pre codeblock json"><code>    {"kind": "malformed-request",
+     "msg": "The following token is malformed: notAToken. This can be caused by an error while copying and pasting. No tokens were revoked."
+     "details": {"malformed_tokens": ["notAToken"],
+                 "malformed_labels": [],
+                 "malformed_usernames": [],
+                  "nonexistent_usernames": [],
+                  "permission_denied_usernames": [],
+                  "unrecognized_parameters": [],
+                  "other_tokens_revoked": false}}</code></pre></section>
+   </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title4" id="rbac_api_v2_auth_token_auth_post">
+  <h2 class="title topictitle2" id="ariaid-title4">POST /auth/token/authenticate</h2>
+  
+  
+  <div class="body refbody"><p class="shortdesc">Use this endpoint to exchange a token for a map representing
+    an RBAC subject and associated token data. This endpoint does not require
+    authentication.</p>
+    <section class="section"><p class="p">This endpoint accepts a JSON body
+        containing entries for <code class="ph codeph">token</code>
+        and <code class="ph codeph">update_last_activity?</code>.
+        The <code class="ph codeph">token</code> field is a string
+        containing an authentication token. The <code class="ph codeph">update_last_activity?</code> field is a Boolean data type that indicates
+        whether a successful authentication should update the <code class="ph codeph">last_active</code> timestamp for the token.</p></section>
+    <section class="section" id="rbac_api_v2_auth_token_auth_post__response_codes"><h3 class="title sectiontitle">Response
+        codes </h3><p class="p">The server uses the following response codes:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="rbac_api_v2_auth_token_auth_post__response_codes__entry__1">Code </th>
+              <th class="entry" id="rbac_api_v2_auth_token_auth_post__response_codes__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__1"> 200 OK </td>
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__2">The subject represented by the
+                token.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__1"> 400 invalid-token</td>
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__2">The provided token was either tampered
+                with or could not be parsed.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__1"> 403 token-revoked </td>
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__2">The provided token has been
+                revoked.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__1"> 403 token-expired </td>
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__2">The token has expired and is no longer
+                valid.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__1"> 403 token-timed-out </td>
+              <td class="entry" headers="rbac_api_v2_auth_token_auth_post__response_codes__entry__2">The token has timed out due to
+                inactivity.</td>
+            </tr>
+          </tbody></table></section>
+    <section class="section"><h3 class="title sectiontitle">Example JSON
+      body</h3><pre class="pre codeblock"><code>{
+  "token": "0VZZ6geJQK8zJGKxBdq1atTsMLAsfCQFJuRwxsMNgCr4",
+  "update_last_activity?": false
+}
+</code></pre></section>
+    <section class="section" id="rbac_api_v2_auth_token_auth_post__example_error_body"><h3 class="title sectiontitle">Example
+        return</h3><pre class="pre codeblock json"><code>    {"description":null,
+     "creation":"YYYY-MM-DDT22:24:30Z",
+     "email":"franz@kafka.com",
+     "is_revoked":false,
+     "last_active":"YYYY-MM-DDT22:24:31Z",
+     "last_login":"YYYY-MM-DDT22:24:31.340Z",
+     "expiration":"YYYY-MM-DDT22:29:30Z",
+     "is_remote":false,
+     "client":null,
+     "login":"franz@kafka.com",
+     "is_superuser":false,
+     "label":null,
+     "id":"c84bae61-f668-4a18-9a4a-5e33a97b716c",
+     "role_ids":[1, 2, 3],
+     "user_id":"c84bae61-f668-4a18-9a4a-5e33a97b716c",
+     "timeout":null,
+     "display_name":"Franz Kafka",
+     "is_group":false}</code></pre></section>
+  </div>
+</article></article></article></main></body></html>

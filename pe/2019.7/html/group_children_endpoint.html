@@ -1,0 +1,296 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the group children endpoint to retrieve a specified group and its descendents."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="group_children_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Group children endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="group_children_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1">Group children endpoint </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Use the group children endpoint to retrieve a specified
+        group and its descendents. </p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_v1_group_children_id">
+    <h2 class="title topictitle2" id="ariaid-title2">GET /v1/group-children/:id </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/group-children/:id</code> endpoint to retrieve a specified group and its
+        descendents.</p>
+        <section class="section"></section>
+        <section class="section" id="get_v1_group_children_id__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">The request body must be a JSON object
+                specifying a group and an optional depth indicating how many levels of descendents
+                to return.</p><ul class="ul">
+                <li class="li">
+                    <code class="ph codeph">depth</code>: (optional) an integer
+                    greater than or equal to 0 that limits the depth of trees returned. Zero means
+                    return the group with no children.</li>
+            </ul><p class="p">For example:</p><div class="p"><pre class="pre codeblock"><code>GET /v1/group-children/00000000-0000-4000-8000-000000000000?depth=2</code></pre></div></section>
+        <section class="section" id="get_v1_group_children_id__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">The response is a JSON array of group
+                objects, using the following keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="get_v1_group_children_id__response_format__entry__1">Key </th>
+                            <th class="entry" id="get_v1_group_children_id__response_format__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">name</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">The name of the node group
+                                (a string).</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">id</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">The node group's ID, which
+                                is a string containing a type-4 (random) UUID.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">description</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">An optional key containing
+                                an arbitrary string describing the node group.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">environment</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">The name of the node
+                                group's environment (a string), which indirectly defines what
+                                classes are available for the node group to set, and is the
+                                environment that nodes classified into this node group run
+                                under.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">environment_trumps</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">This is a boolean that
+                                changes the behavior of classifications that this node group is
+                                involved in. The default behavior is to return a
+                                classification-conflict error if the node groups that a node is
+                                classified into do not all have the same environment. If this flag
+                                is set, then this node group's environment overrides the
+                                environments of the other node groups (provided that none of them
+                                also have this flag set), with no attempt made to validate that the
+                                other node groups' classes and class parameters exist in this node
+                                group's environment.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">parent</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">The ID of the node group's
+                                parent (a string). A node group is not permitted to be its own
+                                parent, unless it is the All Nodes group (which is the root of the
+                                hierarchy). Note that the root group always has the lowest-possible
+                                random UUID, <code class="ph codeph">00000000-0000-4000-8000-000000000000</code>.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">rule</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">A boolean condition on node
+                                properties. When a node's properties satisfy this condition, it's
+                                classified into the node group. See Rule condition grammar for more
+                                information on how this condition must be structured.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">classes</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">An object that defines both
+                                the classes consumed by nodes in this node group and any non-default
+                                values for their parameters. The keys of the object are the class
+                                names, and the values are objects describing the parameters. The
+                                parameter objects' keys are parameter names, and the values are what
+                                the node group sets for that parameter (always a string).</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">deleted</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">An object similar the
+                                    <code class="ph codeph">classes</code> object
+                                that shows which classes and class parameters set by the node group
+                                have since been deleted from <span class="ph">Puppet</span>.
+                                If none of the node group's classes or parameters have been deleted,
+                                this key is not present, so checking the presence of this key is an
+                                easy way to check whether the node group has references that need
+                                updating. The keys of this object are class names, and the values
+                                are further objects. These secondary objects always contain the
+                                    <code class="ph codeph">puppetlabs.classifier/deleted</code> key, whose value is a
+                                Boolean indicating whether the entire class has been deleted from
+                                    <span class="ph">Puppet</span>. The other keys of these
+                                objects are parameter names, and the other values are objects that
+                                always contain two keys: <code class="ph codeph">puppetlabs.classifier/deleted</code>, mapping to a boolean
+                                indicating whether the specific class parameter has been deleted
+                                from <span class="ph">Puppet</span>; and <code class="ph codeph">value</code>, mapping to the string
+                                value set by the node group for this parameter (the value is
+                                duplicated for convenience, as it also appears in the <code class="ph codeph">classes</code> object).
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">variables</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">An object that defines the
+                                values of any top-level variables set by the node group. The object
+                                is a mapping between variable names and their values (which can be
+                                any JSON value).</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">children</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">A JSON array of the group's
+                                immediate children. Children of children are included to the
+                                optionally-specified depth.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__1">
+                                <code class="ph codeph">immediate_child_count</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__response_format__entry__2">The number of immediate
+                                children of the group. Child count reflects the number of children
+                                that exist in the classifier, not the number that are returned in
+                                the request, which can vary based on permissions and query
+                                parameters.</td>
+                        </tr>
+                    </tbody></table><p class="p">The following is an example response from a query of the
+                root node group with two children, each with three children. The user has permission
+                to view only <code class="ph codeph">child-1</code> and <code class="ph codeph">grandchild-5</code>, which limits the
+                response.</p><pre class="pre codeblock"><code>[
+    {
+        "name": "child-1",
+        "id": "652227cd-af24-4fd8-96d4-b9b55ca28efb",
+        "parent": "00000000-0000-4000-8000-000000000000",
+        "environment_trumps": false,
+        "rule": ["and", ["=", ["fact", "foo"], "bar"], ["not", ["&lt;", ["fact", "uptime_days"], "31"]]],
+        "variables": {},
+        "environment": "test",
+        "classes": {},
+        "children": [
+            {
+                "name": "grandchild-1",
+                "id": "a3d976ad-51d3-4a29-af57-09990f3a2481",
+                "parent": "652227cd-af24-4fd8-96d4-b9b55ca28efb",
+                "environment_trumps": false,
+                "rule": ["and", ["=", ["fact", "foo"], "bar"], ["or", ["~", "name", "db"], ["&lt;", ["fact", "processorcount"], "9"], ["=", ["fact", "operatingsystem"], "Ubuntu"]]],
+                "variables": {},
+                "environment": "test",
+                "classes": {},
+                "children": [],
+                "immediate_child_count": 0
+            },
+            {
+                "name": "grandchild-2",
+                "id": "71905c11-5295-41cf-a143-31b278cfc859",
+                "parent": "652227cd-af24-4fd8-96d4-b9b55ca28efb",
+                "environment_trumps": false,
+                "rule": ["and", ["=", ["fact", "foo"], "bar"], ["not", ["~", ["fact", "kernel"], "SunOS"]]],
+                "variables": {},
+                "environment": "test",
+                "classes": {},
+                "children": [],
+                "immediate_child_count": 0
+            }
+        ],
+        "immediate_child_count": 2
+    },
+    {
+        "name": "grandchild-5",
+        "id": "0bb94f26-2955-4adc-8460-f5ce244d5118",
+        "parent": "0960f75e-cdd0-4966-96f6-5e60948a7217",
+        "environment_trumps": false,
+        "rule": ["and", ["=", ["fact", "foo"], "bar"], ["and", ["&lt;", ["fact", "processorcount"], "16"], ["&gt;=", ["fact", "kernelmajversion"], "2"]]],
+        "variables": {},
+        "environment": "test",
+        "classes": {},
+        "children": [],
+        "immediate_child_count": 0
+    }
+]</code></pre></section>
+        <section class="section" id="get_v1_group_children_id__permissions"><h3 class="title sectiontitle">Permissions
+                </h3><div class="p">The response returned varies based on your
+                permissions. <table class="table"><caption></caption><colgroup><col><col></colgroup><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry">
+                                    <strong class="ph b">Permissions</strong>
+                                </td>
+                                <td class="entry">
+                                    <strong class="ph b">Response</strong>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry">View the specified group only</td>
+                                <td class="entry">
+                                    <samp class="ph msgph">An array containing the
+                                        group and its descendents, ending at the optional
+                                        depth</samp>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry">View descendents of the specified
+                                    group, but not the group itself</td>
+                                <td class="entry">
+                                    <samp class="ph msgph">An array starting at the
+                                        roots of every tree you have permission to view and ending
+                                        at the optional depth</samp>
+                                </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry">View neither the specified group nor
+                                    its descendents</td>
+                                <td class="entry">
+                                    <samp class="ph msgph">An empty array</samp>
+                                </td>
+                            </tr>
+                        </tbody></table>
+            </div></section>
+        <section class="section" id="get_v1_group_children_id__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">Responses and keys returned for group
+                requests depend on the type of error.</p><p class="p">
+                <strong class="ph b">
+                    <code class="ph codeph">malformed-uuid</code>
+                </strong>
+            </p><p class="p">If the requested ID is not a valid UUID, the service returns a
+                    <code class="ph codeph">400: Bad Request</code> response using
+                the following keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="get_v1_group_children_id__error_responses__entry__1">Key </th>
+                            <th class="entry" id="get_v1_group_children_id__error_responses__entry__2">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__error_responses__entry__1">
+                                <code class="ph codeph">kind</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__error_responses__entry__2">"malformed-uuid"</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__error_responses__entry__1">
+                                <code class="ph codeph">details</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__error_responses__entry__2">The malformed UUID as
+                                received by the server.</td>
+                        </tr>
+                    </tbody></table><p class="p">
+                <strong class="ph b">
+                    <code class="ph codeph">malformed-number</code> or <code class="ph codeph">illegal-count</code>
+                </strong>
+            </p><p class="p">If the value of the <code class="ph codeph">depth</code> parameter is not an integer, or is a negative integer, the
+                service returns a <code class="ph codeph">400: Bad Request</code>
+                response using one of the following keys:</p><table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry" id="get_v1_group_children_id__error_responses__entry__7">Key </th>
+                            <th class="entry" id="get_v1_group_children_id__error_responses__entry__8">Definition</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry" headers="get_v1_group_children_id__error_responses__entry__7">
+                                <code class="ph codeph">kind</code>
+                            </td>
+                            <td class="entry" headers="get_v1_group_children_id__error_responses__entry__8">"malformed-number" or
+                                "illegal-count"</td>
+                        </tr>
+                    </tbody></table></section>
+    </div>
+</article></article></article></main></body></html>

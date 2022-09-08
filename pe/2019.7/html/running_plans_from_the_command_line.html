@@ -1,0 +1,82 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="Run a plan using the puppet plan run command."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="running_plans_from_the_command_line"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Running plans from the command line</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="running_plans_from_the_command_line">
+    <h1 class="title topictitle1" id="ariaid-title1">Running plans from the command line</h1>
+    
+    
+
+    <div class="body taskbody"><p class="shortdesc">Run a plan using the <code class="ph codeph">puppet plan run</code> command.</p>
+        <section class="section context"></section>
+        <section><div class="li step p">
+                <span class="ph cmd">On the command line, run the command <code class="ph codeph">puppet plan run</code> with the following
+                    information included:</span>
+                <div class="itemgroup info">
+                    <ul class="ul">
+                        <li class="li">The full name of the plan, formatted as <code class="ph codeph">&lt;MODULE&gt;::&lt;PLAN&gt;</code>.</li>
+                        <li class="li">Any plan parameters.</li>
+                        <li class="li">Credentials, if required, formatted with the <code class="ph codeph">--user</code> and <code class="ph codeph">--password</code> flags.</li>
+                    </ul>
+                    <p class="p"> For example, if a plan defined in <code class="ph codeph">mymodule/plans/myplan.pp</code>
+                        accepts a <code class="ph codeph">load_balancer</code> parameter, run:</p>
+                    <pre class="pre codeblock"><code>puppet plan run mymodule::myplan load_balancer=lb.myorg.com
+</code></pre>
+                    <p class="p">You can pass a comma-separated list of node names,
+                        wildcard patterns, or group names to a plan parameter that is passed to a
+                        run function or that the plan resolves using <code class="ph codeph">get_targets</code>.</p>
+                </div>
+            </div></section>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="puppet_plan_run_command_options">
+  <h2 class="title topictitle2" id="ariaid-title2">Plan command options</h2>
+  
+  
+
+  <div class="body refbody"><p class="shortdesc">The following are common options you can use with the
+      <code class="ph codeph">plan</code> action. For a complete list of global
+    options run <code class="ph codeph">puppet plan --help</code>.</p>
+    <section class="section">
+      <div class="p">
+        <ul class="ul">
+          <li class="li"><code class="ph codeph">--params</code> - A string value used to specify a JSON object that includes the
+            parameters, or specify the path to a JSON file containing the parameters, prefaced with
+              <code class="ph codeph">@</code>. For example,
+              <code class="ph codeph">@/path/to/file.json</code>.
+            Do not use this flag if specifying parameter-value pairs inline.</li>
+          <li class="li"><code class="ph codeph">--environment</code> or <code class="ph codeph">-e</code> - The
+            name of the environment where plans are installed.</li>
+          <li class="li"><code class="ph codeph">--description</code> - A flag used to provide a description for the job to be shown
+            on the job list and job details pages and returned with the <code class="ph codeph">puppet job show</code> command. It defaults to empty.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="section">
+      <div class="p">You can pass parameters into the plan one of two ways: <ul class="ul">
+          <li class="li">
+            <p class="p">Inline, using the <code class="ph codeph">&lt;PARAMETER&gt;=&lt;VALUE&gt;</code> syntax</p>
+          </li>
+          <li class="li">
+            <p class="p">With the <code class="ph codeph">--params</code>
+              option, as a JSON object or reference to a JSON file.</p>
+          </li>
+        </ul></div>
+      <div class="p">For example, review this
+        plan:<pre class="pre codeblock"><code>plan example::test_params(Targetspec $nodes, String $command){
+  run_command($command, $nodes)
+}</code></pre></div>
+      <div class="p">You can pass parameters using either option below:<ul class="ul">
+          <li class="li">
+            <pre class="pre codeblock"><code>puppet plan run example::test_params nodes=my-node.company.com command=whoami</code></pre>
+          </li>
+          <li class="li">
+            <div class="p" dir="ltr">
+              <pre class="pre codeblock"><code>puppet plan run example::test_params --params ‘{“nodes”:”my-node.company.com”, “command”:”whoami”}’</code></pre>
+            </div>
+          </li>
+        </ul></div>
+      <p class="p">You can't combine these two ways of passing in parameters. Choose either
+        inline or <code class="ph codeph">--params</code>. </p>
+      <p class="p">If you use the inline way, parameter types other than string, integer,
+        double, and Boolean will be interpreted as strings. Use the <code class="ph codeph">--params</code> method if you want them read as their original type.</p>
+    </section>
+  </div>
+</article></article></article></main></body></html>

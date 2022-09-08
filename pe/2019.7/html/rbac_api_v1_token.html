@@ -1,0 +1,134 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="A user's access to PE services can be controlled using authentication tokens. Users can generate their own authentication tokens using the token endpoint."><meta name="DC.relation" scheme="URI" content="rbac_token_auth_intro.html#token_based_authentication"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="token_endpoints_api_v1"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Token endpoints</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="token_endpoints_api_v1">
+    <h1 class="title topictitle1" id="ariaid-title1">Token endpoints</h1>
+    
+    <div class="body conbody"><p class="shortdesc">A user's access to PE services can be controlled using
+        authentication tokens. Users can generate their own authentication tokens using the <code class="ph codeph">token</code> endpoint.</p></div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#token_based_authentication" title="Authentication tokens allow a user to enter their credentials once, then receive an alphanumeric &#34;token&#34; to use to access different services or parts of the system infrastructure. Authentication tokens are tied to the permissions granted to the user through RBAC, and provide the user with the appropriate access to HTTP requests.">Token-based authentication</a></li></ul></div></nav><article class="topic reference nested1" aria-labelledby="ariaid-title2" id="user_role_keys">
+    <h2 class="title topictitle2" id="ariaid-title2">Token keys </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The following keys are used with the <code class="ph codeph">token</code> endpoint. </p>
+        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="user_role_keys__entry__1">Key </th>
+                        <th class="entry" id="user_role_keys__entry__2">Explanation</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">login</code>
+                        </td>
+                        <td class="entry" headers="user_role_keys__entry__2">The user's login for the PE
+                            console (required).</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">password</code>
+                        </td>
+                        <td class="entry" headers="user_role_keys__entry__2">The user's password for the PE
+                            console (required).</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">lifetime</code></td>
+                        <td class="entry" headers="user_role_keys__entry__2">The length of time the token is
+                            active before expiration (optional). </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">description</code></td>
+                        <td class="entry" headers="user_role_keys__entry__2">Additional metadata about the
+                            requested token (optional).</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">client</code></td>
+                        <td class="entry" headers="user_role_keys__entry__2">Additional metadata about the
+                            client making the token request (optional).</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="user_role_keys__entry__1"><code class="ph codeph">label</code></td>
+                        <td class="entry" headers="user_role_keys__entry__2">A user-defined label for the
+                            token (optional). </td>
+                    </tr>
+                </tbody></table>
+        <section class="section" id="user_role_keys__the_lifetime_key"><h3 class="title sectiontitle">The
+                lifetime key </h3><p class="p">When setting a token's lifetime, specify
+                a numeric value followed by <code class="ph codeph">y</code>
+                (years), <code class="ph codeph">d</code> (days), <code class="ph codeph">h</code> (hours), <code class="ph codeph">m</code> (minutes), or <code class="ph codeph">s</code>
+                (seconds). For example, a value of <code class="ph codeph">12h</code> is 12 hours. Do not add a space between the numeric value and the
+                unit of measurement. If you do not specify a unit, it is assumed to be seconds. If
+                you do not want the token to expire, set the lifetime to <code class="ph codeph">0</code>. Setting it to zero gives the token a lifetime of
+                approximately 10 years.</p><div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> The default lifetime for all tokens is also configurable. See <a class="xref" href="rbac_token_auth_intro.html#change_the_token_s_default_lifetime" title="Tokens have a default authentication lifetime of one hour, but this default value can be adjusted in the console. You can also change a token's maximum authentication lifetime, which defaults to 10 years.">Change
+                        the token's default lifetime</a> for configuration
+                instructions.</div></div></section>
+        <section class="section" id="user_role_keys__the_label_key"><h3 class="title sectiontitle">The label
+                key </h3><p class="p">You can choose to select a label for the token
+                that can be used with other RBAC token endpoints. Labels:</p><ul class="ul">
+                <li class="li">Must be no longer than 200 characters.</li>
+                <li class="li">Must not contain commas.</li>
+                <li class="li">Must contain something other than whitespace. (Whitespace is
+                    trimmed from the beginning and end of the label, though it is allowed
+                    elsewhere.)</li>
+                <li class="li">Must not be the same as a label for another token for the
+                    same user.</li>
+            </ul><p class="p">Token labels are assigned on a per-user basis: two users can
+                each have a token labelled <code class="ph codeph">my
+                token</code>, but a single user cannot have two tokens both labelled <code class="ph codeph">my token</code>. You cannot use labels to
+                refer to other users' tokens. </p></section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="post_auth_token">
+    <h2 class="title topictitle2" id="ariaid-title3">POST /auth/token </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Generates an access token for the user whose login
+        information is POSTed. This token can then be used to authenticate requests to PE services
+        using either the <code class="ph codeph">X-Authentication</code> header or
+        the <code class="ph codeph">token</code> query parameter. </p>
+        <section class="section"><p class="p">This route is intended to require
+                zero authentication. While HTTPS is still required (unless PE is explicitly
+                configured to permit HTTP), neither a whitelisted cert nor a session cookie is
+                needed to POST to this endpoint.</p></section>
+        <section class="section" id="post_auth_token__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">Accepts a JSON object or curl command with the
+                user's login and password information. The token's lifetime, a user-specified label,
+                and additional metadata can be added, but are not required. </p><p class="p">An example JSON
+                request:</p><pre class="pre codeblock json"><code>{"login": "jeanjackson@example.com",
+ "password": "1234",
+ "lifetime": "4m",
+ "label": "personal workstation token"}</code></pre><p class="p">An example curl command request:
+                </p><pre class="pre codeblock"><code>curl –cacert $(puppet config print cacert) -X POST -H 'Content-Type: application/json' -d '{"login": "&lt;LOGIN&gt;", "password": "&lt;PASSWORD&gt;", "lifetime": "4h", "label": "four-hour token"}' https://&lt;HOSTNAME&gt;:4433/rbac-api/v1/auth/token</code></pre><p class="p">The various parts of this curl command request are explained as
+                follows:</p><ul class="ul">
+                <li class="li"><code class="ph codeph">–cacert
+                        [FILE]</code>: Specifies a CA certificate as described in Forming requests
+                    for the node classifier. Alternatively, you could use the <code class="ph codeph">-k</code> flag to turn off SSL verification of the
+                    RBAC server so that you can use the HTTPS protocol without providing a CA cert.
+                    If you do not provide one of these options in your cURL request, cURL complains
+                    about not being able to verify the RBAC server.<div class="note note note_note"><span class="note__title">Note:</span> The <code class="ph codeph">-k</code> flag is
+                        shown as an example only. You should use your own discretion when choosing
+                        the appropriate server verification method for the tool that you are using.
+                    </div></li>
+            </ul><ul class="ul">
+                <li class="li"><code class="ph codeph">-X POST</code>:
+                    This is an HTTP POST request to provide your login information to the RBAC
+                    service.</li>
+                <li class="li"><code class="ph codeph">-H 'Content-Type:
+                        application/json'</code>: sets the <code class="ph codeph">Content-Type</code> header to <code class="ph codeph">application/json</code>, which indicates to RBAC that the data being sent
+                    is in JSON format..</li>
+                <li class="li"><code class="ph codeph">-d '{"login":
+                        "&lt;YOUR PE USER NAME&gt;", "password": "&lt;YOUR PE PASSWORD&gt;",
+                        "lifetime": "4m", "label": "four-minute token"}'</code>: Provide the user
+                    name and password that you use to log in to the PE console. Optionally, set the
+                    token's lifetime and label.</li>
+                <li class="li"><code class="ph codeph">https://&lt;HOSTNAME&gt;:&lt;PORT&gt;/rbac-api/v1/auth/token</code>:
+                    Sends the request to the <code class="ph codeph">token</code>
+                    endpoint. For <code class="ph codeph">HOSTNAME</code>, provide
+                    the FQDN of the server that is hosting the PE console service. If you are making
+                    the call from the console server, you can use "localhost." For <code class="ph codeph">PORT</code>, provide the port that the PE services
+                    (node classifier service, RBAC service, and activity service) listen on. The
+                    default port is 4433.</li>
+            </ul></section>
+        <section class="section" id="post_auth_token__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">Returns a 200 OK response if the
+                credentials are good and the user is not revoked, along with a token. </p><p class="p">For
+            example:</p><pre class="pre codeblock"><code>{"token": "asd0u0=2jdijasodj-w0duwdhjashd,kjsahdasoi0d9hw0hduashd0a9wdy0whdkaudhaksdhc9chakdh92..."}</code></pre></section>
+        <section class="section" id="post_auth_token__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">Returns a 401 Unauthenticated response if
+                the credentials are bad or the user is revoked.</p><p class="p">Returns a
+                400 Malformed response if something is wrong with the request body.</p></section>
+    </div>
+</article></article></article></main></body></html>

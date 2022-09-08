@@ -1,0 +1,313 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Set up your control repo, create a Puppetfile, and configure Code Manager so you can start adding content to your PE environments."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="add_content"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Add code and set up Code Manager</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="add_content">
+    <h1 class="title topictitle1" id="ariaid-title1">Add code and set up <span class="ph">Code Manager</span></h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Set up your control repo, create a <span class="ph">Puppetfile</span>, and
+        configure <span class="ph">Code Manager</span> so you can start adding content to your <span class="ph">PE</span> environments.</p>
+        <p class="p">The <dfn class="term">control repo</dfn> is where you store your code. Code in your control repo is
+            usually bundled in modules. </p>
+        <p class="p">The <dfn class="term">Puppetfile</dfn> specifies detailed information about each environment's <span class="ph">Puppet</span> code and data, including where to get that code
+            and data from, where to install it, and whether to update it. </p>
+        <p class="p"><dfn class="term">Code Manager</dfn> automates the management and deployment of your <span class="ph">Puppet</span> code. It isn't required to use <span class="ph">PE</span>, but it is helpful for ensuring <span class="ph">Puppet</span> syncs code to your masters and all your server run
+            new code at the same time. </p>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="create-control-repo-from-template">
+    <h2 class="title topictitle2" id="ariaid-title2">Create a control repo from the <span class="ph">Puppet</span> template</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">To create a control repo that includes a standard recommended structure, code
+        examples, and configuration scripts, base your control repo on the <span class="ph">Puppet</span> control repo template. This template covers most
+        customer situations.</p>
+        <section class="section context">
+            <p class="p">To base your control repo on the <span class="ph">Puppet</span>
+                <a class="xref" href="https://github.com/puppetlabs/control-repo" target="_blank">control repository template</a>, you copy the control repo
+                template to your development workstation, set your own remote <span class="ph">Git</span> repository as the default source, and then push
+                the template contents to that source.</p>
+            <div class="p">The control repo template contains the files needed to get you started with a
+                functioning control repo, including: <ul class="ul">
+                    <li class="li">
+                        <p class="p">An <code class="ph codeph">environment.conf</code> file to implement a
+                                <code class="ph codeph">site-modules/</code> directory for roles, profiles, and
+                            custom modules.</p>
+                    </li>
+                    <li class="li">
+                        <p class="p"><code class="ph codeph">config_version</code> scripts to notify you
+                            which control repo version was applied to the agents.</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">Basic code examples for setting up roles and profiles.</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">An example <code class="ph codeph">hieradata</code> directory that
+                            matches the default
+                            hierarchy
+                            .</p>
+                    </li>
+                    <li class="li">A <span class="ph">Puppetfile</span> to manage content maintained in
+                        your environment. </li>
+                </ul></div>
+            <p dir="ltr" class="p">Set up a private SSH key so that your master can identify itself to your
+                Git host.</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Generate a private SSH key to allow access to the
+               control repository.</span>
+            <div class="itemgroup info">
+               <p class="p">This SSH key cannot require a password.</p>
+            </div>
+            <ol type="a" class="ol substeps">
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Generate the key pair:</span>
+                  <div class="itemgroup stepxmp">
+                     <pre class="pre codeblock"><code>ssh-keygen -t rsa -b 2048 -P '' -f /etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa</code></pre>
+                  </div>
+               </li>
+               <li class="li substep substepexpand">
+                  <span class="ph cmd">Set appropriate permissions so that the <code class="ph codeph">pe-puppet</code> user can access the
+                     key:</span>
+                  <div class="itemgroup stepxmp">
+                     <pre class="pre codeblock"><code>puppet infrastructure configure</code></pre>
+                  </div>
+               </li>
+            </ol>
+            <div class="itemgroup stepresult">
+               <p class="p">Your keys are now located in <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh</code>:</p>
+               <div class="p">
+                  <ul class="ul">
+                     <li class="li">
+                        <p class="p">Private key: <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa</code></p>
+                     </li>
+                     <li class="li">
+                        <p class="p">Public key: <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa.pub</code></p>
+                     </li>
+                  </ul>
+               </div>
+               <p class="p">Configure your <span class="ph">Git</span> host to use
+                  the SSH public key you generated. The process to do this is different for every
+                     <span class="ph">Git</span> host. Usually, you create a user or service
+                  account, and then assign the SSH public key to it. </p>
+               <p class="p">Code management needs read access to your control repository,
+                  as well as any module repositories referenced in the <span class="ph">Puppetfile</span>.</p>
+               <p class="p">See the your <span class="ph">Git</span> host docs for
+                  detailed instructions on adding SSH keys to your <span class="ph">Git</span> server. Commonly used <span class="ph">Git</span> hosts include:</p>
+               <ul class="ul">
+                  <li class="li">
+                     <p class="p">
+                        <a class="xref" href="https://developer.github.com/v3/guides/managing-deploy-keys/#machine-users" target="_blank">GitHub</a>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <a class="xref" href="https://confluence.atlassian.com/bitbucketserver/ssh-access-keys-for-system-use-776639781.html" target="_blank">BitBucket Server</a>
+                     </p>
+                  </li>
+                  <li class="li">
+                     <p class="p">
+                        <a class="xref" href="https://docs.gitlab.com/ce/ssh/README.html#deploy-keys" target="_blank">GitLab</a>
+                     </p>
+                  </li>
+               </ul>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Create a repository in your <span class="ph">Git</span> account, with the name you want your control repo
+               to have.</span>
+            <div class="itemgroup info">
+               <p class="p">Steps for creating a repository vary, depending on what <span class="ph">Git</span> host you are using (<span class="ph">GitHub</span>, GitLab, Bitbucket, or another provider). See
+                  your <span class="ph">Git</span> host's documentation for complete
+                  instructions.</p>
+               <p class="p">For example, on <span class="ph">GitHub</span>:</p>
+            </div>
+            <ol type="a" class="ol substeps">
+               <li class="li substep">
+                  <span class="ph cmd">Click <span class="ph uicontrol">+</span> at the top of the page, and choose <span class="ph uicontrol">New repository</span>.</span>
+               </li>
+               <li class="li substep">
+                  <span class="ph cmd">Select the account <span class="ph uicontrol">Owner</span> for the repository.</span>
+               </li>
+               <li class="li substep">
+                  <span class="ph cmd">Name the repository (for example, <code class="ph codeph">control-repo</code>).</span>
+               </li>
+               <li class="li substep">
+                  <span class="ph cmd">Note the repository's SSH URL for later
+                     use.</span>
+               </li>
+            </ol>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">If you don't already have Git installed, run the following command on your
+                    master:</span>
+                <div class="itemgroup info">
+                    <pre class="pre codeblock"><code>yum install git</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">From the command line, clone the <span class="ph">Puppet</span>
+                    <code class="ph codeph">control-repo</code> template.</span>
+                <div class="itemgroup stepxmp">
+                    <pre class="pre codeblock"><code>git clone https://github.com/puppetlabs/control-repo.git</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Change directory into your contro repo.</span>
+                <div class="itemgroup stepxmp">
+                    <pre class="pre codeblock"><code>cd &lt;NAME OF YOUR CONTROL REPO&gt;</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Remove the template repository as your default
+                    source.</span>
+                <div class="itemgroup stepxmp">
+                    <pre class="pre codeblock"><code>git remote remove origin</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Add the control repository you created as the
+                    default source.</span>
+                <div class="itemgroup stepxmp">
+                    <pre class="pre codeblock"><code>git remote add origin &lt;URL OF YOUR GIT REPOSITORY&gt;</code></pre>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Push the contents of the cloned control repo to your remote copy of the control
+                    repo:</span>
+                <div class="itemgroup stepxmp">
+                    <pre class="pre codeblock"><code>git push origin production</code></pre>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p">You now have a control repository based on the <span class="ph">Puppet</span>
+                <code class="ph codeph">control-repo</code> template. When you make changes to this
+                repo on your workstation and push those changes to the remote copy of the control
+                repo on your <span class="ph">Git</span> server, <span class="ph">Code Manager</span> deploys your infrastructure changes. </p>
+            <p class="p">You also now have a <span class="ph">Puppetfile</span> available for you to
+                start adding and managing content, like module code. </p>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="config_code_mgr_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title3">Configure <span class="ph">Code Manager</span></h2>
+    <p class="shortdesc"><span class="ph">Code Manager</span> stages, commits, and synchronizes your code,
+        automatically managing your environments and modules when you make changes. </p>
+    
+<article class="topic task nested2" aria-labelledby="ariaid-title4" id="enable_code_manager_getting_started">
+    <h3 class="title topictitle3" id="ariaid-title4">Enable <span class="ph">Code Manager</span></h3>
+    
+    <div class="body taskbody"><p class="shortdesc">To enable <span class="ph">Code Manager</span> set parameters in the console. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>See the <a class="xref" href="config_intro.html#configure_settings_using_the_console" title="The console allows you to use a graphical interface to configure Puppet Enterprise (PE).">Configure settings using the console</a> documentation to learn how
+            to set parameters in the console.</section>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, set the following
+                    parameters in the <code class="ph codeph">puppet_enterprise::profile::master</code> class in
+                    the <span class="ph">PE</span> Master node group.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <ul class="ul">
+                            <li class="li"><code class="ph codeph">code_manager_auto_configure</code> to <kbd class="ph userinput">
+                                    true</kbd>.</li>
+                            <li class="li"><code class="ph codeph">r10k_remote</code>: This is the location of your control
+                                repository. Enter a string that is a valid URL for your <span class="ph">Git</span> control repository. For example:
+                                    <kbd class="ph userinput">git@&lt;YOUR.GIT.SERVER.COM&gt;:puppet/control.git</kbd>.</li>
+                            <li class="li"><code class="ph codeph">r10k_private_key</code>: Enter a string specifying the
+                                path to the SSH private key that permits the
+                                    <code class="ph codeph">pe-puppet</code> user to access your <span class="ph">Git</span> repositories. This file must be
+                                located on the master, owned by the <code class="ph codeph">pe-puppet</code> user,
+                                and located in a directory that the <code class="ph codeph">pe-puppet</code> user
+                                has permission to view. We recommend
+                                    <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Commit</span>.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the command line, run <code class="ph codeph">puppet job run --nodes &lt;NODE NAME&gt;</code>
+                    where <code class="ph codeph">&lt;NODE NAME&gt;</code> is the name of your master.</span>
+                <div class="itemgroup stepxmp">
+                    <pre class="pre codeblock"><code>puppet job run --nodes small-doubt.delivery.puppetlabs.net</code></pre>
+                </div>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <div class="note note note_note"><span class="note__title">Note:</span> <span class="ph">r10k</span> is a code
+                            management tool that allows you to manage your environment
+                            configurations — production, testing, and development — in a source
+                            control repository.</div>
+                    </div>
+                    <p dir="ltr" class="p">Next, test the connection to the control repo.</p>
+                </div>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="set_up_authentication_for_code_manager">
+    <h3 class="title topictitle3" id="ariaid-title5">Set up authentication for <span class="ph">Code Manager</span>
+    </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">To securely deploy environments, <span class="ph">Code Manager</span> needs an
+        authentication token for both authentication and authorization.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">If you would like to use <span class="ph">PE</span> client tools,
+                configure these now. <span class="ph">PE</span>
+                client tools let you access <span class="ph">PE</span> services from a workstation that is not necessarily managed by <span class="ph">Puppet</span>. They come pre-installed on your master, but
+                you need to configure them by creating a <a class="xref" href="https://github.com/glennsarti/dev-tools/blob/master/config-pe-client-tools.ps1" target="_blank"><u class="ph u">configuration file</u></a>. See <a class="xref" href="installing_pe_client_tools.html#installing_pe_client_tools" title="PE client tools are a set of command line tools that let you access Puppet Enterprise services from a workstation that might or might not be managed by Puppet.">Configuring PE client tools</a> for
+                more information.</p></section>
+        <section class="section context"><p class="p">To generate a token for
+                    <span class="ph">Code Manager</span>, first assign a user to the deployment
+                role, and then request an authentication token.</p></section>
+    </div>
+<article class="topic task nested3" aria-labelledby="ariaid-title6" id="assign_a_user_to_the_deployment_role">
+    <h4 class="title topictitle4" id="ariaid-title6">Assign a user to the deployment role </h4>
+    
+    <div class="body taskbody"><p class="shortdesc">To request an authentication token, you must first assign a user the correct
+        permissions with role-based access control (RBAC).</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, create a deployment user. We
+                    recommend that you create a dedicated deployment user for <span class="ph">Code Manager</span> use.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Add the deployment user to the <span class="ph uicontrol">Code Deployers</span> role. This role is
+                    automatically created on install, with default permissions for code deployment
+                    and token lifetime management.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Create a password by clicking <span class="ph uicontrol">Generate Password</span>.</span>
+            </li></ol></section>
+        <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>
+            <p class="p">Next, request the authentication token.</p>
+        </section>
+    </div>
+</article><article class="topic task nested3" aria-labelledby="ariaid-title7" id="request_an_authentication_token">
+    <h4 class="title topictitle4" id="ariaid-title7">Request an authentication token for deployments</h4>
+    
+    <div class="body taskbody"><p class="shortdesc"> Request an authentication token for the deployment user to enable secure deployment
+        of your code. </p>
+        <section class="section context"><p class="p">By default, authentication tokens have a one-hour lifetime. With the <code class="ph codeph">Override default
+                    expiry</code> permission set, you can change the lifetime of the token to a
+                duration better suited for a long-running, automated process.</p><p class="p">Generate the authentication token using
+                the <code class="ph codeph">puppet-access</code>
+            command.</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">From the command line on the master, run <code class="ph codeph">puppet-access login --lifetime
+                    180d</code>. This command both requests the token and sets the token lifetime
+                    to 180 days.</span>
+                <div class="itemgroup info"><div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> You can add flags to the request specifying
+                            additional settings such as the token file's location or the URL for
+                            your RBAC API. See <a class="xref" href="rbac_token_auth_intro.html#configuration_file_settings_for_puppet_access" title="As needed, you can manually add configuration settings to your user-specified or global puppet-access configuration file.">Configuration file settings for puppet-access</a>.
+                    </div></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Enter the username and password of the deployment
+                    user when prompted.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">The generated token is stored in a file for later use. The default location for storing the token
+                is <code class="ph codeph">~/.puppetlabs/token</code>. To view the token, run
+                    <code class="ph codeph">puppet-access show</code>. </p></section>
+        <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>Next, test the connection to the control repo.</section>
+    </div>
+</article></article></article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="deploy_code_getting_started">
+    <h2 class="title topictitle2" id="ariaid-title8">Deploy your code</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Use the command line to trigger <span class="ph">Code Manager</span> after making
+        changes to your <span class="ph">Puppetfile</span>. </p>
+        <section class="section context">When you make changes to your Puppetfile, like adding a new module or creating a
+            repo, you must deploy your code before Code Manager can recognize or start managing the
+            content. </section>
+        <section><div class="li step p">
+                <span class="ph cmd">SSH into your master and run <code class="ph codeph">puppet-code deploy --all
+                    --wait</code>.</span>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>You have deployed code to all environments. The <code class="ph codeph">--wait</code> flag returns
+            results after the deployment is finished. Use the command <code class="ph codeph">puppet-code deploy
+                &lt;ENVIRONMENT&gt;</code> to deploy code to only a specific environment. You can
+            also deploy code using a <a class="xref" href="code_mgr_webhook.html#triggering_code_manager_with_a_webhook" title="To deploy your code, you can trigger Code Manager by hitting a web endpoint, either through a webhook or a custom script. The webhook is the simplest way to trigger Code Manager.">webhook</a> or <a class="xref" href="code_mgr_scripts.html#triggering_code_manager_with_custom_scripts" title="Custom scripts are a good way to trigger deployments if you have requirements such as existing continuous integration systems, privately hosted Git repos, or custom notifications.">custom scripts</a>. </section>
+    </div>
+</article></article></article></main></body></html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Puppet Enterprise's role-based access control (RBAC) enables you to manage users—what they can create, edit, or view, and what they can't—in an organized, high-level way that is vastly more efficient than managing user permissions on a per-user basis. User roles are sets of permissions you can apply to multiple users. You can't assign permissions to single users in PE, only to user roles."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="creating_and_managing_users_and_user_roles"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Creating and managing local users and user roles</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="creating_and_managing_users_and_user_roles">
+    <h1 class="title topictitle1" id="ariaid-title1">Creating and managing local users and user roles </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Puppet Enterprise's role-based access control (RBAC)
+        enables you to manage users—what they can create, edit, or view, and what they can't—in an
+        organized, high-level way that is vastly more efficient than managing user permissions on a
+        per-user basis. User roles are sets of permissions you can apply to multiple users. You
+        can't assign permissions to single users in PE, only to user roles. </p>
+        <div class="p"><div class="note remember note_remember"><span class="note__title">Remember:</span> Each user must be assigned
+                to one or more roles before they can log in and use PE. </div><div class="note note note_note"><span class="note__title">Note:</span> Puppet
+                stores local accounts and directory service integration credentials securely. Local
+                account passwords are hashed using SHA-256 multiple times along with a 32-bit salt.
+                Directory service lookup credentials configured for directory lookup purposes are
+                encrypted using AES-128. Puppet does not store the directory credentials used for
+                authenticating to Puppet. These are different from the directory service lookup
+                credentials.</div></div>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="create_a_new_user">
+    <h2 class="title topictitle2" id="ariaid-title2">Create a new user </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">These steps add a local user. </p>
+        <section class="section context"><p class="p">To add users from an
+                external directory, see <a class="xref" href="rbac_user_roles_user_groups_ex_dir.html#working_with_user_groups_from_an_external_directory_service" title="You don’t explicitly add remote users to PE. Instead, after the external directory service has been successfully connected, remote users must log into PE, which creates their user record.">Working with user groups from an
+                    external directory</a>.</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">Users</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Full name</span> field, enter the user's full name.</span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Login</span> field, enter a username for the user.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add local user</span>.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="give_the_user_access">
+    <h2 class="title topictitle2" id="ariaid-title3">Give a new user access to the console</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">When you create new local users, you need to send them a
+        password reset token so that they can log in for the first time.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the <span class="keyword wintitle">Users</span> page, click the user's full name. </span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Generate password reset</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Copy the link provided in the message and send it
+                    to the new user.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="create_a_new_user_role">
+    <h2 class="title topictitle2" id="ariaid-title4">Create a new user role </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">RBAC has four predefined roles: Administrators, Code
+        Deployers, Operators, and Viewers. You can also define your own custom user roles. </p>
+        <section class="section context"><p class="p">Users with the
+                appropriate permissions, such as Administrators, can define custom roles. To avoid
+                potential privilege escalation, only users who are allowed all permissions should be
+                given the permission to edit user roles.</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">User roles.</span></span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Name</span> field, enter a name for the new user role.</span>
+            </li><li class="li step">
+                <span class="ph cmd">(Optional) In the <span class="ph uicontrol">Description</span> field, enter a description of the
+                    new user role. </span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add role</span>. </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="assign_permissions_to_a_user_role">
+    <h2 class="title topictitle2" id="ariaid-title5">Assign permissions to a user role </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">You can mix and match permissions to create custom user
+        roles that provide users with precise levels of access to PE actions. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">Review <a class="xref" href="rbac_permissions_intro.html#about_rbac_permissions" title="The &#34;role&#34; in role-based access control refers to a system of user roles, which are assigned to user groups and their users. Those roles contain permissions, which define what a user can or can't do within PE.">User permissions and user
+                    roles</a>, which includes important information about how permissions work in
+                PE.</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the <span class="keyword wintitle">User roles</span> page, click a user role. </span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Permissions</span>. </span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Type</span> field, select the type of object you want to assign
+                    permissions for, such as <span class="ph uicontrol">Node
+                        groups</span>. </span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Permission</span> field, select the permission you want to assign,
+                    such as <span class="ph uicontrol">View</span>. </span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Object</span> field, select the specific object you want to assign
+                    the permission to. For example, if you are setting a permission to view node
+                    groups, select a specific node group this user role has permissions to
+                    view.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add permission</span>, and commit changes. </span>
+            </li></ol></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_permissions_intro.html#best_practices_for_assigning_permissions" title="Working with user permissions can be a little tricky. You don't want to grant users permissions that essentially escalate their role, for example. The following sections describe some strategies and requirements for setting permissions.">Best practices for assigning permissions</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="add_a_user_to_a_user_role">
+      <h2 class="title topictitle2" id="ariaid-title6">Add a user to a user role </h2>
+      
+      <div class="body taskbody"><p class="shortdesc">When you add users to a role, the user gains the
+            permissions that are applied to that role. A user can't do anything in <span class="ph">PE</span> until they have been assigned to a role.</p>
+            <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the <span class="keyword wintitle">User roles</span> page, click a user role. </span>
+            </li><li class="li step">
+                        <span class="ph cmd">Click <span class="ph uicontrol">Member users</span>.</span>
+                  </li><li class="li step">
+                        <span class="ph cmd">In the <span class="ph uicontrol">User name</span> field, select the user
+                              you want to add to the user role.</span>
+                  </li><li class="li step">
+                        <span class="ph cmd">Click <span class="ph uicontrol">Add user</span>, and commit changes.
+                        </span>
+                  </li></ol></section>
+      </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="remove_a_user_from_a_user_role">
+      <h2 class="title topictitle2" id="ariaid-title7">Remove a user from a user role </h2>
+      
+      <div class="body taskbody"><p class="shortdesc">You can change a user's permissions by removing them
+            from a user role. The user loses the permissions associated with the role, and won't be
+            able to do anything in <span class="ph">PE</span> until they are assigned to a
+            new role. </p>
+            <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">On the <span class="keyword wintitle">User roles</span> page, click a user role. </span>
+            </li><li class="li step">
+                        <span class="ph cmd">Click <span class="ph uicontrol">Member users</span>.</span>
+                  </li><li class="li step">
+                        <span class="ph cmd">Locate the user you want to remove from
+                              the user role. Click <span class="ph uicontrol">Remove</span>, and commit changes. </span>
+                  </li></ol></section>
+      </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="revoke_a_user_s_access">
+    <h2 class="title topictitle2" id="ariaid-title8">Revoke a user’s access </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">If you want to remove a user's access to PE but not delete
+        their account, you can revoke them. Revocation is also what happens when a user is locked
+        out from too many incorrect password attempts.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">Users</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Full name</span> column, select the user you want to revoke.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Revoke user access</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> To unrevoke a user, follow the steps above and click <span class="ph uicontrol">Reinstate user
+                access</span>.</div></div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title9" id="delete_a_user">
+   <h2 class="title topictitle2" id="ariaid-title9">Delete a user </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">You can delete a user through the console. Note, however,
+      that this action deletes only the user's <span class="ph">Puppet Enterprise</span> account, not
+      the user's listing in any external directory service. </p>
+      <section class="section context">
+         <p class="p">Deletion removes all data about the user except for their activity
+            data, which continues to be stored in the database and remains viewable through the
+            API.</p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">Users</span>.</span>
+            </li><li class="li step stepexpand">
+            <span class="ph cmd">In the <span class="ph uicontrol">Full name</span> column, locate the user you want to delete.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Click <span class="ph uicontrol">Remove</span>. </span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <div class="note note note_note"><span class="note__title">Note:</span> Users with superuser privileges cannot be
+                     deleted, and the&nbsp;<span class="ph uicontrol">Remove</span>&nbsp;button does not appear for these users.</div>
+               </div>
+            </div>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <div class="p">
+            <div class="note caution note_caution"><span class="note__title">CAUTION:</span> If a user is deleted from the console and
+               then recreated with the same full name and login, PE issues the recreated user a new
+               unique user ID. In this instance, queries for the login to the API's activity
+               database return information on both the deleted user and the new user. However, in
+               the console, the new user's <span class="ph uicontrol">Activity</span> tab does not display information about the deleted user's
+               account. </div>
+         </div>
+      </section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title10" id="delete-user-role">
+    <h2 class="title topictitle2" id="ariaid-title10">Delete a user role</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">You can delete a user role through the
+        console.</p>
+        <section class="section context">
+            <p class="p">When you delete a user role, users lose the permissions that the
+                role gives them. This can impact their access to <span class="ph">Puppet Enterprise</span> if they have not been assigned other user
+                roles. &nbsp;</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">User roles.</span></span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Name</span> column, locate the role you want to delete.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Remove</span>. </span>
+            </li></ol></section>
+    </div>
+</article></article></article></main></body></html>

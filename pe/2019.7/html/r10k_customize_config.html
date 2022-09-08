@@ -1,0 +1,559 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="If you need a customized r10k configuration, you can set specific parameters with Hiera."><meta name="DC.relation" scheme="URI" content="config_intro.html#configure_settings_with_hiera"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="customizing_r10k_configuration"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Customizing r10k configuration</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="customizing_r10k_configuration">
+      <h1 class="title topictitle1" id="ariaid-title1">Customizing <span class="ph">r10k</span> configuration </h1>
+      
+      <div class="body conbody"><p class="shortdesc">If you need a customized <span class="ph">r10k</span> configuration, you can set specific parameters
+            with <span class="ph">Hiera</span>.</p>
+            <p class="p">To customize your configuration, add keys to your control repository hierarchy in the
+                        <code class="ph codeph">data/common.yaml</code> file in the format
+                        <code class="ph codeph">pe_r10k::&lt;parameter&gt;</code>.</p>
+            <p class="p">In this example, the first parameter specifies where to store the
+                  cache of your <span class="ph">Git</span> repos, and the second sets where
+                  the source repository should be fetched from.</p>
+            <div class="example">
+                  <pre class="pre codeblock"><code>pe_r10k::cachedir: /var/cache/r10k
+pe_r10k::remote: git://git-server.site/my-org/main-modules</code></pre>
+                  <div class="note remember note_remember"><span class="note__title">Remember:</span> After changing any of these settings,
+                        run <span class="ph">r10k</span> on the command line to deploy your
+                        environments. <span class="ph">PE</span> does not automatically run
+                              <span class="ph">r10k</span> at the end of
+                  installation.</div></div>
+      </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#configure_settings_with_hiera" title="Hiera is a hierarchy-based method of configuration management that relies on a “defaults, with overrides” system. When you add a parameter or setting to your Hiera data, Hiera searches through the data in the order it was written to find the value you want to change. Once found, it overrides the default value with the new parameter or setting. You can use Hiera to manage your PE configuration settings.">Configure settings with Hiera</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="add_r10k_parameters_in_hiera">
+    <h2 class="title topictitle2" id="ariaid-title2">Add <span class="ph">r10k</span> parameters in <span class="ph">Hiera</span>
+    </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To customize your <span class="ph">r10k</span> configuration, add
+        parameters to your control repository hierarchy in the <code class="ph codeph">data/common.yaml</code>
+        file.</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Add the parameter in the <code class="ph codeph">data/common.yaml</code> file in the format
+                        <code class="ph codeph">pe_r10k::&lt;parameter&gt;</code>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Run <span class="ph">Puppet</span> on the master to apply changes.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="r10k_configuring_forge_settings">
+    <h2 class="title topictitle2" id="ariaid-title3">Configuring <span class="ph">Forge</span>
+        settings</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">To configure how <span class="ph">r10k</span> downloads modules from the <span class="ph">Forge</span>,
+        specify <code class="ph codeph">forge_settings</code> in <span class="ph">Hiera</span>.</p>
+        <div class="p">This parameter configures where <span class="ph">Forge</span> modules should be installed from, and sets a proxy for
+         all <span class="ph">Forge</span> interactions. The <code class="ph codeph">forge_settings</code> parameter accepts a hash with the following
+         values: <ul class="ul">
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">baseurl</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">proxy</code>
+               </p>
+            </li>
+         </ul></div>
+        <section class="section"><h3 class="title sectiontitle">baseurl</h3>
+            
+            <p class="p">Indicates where <span class="ph">Forge</span> modules should be installed from. Defaults to <code class="ph codeph">https://forgeapi.puppetlabs.com</code>.</p>
+            <pre class="pre codeblock"><code>pe_r10k::forge_settings:
+  baseurl: 'https://private-forge.mysite'</code></pre>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">proxy</h3><p class="p">Sets the proxy for all <span class="ph">Forge</span> interactions.</p><p class="p"> This setting
+            overrides the global <code class="ph codeph">proxy</code> setting on
+               <span class="ph">Forge</span> operations only. You can set an unauthenticated
+            proxy or an authenticated proxy with either Basic or Digest authentication. See the
+            global <code class="ph codeph">proxy</code> setting for more
+            information and examples.</p><div class="p">
+            <pre class="pre codeblock"><code>proxy: 'http://proxy.example.com:3128'</code></pre>
+         </div></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="r10k_configuring_purge_levels">
+   <h2 class="title topictitle2" id="ariaid-title4">Configuring purge levels</h2>
+   
+   
+   <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">purge_levels</code> setting controls which unmanaged content <span class="ph">r10k</span> purges during a deployment. </p>
+      <div class="p">This setting accepts an array of strings specifying what content <span class="ph">r10k</span> purges during code deployments. Available values
+         are: <ul class="ul">
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">deployment</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">environment</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">puppetfile</code>
+               </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <code class="ph codeph">purge_whitelist</code>
+               </p>
+            </li>
+         </ul></div>
+      <div class="p">The default value for this setting is <code class="ph codeph">['deployment', 'puppetfile']</code>. With these values, <span class="ph">r10k</span> purges: <ul class="ul">
+            <li class="li">
+               <p class="p">Any content that is not managed by the sources declared in the
+                     <code class="ph codeph">remote</code> or <code class="ph codeph">sources</code> settings.&nbsp; </p>
+            </li>
+            <li class="li">
+               <p class="p">Any content that is not declared in the <span class="ph">Puppetfile</span>, but is found in a
+                  directory managed by the <span class="ph">Puppetfile</span>.</p>
+            </li>
+         </ul></div>
+      <div class="example">
+         <pre class="pre codeblock"><code>deploy:
+  purge_levels: [ 'deployment', 'environment', 'puppetfile' ]</code></pre>
+      </div>
+      <section class="section"><h3 class="title sectiontitle">deployment</h3><p class="p">After each deployment, in the configured basedir, <span class="ph">r10k</span> recursively removes content that is not
+            managed by any of the sources declared in the <code class="ph codeph">remote</code> or <code class="ph codeph">sources</code>
+            parameters.</p><p class="p"> Disabling this level of purging could cause the
+            number of deployed environments to grow without bound, because deleting branches from a
+            control repo would no longer cause the matching environment to be purged.</p></section>
+      <section class="section"><h3 class="title sectiontitle">environment</h3><p class="p">After a given environment is deployed, <span class="ph">r10k</span> recursively removes content that is neither committed to the control repo
+            branch that maps to that environment, nor declared in a <span class="ph">Puppetfile</span> committed to that branch.</p><p class="p">With this purge level, <span class="ph">r10k</span>
+            loads and parses the <span class="ph">Puppetfile</span> for the
+            environment even if the <code class="ph codeph">--puppetfile</code>
+            flag is not set. This allows <span class="ph">r10k</span> to check
+            whether or not content is declared in the <span class="ph">Puppetfile</span>. However, &nbsp;<span class="ph">Puppetfile</span> content is deployed only if the environment is new or the <code class="ph codeph">--puppetfile</code> flag is set. </p><p class="p">If <span class="ph">r10k</span> encounters an error while
+            evaluating the <span class="ph">Puppetfile</span> or deploying its
+            contents, no environment-level content is purged.</p></section>
+      <section class="section"><h3 class="title sectiontitle">puppetfile</h3><p class="p">After <span class="ph">Puppetfile</span> content for a
+            given environment is deployed, <span class="ph">r10k</span> recursively
+            removes content in any directory managed by the <span class="ph">Puppetfile</span>, if that content is not also declared in that <span class="ph">Puppetfile</span>. </p><p class="p">Directories considered to be managed by a <span class="ph">Puppetfile</span> include the configured <code class="ph codeph">moduledir</code> (which defaults to "modules"), as well as any alternate
+            directories specified as an <code class="ph codeph">install_path</code> option to any <span class="ph">Puppetfile</span> content declarations.</p></section>
+      <section class="section"><h3 class="title sectiontitle">purge_whitelist</h3><p class="p">The <code class="ph codeph">purge_whitelist</code>
+            setting exempts the specified filename patterns from being purged.</p><p class="p"> This setting affects <code class="ph codeph">environment</code> level purging only. Any given value must be a list of shell
+            style filename patterns in string format.</p><p class="p">See the <a class="xref" href="https://ruby-doc.org/core-2.2.0/File.html" target="_blank">Ruby documentation</a> for the <code class="ph codeph">fnmatch</code> method for more details on valid patterns. Both the
+               <code class="ph codeph">FNM_PATHNAME</code> and <code class="ph codeph">FNM_DOTMATCH</code> flags are in effect when <span class="ph">r10k</span> considers the whitelist.</p><p class="p">Patterns are relative to the root of the environment being purged and, by
+            default, <strong class="ph b">do not match recursively</strong>. For example, a
+            whitelist value of <code class="ph codeph">*myfile*</code> would
+            preserve only a matching file at the root of the environment. To preserve the file
+            throughout the deployed environment, you would need to use a recursive pattern such as
+               <code class="ph codeph">**/*myfile*</code>.</p><p class="p">Files matching a whitelist pattern might still be removed if they exist in a folder
+            that is otherwise subject to purging. In this case, use an additional whitelist rule to
+            preserve the containing
+         folder.</p><pre class="pre codeblock yaml"><code>deploy:
+  purge_whitelist: [ 'custom.json', '**/*.xpp' ]</code></pre></section>
+   </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="r10k_locking_deployments">
+ <h2 class="title topictitle2" id="ariaid-title5">Locking <span class="ph">r10k</span>
+  deployments</h2>
+ 
+ 
+ <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">deploy:
+   write_lock</code> setting allows you to temporarily disallow <span class="ph">r10k</span> code deploys without completely removing the <span class="ph">r10k</span> configuration.</p>
+  <p class="p">This <code class="ph codeph">deploy</code> subsetting is
+   useful to prevent <span class="ph">r10k</span> deployments at certain times or to
+   prevent deployments from interfering with a common set of code that might be touched by multiple
+    <span class="ph">r10k</span> configurations.</p>
+  <div class="example"><pre class="pre codeblock"><code>deploy:
+  write_lock: "Deploying code is disallowed until the next maintenance window." </code></pre></div>
+ </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="r10k_configuring_sources">
+  <h2 class="title topictitle2" id="ariaid-title6">Configuring sources</h2>
+  
+  
+  <div class="body conbody"><p class="shortdesc">If you are managing more than one repository with <span class="ph">r10k</span>, specify a map of your source repositories.</p>
+    <p class="p">Use the <code class="ph codeph">source</code> parameter
+      to specify a map of sources. Configure this setting if you are managing more than just <span class="ph">Puppet</span> environments, such as when you are also managing <span class="ph">Hiera</span> data in its own control repository. </p>
+    <p class="p">To use multiple control repos, the <code class="ph codeph">sources</code> setting and the <code class="ph codeph">repositories</code> setting must match. </p>
+    <p class="p">If <code class="ph codeph">sources</code> is set, you
+      cannot use the global <code class="ph codeph">remote</code> and <code class="ph codeph">r10k_basedir</code> settings. Note that <span class="ph">r10k</span> raises an error if different sources collide in a single
+      base directory. If you are using multiple sources, use the <code class="ph codeph">prefix</code> option to prevent collisions.</p>
+    <div class="p">This setting accepts a hash with the following subsettings: <ul class="ul">
+        <li class="li"><p class="p">
+            <code class="ph codeph">remote</code>
+          </p></li>
+        <li class="li"><p class="p">
+            <code class="ph codeph">basedir</code>
+          </p></li>
+        <li class="li"><p class="p">
+            <code class="ph codeph">prefix</code>
+          </p></li>
+        <li class="li"><p class="p">
+            <code class="ph codeph">invalid_branches</code>
+          </p></li>
+      </ul>
+    </div>
+    <div class="example"><pre class="pre codeblock yaml"><code>myorg: 
+  remote: "git://git-server.site/myorg/main-modules"
+  basedir: "/etc/puppetlabs/puppet/environments"
+  prefix: true
+  invalid_branches: 'error'
+mysource: 
+  remote: "git://git-server.site/mysource/main-modules"
+  basedir: "/etc/puppetlabs/puppet/environments"
+  prefix: "testing"
+  invalid_branches: 'correct_and_warn'</code></pre></div>
+    <section class="section"><h3 class="title sectiontitle">remote</h3><p class="p">Specifies where the source repository should be fetched from. The remote must be
+        able to be fetched without any interactive input. That is, you cannot be prompted for
+        usernames or passwords in order to fetch the remote.</p><p class="p">Accepts a
+        string that is any valid URL that <span class="ph">r10k</span> can clone, such as:
+        </p><p class="p">
+        <code class="ph codeph">git://git-server.site/my-org/main-modules</code>
+      </p></section>
+    <section class="section"><h3 class="title sectiontitle">basedir</h3><p class="p">Specifies the path where environments are created for this source. This directory
+        is entirely managed by <span class="ph">r10k</span>, and any contents that <span class="ph">r10k</span> did not put there are removed.</p><p class="p">Note that the <code class="ph codeph">basedir</code> setting <strong class="ph b">must match</strong> the <code class="ph codeph">environmentpath</code> in your puppet.conf file, or <span class="ph">Puppet</span> won't be able to access your new directory environments. </p></section>
+    <section class="section"><h3 class="title sectiontitle">prefix</h3><p class="p">Allows environment names to be prefixed with this string. Alternatively, if
+          <code class="ph codeph">prefix</code> is set to true, the source's name
+        is used. This prevents collisions when multiple sources are deployed into the same
+        directory. </p><p class="p">In the <code class="ph codeph">sources</code> example above, two "main-modules" environments are set up in the same
+        base directory. The prefix setting is used to differentiate the environments: the first is
+        named "myorg-main-modules", and the second is "testing-main-modules".</p></section>
+    <section class="section"><h3 class="title sectiontitle">ignore_branch_prefixes</h3><p class="p">Causes branches from a source which match any of the prefixes listed in
+        the setting to be ignored. The match can be full or partial. On deploy, each branch in the
+        repo has its name tested against all prefixes listed in <code class="ph codeph">ignore_branch_prefixes</code> and, if the prefix is found,
+        then an environment is not deployed for this branch. </p><p class="p">The setting
+        is a list of strings. In the following example, branches in "mysource" with the prefixes
+        "test" and "dev" are not deployed. </p><div class="p"><pre class="pre codeblock"><code>---
+sources:
+  mysource:
+    basedir: '/etc/puppet/environments'
+    ignore_branch_prefixes:
+      - 'test'
+      - 'dev'</code></pre></div><p class="p">If <code class="ph codeph">ignore_branch_prefixes</code> is not specified, then all branches are
+      deployed.</p></section>
+    <section class="section"><h3 class="title sectiontitle">invalid_branches</h3><p class="p">Specifies how branch names that cannot be cleanly mapped to <span class="ph">Puppet</span> environments are handled. This option accepts three
+        values:</p><ul class="ul">
+        <li class="li">'correct_and_warn' is the default value and replaces non-word
+          characters with underscores and issues a warning.</li>
+        <li class="li">'correct' replaces non-word characters with underscores without
+          warning.</li>
+        <li class="li">'error' ignores branches with non-word characters and issues an
+          error.</li>
+      </ul></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="r10k_configuring_base_directory">
+    <h2 class="title topictitle2" id="ariaid-title7">Configuring the <span class="ph">r10k</span> base
+        directory</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">The <span class="ph">r10k</span> base
+        directory specifies the path where environments are created for this source.</p>
+        <p class="p">This directory is entirely managed by <span class="ph">r10k</span>, and any contents that <span class="ph">r10k</span> did not put there are removed. If <code class="ph codeph">r10k_basedir</code> is not set, it uses the
+            default <code class="ph codeph">environmentpath</code> in your <code class="ph codeph">puppet.conf</code> file. If <code class="ph codeph">r10k_basedir</code> is set, you cannot set the <code class="ph codeph">sources</code> parameter.</p>
+        <p class="p">Note that the <code class="ph codeph">r10k_basedir</code> setting <strong class="ph b">must match</strong> the
+                <code class="ph codeph">environmentpath</code> in your <code class="ph codeph">puppet.conf</code> file, or <span class="ph">Puppet</span> won't be able to access your new
+            directory environments.</p>
+        <p class="p">Accepts a string, such as: <code class="ph codeph">/etc/puppetlabs/code/environments</code>.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="r10k_configuring_git_settings">
+    <h2 class="title topictitle2" id="ariaid-title8">Configuring <span class="ph">r10k</span>
+        <span class="ph">Git</span> settings</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">To configure <span class="ph">r10k</span> to use a
+        specific <span class="ph">Git</span> provider, a private key, a proxy, or multiple
+        repositories with <span class="ph">Git</span>, specify the <code class="ph codeph">git_settings</code> parameter.</p>
+        <div class="p">The <span class="ph">r10k</span><code class="ph codeph"> git_settings</code> parameter accepts a hash of the following
+            settings: <ul class="ul">
+                <li class="li">
+                    <p class="p">
+                        <code class="ph codeph">private_key</code>
+                    </p>
+                </li>
+                <li class="li">
+                    <p class="p">
+                        <code class="ph codeph">proxy</code>
+                    </p>
+                </li>
+                <li class="li">
+                    <p class="p">
+                        <code class="ph codeph">repositories</code>
+                    </p>
+                </li>
+                <li class="li">
+                    <p class="p">
+                        <code class="ph codeph">provider</code>
+                    </p>
+                </li>
+            </ul>Contains settings specific to <span class="ph">Git</span>. Accepts a hash of
+            values, such as: </div>
+        <pre class="pre codeblock yaml"><code>pe_r10k::git_settings:
+  provider: "rugged"
+  private_key: "/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa"
+  username: "git"</code></pre>
+        <section class="section"><h3 class="title sectiontitle">private_key</h3>
+            
+            <p class="p">Specifies the file containing the default
+         private key used to access control repositories, such as <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa</code>. This file
+         must have read permissions for the <code class="ph codeph">pe-puppet</code> user. The SSH key cannot require a password. This setting is
+         required, but by default, the value is supplied by the master profile in the console.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">proxy</h3><p class="p">Sets a proxy specifically for <span class="ph">Git</span> operations that use an HTTP(S) transport. </p><div class="p">This setting overrides the global <code class="ph codeph">proxy</code> setting on <span class="ph">Git</span> operations
+            only. You can set an unauthenticated proxy or an authenticated proxy with either Basic
+            or Digest authentication. To set a proxy for a specific <span class="ph">Git</span> repository only, set <code class="ph codeph">proxy</code> in the
+               <code class="ph codeph">repositories</code> subsetting of <code class="ph codeph">git_settings</code>. See the global <code class="ph codeph">proxy</code> setting for more information and
+            examples.<pre class="pre codeblock"><code>proxy: 'http://proxy.example.com:3128'</code></pre></div></section>
+        <section class="section"><h3 class="title sectiontitle">repositories</h3>
+            
+            <p class="p">Specifies a list of repositories and their respective private
+                keys. Use this setting if you want to use multiple control repos.</p>
+            <p class="p"> To use multiple control repos, the <code class="ph codeph">sources</code> setting and the <code class="ph codeph">repositories</code> setting must match. Accepts an array of
+                hashes with the following keys:</p>
+            <ul class="ul">
+                <li class="li"><code class="ph codeph">remote</code>: The
+                    repository these settings should apply to.</li>
+                <li class="li"><code class="ph codeph">private_key</code>: The file containing the private key to use for this
+                    repository. This file must have read permissions for the <code class="ph codeph">pe-puppet</code> user. This setting overrides the
+                    global <code class="ph codeph">private_key</code>
+                    setting.</li>
+                <li class="li"><code class="ph codeph">proxy</code>: The
+                        <code class="ph codeph">proxy</code> setting allows you to
+                    set or override the global proxy setting for a single, specific repository. See
+                    the global <code class="ph codeph">proxy</code> setting for
+                    more information and examples.</li>
+            </ul>
+            <div class="p">
+                <pre class="pre codeblock"><code>pe_r10k::git_settings:
+  repositories:
+    - remote: "ssh://tessier-ashpool.freeside/protected-repo.git"
+      private_key: "/etc/puppetlabs/r10k/ssh/id_rsa-protected-repo-deploy-key"
+    - remote: "https://git.example.com/my-repo.git"
+      proxy: "https://proxy.example.com:3128"</code></pre>
+            </div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">username</h3>
+            
+            <p class="p">Optionally, specify a username when the <span class="ph">Git</span> remote URL does not provide a username.</p>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title9" id="r10k_configuring_proxies">
+    <h2 class="title topictitle2" id="ariaid-title9">Configuring proxies</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">To configure proxy servers, use the <code class="ph codeph">proxy</code> setting. You can set a global proxy for all
+        HTTP(S) operations, for all Git or <span class="ph">Forge</span> operations,
+        or for a specific <span class="ph">Git</span> repository only.</p>
+        <section class="section"><h3 class="title sectiontitle">proxy</h3><p class="p">To set a proxy for all operations occurring over an
+            HTTP(S) transport, set the global <code class="ph codeph">proxy</code>
+            setting. You can also set an authenticated proxy with either Basic or Digest
+            authentication.</p><p class="p">To override this setting for <span class="ph">Git</span> or <span class="ph">Forge</span> operations
+            only, set the <code class="ph codeph">proxy</code> subsetting under
+            the <code class="ph codeph">git_settings</code> or <code class="ph codeph">forge_settings</code> parameters. To override for a specific
+               <span class="ph">Git</span> repository, set a proxy in the <code class="ph codeph">repositories</code> list of <code class="ph codeph">git_settings</code>. To override this setting with no proxy for <span class="ph">Git</span>, <span class="ph">Forge</span>, or a particular
+            repository, set that specific <code class="ph codeph">proxy</code>
+            setting to an empty string.</p><p class="p">In this example, the first proxy is
+            set up without authentication, and the second proxy uses authentication:
+         </p><pre class="pre codeblock"><code>proxy: 'http://proxy.example.com:3128'
+proxy: 'http://user:password@proxy.example.com:3128'
+</code></pre></section>
+        <section class="section"><h3 class="title sectiontitle"><span class="ph">r10k</span> proxy defaults
+                and logging</h3>
+            
+            <p class="p">By default, <span class="ph">r10k</span> looks for
+                and uses the first environment variable it finds in this list:</p>
+            <div class="p">
+                <ul class="ul">
+                    <li class="li">
+                        <p class="p">HTTPS_PROXY</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">https_proxy</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">HTTP_PROXY</p>
+                    </li>
+                    <li class="li">
+                        <p class="p">http_proxy</p>
+                    </li>
+                </ul>If no proxy setting is found in the environment, the global <code class="ph codeph">proxy</code> setting defaults to no proxy. </div>
+            <p class="p">The proxy server used is logged at the "debug" level when <span class="ph">r10k</span> runs.</p>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title10" id="r10k_configuring_postrun_commands">
+    <h2 class="title topictitle2" id="ariaid-title10">Configuring postrun commands</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">To configure a command to be run after all deployment is
+        complete, add the <code class="ph codeph">postrun</code>
+        parameter.</p>
+        <p class="p">The <code class="ph codeph">postrun</code> optional
+            command to be run after <span class="ph">r10k</span> finishes deploying
+            environments. The command must be an array of strings to be used as an argument vector.
+            You can set this parameter only one time.</p>
+        <pre class="pre codeblock yaml"><code>  postrun: ['/usr/bin/curl', '-F', 'deploy=done', 'http://my-app.site/endpoint']</code></pre>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title11" id="r10k_parameters">
+    <h2 class="title topictitle2" id="ariaid-title11">
+        <span class="ph">r10k</span> parameters </h2>
+    
+    <div class="body refbody"><p class="shortdesc">The following parameters are available for <span class="ph">r10k</span>. Parameters are optional unless otherwise
+        stated.</p>
+        <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="r10k_parameters__entry__1">Parameter</th>
+                        <th class="entry" id="r10k_parameters__entry__2">Description</th>
+                        <th class="entry" id="r10k_parameters__entry__3">Value</th>
+                        <th class="entry" id="r10k_parameters__entry__4">Default</th>
+                    </tr>
+                </thead><tbody class="tbody">
+
+                    <tr class="row">
+                        <td class="entry" headers="r10k_parameters__entry__1">
+                            <code class="ph codeph">cachedir</code>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__2">Specifies the path to the directory where you
+                            want the cache of your <span class="ph">Git</span> repos to be
+                            stored.</td>
+                        <td class="entry" headers="r10k_parameters__entry__3">A valid directory path</td>
+                        <td class="entry" headers="r10k_parameters__entry__4">
+                            <code class="ph codeph">/var/cache/r10k</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="r10k_parameters__entry__1">
+                            <code class="ph codeph">deploy</code>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__2"><p class="p">Controls how <span class="ph">r10k</span> code deployments behave.</p><p class="p">See <a class="xref" href="r10k_customize_config.html#r10k_configuring_purge_levels" title="The purge_levels setting controls which unmanaged content r10k purges during a deployment.">Configuring purge
+                                    levels</a> and <a class="xref" href="r10k_customize_config.html#r10k_locking_deployments" title="The deploy: write_lock setting allows you to temporarily disallow r10k code deploys without completely removing the r10k configuration.">Locking deployments</a>
+                                for usage details.</p></td>
+                        <td class="entry" headers="r10k_parameters__entry__3">Accepts settings for: <ul class="ul">
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">purge_level</code>
+                                    </p></li>
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">write_lock</code>
+                                    </p></li>
+                            </ul>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__4"><ul class="ul">
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">purge_level:
+                                            ['deployment', 'puppetfile']</code>
+                                    </p></li>
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">write_lock:</code>
+                                        Not set by default .</p></li>
+                            </ul></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="r10k_parameters__entry__1">
+                            <code class="ph codeph">forge_settings</code>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__2"><p class="p">Contains settings for
+                                downloading modules from the <span class="ph">Puppet</span>
+                                <span class="ph">Forge</span>. See <a class="xref" href="r10k_customize_config.html#r10k_configuring_forge_settings" title="To configure how r10k downloads modules from the Forge, specify forge_settings in Hiera.">Configuring Forge
+                                    settings</a> for usage details.</p></td>
+                        <td class="entry" headers="r10k_parameters__entry__3">Accepts a hash of: <ul class="ul">
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">baseurl</code>
+                                    </p></li>
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">proxy</code>
+                                    </p></li>
+                            </ul>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__4">No default.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="r10k_parameters__entry__1">
+                            <code class="ph codeph">git_settings</code>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__2"><p class="p">Configures <span class="ph">Git</span> settings: <span class="ph">Git</span> provider, private key, proxies,
+                                and repositories. See <a class="xref" href="r10k_customize_config.html#r10k_configuring_git_settings" title="To configure r10k to use a specific Git provider, a private key, a proxy, or multiple repositories with Git, specify the git_settings parameter.">Configuring Git
+                                    settings</a> for usage details.</p></td>
+                        <td class="entry" headers="r10k_parameters__entry__3">Accepts a hash of: <ul class="ul">
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">provider</code>
+                                    </p></li>
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">private_key</code>
+                                    </p></li>
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">proxy</code>
+                                    </p></li>
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">repositories</code>
+                                    </p></li>
+                            </ul>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__4">No default.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="r10k_parameters__entry__1">
+                            <code class="ph codeph">proxy</code>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__2"><p class="p">Configures a proxy
+                                server to use for all operations that occur over an HTTP(S)
+                                transport.</p><p class="p">See <a class="xref" href="r10k_customize_config.html#r10k_configuring_proxies" title="To configure proxy servers, use the proxy setting. You can set a global proxy for all HTTP(S) operations, for all Git or Forge operations, or for a specific Git repository only.">Configuring proxies</a>
+                                for usage details.</p></td>
+                        <td class="entry" headers="r10k_parameters__entry__3">Accepts a string specifying a URL to proxy
+                            server, without authentication, or with Basic or Digest
+                            authentication.</td>
+                        <td class="entry" headers="r10k_parameters__entry__4">No default set.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="r10k_parameters__entry__1">
+                            <code class="ph codeph">postrun</code>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__2"><p class="p">An optional command to
+                                be run after <span class="ph">r10k</span> finishes deploying
+                                environments.</p></td>
+                        <td class="entry" headers="r10k_parameters__entry__3">An array of strings to use as an argument
+                            vector.</td>
+                        <td class="entry" headers="r10k_parameters__entry__4">No default set.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="r10k_parameters__entry__1">
+                            <code class="ph codeph">remote</code>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__2"><p class="p">Specifies where the
+                                source repository should be fetched from. The remote cannot require
+                                any prompts, such as for usernames or passwords. If <code class="ph codeph">remote</code> is set, you cannot use
+                                    <code class="ph codeph">sources</code>.</p></td>
+                        <td class="entry" headers="r10k_parameters__entry__3">Accepts a string that is any valid SSH URL
+                            that <span class="ph">r10k</span> can clone.</td>
+                        <td class="entry" headers="r10k_parameters__entry__4">By default, uses the <code class="ph codeph">r10k_remote </code>value set in the console.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="r10k_parameters__entry__1">
+                            <code class="ph codeph">r10k_basedir</code>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__2"><p class="p">Specifies the path where
+                                environments are created for this source. See <a class="xref" href="r10k_customize_config.html#r10k_configuring_base_directory" title="The r10k base directory specifies the path where environments are created for this source.">Configuring the base directory</a> for usage
+                            details.</p></td>
+                        <td class="entry" headers="r10k_parameters__entry__3">A valid file path, which must match the value
+                            of <code class="ph codeph">environmentpath</code> in
+                            your <code class="ph codeph">puppet.conf
+                            </code>file.</td>
+                        <td class="entry" headers="r10k_parameters__entry__4">Uses the value of the <code class="ph codeph">environmentpath</code> in your <code class="ph codeph">puppet.conf</code> file.</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="r10k_parameters__entry__1">
+                            <code class="ph codeph">sources</code>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__2"><p class="p">Specifies a map of
+                                sources to be passed to <span class="ph">r10k</span>. Use if
+                                you are managing more than just <span class="ph">Puppet</span> environments. </p><p class="p">See <a class="xref" href="r10k_customize_config.html#r10k_configuring_sources" title="If you are managing more than one repository with r10k, specify a map of your source repositories.">Configuring
+                                    sources</a> for usage details.</p></td>
+                        <td class="entry" headers="r10k_parameters__entry__3">A hash of: <ul class="ul">
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">basedir</code>
+                                    </p></li>
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">remote</code>
+                                    </p></li>
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">prefix</code>
+                                    </p></li>
+                                <li class="li"><p class="p">
+                                        <code class="ph codeph">ignore_branch_prefixes</code>
+                                    </p></li>
+                            </ul>
+                        </td>
+                        <td class="entry" headers="r10k_parameters__entry__4">No default.</td>
+                    </tr>
+                </tbody></table>
+
+
+    </div>
+</article></article></article></main></body></html>

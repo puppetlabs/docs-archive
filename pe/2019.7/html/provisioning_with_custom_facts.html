@@ -1,0 +1,129 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="You can use a microkernel extension to provision nodes based on hardware info or metadata that isn’t available by default in Facter."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="provisioning_with_custom_facts"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Provisioning with custom facts</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="provisioning_with_custom_facts">
+    <h1 class="title topictitle1" id="ariaid-title1">Provisioning with custom facts</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">You can use a microkernel extension to provision nodes
+        based on hardware info or metadata that isn’t available by default in <span class="ph">Facter</span>.</p>
+        <p class="p">When configured, all nodes receive the microkernel extension, which
+            contains instructions for reporting custom facts to the <span class="ph">Razor</span> server. The custom facts can then be used to tag
+            nodes, apply policies, and provision eligible nodes.</p>
+        <p class="p">For example, if you want to provision machines based on hardware
+            chassis or rack location – facts not available by default in <span class="ph">Facter</span> – you could create custom facts for these
+            properties. Then, you can use the custom facts to create associated tags and policies
+            that install the appropriate OS. For a detailed example of using a microkernel extension
+            to report rack location, see&nbsp;<a class="xref" href="https://puppet.com/blog/server-locality-using-razor-and-lldp" target="_blank">Server locality using <span class="ph">Razor</span> and LLDP</a>.</p>
+        <p class="p">Creating custom facts for use with <span class="ph">Razor</span> is similar to creating custom facts for other <span class="ph">Puppet</span>
+            uses. For more information about custom facts, see the <span class="ph">Facter</span>&nbsp;documentation.</p>
+    </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" lang="en-us" id="how_the_microkernel_extension_works">
+    <h2 class="title topictitle2" id="ariaid-title2">How the microkernel extension works</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">On both new and existing nodes, the microkernel retrieves
+        and unpacks the latest extension file before each checkin.</p>
+        <p class="p">The content of the extension file is placed in a new, non-persistent
+            directory on the microkernel image. Changes to the directory aren’t saved, and the
+            directory is overwritten when a new extension file is available.</p>
+        <p class="p">During unpacking, the executable bit on files is preserved.
+            Permissions for the files in the extension are irrelevant, because the microkernel
+            extension runs as root.</p>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="microkernel_extension_configuration">
+   <h2 class="title topictitle2" id="ariaid-title3">Microkernel extension configuration</h2>
+   
+   
+   <div class="body refbody"><p class="shortdesc">The <span class="ph">Razor</span> microkernel
+      extension is a ZIP file with the default title&nbsp;<code class="ph codeph">mk-extension.zip</code>.</p>
+      <section class="section"><div class="p">Depending on the requirements of the
+            custom facts you’re using, the extension can include these directories: <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="microkernel_extension_configuration__entry__1">Directory</th>
+                        <th class="entry" id="microkernel_extension_configuration__entry__2">Contains</th>
+                        <th class="entry" id="microkernel_extension_configuration__entry__3">Environment variable modified</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="microkernel_extension_configuration__entry__1">
+                           <code class="ph codeph">bin</code>
+                        </td>
+                        <td class="entry" headers="microkernel_extension_configuration__entry__2">executables</td>
+                        <td class="entry" headers="microkernel_extension_configuration__entry__3">
+                           <code class="ph codeph">PATH</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="microkernel_extension_configuration__entry__1">
+                           <code class="ph codeph">lib</code>
+                        </td>
+                        <td class="entry" headers="microkernel_extension_configuration__entry__2">shared libraries</td>
+                        <td class="entry" headers="microkernel_extension_configuration__entry__3">
+                           <code class="ph codeph">LD_LIBRARY_PATH</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="microkernel_extension_configuration__entry__1">
+                           <code class="ph codeph">lib/ruby/facter/fact.rb</code>
+                        </td>
+                        <td class="entry" headers="microkernel_extension_configuration__entry__2">Ruby code</td>
+                        <td class="entry" headers="microkernel_extension_configuration__entry__3">
+                           <code class="ph codeph">RUBYLIB</code>
+                        </td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="microkernel_extension_configuration__entry__1">
+                           <code class="ph codeph">facts.d</code>
+                        </td>
+                        <td class="entry" headers="microkernel_extension_configuration__entry__2">external facts</td>
+                        <td class="entry" headers="microkernel_extension_configuration__entry__3">–</td>
+                     </tr>
+                  </tbody></table>For example, from inside your microkernal extension
+               directory:<pre class="pre codeblock"><code>$ zip -r ../mk-extension.zip
+ bin/
+ facts.d/
+ facts.d/foobar.yaml</code></pre><div class="note note note_note"><span class="note__title">Note:</span> You can’t change environment variables other
+                  than&nbsp;<code class="ph codeph">PATH</code>,&nbsp;<code class="ph codeph">LD_LIBRARY_PATH</code>, and&nbsp;<code class="ph codeph">RUBYLIB</code>. For example, static&nbsp;<code class="ph codeph">FACTER_&lt;factname&gt;</code>&nbsp;environment
+               variables don’t work with the microkernel extension.</div></div></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="create_the_microkernel_extension">
+    <h2 class="title topictitle2" id="ariaid-title4">Create the microkernel extension</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Create a microkernel extension ZIP file to customize the
+        facts that are available for provisioning decisions.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Create a ZIP file, as described in&nbsp;<a class="xref" href="provisioning_with_custom_facts.html#microkernel_extension_configuration" title="The Razor microkernel extension is a ZIP file with the default title&nbsp;mk-extension.zip.">Microkernel extension configuration</a>, that contains the files
+                    required for your custom facts.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Place the ZIP file at&nbsp;<code class="ph codeph">/etc/puppetlabs/razor-server</code>&nbsp;or, if
+                    you’ve changed the default, the location specified by the&nbsp;<code class="ph codeph">microkernel_extension_zip</code>&nbsp;parameter of
+                        the&nbsp;<code class="ph codeph">pe_razor</code>&nbsp;module.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Make sure the ZIP file is readable by
+                        the&nbsp;<code class="ph codeph">pe-razor</code>&nbsp;user. For example, you can use&nbsp;<code class="ph codeph">chmod 444 &lt;FILE_NAME&gt;</code>&nbsp;to make the
+                    file readable by all users.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" lang="en-us" id="tips_and_limitations_of_the_microkernel_extension">
+    <h2 class="title topictitle2" id="ariaid-title5">Tips and limitations of the microkernel extension</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Follow these guidelines to ensure that your microkernel
+        extension behaves as expected.</p>
+        <div class="p"><ul class="ul">
+                <li class="li"><p class="p">Use relative paths in your
+                        applications or facts, or search standard variables to locate content. Don't
+                        use absolute paths, because the content of the directory that the
+                        microkernel extension is unpacked to is variable.</p></li>
+                <li class="li"><p class="p">To store persistent state, for example
+                        if you want to save the result of a web service lookup to avoid calling the
+                        service at each checkin, don't use the location where the zip file is
+                        unpacked on the microkernel. Data stored at this location can be lost when
+                        the microkernel refreshes. Using <code class="ph codeph">/tmp</code> is a valid choice, because the data persists in that
+                        location as long as the microkernel extension is running.</p></li>
+            </ul></div>
+    </div>
+</article></article></article></main></body></html>

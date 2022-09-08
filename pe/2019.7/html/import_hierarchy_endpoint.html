@@ -1,0 +1,53 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the import hierarchy endpoint to delete all existing node groups from the node classifier service and replace them with the node groups in the body of the submitted request."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="import_hierarchy_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Import hierarchy endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="import_hierarchy_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1">Import hierarchy endpoint </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Use the import hierarchy endpoint to delete all existing
+        node groups from the node classifier service and replace them with the node groups in the
+        body of the submitted request. </p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="post_v1_import_hierarchy">
+    <h2 class="title topictitle2" id="ariaid-title2">POST /v1/import-hierarchy </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Delete <em class="ph i">all</em> existing node
+        groups from the node classifier service and replace them with the node groups in the body of
+        the submitted request. </p>
+        <section class="section"><p class="p">The request's body must contain an
+                array of node groups that form a valid and complete node group hierarchy. Valid
+                means that the hierarchy does not contain any cycles, and complete means that every
+                node group in the hierarchy is reachable from the root.</p></section>
+        <section class="section" id="post_v1_import_hierarchy__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">The request body must be a JSON array of node
+                group objects as described in the <code class="ph codeph">groups</code> endpoint documentation. All fields of the node group objects
+                must be defined; no default values are supplied by the service.</p><p class="p">Note that the output of the group collection endpoint, <code class="ph codeph">/v1/groups</code>, is valid input for this
+                endpoint.</p></section>
+        <section class="section" id="post_v1_import_hierarchy__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">If the submitted node groups form a
+                complete and valid hierarchy, and the replacement operation is successful, a <code class="ph codeph">204 No Content</code> response with an empty
+                body is returned.</p></section>
+        <section class="section" id="post_v1_import_hierarchy__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">If any of the node groups in the array are
+                malformed, a 400 Bad Request response is returned. The response contains the usual
+                JSON error payload. The <code class="ph codeph">kind</code> key is
+                "schema-violation"; the <code class="ph codeph">msg</code> key
+                contains a short description of the problems with the malformed node groups; and the
+                    <code class="ph codeph">details</code> key contains an object
+                with three keys:</p><ul class="ul">
+                <li class="li"><code class="ph codeph">submitted</code>:
+                    an array of only the malformed node groups found in the submitted request.</li>
+                <li class="li"><code class="ph codeph">error</code>: an
+                    array of structured descriptions of how the node group at the corresponding
+                    index in the <code class="ph codeph">submitted</code> array
+                    failed to meet the schema.</li>
+                <li class="li"><code class="ph codeph">schema</code>: the
+                    structured schema for node group objects.</li>
+            </ul><p class="p">If the hierarchy formed by the node groups contains a cycle,
+                then a 422 Unprocessable Entity response is returned. The response contains the
+                usual JSON error payload, where the <code class="ph codeph">kind</code> key is "inheritance-cycle", the <code class="ph codeph">msg</code> key contains the names of the node groups in the
+                cycle, and the <code class="ph codeph">details</code> key contains
+                an array of the complete node group objects in the cycle.</p><p class="p">If the hierarchy formed by the node groups contains node groups that are
+                unreachable from the root, then a 422 Unprocessable Entity response is returned. The
+                response contains the usual JSON error payload, where the <code class="ph codeph">kind</code> key is "unreachable-groups", the <code class="ph codeph">msg</code> lists the names of the unreachable node
+                groups, and the <code class="ph codeph">details</code> key
+                contains an array of the unreachable node group objects.</p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="groups_endpoint.html#groups_endpoint" title="The groups endpoint is used to create, read, update, and delete groups.">Groups endpoint</a></li><li class="linklist"><a class="link" href="node_classifier_errors.html#node_classifier_errors" title="Familiarize yourself with error responses to make working the node classifier service API easier.">Node classifier errors</a></li></ul></div></nav></article></article></article></main></body></html>

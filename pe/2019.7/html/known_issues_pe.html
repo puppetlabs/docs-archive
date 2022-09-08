@@ -1,0 +1,458 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="These are the known issues in PE 2019.7."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="known_issues_pe"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>PE known issues</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="known_issues_pe">
+    <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">PE</span> known issues</h1>
+    
+    <div class="body conbody"><p class="shortdesc">These are the known issues in <span class="ph">PE</span>
+        <span class="ph">2019.7</span>.</p></div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="known_issues_installation_and_upgrade">
+    <h2 class="title topictitle2" id="ariaid-title2">Installation and upgrade known issues </h2>
+    
+    <div class="body conbody"><p class="shortdesc">These are the known issues for installation and upgrade in
+        this release. </p><section class="section"><h3 class="title sectiontitle">Upgrade removes custom classification rules from <span class="ph uicontrol">PE Master</span>
+            node group</h3>
+        
+        <p class="p">Custom rules that you've used to classify compilers in the <span class="ph uicontrol">PE
+            Master</span> node group are removed upon upgrade, or when you run <code class="ph codeph">puppet infrastructure configure</code>. This issue is due to a
+            change in the way compilers are classified in 2019.7 and later, with new-style
+            compilers classified in the new <span class="ph uicontrol">PE Compiler</span> node group. </p>
+        <div class="p">As a workaround, before upgrade, pin compilers to the <span class="ph uicontrol">PE
+            Master</span> node group. After upgrade, you can optionally unpin compiler
+            nodes from the <span class="ph uicontrol">PE Master</span> node group and reimplement any
+            custom rules.<div class="note important note_important"><span class="note__title">Important:</span> If you reimplement rules in order to classify
+                compilers, leave the new <code class="ph codeph">pp_auth_role</code> rule in
+                place. This rule enables converting legacy compilers when you're ready to do
+                so.</div></div></section>
+        <section class="section"><h3 class="title sectiontitle">Upgrading Windows agents using the puppet_agent module can restart non-Puppet services</h3>
+            
+            <p class="p">If you're using a log aggregator, upgrading Windows agents using the puppet_agent module can cause non-Puppet services to restart. As a workaround, time upgrades in these circumstances to minimize the risk of any downtime for Windows nodes.
+                    </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Upgrading agents using the puppet_agent module can produce non-breaking
+                errors</h3>
+            
+            <p class="p">Upgrading agents from versions 6.14 or 6.15 using the puppet-agent module can produce
+                errors about an unavailable file resource or unknown HTTP resource. These errors
+                occur only during the initial <span class="ph">Puppet</span> agent run, when
+                the agent is still using versions 6.14 or 6.15 with an updated master. The error
+                resolves after the <code class="ph codeph">puppet-agent</code> service restarts.
+                    </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Converting legacy compilers fails with autosigning enabled </h3>
+            
+            <div class="p">Running <code class="ph codeph">puppet infrastructure run
+                    convert_legacy_compiler</code> with autosigning enabled causes the conversion
+                to fail during certificate regeneration. As a workaround, disable autosigning before
+                converting compilers, or follow these steps to complete a failed conversion:<ol class="ol">
+                    <li class="li">On affected compilers, run <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent -t</code></li>
+                    <li class="li">Unpin compiler nodes from <span class="ph uicontrol">PE Master</span> group, either in
+                        the console or from the command line:
+                        <pre class="pre codeblock"><code>/opt/puppetlabs/bin/puppet resource pe_node_group "PE Master" unpinned="COMPILER_FQDN"</code></pre></li>
+                    <li class="li">On your master, in <code class="ph codeph">pe.conf</code>, remove the entry
+                            <code class="ph codeph">puppet_enterprise::profile::database::private_temp_puppetdb_host</code></li>
+                    <li class="li">If you have an external PE-PostgreSQL node, run <span class="ph">Puppet</span> on it: <code class="ph codeph">puppet
+                            agent -t</code></li>
+                    <li class="li">On your master, run <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent -t</code></li>
+                    <li class="li">On affected compilers, run <span class="ph">Puppet</span>: <code class="ph codeph">puppet agent -t</code></li>
+                </ol></div>
+        </section><section class="section"><h3 class="title sectiontitle">Command to remove old <span class="ph">PostgreSQL</span> versions fails on <span class="ph">Ubuntu</span></h3>
+            
+            <p class="p">When run on <span class="ph">Ubuntu</span> nodes, the <code class="ph codeph">puppet infrastructure run remove_old_postgresql_versions</code> command
+                fails, erroneously reporting that <span class="ph">PostgreSQL</span> isn't
+                installed.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Upgrade fails with a <samp class="ph msgph">Could not retrieve facts</samp> error</h3>
+            
+            <div class="p">If an invalid custom fact installed on the master can't be resolved during upgrade,
+                the upgrade fails with an error similar to
+                this:<pre class="pre msgblock">Could not retrieve facts ... undefined method `split' for nil:NilClass (Puppet::Error)from /opt/puppetlabs/installer/lib/ruby/gems/2.5.0/gems/facter-4.0.20/lib/custom_facts/util/loader.rb:125:in `load'</pre>To
+                work around this issue, fix any invalid custom facts at the path indicated in the
+                error and then reattempt the upgrade.</div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Legacy compiler conversion fails with an external certificate authority</h3>
+            
+            <div class="p">If you use an external certificate authority (CA), the <code class="ph codeph">puppet infrastructure
+                    run convert_legacy_compiler</code> command fails with an error during the
+                certificate-signing step.
+                <pre class="pre msgblock">Agent_cert_regen: ERROR: Failed to regenerate agent certificate on node &lt;compiler-node.domain.com&gt;
+Agent_cert_regen: bolt/run-failure:Plan aborted: run_task 'enterprise_tasks::sign' failed on 1 target
+Agent_cert_regen: puppetlabs.sign/sign-cert-failed Could not sign request for host with certname &lt;compiler-node.domain.com&gt; using caserver &lt;master-host.domain.com&gt;</pre></div>
+            <div class="p">To work around this issue when it appears:<ol class="ol">
+                    <li class="li">Log on to the CA server and manually sign certificates for the
+                        compiler.</li>
+                    <li class="li">On the compiler, run <span class="ph">Puppet</span>: <code class="ph codeph">puppet
+                            agent -t</code></li>
+                    <li class="li">Unpin the compiler from <span class="ph uicontrol">PE Master</span> group, either from
+                        the console, or from the CLI using the command:
+                            <code class="ph codeph">/opt/puppetlabs/bin/puppet resource pe_node_group "PE Master"
+                            unpinned="&lt;COMPILER_FQDN&gt;"</code></li>
+                    <li class="li">On your master, in the <code class="ph codeph">pe.conf</code> file, remove the entry
+                            <code class="ph codeph">puppet_enterprise::profile::database::private_temp_puppetdb_host</code></li>
+                    <li class="li">If you have an external PE-PostgreSQL node, run <span class="ph">Puppet</span> on that node: <code class="ph codeph">puppet agent
+                            -t</code></li>
+                    <li class="li">Run <span class="ph">Puppet</span> on your master: <code class="ph codeph">puppet
+                            agent -t</code></li>
+                    <li class="li">Run <span class="ph">Puppet</span> on all compilers: <code class="ph codeph">puppet
+                            agent -t</code></li>
+                </ol></div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Upgrading a replica can temporarily lock the agent on the master </h3>
+            
+            <p class="p">If you try to run <span class="ph">Puppet</span> on your master before the
+                    <code class="ph codeph">puppet infrastructure upgrade replica</code> command
+                has completed, you can encounter an error that a <span class="ph">Puppet</span> run is already in progress. To resolve the issue, run Puppet on the master:
+                    <code class="ph codeph">puppet agent -t</code>.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Missing package dependencies for <span class="ph">SUSE Linux Enterprise Server</span> agent
+                nodes</h3>
+            
+            <p class="p">On agent nodes running <span class="ph">SUSE Linux Enterprise Server</span> 15, the <code class="ph codeph">libyaml-cpp</code> package and operating system packages
+                prefixed with <code class="ph codeph">libboost_</code> are no longer bundled with
+                    <span class="ph">Puppet</span> agent, and might not be included in the
+                operating system. See <a class="xref" href="supported_operating_systems.html#sles_dependencies" title="When you install PE or an agent, these packages are also installed from the various operating system repositories."><span class="ph">SUSE Linux Enterprise Server</span> dependencies</a> for the full list of
+                required packages. The <code class="ph codeph">libyaml-cpp</code> package is in the
+                Desktop Applications <span class="ph">SUSE Linux Enterprise Server</span> packaging module, and
+                    <code class="ph codeph">libboost</code> packages are in the Basesystem module.
+                If you encounter issues when installing Puppet agent on <span class="ph">SUSE Linux Enterprise Server</span> 15 nodes, use <code class="ph codeph">zypper
+                    package-search</code> or the <span class="ph">SUSE Linux Enterprise Server</span> Customer
+                Center packages list at <a class="xref" href="https://scc.suse.com/packages" target="_blank">https://scc.suse.com/packages</a> to locate the packages and
+                instructions on how to install them manually.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Installer can fail due to SSL errors with AmazonAWS </h3>
+            
+            <p class="p">In some cases when attempting to install <span class="ph">PE</span>, some
+                master platforms have received SSL errors when attempting to connect to
+                s3.amazonaws.com, and thus have been unable retrieve puppet-agent packages needed
+                for installation. In most cases, you should be able to properly install after
+                updating the CA cert bundle on the master platform. To update the bundle, run the
+                following commands:</p>
+            <div class="p">
+                <pre class="pre codeblock"><code>rm /etc/ssl/certs/ca-bundle.crt
+yum reinstall ca-certificates</code></pre>
+            </div>
+            <p class="p">After you update the CA bundle, run the installer again.
+            </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Upgrades can fail when using custom database certificate parameters</h3>
+            
+            <p class="p">When upgrading an infrastructure with an unmanaged <span class="ph">PostgreSQL</span> database to this version of <span class="ph">PE</span>, the upgrade can fail and result in downtime if
+                the databases use custom certificates not issued by the <span class="ph">PE</span> certificate authority. This is the case even if
+                you configured the <code class="ph codeph">database_properties</code> parameters in
+                    <code class="ph codeph">pe.conf</code> to set a custom <code class="ph codeph">sslrootcert</code>. The
+                upgrader ignores these custom certificate settings.</p>
+            <div class="p">To manually override the upgrader's certificate settings, run these commands,
+                replacing &lt;NEW CERT&gt; with the name of your custom
+                    certificate.<pre class="pre codeblock"><code>rpm -iUv /opt/puppetlabs/server/data/packages/public/2019.3.0/el-7-x86_64-6.12.0/pe-modules-2019.3.0.2-1.el7.x86_64.rpm
+                    
+sed -i 's#/etc/puppetlabs/puppet/ssl/certs/ca.pem#/etc/puppetlabs/puppet/ssl/&lt;NEW CERT&gt;.pem#'
+/opt/puppetlabs/server/data/environments/enterprise/modules/pe_manager/lib/puppet_x/puppetlabs/meep/configure/postgres.rb
+                        
+./puppet-enterprise-installer - --force</code></pre><div class="note note note_note"><span class="note__title">Note:</span> The
+                    first step in the code block above includes paths specific to the PE version
+                    you're upgrading to. Replace these version information as needed.
+                    </div></div>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="high_availability_known_issues">
+    <h2 class="title topictitle2" id="ariaid-title3">High availability known issues </h2>
+    
+    <div class="body conbody"><p class="shortdesc">These are the known issues for high availability in this
+        release. </p>
+        <section class="section"><h3 class="title sectiontitle">Enabling a replica can fail immediately after provisioning</h3>
+            
+            <p class="p">When running <code class="ph codeph">puppet infrastructure provision replica --enable</code>, the
+                command can fail after the replica is provisioned but before it is enabled if
+                services on the replica are still starting up. As a workaround, if you get an error
+                that the replica can't be enabled, verify that the replica is available with
+                    <code class="ph codeph">puppet infrastructure status --verbose</code>, and then  enable the
+                replica separately: <code class="ph codeph">puppet infrastructure enable replica &lt;REPLICA NODE
+                    NAME&gt;</code>.</p>
+        </section><section class="section"><h3 class="title sectiontitle">Upgrading a replica can temporarily lock the agent on the master </h3>
+            
+            <p class="p">If you try to run <span class="ph">Puppet</span> on your master before the
+                <code class="ph codeph">puppet infrastructure upgrade replica</code> command
+                has completed, you can encounter an error that a <span class="ph">Puppet</span> run is already in progress. To resolve the issue, run Puppet on the master:
+                <code class="ph codeph">puppet agent -t</code>.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle"><span class="ph">Puppet</span> runs can take longer than expected in
+                failover scenarios</h3>
+            
+            <p class="p">In an HA environment with a provisioned replica, if the master is unreachable, a <span class="ph">Puppet</span> run using data from the replica can take up to
+                three times as long as expected (for example, 6 minutes versus 2 minutes).
+                    </p>
+        </section>
+        
+        
+        
+        
+        
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="fips_known_issues">
+    <h2 class="title topictitle2" id="ariaid-title4">FIPS known issues </h2>
+    
+    <div class="body conbody"><p class="shortdesc">These are the known issues with supported platforms in
+        this release.</p>
+        <section class="section"><h3 class="title sectiontitle"><span class="ph">Puppet Server</span> FIPS installations don’t support Ruby’s
+                OpenSSL module</h3>
+            
+            <p class="p">FIPS-compliant installations don't support extensions that use the standard <span class="ph">Ruby</span> Open SSL library, such as
+                    heira-eyaml.</p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">FIPS installations don't support <span class="ph">Razor</span></h3>
+            
+            <p class="p"><span class="ph">Razor</span>, which is deprecated, doesn't work and isn't
+                supported in FIPS-enabled <span class="ph">PE</span>. </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Errors when using <code class="ph codeph">puppet code</code> and <code class="ph codeph">puppet db</code> commands on FIPS-enabled hardware</h3>
+            
+            <div class="p">When the <code class="ph codeph">pe-client-tools</code> packages are run on
+                FIPS-enabled hardware, <code class="ph codeph">puppet code</code> and <code class="ph codeph">puppet db</code> commands fail with SSL handshake errors. To
+                use <code class="ph codeph">puppet db</code> commands on a FIPS-enabled machine,
+                install the <a class="xref" href="https://rubygems.org/gems/puppetdb_cli" target="_blank">puppetdb_cli</a>
+                <span class="ph">Ruby</span> gem with the following command:
+                <pre class="pre codeblock"><code>/opt/puppetlabs/puppet/bin/gem install puppetdb_cli --bindir /opt/puppetlabs/bin/</code></pre>To
+                use <code class="ph codeph">puppet code</code> commands on a FIPS-enabled machine,
+                use the <span class="ph">Code Manager</span> API. Alternatively, you can use
+                    <code class="ph codeph">pe-client-tools</code> on a non-FIPS-enabled machine to
+                access a FIPS-enabled master. </div>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="supported_platforms_known_issues">
+    <h2 class="title topictitle2" id="ariaid-title5">Supported platforms known issues </h2>
+    
+    <div class="body conbody"><p class="shortdesc">These are the known issues with supported platforms in
+        this release.</p>
+        <section class="section"><h3 class="title sectiontitle"><span class="ph">Ubuntu</span> 20.04 can't be installed with <span class="ph">PE</span> package management</h3><div class="p"><span class="ph">Ubuntu</span> 20.04 is a supported agent platform, but isn't available
+                for installation as a <code class="ph codeph">pe_repo</code> class. As a
+                workaround, on your master,add <code class="ph codeph">/opt/puppetlabs/puppet/modules/pe_repo/manifests/platform/ubuntu_2004_amd64.pp</code>
+                with this
+                code:<pre class="pre codeblock"><code>class pe_repo::platform::ubuntu_2004_amd64(
+  $agent_version = $::aio_agent_build,
+){
+  include pe_repo
+ 
+  pe_repo::debian { 'ubuntu-20.04-amd64':
+    agent_version =&gt; $agent_version,
+    codename      =&gt; 'focal',
+    pe_version    =&gt; $pe_repo::default_pe_build,
+  }
+}</code></pre></div>
+            <p class="p">You can then add <span class="ph">Ubuntu</span> 20.04 as a <code class="ph codeph">pe_repo</code> class and install the <span class="ph">PE</span> agent on <span class="ph">Ubuntu</span>
+                20.04  nodes.</p></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="known_issues_configuration_and_maintenance">
+    <h2 class="title topictitle2" id="ariaid-title6">Configuration and maintenance known issues</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">These are the known issues for configuration and
+        maintenance in this release.</p>
+        <section class="section"><h3 class="title sectiontitle">Console is inaccessible with <span class="ph">PE</span> set to
+                IPv6</h3>
+            
+            <p class="p">If you specify IPv6, <span class="ph">PE</span> Java services still listens to
+                the IPv4 localhost. This mismatch can prevent access to the console as Nginx proxies
+                traffic to the wrong localhost.</p>
+            <div class="p">As a workaround, set the <a class="xref" href="https://docs.oracle.com/javase/8/docs/technotes/guides/net/properties.html" target="_blank">java.net.preferIPv6Addresses property</a> to
+                    <code class="ph codeph">true</code> for console services and <span class="ph">PuppetDB</span>:<pre class="pre codeblock"><code>"puppet_enterprise::profile::console::java_args": {
+  "Xms": "256m"
+  "Xmx": "256m"
+  "Djava.net.preferIPv6Addresses": "=true"
+}
+ 
+"puppet_enterprise::profile::puppetdb::java_args": {
+  "Xms": "256m"
+  "Xmx": "256m"
+  "Djava.net.preferIPv6Addresses": "=true"
+}</code></pre></div>
+            
+        </section>
+        <section class="section"><h3 class="title sectiontitle"><code class="ph codeph">puppet infrastructure recover_configuration</code> misreports
+                success if specified environment doesn't exist</h3><p class="p">If you
+                specify an invalid environment when running <code class="ph codeph">puppet infrastructure recover_configuration</code>, the system erroneously
+                reports that the environment's configuration was saved. </p></section>
+        <section class="section"><h3 class="title sectiontitle">
+                <code class="ph codeph">puppet-backup</code> fails
+                if gems are missing from the master's agent environment</h3>
+            
+            <p class="p">The <code class="ph codeph">puppet-backup</code> create command might fail if any gem installed on the
+                    <span class="ph">Puppet Server</span> isn't present on the agent environment on
+                the master. If the gem is either absent or of a different version on the master's
+                agent environment, you get the error "command <code class="ph codeph">puppet infrastructure recover_configuration</code> failed". </p>
+            <p class="p">To fix this, install missing or incorrectly versioned gems on the master's agent
+                environment. To find which gems are causing the error, check the backup logs for gem
+                incompatibility issues with the error message. <span class="ph">PE</span>
+                creates backup logs as a <code class="ph codeph">report.txt</code> whenever you run
+                a <code class="ph codeph">puppet-backup</code> command. </p>
+            <p class="p">To see what gems and their versions you have installed on your <span class="ph">Puppet Server</span>, run the command <code class="ph codeph">puppetserver gem list</code> . To see what gems
+                are installed in the agent environment on your master, run <code class="ph codeph">/opt/puppetlabs/puppet/bin/gem list</code>.
+                    
+            </p>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="known_issues_orchestration">
+  <h2 class="title topictitle2" id="ariaid-title7">Orchestration services known issues </h2>
+  
+  <div class="body conbody"><p class="shortdesc">These are the known issues for the orchestration services in
+    this release. </p>
+    <section class="section" id="known_issues_orchestration__existing_pxp_agents_can_t_run_jobs_with_new_orchestrator_instances"><h3 class="title sectiontitle">Orchestrator fails when rerunning tasks on agentless nodes</h3><p class="p">When you rerun tasks from the <span class="ph uicontrol">Job details</span> page, target nodes that do not
+        have an agent installed are miscategorized as <span class="ph">PuppetDB</span> nodes.
+        This causes the orchestrator to fail on those nodes. </p></section>
+    <section class="section"><h3 class="title sectiontitle">Some Bolt stdlib functions fail in <span class="ph">PE</span></h3>
+      
+      <div class="p">The following <span class="ph">Bolt</span> stdlib functions return an error if they
+        are run in <span class="ph">PE</span>:<ul class="ul">
+          <li class="li"><code class="ph codeph">apply_prep</code></li>
+          <li class="li"><code class="ph codeph">file::read</code></li>
+          <li class="li"><code class="ph codeph">file::write</code></li>
+          <li class="li"><code class="ph codeph">file::readable</code></li>
+          <li class="li"><code class="ph codeph">file::exists</code></li>
+          <li class="li"><code class="ph codeph">set_features</code></li>
+          <li class="li"><code class="ph codeph">add_to_group</code></li>
+        </ul></div>
+      <p class="p">For more information, see <a class="xref" href="plans_limitations.html" title="Some plan language and features are not available in PE or have some caveats.">Plan caveats and limitations</a>.</p>
+      
+    </section>
+    <section class="section"><h3 class="title sectiontitle">The function <code class="ph codeph">puppet plan show</code> displays invalid plans when <span class="ph">Code Manager</span> is disabled</h3>
+      
+      <p class="p">If <span class="ph">Code Manager</span> is disabled, the <code class="ph codeph">puppet plan
+          show</code> function and the console will still list plans that are contained in a
+        control repo, but those plans cannot be run. Enable <span class="ph">Code Manager</span>
+        to run plans. </p>
+    </section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="known_issues_certs">
+    <h2 class="title topictitle2" id="ariaid-title8">SSL and certificate known issues</h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">These are the known issues for SSL and certificates in
+        this release. </p>
+        <section class="section"><h3 class="title sectiontitle">Regenerating agent certificates fails with autosign
+                enabled</h3>
+            
+            <p class="p">The <code class="ph codeph">puppet infrastructure
+                    run regenerate_agent_certificate</code> command includes a step for signing
+                the node's certificate. With autosign enabled, an unsigned certificate can't be
+                found, and the command errors out. As a workaround, temporarily disable autosign
+                before running <code class="ph codeph">puppet infrastructure run
+                    regenerate_agent_certificate</code>. 
+            </p>
+        </section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title9" id="known_issues_code_management">
+        <h2 class="title topictitle2" id="ariaid-title9">Code management known issues </h2>
+        
+        <div class="body conbody"><p class="shortdesc">These are the known issues for <span class="ph">Code Manager</span>, <span class="ph">r10k</span>, and
+                file sync in this release. </p>
+                <section class="section"><h3 class="title sectiontitle"> Default SSH URL with TFS fails with Rugged error </h3><p class="p">Using
+                                the default SSH URL with <span class="ph">Microsoft</span>
+                                Team Foundation Server (TFS) with the <code class="ph codeph">rugged</code> provider causes
+                                an error of "unable to determine current branches for Git source."
+                                This is because the <code class="ph codeph">rugged</code> provider expects an <code class="ph codeph">@</code>
+                                symbol in the URL format.</p><p class="p">To work around
+                                this error, replace <code class="ph codeph">ssh://</code> in the default URL with
+                                        <code class="ph codeph">git@</code></p><div class="p">For example, change:
+                                <pre class="pre codeblock"><code>ssh://tfs.puppet.com:22/tfs/DefaultCollection/Puppet/_git/control-repo</code></pre>
+                                to
+                                        <pre class="pre codeblock"><code>git@tfs.puppet.com:22/tfs/DefaultCollection/Puppet/_git/control-repo</code></pre></div></section>
+                <section class="section"><h3 class="title sectiontitle"><span class="ph">GitHub</span> security updates might
+                                cause errors with <code class="ph codeph">shellgit</code></h3><p class="p"><span class="ph">GitHub</span> has disabled TLSv1, TLSv1.1
+                                and some SSH cipher suites, which can cause automation using older
+                                crypto libraries to start failing. If you are using <span class="ph">Code Manager</span> or <span class="ph">r10k</span> with the <code class="ph codeph">shellgit</code>
+                                provider enabled, you might see negotiation errors on some platforms
+                                when fetching modules from the <span class="ph">Forge</span>.
+                                To resolve these errors, switch your configuration to use the
+                                        <code class="ph codeph">rugged</code> provider, or fix <code class="ph codeph">shellgit</code> by updating
+                                your OS package. </p></section>
+                <section class="section" id="known_issues_code_management__timeouts_when_using_wait_with_large_deployments_or_geographically_dispersed_compile_masters"><h3 class="title sectiontitle">Timeouts when using <code class="ph codeph">--wait</code> with large
+                                deployments or geographically dispersed compilers </h3><p class="p">Because the <code class="ph codeph">--wait</code> flag deploys code to all compilers before returning results,
+                                some deployments with a large node count or compilers spread across
+                                a large geographic area might experience a timeout. Work around this
+                                issue by adjusting the <code class="ph codeph">timeouts_sync</code> parameter.
+                                        </p></section>
+                <section class="section" id="known_issues_code_management__r10k_with_the_rugged_provider_can_develop_a_bloated_cache"><h3 class="title sectiontitle"><span class="ph">r10k</span> with the
+                                Rugged provider can develop a bloated cache </h3><p class="p">If you use the <code class="ph codeph">rugged</code> provider for <span class="ph">r10k</span>, repository pruning is not
+                                supported. As a result, if you use many short-lived branches, over
+                                time the local <span class="ph">r10k</span> cache can become
+                                bloated and take up significant disk space.</p><p class="p">If you encounter this issue, run <code class="ph codeph">git-gc</code> periodically on any cached repo that is
+                                using a large amount of disk space in the cachedir. Alternately, use
+                                the <code class="ph codeph">shellgit</code> provider, which
+                                automatically garbage collects the repos according to the normal Git
+                                CLI rules. </p></section>
+                <section class="section" id="known_issues_code_management__code_manager_and_r10k_do_not_identify_the_default_branch_for_module_repositories"><h3 class="title sectiontitle"><span class="ph">Code Manager</span> and <span class="ph">r10k</span> do not identify the
+                                default branch for module repositories </h3><p class="p">When you use <span class="ph">Code Manager</span> or <span class="ph">r10k</span> to deploy modules from a Git
+                                source, the default branch of the source repository is always
+                                assumed to be master. If the module repository uses a default branch
+                                that is <em class="ph i">not</em> master, an error
+                                occurs. To work around this issue, specify the default branch with
+                                the <code class="ph codeph">ref:</code> key in
+                                your Puppetfile. </p></section>
+                <section class="section" id="known_issues_code_management__after_an_error_during_the_initial_run_of_file_sync_puppet_server_won_t_start"><h3 class="title sectiontitle">After an error during the initial run
+                                of file sync, <span class="ph">Puppet Server</span> won't start
+                                </h3><p class="p">The first time you run <span class="ph">Code Manager</span> and file sync on a
+                                master, an error can occur that prevents <span class="ph">Puppet Server</span> from starting. To work
+                                around this issue:</p><ol class="ol">
+                                <li class="li">Stop the <code class="ph codeph">pe-puppetserver</code> service.</li>
+                                <li class="li">Locate the data-dir variable in <code class="ph codeph">/etc/puppetlabs/puppetserver/conf.d/file-sync.conf</code>.</li>
+                                <li class="li">Remove the directory.</li>
+                                <li class="li">Start the <code class="ph codeph">pe-puppetserver</code> service.</li>
+                        </ol><p class="p">Repeat these steps on each master exhibiting the
+                                same symptoms, including any compilers. </p></section>
+                <section class="section" id="known_issues_code_management__puppet_server_crashes_if_file_sync_cannot_write_to_the_live_code_directory"><h3 class="title sectiontitle"><span class="ph">Puppet Server</span> crashes if file sync can't write to the live code directory
+                                </h3><p class="p">If the live code directory contains
+                                content that file sync didn’t expect to find there (for example,
+                                someone has made changes directly to the live code directory), <span class="ph">Puppet Server</span> crashes. </p><p class="p">The following error appears in <code class="ph codeph">puppetserver.log</code>:
+                                </p><pre class="pre codeblock"><code>2016-05-05 11:57:06,042 ERROR [clojure-agent-send-off-pool-0] [p.e.s.f.file-sync-client-core] Fatal error during file sync, requesting shutdown.
+org.eclipse.jgit.api.errors.JGitInternalException: Could not delete file /etc/puppetlabs/code/environments/development
+        at org.eclipse.jgit.api.CleanCommand.call(CleanCommand.java:138) ~[puppet-server-release.jar:na]</code></pre><p class="p">To recover from this error:</p><ol class="ol">
+                                <li class="li">Delete the environments in code dir: <code class="ph codeph">find
+                                                /etc/puppetlabs/code -mindepth 1
+                                        -delete</code></li>
+                                <li class="li">Start the <code class="ph codeph">pe-puppetserver</code> service:
+                                                <code class="ph codeph">puppet
+                                                resource service pe-puppetserver
+                                                ensure=running</code></li>
+                                <li class="li">Trigger a <span class="ph">Code Manager</span> run by your usual
+                                        method.</li>
+                        </ol></section>
+        </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title10" id="known_issues_utf8">
+   <h2 class="title topictitle2" id="ariaid-title10">Internationalization known issues </h2>
+   
+   <div class="body conbody"><p class="shortdesc">These are the known issues for internationalization and
+      UTF-8 support in this release. </p>
+      <section class="section"><h3 class="title sectiontitle">ASCII limitations</h3><div class="p">Certain elements of <span class="ph">Puppet</span> and <span class="ph">PE</span> are limited to ASCII characters only, or work best with
+            ASCII characters, including: <ul class="ul">
+               <li class="li">
+                  <p class="p">Names for environments, variables, classes, resource types,
+                     modules, parameters, and tags in the <span class="ph">Puppet</span>
+                     language. 
+                  </p>
+               </li>
+               <li class="li">
+                  <p class="p">File names, which can generate errors when referenced as a
+                        <code class="ph codeph">source</code> in a
+                     file resource or concat fragment.
+                  </p>
+               </li>
+               <li class="li">
+                  <p class="p">The <code class="ph codeph">title</code> and <code class="ph codeph">namevar</code> for certain resource types, on certain operating systems.
+                     For example, the user and group resources on <span class="ph">RHEL</span> and <span class="ph">CentOS</span> might contain only ASCII
+                     characters in <code class="ph codeph">title</code> and
+                        <code class="ph codeph">namevar</code>. 
+                  </p>
+               </li>
+               <li class="li">
+                  <p class="p">The console password. 
+                  </p>
+               </li>
+            </ul></div></section>
+      <section class="section" id="known_issues_utf8__ruby_can_corrupt_the_path_fact_and_environment_variable_on_windows"><h3 class="title sectiontitle"><span class="ph">Ruby</span> can corrupt the <code class="ph codeph">path</code> fact and environment variable on
+               <span class="ph">Windows</span></h3><p class="p">There is a bug in
+               <span class="ph">Ruby</span> that can corrupt the environment variable names
+            and values. This bug causes corruption for only some codepages. This bug might be
+            triggered when environment names or values contain UTF-8 characters that can't be
+            translated to the current codepage.</p><p class="p">The same bug can cause the
+               <code class="ph codeph">path</code> fact to be cached in a corrupt
+            state. </p></section>
+   </div>
+</article></article></article></main></body></html>

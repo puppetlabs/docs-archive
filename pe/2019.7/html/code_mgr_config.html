@@ -1,0 +1,286 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="To configure Code Manager, enable it in Puppet Enterprise (PE), set up authentication, and test the communication between the control repo and Code Manager."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="configuring_code_manager"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configuring Code Manager</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="configuring_code_manager">
+   <h1 class="title topictitle1" id="ariaid-title1">Configuring <span class="ph">Code Manager</span></h1>
+   
+   <div class="body conbody"><p class="shortdesc">To configure <span class="ph">Code Manager</span>, enable it in <span class="ph">Puppet Enterprise (PE)</span>, set up authentication, and test the communication
+      between the control repo and <span class="ph">Code Manager</span>. </p>
+      <p class="p">When you finished configuration, you're ready to deploy environments
+         with <span class="ph">Code Manager</span>.</p>
+      <p class="p">You can enable and configure <span class="ph">Code Manager</span>
+         either during or after <span class="ph">r10k</span> installation.</p>
+      <p class="p">To enable <span class="ph">Code Manager</span> after a new
+         installation or in an existing <span class="ph">PE</span> installation, set <span class="ph">Code Manager</span> parameters in the console. You can also configure <span class="ph">Code Manager</span> during a fresh <span class="ph">PE</span>
+         installation, but only during a text-mode installation. </p>
+      <ol class="ol">
+         <li class="li">Enable and configure <span class="ph">Code Manager</span>, after
+            installation or upgrade, by setting parameters in the master profile class in the <span class="ph">PE</span> console. Alternatively, enable during a fresh
+            installation, by setting parameters in <code class="ph codeph">pe.conf</code></li>
+         <li class="li">
+            <p class="p">Test your control repo.</p>
+         </li>
+         <li class="li">
+            <p class="p">Set up authentication for <span class="ph">Code Manager</span>.</p>
+         </li>
+         <li class="li">
+            <p class="p">Test <span class="ph">Code Manager</span>.</p>
+         </li>
+      </ol>
+   </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="upgrading_from_r10k_to_code_manager">
+    <h2 class="title topictitle2" id="ariaid-title2">Upgrading from <span class="ph">r10k</span> to <span class="ph">Code Manager</span>
+    </h2>
+    
+    <div class="body conbody"><p class="shortdesc">If you are upgrading from <span class="ph">r10k</span> to <span class="ph">Code Manager</span>, you must
+        first disable your old r10k installation.</p>
+        <p class="p">If you are upgrading from <span class="ph">r10k</span> to <span class="ph">Code Manager</span>, check the following before enabling <span class="ph">Code Manager</span>:</p>
+        <ul class="ul">
+            <li class="li">If you used <span class="ph">r10k</span> prior to PE
+                2015.3, you might have configured <span class="ph">r10k</span> in the console
+                using the <code class="ph codeph">pe_r10k</code> class. If so, you
+                must remove the <code class="ph codeph">pe_r10k</code> class in
+                the console <strong class="ph b">before</strong> configuring <span class="ph">Code Manager</span>.</li>
+            <li class="li">If you used any previous versions of <span class="ph">r10k</span>, disable any tools that might automatically run
+                it. Most commonly, this is the <code class="ph codeph">zack-r10k</code> module. <span class="ph">Code Manager</span> cannot
+                install or update code properly if other tools are running <span class="ph">r10k</span>.</li>
+        </ul>
+        <p class="p">When you start using <span class="ph">Code Manager</span>, it runs
+                <span class="ph">r10k</span> in the background. You can no longer directly
+            interact with <span class="ph">r10k</span> or use the <code class="ph codeph">zack-r10k</code> module.</p>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="code_mgr_enable">
+    <h2 class="title topictitle2" id="ariaid-title3">Enable <span class="ph">Code Manager</span></h2>
+    
+
+    
+    <div class="body taskbody"><p class="shortdesc">Enabling <span class="ph">Code Manager</span> connects your master to your <span class="ph">Git</span> repository.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>You must have an SSH key that:<ul class="ul">
+                <li class="li">Does not have a passphrase.</li>
+            </ul><ul class="ul">
+                <li class="li">Is owned by the <code class="ph codeph">pe-puppet</code> user.</li>
+                <li class="li">Is located on the master in a directory that the <code class="ph codeph">pe-puppet</code> user
+                    has permission to view. We recommend
+                        <code class="ph codeph">/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa</code></li>
+            </ul></section><section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, set the following parameters in the
+                    <code class="ph codeph">puppet_enterprise::profile::master</code> class in the <span class="ph">PE</span> Master node group.</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <ul class="ul">
+                            <li class="li"><code class="ph codeph">code_manager_auto_configure</code> to <kbd class="ph userinput">
+                                true</kbd>: This enables and configures both <span class="ph">Code Manager</span> and file sync.</li>
+                            <li class="li"><code class="ph codeph">r10k_remote</code>: This is the location of your control
+                                repository, as accessed by SSH. Enter a string that is a valid SSH URL for
+                                your <span class="ph">Git</span> control repository. For example:
+                                <kbd class="ph userinput">"git@&lt;YOUR.GIT.SERVER.COM&gt;:puppet/control.git"</kbd>.<div class="note note note_note"><span class="note__title">Note:</span> Some
+                                    Git providers, such as Bitbucket, might have additional requirements for
+                                    enabling SSH access. See your provider's documentation for
+                                    information.</div></li>
+                            <li class="li"><code class="ph codeph">r10k_private_key</code>: Enter a string specifying the path to
+                                the SSH private key that permits the user to access your <span class="ph">Git</span> repositories.</li>
+                        </ul>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run <span class="ph">Puppet</span> on your master and all
+                    compilers.</span>
+                <div class="itemgroup info">
+                    <p class="p">If you run <span class="ph">Puppet</span> for your master and all
+                        compilers at the same time, such as with <span class="ph uicontrol">Run Puppet</span>
+                        in the console, you might see errors like this your compilers' logs:</p>
+                    <div class="p">
+                        <pre class="pre codeblock"><code>2015-11-20 08:14:38,308 ERROR [clojure-agent-send-off-pool-0]
+[p.e.s.f.file-sync-client-core] File sync failure: Unable to get
+latest-commits from server (https://master.example.com:8140/file-sync/v1/latest-commits).
+java.net.ConnectException: Connection refused
+</code></pre>
+                    </div>
+                    <p class="p">You can ignore these errors. They occur because <span class="ph">Puppet Server</span> is restarting while the compilers are
+                        trying to poll for new code. These errors generally stop as soon as the <span class="ph">Puppet Server</span> on the master has finished
+                        restarting.</p>
+                </div>
+            </li></ol></section>
+        <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>
+            <p class="p">Next, set up authentication.</p>
+        </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="set_up_authentication_for_code_manager">
+    <h2 class="title topictitle2" id="ariaid-title4">Set up authentication for <span class="ph">Code Manager</span>
+    </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To securely deploy environments, <span class="ph">Code Manager</span> needs an
+        authentication token for both authentication and authorization.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">If you would like to use <span class="ph">PE</span> client tools,
+                configure these now. <span class="ph">PE</span>
+                client tools let you access <span class="ph">PE</span> services from a workstation that is not necessarily managed by <span class="ph">Puppet</span>. They come pre-installed on your master, but
+                you need to configure them by creating a <a class="xref" href="https://github.com/glennsarti/dev-tools/blob/master/config-pe-client-tools.ps1" target="_blank"><u class="ph u">configuration file</u></a>. See <a class="xref" href="installing_pe_client_tools.html#installing_pe_client_tools" title="PE client tools are a set of command line tools that let you access Puppet Enterprise services from a workstation that might or might not be managed by Puppet.">Configuring PE client tools</a> for
+                more information.</p></section>
+        <section class="section context"><p class="p">To generate a token for
+                    <span class="ph">Code Manager</span>, first assign a user to the deployment
+                role, and then request an authentication token.</p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#configuring_puppet_access" title="The puppet-access command allows users to generate and manage authentication tokens from the command line of any workstation (Puppet-managed or not), without the need to SSH into the Puppet master. Ensure puppet-access is configured correctly before using it to generate authentication tokens.">Configure puppet-access</a></li></ul></div></nav><article class="topic task nested2" aria-labelledby="ariaid-title5" id="assign_a_user_to_the_deployment_role">
+    <h3 class="title topictitle3" id="ariaid-title5">Assign a user to the deployment role </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">To request an authentication token, you must first assign a user the correct
+        permissions with role-based access control (RBAC).</p>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, create a deployment user. We
+                    recommend that you create a dedicated deployment user for <span class="ph">Code Manager</span> use.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Add the deployment user to the <span class="ph uicontrol">Code Deployers</span> role. This role is
+                    automatically created on install, with default permissions for code deployment
+                    and token lifetime management.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Create a password by clicking <span class="ph uicontrol">Generate Password</span>.</span>
+            </li></ol></section>
+        <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>
+            <p class="p">Next, request the authentication token.</p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_user_roles_intro.html#add_a_user_to_a_user_role" title="When you add users to a role, the user gains the permissions that are applied to that role. A user can't do anything in PE until they have been assigned to a role.">Add a user to a user role</a></li><li class="linklist"><a class="link" href="rbac_user_roles_user_groups_ex_dir.html#assign_a_user_group_to_a_user_role" title="After you’ve imported a group, you can assign it a user role, which gives each group member the permissions associated with that role. You can add user groups to existing roles, or you can create a new role, and then add the group to the new role.">Assign a user group to a user role</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="request_an_authentication_token">
+    <h3 class="title topictitle3" id="ariaid-title6">Request an authentication token for deployments</h3>
+    
+    <div class="body taskbody"><p class="shortdesc"> Request an authentication token for the deployment user to enable secure deployment
+        of your code. </p>
+        <section class="section context"><p class="p">By default, authentication tokens have a one-hour lifetime. With the <code class="ph codeph">Override default
+                    expiry</code> permission set, you can change the lifetime of the token to a
+                duration better suited for a long-running, automated process.</p><p class="p">Generate the authentication token using
+                the <code class="ph codeph">puppet-access</code>
+            command.</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">From the command line on the master, run <code class="ph codeph">puppet-access login --lifetime
+                    180d</code>. This command both requests the token and sets the token lifetime
+                    to 180 days.</span>
+                <div class="itemgroup info"><div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> You can add flags to the request specifying
+                            additional settings such as the token file's location or the URL for
+                            your RBAC API. See <a class="xref" href="rbac_token_auth_intro.html#configuration_file_settings_for_puppet_access" title="As needed, you can manually add configuration settings to your user-specified or global puppet-access configuration file.">Configuration file settings for puppet-access</a>.
+                    </div></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Enter the username and password of the deployment
+                    user when prompted.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">The generated token is stored in a file for later use. The default location for storing the token
+                is <code class="ph codeph">~/.puppetlabs/token</code>. To view the token, run
+                    <code class="ph codeph">puppet-access show</code>. </p></section>
+        <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>Next, test the connection to the control repo.</section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#setting_a_token_specific_lifetime" title="Tokens have a default lifetime of one hour, but you can set a different lifetime for your token when you generate it. This allows you to keep one token for multiple sessions.">Setting a token-specific lifetime</a></li><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#generate_a_token_for_use_by_a_service_using_puppet_access" title="If you need to generate a token for use by a service and the token doesn't need to be saved, use the --print option.">Generate a token for use by a service</a></li></ul></div></nav></article></article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="test_the_control_repo">
+   <h2 class="title topictitle2" id="ariaid-title7">Test the control repo </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">To make sure that <span class="ph">Code Manager</span>
+      can connect to the control repo, test the connection to the repository.</p>
+      <section><div class="li step p">
+            <span class="ph cmd">From the command line, run <code class="ph codeph">puppet-code deploy --dry-run</code>.</span>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+         <ul class="ul">
+            <li class="li">
+               <p class="p">If the control repo is set up properly, this command fetches and displays the
+                  number of environments in the control repo.</p>
+            </li>
+            <li class="li">
+               <p class="p">If an environment is not set up properly or causes an error, it does not appear in
+                  the returned list. Check the <span class="ph">Puppet Server</span> log for
+                  details about the errors.  </p>
+            </li>
+         </ul>
+      </section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="test_code_manager">
+    <h2 class="title topictitle2" id="ariaid-title8">Test <span class="ph">Code Manager</span>
+    </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">To test whether <span class="ph">Code Manager</span>
+        deploys your environments correctly, trigger a single environment deployment on the command
+        line.</p></div>
+<article class="topic task nested2" aria-labelledby="ariaid-title9" id="deploy_a_single_environment">
+    <h3 class="title topictitle3" id="ariaid-title9">Deploy a single environment </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">Test <span class="ph">Code Manager</span> by deploying a single test
+        environment.</p>
+        <section class="section context"><p class="p">This deploys the test
+                environment, and then returns deployment results with the SHA (a checksum for the
+                content stored) for the control repo commit. </p></section>
+        <section><div class="li step p">
+                <span class="ph cmd">From the command line, deploy one environment by
+                    running <code class="ph codeph">puppet-code deploy
+                        my_test_environment --wait</code></span>
+                <div class="itemgroup stepresult"><p class="p">Check
+                        to make sure the environment was deployed. If so, you've set up <span class="ph">Code Manager</span> correctly.</p><p class="p">If the deployment does not work as you expect, check over the configuration
+                        steps, or refer to the troubleshooting guide for help.</p></div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">After <span class="ph">Code Manager</span> is fully enabled and configured, you can
+                trigger it to deploy your environments.</p><p class="p">There are several
+                ways to trigger deployments, depending on your needs.</p><ul class="ul">
+                <li class="li">Manually, on the command line.</li>
+                <li class="li">Automatically, with a webhook.</li>
+                <li class="li">Automatically, with a custom script that hits the deploys
+                    endpoint.</li>
+            </ul></section>
+    </div>
+</article></article><article class="topic reference nested1" aria-labelledby="ariaid-title10" id="code_mgr_settings">
+    <h2 class="title topictitle2" id="ariaid-title10">
+        <span class="ph">Code Manager</span> console settings </h2>
+    
+    <div class="body refbody"><p class="shortdesc">After <span class="ph">Code Manager</span> is
+        configured, you can adjust some settings in the master profile in the console. </p>
+        <section class="section"><p class="p">These options are required for <span class="ph">Code Manager</span> to work, unless otherwise
+            noted.</p></section>
+        <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="code_mgr_settings__entry__1">Setting </th>
+                        <th class="entry align-center" id="code_mgr_settings__entry__2">Description </th>
+                        <th class="entry align-left" id="code_mgr_settings__entry__3">Example</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="code_mgr_settings__entry__1">
+                            <code class="ph codeph">code_manager_auto_configure</code>
+                        </td>
+                        <td class="entry align-center" headers="code_mgr_settings__entry__2">Set to true to
+                            auto-configure <span class="ph">Code Manager</span>. </td>
+                        <td class="entry align-left" headers="code_mgr_settings__entry__3">
+                            <code class="ph codeph">true</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="code_mgr_settings__entry__1">
+                            <code class="ph codeph">r10k_remote</code>
+                        </td>
+                        <td class="entry align-center" headers="code_mgr_settings__entry__2">The location of
+                            the <span class="ph">Git</span> control repository. Enter a
+                            string that is a valid URL for your control repository. </td>
+                        <td class="entry align-left" headers="code_mgr_settings__entry__3">
+                            <code class="ph codeph">'git@&lt;YOUR.GIT.SERVER.COM&gt;:puppet/control.git'</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="code_mgr_settings__entry__1">
+                            <code class="ph codeph">r10k_private_key </code>
+                        </td>
+                        <td class="entry align-center" headers="code_mgr_settings__entry__2">Required when
+                            using the SSH protocol; optional in all other cases. Enter a string that
+                            is the path to the file containing the private key used to access all
+                                <span class="ph">Git</span> repositories. </td>
+                        <td class="entry align-left" headers="code_mgr_settings__entry__3">
+                            <code class="ph codeph">'/etc/puppetlabs/puppetserver/ssh/id-control_repo.rsa'</code>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="code_mgr_settings__entry__1">
+                            <code class="ph codeph">r10k_proxy </code>
+                        </td>
+                        <td class="entry align-center" headers="code_mgr_settings__entry__2">Optional. A
+                            proxy setting <span class="ph">r10k</span>
+                            <span class="ph">Code Manager</span> uses when accessing the <span class="ph">Forge</span>. If empty, no proxy settings are
+                            used.</td>
+                        <td class="entry align-left" headers="code_mgr_settings__entry__3">
+                            <code class="ph codeph">'http://proxy.example.com:3128'</code>
+                        </td>
+                    </tr>
+                </tbody></table>
+        <section class="section"><p class="p">To further customize your <span class="ph">Code Manager</span> configuration with <span class="ph">Hiera</span>, see the related topic about customizing your
+                configuration.</p></section>
+    </div>
+</article></article></article></main></body></html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The HTTPS status endpoints are available on the console services API server, which uses port 4433 by default."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="forming_requests_to_the_status_api"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Forming requests to the status API</title></head><body id="forming_requests_to_the_status_api"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Forming requests to the status API </h1>
+    
+    <div class="body conbody"><p class="shortdesc">The HTTPS status endpoints are available on the console
+        services API server, which uses port 4433 by default.</p>
+        <p class="p">The path prefix is <code class="ph codeph">/status</code>, so, for example, the URL to get the statuses for all services as
+            JSON is <code class="ph codeph">https://&lt;DNS NAME OF YOUR CONSOLE
+                HOST&gt;:4433/status/v1/services</code>.</p>
+        <p class="p">To access that URL using curl commands, run:</p>
+        <pre class="pre codeblock"><code>curl https://&lt;DNS NAME OF YOUR CONSOLE HOST&gt;:4433/status/v1/services \
+    --cert /etc/puppetlabs/puppet/ssl/certs/&lt;WHITELISTED CERTNAME&gt;.pem \
+    --key /etc/puppetlabs/puppet/ssl/private_keys/&lt;WHITELISTED CERTNAME&gt;.pem \
+    --cacert /etc/puppetlabs/puppet/ssl/certs/ca.pem</code></pre>
+        <p class="p">If enabled, the HTTP status endpoints are available on port 8123. </p>
+        <div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> To change the port, locate the
+                    <span class="ph uicontrol">PE Console</span> node group
+                in the console, and in the <span class="ph uicontrol">puppet_enterprise::profile::console</span> class, set the <span class="ph uicontrol">console_services_plaintext_status_port</span> parameter to your desired
+                port number.</div></div>
+    </div>
+</article></main></body></html>

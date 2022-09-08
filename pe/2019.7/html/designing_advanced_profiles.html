@@ -1,0 +1,946 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="In this advanced example, we iteratively refactor our basic roles and profiles example to handle real-world concerns. The final result is — with only minor differences — the Jenkins profile we use in production here at Puppet."><meta name="DC.relation" scheme="URI" content="the_roles_and_profiles_method.html#rules_for_profile_classes"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="designing_advanced_profiles"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Designing advanced profiles</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="designing_advanced_profiles">
+  <h1 class="title topictitle1" id="ariaid-title1">Designing advanced profiles </h1>
+  
+  <div class="body conbody"><p class="shortdesc">In this advanced example, we iteratively refactor our basic
+    roles and profiles example to handle real-world concerns. The final result is — with only minor
+    differences — the Jenkins profile we use in production here at <span class="ph">Puppet</span>.</p>
+    <p class="p">Along the way, we explain our choices and point out some of the common
+      trade-offs you encounter as you design your own profiles.</p>
+    <p class="p">Here's the basic Jenkins profile we're starting with:</p>
+    <div class="p"><pre class="pre codeblock"><code># /etc/puppetlabs/code/environments/production/site/profile/manifests/jenkins/master.pp
+class profile::jenkins::master (
+  String $jenkins_port = '9091',
+  String $java_dist    = 'jdk',
+  String $java_version = 'latest',
+) {
+
+  class { 'jenkins':
+    configure_firewall =&gt; true,
+    install_java       =&gt; false,
+    port               =&gt; $jenkins_port,
+    config_hash        =&gt; {
+      'HTTP_PORT'    =&gt; { 'value' =&gt; $jenkins_port },
+      'JENKINS_PORT' =&gt; { 'value' =&gt; $jenkins_port },
+    },
+  }
+
+  class { 'java':
+    distribution =&gt; $java_dist,
+    version      =&gt; $java_version,
+    before       =&gt; Class['jenkins'],
+  }
+}
+</code></pre></div>
+  </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="the_roles_and_profiles_method.html#rules_for_profile_classes" title="There are rules for writing profile classes.">Rules for profile classes</a></li></ul></div></nav><article class="topic concept nested1" aria-labelledby="ariaid-title2" id="first_refactor_split_out_java">
+  <h2 class="title topictitle2" id="ariaid-title2">First refactor: Split out Java </h2>
+  
+  <div class="body conbody"><p class="shortdesc">We want to manage Jenkins masters <em class="ph i">and</em> Jenkins agent nodes. We won't cover agent profiles in detail, but the first
+    issue we encountered is that they also need Java.</p>
+    <p class="p">We could copy and paste the Java class declaration; it's small, so keeping
+      multiple copies up-to-date might not be too burdensome. But instead, we decided to break Java
+      out into a separate profile. This way we can manage it one time, then include the Java profile
+      in both the agent and master profiles.</p>
+    <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> This is a common trade-off.
+        Keeping a chunk of code in only one place (often called the DRY — "don't repeat yourself" —
+        principle) makes it more maintainable and less vulnerable to rot. But it has a cost: your
+        individual profile classes become less readable, and you must view more files to see what a
+        profile actually does. To reduce that readability cost, try to break code out in units that
+        make inherent sense. In this case, the Java profile's job is simple enough to guess by its
+        name — your colleagues don't have to read its code to know that it manages Java 8. Comments
+        can also help.</div></div>
+    <p class="p">First, decide how configurable Java needs to be on Jenkins machines. After
+      looking at our past usage, we realized that we use only two options: either we install
+      Oracle's Java 8 distribution, or we default to OpenJDK 7, which the Jenkins module manages.
+      This means we can:</p>
+    <ul class="ul">
+      <li class="li">Make our new Java profile really simple: hardcode Java 8 and take no
+        configuration.</li>
+      <li class="li">Replace the two Java parameters from <code class="ph codeph">profile::jenkins::master</code> with one Boolean parameter (whether to let
+        Jenkins handle Java).</li>
+    </ul>
+    <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> This is rule 4 in action. We
+        reduce our profile's configuration surface by combining multiple questions into
+      one.</div>Here's the new parameter list:</div>
+    <pre class="pre codeblock puppet"><code>class profile::jenkins::master (
+  String  $jenkins_port = '9091',
+  Boolean $install_jenkins_java = true,
+) { # ...</code></pre>
+    <p class="p">And here's how we choose which Java to use:</p>
+    <pre class="pre codeblock puppet"><code>  class { 'jenkins':
+    configure_firewall =&gt; true,
+    install_java       =&gt; $install_jenkins_java,    # &lt;--- here
+    port               =&gt; $jenkins_port,
+    config_hash        =&gt; {
+      'HTTP_PORT'    =&gt; { 'value' =&gt; $jenkins_port },
+      'JENKINS_PORT' =&gt; { 'value' =&gt; $jenkins_port },
+    },
+  }
+
+  # When not using the jenkins module's java version, install java8.
+  unless $install_jenkins_java  { include profile::jenkins::usage::java8 }</code></pre>
+    <div class="p">And our new Java
+      profile:<pre class="pre codeblock"><code>::jenkins::usage::java8
+# Sets up java8 for Jenkins on Debian
+#
+class profile::jenkins::usage::java8 {
+  motd::register { 'Java usage profile (profile::jenkins::usage::java8)': }
+
+  # OpenJDK 7 is already managed by the Jenkins module.
+  # ::jenkins::install_java or ::jenkins::agent::install_java should be false to use this profile
+  # this can be set through the class parameter $install_jenkins_java
+  case $::osfamily {
+    'debian': {
+      class { 'java':
+        distribution =&gt; 'oracle-jdk8',
+        version      =&gt; '8u92',
+      }
+
+      package { 'tzdata-java':
+        ensure =&gt; latest,
+      }
+    }
+    default: {
+      notify { "profile::jenkins::usage::java8 cannot set up JDK on ${::osfamily}": }</code></pre></div>
+    <section class="section"><h3 class="title sectiontitle">Diff of first refactor</h3><div class="p"><pre class="pre codeblock"><code>@@ -1,13 +1,12 @@
+ # /etc/puppetlabs/code/environments/production/site/profile/manifests/jenkins/master.pp
+ class profile::jenkins::master (
+-  String $jenkins_port = '9091',
+-  String $java_dist    = 'jdk',
+-  String $java_version = 'latest',
++  String  $jenkins_port = '9091',
++  Boolean $install_jenkins_java = true,
+ ) {
+
+   class { 'jenkins':
+     configure_firewall =&gt; true,
+-    install_java       =&gt; false,
++    install_java       =&gt; $install_jenkins_java,
+     port               =&gt; $jenkins_port,
+     config_hash        =&gt; {
+       'HTTP_PORT'    =&gt; { 'value' =&gt; $jenkins_port },
+@@ -15,9 +14,6 @@ class profile::jenkins::master (
+     },
+   }
+
+-  class { 'java':
+-    distribution =&gt; $java_dist,
+-    version      =&gt; $java_version,
+-    before       =&gt; Class['jenkins'],
+-  }
++  # When not using the jenkins module's java version, install java8.
++  unless $install_jenkins_java  { include profile::jenkins::usage::java8 }
+ }</code></pre></div></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="second_refactor_manage_the_heap">
+  <h2 class="title topictitle2" id="ariaid-title3">Second refactor: Manage the heap </h2>
+  
+  <div class="body conbody"><p class="shortdesc">At <span class="ph">Puppet</span>, we manage the Java
+    heap size for the Jenkins app. Production servers didn't have enough memory for heavy
+    use.</p>
+    <p class="p">The Jenkins module has a <code class="ph codeph">jenkins::sysconfig</code> defined type for managing system properties, so let's use
+      it:</p>
+    <pre class="pre codeblock puppet"><code>  # Manage the heap size on the master, in MB.
+  if($::memorysize_mb =~ Number and $::memorysize_mb &gt; 8192)
+  {
+    # anything over 8GB we should keep max 4GB for OS and others
+    $heap = sprintf('%.0f', $::memorysize_mb - 4096)
+  } else {
+    # This is calculated as 50% of the total memory.
+    $heap = sprintf('%.0f', $::memorysize_mb * 0.5)
+  }
+  # Set java params, like heap min and max sizes. See
+  # https://wiki.jenkins-ci.org/display/JENKINS/Features+controlled+by+system+properties
+  jenkins::sysconfig { 'JAVA_ARGS':
+    value =&gt; "-Xms${heap}m -Xmx${heap}m -Djava.awt.headless=true -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Dhudson.model.DirectoryBrowserSupport.CSP=\\\"default-src 'self'; img-src 'self'; style-src 'self';\\\"",
+  }</code></pre>
+    <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Rule 4 again — we couldn't
+        hardcode this, because we have some smaller Jenkins masters that can't spare the extra
+        memory. But because our production masters are always on more powerful machines, we can
+        calculate the heap based on the machine's memory size, which we can access as a fact. This
+        lets us avoid extra configuration.</div></div>
+    <section class="section"><h3 class="title sectiontitle">Diff of second
+      refactor</h3><pre class="pre codeblock"><code>@@ -16,4 +16,20 @@ class profile::jenkins::master (
+
+   # When not using the jenkins module's java version, install java8.
+   unless $install_jenkins_java  { include profile::jenkins::usage::java8 }
++
++  # Manage the heap size on the master, in MB.
++  if($::memorysize_mb =~ Number and $::memorysize_mb &gt; 8192)
++  {
++    # anything over 8GB we should keep max 4GB for OS and others
++    $heap = sprintf('%.0f', $::memorysize_mb - 4096)
++  } else {
++    # This is calculated as 50% of the total memory.
++    $heap = sprintf('%.0f', $::memorysize_mb * 0.5)
++  }
++  # Set java params, like heap min and max sizes. See
++  # https://wiki.jenkins-ci.org/display/JENKINS/Features+controlled+by+system+properties
++  jenkins::sysconfig { 'JAVA_ARGS':
++    value =&gt; "-Xms${heap}m -Xmx${heap}m -Djava.awt.headless=true -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Dhudson.model.DirectoryBrowserSupport.CSP=\\\"default-src 'self'; img-src 'self'; style-src 'self';\\\"",
++  }
++
+ }
+</code></pre></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="third_refactor_pin_the_version">
+  <h2 class="title topictitle2" id="ariaid-title4">Third refactor: Pin the version </h2>
+  
+  <div class="body conbody"><p class="shortdesc">We dislike surprise upgrades, so we pin Jenkins to a
+    specific version. We do this with a direct package URL instead of by adding Jenkins to our
+    internal package repositories. Your organization might choose to do it differently.</p>
+    <p class="p">First, we add a parameter to control upgrades. Now we can set a new value
+      in <code class="ph codeph">.../data/groups/ci/dev.yaml</code> while leaving
+        <code class="ph codeph">.../data/groups/ci.yaml</code> alone — our dev
+      machines get the new Jenkins version first, and we can ensure everything works as expected
+      before upgrading our prod machines.</p>
+    <pre class="pre codeblock puppet"><code>class profile::jenkins::master (
+  Variant[String[1], Boolean] $direct_download = 'http://pkg.jenkins-ci.org/debian-stable/binary/jenkins_1.642.2_all.deb',
+  # ...
+) { # ...</code></pre>
+    <p class="p">Then, we set the necessary parameters in the Jenkins class:</p>
+    <pre class="pre codeblock puppet"><code>  class { 'jenkins':
+    lts                =&gt; true,                    # &lt;-- here
+    repo               =&gt; true,                    # &lt;-- here
+    direct_download    =&gt; $direct_download,        # &lt;-- here
+    version            =&gt; 'latest',                # &lt;-- here
+    service_enable     =&gt; true,
+    service_ensure     =&gt; running,
+    configure_firewall =&gt; true,
+    install_java       =&gt; $install_jenkins_java,
+    port               =&gt; $jenkins_port,
+    config_hash        =&gt; {
+      'HTTP_PORT'    =&gt; { 'value' =&gt; $jenkins_port },
+      'JENKINS_PORT' =&gt; { 'value' =&gt; $jenkins_port },
+    },
+  }</code></pre>
+    <p class="p">This was a good time to explicitly manage the Jenkins <em class="ph i">service,</em> so we did that as well.</p>
+    <section class="section"><h3 class="title sectiontitle">Diff of third refactor</h3><div class="p"><pre class="pre codeblock"><code>@@ -1,10 +1,17 @@
+ # /etc/puppetlabs/code/environments/production/site/profile/manifests/jenkins/master.pp
+ class profile::jenkins::master (
+-  String  $jenkins_port = '9091',
+-  Boolean $install_jenkins_java = true,
++  String                      $jenkins_port = '9091',
++  Variant[String[1], Boolean] $direct_download = 'http://pkg.jenkins-ci.org/debian-stable/binary/jenkins_1.642.2_all.deb',
++  Boolean                     $install_jenkins_java = true,
+ ) {
+
+   class { 'jenkins':
++    lts                =&gt; true,
++    repo               =&gt; true,
++    direct_download    =&gt; $direct_download,
++    version            =&gt; 'latest',
++    service_enable     =&gt; true,
++    service_ensure     =&gt; running,
+     configure_firewall =&gt; true,
+     install_java       =&gt; $install_jenkins_java,
+     port               =&gt; $jenkins_port,</code></pre></div></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="fourth_refactor_manually_manage_the_user_account">
+  <h2 class="title topictitle2" id="ariaid-title5">Fourth refactor: Manually manage the user account </h2>
+  
+  <div class="body conbody"><p class="shortdesc">We manage a lot of user accounts in our infrastructure, so
+    we handle them in a unified way. The <code class="ph codeph">profile::server</code> class pulls in <code class="ph codeph">virtual::users</code>, which has a lot of virtual resources we can selectively realize
+    depending on who needs to log into a given machine.</p>
+    <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> This has a cost — it's action at a
+        distance, and you need to read more files to see which users are enabled for a given
+        profile. But we decided the benefit was worth it: because all user accounts are written in
+        one or two files, it's easy to see all the users that might exist, and ensure that they're
+        managed consistently.<p class="p">We're accepting difficulty in one place (where we
+          can comfortably handle it) to banish difficulty in another place (where we worry it would
+          get out of hand). Making this choice required that we know our colleagues and their
+          comfort zones, and that we know the limitations of our existing code base and supporting
+          services.</p></div></div>
+    <p class="p">So, for this example, we change the Jenkins profile to work the same way;
+      we manage the <code class="ph codeph">jenkins</code> user alongside the rest
+      of our user accounts. While we're doing that, we also manage a few directories that can be
+      problematic depending on how Jenkins is packaged.</p>
+    <p class="p">Some values we need are used by Jenkins agents as well as masters, so
+      we're going to store them in a params class, which is a class that sets shared variables and
+      manages no resources. This is a heavyweight solution, so wait until it provides real value
+      before using it. In our case, we had a lot of OS-specific agent profiles (not shown in these
+      examples), and they made a params class worthwhile.</p>
+    <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> Just as before, "don't repeat
+        yourself" is in tension with "keep it readable." Find the balance that works for
+      you.</div></div>
+    <pre class="pre codeblock puppet"><code>  # We rely on virtual resources that are ultimately declared by profile::server.
+  include profile::server
+
+  # Some default values that vary by OS:
+  include profile::jenkins::params
+  $jenkins_owner          = $profile::jenkins::params::jenkins_owner
+  $jenkins_group          = $profile::jenkins::params::jenkins_group
+  $master_config_dir      = $profile::jenkins::params::master_config_dir
+
+  file { '/var/run/jenkins': ensure =&gt; 'directory' }
+
+  # Because our account::user class manages the '${master_config_dir}' directory
+  # as the 'jenkins' user's homedir (as it should), we need to manage
+  # `${master_config_dir}/plugins` here to prevent the upstream
+  # rtyler-jenkins module from trying to manage the homedir as the config
+  # dir. For more info, see the upstream module's `manifests/plugin.pp`
+  # manifest.
+  file { "${master_config_dir}/plugins":
+    ensure  =&gt; directory,
+    owner   =&gt; $jenkins_owner,
+    group   =&gt; $jenkins_group,
+    mode    =&gt; '0755',
+    require =&gt; [Group[$jenkins_group], User[$jenkins_owner]],
+  }
+
+  Account::User &lt;| tag == 'jenkins' |&gt;
+
+  class { 'jenkins':
+    lts                =&gt; true,
+    repo               =&gt; true,
+    direct_download    =&gt; $direct_download,
+    version            =&gt; 'latest',
+    service_enable     =&gt; true,
+    service_ensure     =&gt; running,
+    configure_firewall =&gt; true,
+    install_java       =&gt; $install_jenkins_java,
+    manage_user        =&gt; false,                    # &lt;-- here
+    manage_group       =&gt; false,                    # &lt;-- here
+    manage_datadirs    =&gt; false,                    # &lt;-- here
+    port               =&gt; $jenkins_port,
+    config_hash        =&gt; {
+      'HTTP_PORT'    =&gt; { 'value' =&gt; $jenkins_port },
+      'JENKINS_PORT' =&gt; { 'value' =&gt; $jenkins_port },
+    },
+  }</code></pre>
+    <p class="p">Three things to notice in the code above:</p>
+    <ul class="ul">
+      <li class="li">We manage users with a homegrown <code class="ph codeph">account::user</code> defined type, which declares a <code class="ph codeph">user</code> resource plus a few other things.</li>
+      <li class="li">We use an <code class="ph codeph">Account::User</code> resource collector to realize the Jenkins user. This relies on
+          <code class="ph codeph">profile::server</code> being declared.</li>
+      <li class="li">We set the Jenkins class's <code class="ph codeph">manage_user</code>, <code class="ph codeph">manage_group</code>, and
+          <code class="ph codeph">manage_datadirs</code> parameters to false.</li>
+      <li class="li">We're now explicitly managing the <code class="ph codeph">plugins</code> directory and the <code class="ph codeph">run</code> directory.</li>
+    </ul>
+    <section class="section"><h3 class="title sectiontitle">Diff of fourth
+        refactor</h3><div class="p"><pre class="pre codeblock"><code>@@ -5,6 +5,33 @@ class profile::jenkins::master (
+   Boolean                     $install_jenkins_java = true,
+ ) {
+
++  # We rely on virtual resources that are ultimately declared by profile::server.
++  include profile::server
++
++  # Some default values that vary by OS:
++  include profile::jenkins::params
++  $jenkins_owner          = $profile::jenkins::params::jenkins_owner
++  $jenkins_group          = $profile::jenkins::params::jenkins_group
++  $master_config_dir      = $profile::jenkins::params::master_config_dir
++
++  file { '/var/run/jenkins': ensure =&gt; 'directory' }
++
++  # Because our account::user class manages the '${master_config_dir}' directory
++  # as the 'jenkins' user's homedir (as it should), we need to manage
++  # `${master_config_dir}/plugins` here to prevent the upstream
++  # rtyler-jenkins module from trying to manage the homedir as the config
++  # dir. For more info, see the upstream module's `manifests/plugin.pp`
++  # manifest.
++  file { "${master_config_dir}/plugins":
++    ensure  =&gt; directory,
++    owner   =&gt; $jenkins_owner,
++    group   =&gt; $jenkins_group,
++    mode    =&gt; '0755',
++    require =&gt; [Group[$jenkins_group], User[$jenkins_owner]],
++  }
++
++  Account::User &lt;| tag == 'jenkins' |&gt;
++
+   class { 'jenkins':
+     lts                =&gt; true,
+     repo               =&gt; true,
+@@ -14,6 +41,9 @@ class profile::jenkins::master (
+     service_ensure     =&gt; running,
+     configure_firewall =&gt; true,
+     install_java       =&gt; $install_jenkins_java,
++    manage_user        =&gt; false,
++    manage_group       =&gt; false,
++    manage_datadirs    =&gt; false,
+     port               =&gt; $jenkins_port,
+     config_hash        =&gt; {
+       'HTTP_PORT'    =&gt; { 'value' =&gt; $jenkins_port },</code></pre></div></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="fifth_refactor_manage_more_dependencies">
+  <h2 class="title topictitle2" id="ariaid-title6">Fifth refactor: Manage more dependencies </h2>
+  
+  <div class="body conbody"><p class="shortdesc">Jenkins always needs <span class="ph">Git</span>
+    installed (because we use <span class="ph">Git</span> for source control at <span class="ph">Puppet</span>), and it needs SSH keys to access private <span class="ph">Git</span> repos and run commands on Jenkins agent nodes. We also have a
+    standard list of Jenkins plugins we use, so we manage those too.</p>
+    <p class="p">Managing <span class="ph">Git</span> is pretty easy:</p>
+    <pre class="pre codeblock puppet"><code>  package { 'git':
+    ensure =&gt; present,
+  }</code></pre>
+    <p class="p">SSH keys are less easy, because they are sensitive content. We can't check
+      them into version control with the rest of our <span class="ph">Puppet</span> code, so
+      we put them in a custom mount point on one specific <span class="ph">Puppet</span>
+      server.</p>
+    <p class="p">Because this server is different from our normal <span class="ph">Puppet</span> servers, we made a rule about accessing it: you must look
+      up the hostname from data instead of hardcoding it. This lets us change it in only one place
+      if the secure server ever moves.</p>
+    <pre class="pre codeblock puppet"><code>  $secure_server = lookup('puppetlabs::ssl::secure_server')
+
+  file { "${master_config_dir}/.ssh":
+    ensure =&gt; directory,
+    owner  =&gt; $jenkins_owner,
+    group  =&gt; $jenkins_group,
+    mode   =&gt; '0700',
+  }
+
+  file { "${master_config_dir}/.ssh/id_rsa":
+    ensure =&gt; file,
+    owner  =&gt; $jenkins_owner,
+    group  =&gt; $jenkins_group,
+    mode   =&gt; '0600',
+    source =&gt; "puppet://${secure_server}/secure/delivery/id_rsa-jenkins",
+  }
+
+  file { "${master_config_dir}/.ssh/id_rsa.pub":
+    ensure =&gt; file,
+    owner  =&gt; $jenkins_owner,
+    group  =&gt; $jenkins_group,
+    mode   =&gt; '0640',
+    source =&gt; "puppet://${secure_server}/secure/delivery/id_rsa-jenkins.pub",
+  }</code></pre>
+    <p class="p">Plugins are also a bit tricky, because we have a few Jenkins masters where
+      we want to manually configure plugins. So we put the base list in a separate profile, and use
+      a parameter to control whether we use it.</p>
+    <pre class="pre codeblock puppet"><code>class profile::jenkins::master (
+  Boolean                     $manage_plugins = false,
+  # ...
+) {
+  # ...
+  if $manage_plugins {
+    include profile::jenkins::master::plugins
+  }</code></pre>
+    <p class="p">In the plugins profile, we can use the <code class="ph codeph">jenkins::plugin</code> resource type provided by the Jenkins module.</p>
+    <div class="p"><pre class="pre codeblock"><code># /etc/puppetlabs/code/environments/production/site/profile/manifests/jenkins/master/plugins.pp
+class profile::jenkins::master::plugins {
+  jenkins::plugin { 'audit2db':          }
+  jenkins::plugin { 'credentials':       }
+  jenkins::plugin { 'jquery':            }
+  jenkins::plugin { 'job-import-plugin': }
+  jenkins::plugin { 'ldap':              }
+  jenkins::plugin { 'mailer':            }
+  jenkins::plugin { 'metadata':          }
+  # ... and so on.
+}
+</code></pre></div>
+    <section class="section"><h3 class="title sectiontitle">Diff of fifth refactor</h3><div class="p"><pre class="pre codeblock"><code>@@ -1,6 +1,7 @@
+ # /etc/puppetlabs/code/environments/production/site/profile/manifests/jenkins/master.pp
+ class profile::jenkins::master (
+   String                      $jenkins_port = '9091',
++  Boolean                     $manage_plugins = false,
+   Variant[String[1], Boolean] $direct_download = 'http://pkg.jenkins-ci.org/debian-stable/binary/jenkins_1.642.2_all.deb',
+   Boolean                     $install_jenkins_java = true,
+ ) {
+@@ -14,6 +15,20 @@ class profile::jenkins::master (
+   $jenkins_group          = $profile::jenkins::params::jenkins_group
+   $master_config_dir      = $profile::jenkins::params::master_config_dir
+
++  if $manage_plugins {
++    # About 40 jenkins::plugin resources:
++    include profile::jenkins::master::plugins
++  }
++
++  # Sensitive info (like SSH keys) isn't checked into version control like the
++  # rest of our modules; instead, it's served from a custom mount point on a
++  # designated server.
++  $secure_server = lookup('puppetlabs::ssl::secure_server')
++
++  package { 'git':
++    ensure =&gt; present,
++  }
++
+   file { '/var/run/jenkins': ensure =&gt; 'directory' }
+
+   # Because our account::user class manages the '${master_config_dir}' directory
+@@ -69,4 +84,29 @@ class profile::jenkins::master (
+     value =&gt; "-Xms${heap}m -Xmx${heap}m -Djava.awt.headless=true -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Dhudson.model.DirectoryBrowserSupport.CSP=\\\"default-src 'self'; img-src 'self'; style-src 'self';\\\"",
+   }
+
++  # Deploy the SSH keys that Jenkins needs to manage its agent machines and
++  # access Git repos.
++  file { "${master_config_dir}/.ssh":
++    ensure =&gt; directory,
++    owner  =&gt; $jenkins_owner,
++    group  =&gt; $jenkins_group,
++    mode   =&gt; '0700',
++  }
++
++  file { "${master_config_dir}/.ssh/id_rsa":
++    ensure =&gt; file,
++    owner  =&gt; $jenkins_owner,
++    group  =&gt; $jenkins_group,
++    mode   =&gt; '0600',
++    source =&gt; "puppet://${secure_server}/secure/delivery/id_rsa-jenkins",
++  }
++
++  file { "${master_config_dir}/.ssh/id_rsa.pub":
++    ensure =&gt; file,
++    owner  =&gt; $jenkins_owner,
++    group  =&gt; $jenkins_group,
++    mode   =&gt; '0640',
++    source =&gt; "puppet://${secure_server}/secure/delivery/id_rsa-jenkins.pub",
++  }
++
+ }</code></pre></div></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="sixth_refactor_manage_logging_and_backups">
+  <h2 class="title topictitle2" id="ariaid-title7">Sixth refactor: Manage logging and backups </h2>
+  
+  <div class="body conbody"><p class="shortdesc">Backing up is usually a good idea. </p>
+    <p class="p">We can use our homegrown <code class="ph codeph">backup</code> module, which provides a <code class="ph codeph">backup::job</code> resource type (<code class="ph codeph">profile::server</code> takes care of its prerequisites). But we should make backups
+      optional, so people don't accidentally post junk to our backup server if they're setting up an
+      ephemeral Jenkins instance to test something.</p>
+    <pre class="pre codeblock puppet"><code>class profile::jenkins::master (
+  Boolean                     $backups_enabled = false,
+  # ...
+) {
+  # ...
+  if $backups_enabled {
+    backup::job { "jenkins-data-${::hostname}":
+      files =&gt; $master_config_dir,
+    }
+  }
+}</code></pre>
+    <p class="p">Also, our teams gave us some conflicting requests for Jenkins logs:</p>
+    <ul class="ul">
+      <li class="li">Some people want it to use syslog, like most other services.</li>
+      <li class="li">Others want a distinct log file so syslog doesn't get spammed, and
+        they want the file to rotate more quickly than it does by default.</li>
+    </ul>
+    <p class="p">That implies a new parameter. We can make one called <code class="ph codeph">$jenkins_logs_to_syslog</code> and default it to <code class="ph codeph">undef</code>. If you set it to a standard syslog facility (like
+        <code class="ph codeph">daemon.info</code>), Jenkins logs there instead of
+      its own file.</p>
+    <p class="p">We use <code class="ph codeph">jenkins::sysconfig</code>
+      and our homegrown <code class="ph codeph">logrotate::job</code> to do the
+      work:</p>
+    <pre class="pre codeblock puppet"><code>class profile::jenkins::master (
+  Optional[String[1]]         $jenkins_logs_to_syslog = undef,
+  # ...
+) {
+  # ...
+  if $jenkins_logs_to_syslog {
+    jenkins::sysconfig { 'JENKINS_LOG':
+      value =&gt; "$jenkins_logs_to_syslog",
+    }
+  }
+  # ...
+  logrotate::job { 'jenkins':
+    log     =&gt; '/var/log/jenkins/jenkins.log',
+    options =&gt; [
+      'daily',
+      'copytruncate',
+      'missingok',
+      'rotate 7',
+      'compress',
+      'delaycompress',
+      'notifempty'
+    ],
+  }
+}</code></pre>
+    <section class="section"><h3 class="title sectiontitle">Diff of sixth refactor</h3><div class="p">
+        <pre class="pre codeblock"><code>@@ -1,8 +1,10 @@
+ # /etc/puppetlabs/code/environments/production/site/profile/manifests/jenkins/master.pp
+ class profile::jenkins::master (
+   String                      $jenkins_port = '9091',
++  Boolean                     $backups_enabled = false,
+   Boolean                     $manage_plugins = false,
+   Variant[String[1], Boolean] $direct_download = 'http://pkg.jenkins-ci.org/debian-stable/binary/jenkins_1.642.2_all.deb',
++  Optional[String[1]]         $jenkins_logs_to_syslog = undef,
+   Boolean                     $install_jenkins_java = true,
+ ) {
+
+@@ -84,6 +86,15 @@ class profile::jenkins::master (
+     value =&gt; "-Xms${heap}m -Xmx${heap}m -Djava.awt.headless=true -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Dhudson.model.DirectoryBrowserSupport.CSP=\\\"default-src 'self'; img-src 'self'; style-src 'self';\\\"",
+   }
+
++  # Forward jenkins master logs to syslog.
++  # When set to facility.level the jenkins_log uses that value instead of a
++  # separate log file, for example daemon.info
++  if $jenkins_logs_to_syslog {
++    jenkins::sysconfig { 'JENKINS_LOG':
++      value =&gt; "$jenkins_logs_to_syslog",
++    }
++  }
++
+   # Deploy the SSH keys that Jenkins needs to manage its agent machines and
+   # access Git repos.
+   file { "${master_config_dir}/.ssh":
+@@ -109,4 +120,29 @@ class profile::jenkins::master (
+     source =&gt; "puppet://${secure_server}/secure/delivery/id_rsa-jenkins.pub",
+   }
+
++  # Back up Jenkins' data.
++  if $backups_enabled {
++    backup::job { "jenkins-data-${::hostname}":
++      files =&gt; $master_config_dir,
++    }
++  }
++
++  # (QENG-1829) Logrotate rules:
++  # Jenkins' default logrotate config retains too much data: by default, it
++  # rotates jenkins.log weekly and retains the last 52 weeks of logs.
++  # Considering we almost never look at the logs, let's rotate them daily
++  # and discard after 7 days to reduce disk usage.
++  logrotate::job { 'jenkins':
++    log     =&gt; '/var/log/jenkins/jenkins.log',
++    options =&gt; [
++      'daily',
++      'copytruncate',
++      'missingok',
++      'rotate 7',
++      'compress',
++      'delaycompress',
++      'notifempty'
++    ],
++  }
++
+ }
+</code></pre>
+      </div></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="seventh_refactor_use_a_reverse_proxy_for_https">
+  <h2 class="title topictitle2" id="ariaid-title8">Seventh refactor: Use a reverse proxy for HTTPS </h2>
+  
+  <div class="body conbody"><p class="shortdesc">We want the Jenkins web interface to use HTTPS, which we can
+    accomplish with an Nginx reverse proxy. We also want to standardize the ports: the Jenkins app
+    always binds to its default port, and the proxy always serves over 443 for HTTPS and 80 for
+    HTTP.</p>
+    <p class="p">If we want to keep vanilla HTTP available, we can provide an <code class="ph codeph">$ssl</code> parameter. If set to <code class="ph codeph">false</code> (the default), you can access Jenkins via both HTTP and HTTPS.
+      We can also add a <code class="ph codeph">$site_alias</code> parameter, so
+      the proxy can listen on a hostname other than the node's main FQDN.</p>
+    <pre class="pre codeblock puppet"><code>class profile::jenkins::master (
+  Boolean                     $ssl = false,
+  Optional[String[1]]         $site_alias = undef,
+  # IMPORTANT: notice that $jenkins_port is removed.
+  # ...</code></pre>
+    <p class="p">Set <code class="ph codeph">configure_firewall =&gt;
+        false</code> in the Jenkins class:</p>
+    <pre class="pre codeblock puppet"><code>  class { 'jenkins':
+    lts                =&gt; true,
+    repo               =&gt; true,
+    direct_download    =&gt; $direct_download,
+    version            =&gt; 'latest',
+    service_enable     =&gt; true,
+    service_ensure     =&gt; running,
+    configure_firewall =&gt; false,                # &lt;-- here
+    install_java       =&gt; $install_jenkins_java,
+    manage_user        =&gt; false,
+    manage_group       =&gt; false,
+    manage_datadirs    =&gt; false,
+    # IMPORTANT: notice that port and config_hash are removed.
+  }</code></pre>
+    <p class="p">We need to deploy SSL certificates where Nginx can reach them. Because we
+      serve a lot of things over HTTPS, we already had a profile for that:</p>
+    <pre class="pre codeblock puppet"><code>  # Deploy the SSL certificate/chain/key for sites on this domain.
+  include profile::ssl::delivery_wildcard</code></pre>
+    <p class="p">This is also a good time to add some info for the message of the day,
+      handled by puppetlabs/motd:</p>
+    <pre class="pre codeblock puppet"><code>  motd::register { 'Jenkins CI master (profile::jenkins::master)': }
+
+  if $site_alias {
+    motd::register { 'jenkins-site-alias':
+      content =&gt; @("END"),
+                 profile::jenkins::master::proxy
+
+                 Jenkins site alias: ${site_alias}
+                 |-END
+      order   =&gt; 25,
+    }
+  }</code></pre>
+    <p class="p">The bulk of the work is handled by a new profile called <code class="ph codeph">profile::jenkins::master::proxy</code>. We're omitting the code for
+      brevity; in summary, what it does is:</p>
+    <ul class="ul">
+      <li class="li">Include <code class="ph codeph">profile::nginx</code>.</li>
+      <li class="li">Use resource types from the jfryman/nginx to set up a vhost, and to
+        force a redirect to HTTPS if we haven't enabled vanilla HTTP.</li>
+      <li class="li">Set up logstash forwarding for access and error logs.</li>
+      <li class="li">Include <code class="ph codeph">profile::fw::https</code> to manage firewall rules, if necessary.</li>
+    </ul>
+    <p class="p">Then, we declare that profile in our main profile:</p>
+    <pre class="pre codeblock puppet"><code>  class { 'profile::jenkins::master::proxy':
+    site_alias  =&gt; $site_alias,
+    require_ssl =&gt; $ssl,
+  }</code></pre>
+    <div class="p"><div class="note important note_important"><span class="note__title">Important:</span> <p class="p">We are
+          now breaking rule 1, the most important rule of the roles and profiles method. Why?</p><p class="p">Because <code class="ph codeph">profile::jenkins::master::proxy</code> is a "private" profile that belongs solely to
+            <code class="ph codeph">profile::jenkins::master</code>. It will never
+          be declared by any role or any other profile.</p><p class="p">This is the only
+          exception to rule 1: if you're separating out code <em class="ph i">for the
+            sole purpose of readability</em> --- that is, if you could paste the private profile's
+          contents into the main profile for the exact same effect --- you can use a resource-like
+          declaration on the private profile. This lets you consolidate your data lookups and make
+          the private profile's inputs more visible, while keeping the main profile a little
+          cleaner. If you do this, you must make sure to document that the private profile is
+          private.</p><p class="p">If there is any chance that this code might be reused by
+          another profile, obey rule 1.</p></div></div>
+    <section class="section"><h3 class="title sectiontitle">Diff of seventh
+      refactor</h3><pre class="pre codeblock"><code>@@ -1,8 +1,9 @@
+ # /etc/puppetlabs/code/environments/production/site/profile/manifests/jenkins/master.pp
+ class profile::jenkins::master (
+-  String                      $jenkins_port = '9091',
+   Boolean                     $backups_enabled = false,
+   Boolean                     $manage_plugins = false,
++  Boolean                     $ssl = false,
++  Optional[String[1]]         $site_alias = undef,
+   Variant[String[1], Boolean] $direct_download = 'http://pkg.jenkins-ci.org/debian-stable/binary/jenkins_1.642.2_all.deb',
+   Optional[String[1]]         $jenkins_logs_to_syslog = undef,
+   Boolean                     $install_jenkins_java = true,
+@@ -11,6 +12,9 @@ class profile::jenkins::master (
+   # We rely on virtual resources that are ultimately declared by profile::server.
+   include profile::server
+
++  # Deploy the SSL certificate/chain/key for sites on this domain.
++  include profile::ssl::delivery_wildcard
++
+   # Some default values that vary by OS:
+   include profile::jenkins::params
+   $jenkins_owner          = $profile::jenkins::params::jenkins_owner
+@@ -22,6 +26,31 @@ class profile::jenkins::master (
+     include profile::jenkins::master::plugins
+   }
+
++  motd::register { 'Jenkins CI master (profile::jenkins::master)': }
++
++  # This adds the site_alias to the message of the day for convenience when
++  # logging into a server via FQDN. Because of the way motd::register works, we
++  # need a sort of funny formatting to put it at the end (order =&gt; 25) and to
++  # list a class so there isn't a random "--" at the end of the message.
++  if $site_alias {
++    motd::register { 'jenkins-site-alias':
++      content =&gt; @("END"),
++                 profile::jenkins::master::proxy
++
++                 Jenkins site alias: ${site_alias}
++                 |-END
++      order   =&gt; 25,
++    }
++  }
++
++  # This is a "private" profile that sets up an Nginx proxy -- it's only ever
++  # declared in this class, and it would work identically pasted inline.
++  # But because it's long, this class reads more cleanly with it separated out.
++  class { 'profile::jenkins::master::proxy':
++    site_alias  =&gt; $site_alias,
++    require_ssl =&gt; $ssl,
++  }
++
+   # Sensitive info (like SSH keys) isn't checked into version control like the
+   # rest of our modules; instead, it's served from a custom mount point on a
+   # designated server.
+@@ -56,16 +85,11 @@ class profile::jenkins::master (
+     version            =&gt; 'latest',
+     service_enable     =&gt; true,
+     service_ensure     =&gt; running,
+-    configure_firewall =&gt; true,
++    configure_firewall =&gt; false,
+     install_java       =&gt; $install_jenkins_java,
+     manage_user        =&gt; false,
+     manage_group       =&gt; false,
+     manage_datadirs    =&gt; false,
+-    port               =&gt; $jenkins_port,
+-    config_hash        =&gt; {
+-      'HTTP_PORT'    =&gt; { 'value' =&gt; $jenkins_port },
+-      'JENKINS_PORT' =&gt; { 'value' =&gt; $jenkins_port },
+-    },
+   }
+
+   # When not using the jenkins module's java version, install java8.
+</code></pre></section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title9" id="the_final_profile_code">
+  <h2 class="title topictitle2" id="ariaid-title9">The final profile code</h2>
+  
+  
+  <div class="body conbody"><p class="shortdesc">After all of this refactoring (and a few more minor
+    adjustments), here’s the final code for&nbsp;<code class="ph codeph">profile::jenkins::master</code>.</p>
+    <div class="p"><pre class="pre codeblock"><code># /etc/puppetlabs/code/environments/production/site/profile/manifests/jenkins/master.pp
+# Class: profile::jenkins::master
+#
+# Install a Jenkins master that meets Puppet's internal needs.
+#
+class profile::jenkins::master (
+  Boolean                     $backups_enabled = false,
+  Boolean                     $manage_plugins = false,
+  Boolean                     $ssl = false,
+  Optional[String[1]]         $site_alias = undef,
+  Variant[String[1], Boolean] $direct_download = 'http://pkg.jenkins-ci.org/debian-stable/binary/jenkins_1.642.2_all.deb',
+  Optional[String[1]]         $jenkins_logs_to_syslog = undef,
+  Boolean                     $install_jenkins_java = true,
+) {
+
+  # We rely on virtual resources that are ultimately declared by profile::server.
+  include profile::server
+
+  # Deploy the SSL certificate/chain/key for sites on this domain.
+  include profile::ssl::delivery_wildcard
+
+  # Some default values that vary by OS:
+  include profile::jenkins::params
+  $jenkins_owner          = $profile::jenkins::params::jenkins_owner
+  $jenkins_group          = $profile::jenkins::params::jenkins_group
+  $master_config_dir      = $profile::jenkins::params::master_config_dir
+
+  if $manage_plugins {
+    # About 40 jenkins::plugin resources:
+    include profile::jenkins::master::plugins
+  }
+
+  motd::register { 'Jenkins CI master (profile::jenkins::master)': }
+
+  # This adds the site_alias to the message of the day for convenience when
+  # logging into a server via FQDN. Because of the way motd::register works, we
+  # need a sort of funny formatting to put it at the end (order =&gt; 25) and to
+  # list a class so there isn't a random "--" at the end of the message.
+  if $site_alias {
+    motd::register { 'jenkins-site-alias':
+      content =&gt; @("END"),
+                 profile::jenkins::master::proxy
+
+                 Jenkins site alias: ${site_alias}
+                 |-END
+      order   =&gt; 25,
+    }
+  }
+
+  # This is a "private" profile that sets up an Nginx proxy -- it's only ever
+  # declared in this class, and it would work identically pasted inline.
+  # But because it's long, this class reads more cleanly with it separated out.
+  class { 'profile::jenkins::master::proxy':
+    site_alias  =&gt; $site_alias,
+    require_ssl =&gt; $ssl,
+  }
+
+  # Sensitive info (like SSH keys) isn't checked into version control like the
+  # rest of our modules; instead, it's served from a custom mount point on a
+  # designated server.
+  $secure_server = lookup('puppetlabs::ssl::secure_server')
+
+  # Dependencies:
+  #   - Pull in apt if we're on Debian.
+  #   - Pull in the 'git' package, used by Jenkins for Git polling.
+  #   - Manage the 'run' directory (fix for busted Jenkins packaging).
+  if $::osfamily == 'Debian' { include apt }
+
+  package { 'git':
+    ensure =&gt; present,
+  }
+
+  file { '/var/run/jenkins': ensure =&gt; 'directory' }
+
+  # Because our account::user class manages the '${master_config_dir}' directory
+  # as the 'jenkins' user's homedir (as it should), we need to manage
+  # `${master_config_dir}/plugins` here to prevent the upstream
+  # rtyler-jenkins module from trying to manage the homedir as the config
+  # dir. For more info, see the upstream module's `manifests/plugin.pp`
+  # manifest.
+  file { "${master_config_dir}/plugins":
+    ensure  =&gt; directory,
+    owner   =&gt; $jenkins_owner,
+    group   =&gt; $jenkins_group,
+    mode    =&gt; '0755',
+    require =&gt; [Group[$jenkins_group], User[$jenkins_owner]],
+  }
+
+  Account::User &lt;| tag == 'jenkins' |&gt;
+
+  class { 'jenkins':
+    lts                =&gt; true,
+    repo               =&gt; true,
+    direct_download    =&gt; $direct_download,
+    version            =&gt; 'latest',
+    service_enable     =&gt; true,
+    service_ensure     =&gt; running,
+    configure_firewall =&gt; false,
+    install_java       =&gt; $install_jenkins_java,
+    manage_user        =&gt; false,
+    manage_group       =&gt; false,
+    manage_datadirs    =&gt; false,
+  }
+
+  # When not using the jenkins module's java version, install java8.
+  unless $install_jenkins_java  { include profile::jenkins::usage::java8 }
+
+  # Manage the heap size on the master, in MB.
+  if($::memorysize_mb =~ Number and $::memorysize_mb &gt; 8192)
+  {
+    # anything over 8GB we should keep max 4GB for OS and others
+    $heap = sprintf('%.0f', $::memorysize_mb - 4096)
+  } else {
+    # This is calculated as 50% of the total memory.
+    $heap = sprintf('%.0f', $::memorysize_mb * 0.5)
+  }
+  # Set java params, like heap min and max sizes. See
+  # https://wiki.jenkins-ci.org/display/JENKINS/Features+controlled+by+system+properties
+  jenkins::sysconfig { 'JAVA_ARGS':
+    value =&gt; "-Xms${heap}m -Xmx${heap}m -Djava.awt.headless=true -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Dhudson.model.DirectoryBrowserSupport.CSP=\\\"default-src 'self'; img-src 'self'; style-src 'self';\\\"",
+  }
+
+  # Forward jenkins master logs to syslog.
+  # When set to facility.level the jenkins_log uses that value instead of a
+  # separate log file, for example daemon.info
+  if $jenkins_logs_to_syslog {
+    jenkins::sysconfig { 'JENKINS_LOG':
+      value =&gt; "$jenkins_logs_to_syslog",
+    }
+  }
+
+  # Deploy the SSH keys that Jenkins needs to manage its agent machines and
+  # access Git repos.
+  file { "${master_config_dir}/.ssh":
+    ensure =&gt; directory,
+    owner  =&gt; $jenkins_owner,
+    group  =&gt; $jenkins_group,
+    mode   =&gt; '0700',
+  }
+
+  file { "${master_config_dir}/.ssh/id_rsa":
+    ensure =&gt; file,
+    owner  =&gt; $jenkins_owner,
+    group  =&gt; $jenkins_group,
+    mode   =&gt; '0600',
+    source =&gt; "puppet://${secure_server}/secure/delivery/id_rsa-jenkins",
+  }
+
+  file { "${master_config_dir}/.ssh/id_rsa.pub":
+    ensure =&gt; file,
+    owner  =&gt; $jenkins_owner,
+    group  =&gt; $jenkins_group,
+    mode   =&gt; '0640',
+    source =&gt; "puppet://${secure_server}/secure/delivery/id_rsa-jenkins.pub",
+  }
+
+  # Back up Jenkins' data.
+  if $backups_enabled {
+    backup::job { "jenkins-data-${::hostname}":
+      files =&gt; $master_config_dir,
+    }
+  }
+
+  # (QENG-1829) Logrotate rules:
+  # Jenkins' default logrotate config retains too much data: by default, it
+  # rotates jenkins.log weekly and retains the last 52 weeks of logs.
+  # Considering we almost never look at the logs, let's rotate them daily
+  # and discard after 7 days to reduce disk usage.
+  logrotate::job { 'jenkins':
+    log     =&gt; '/var/log/jenkins/jenkins.log',
+    options =&gt; [
+      'daily',
+      'copytruncate',
+      'missingok',
+      'rotate 7',
+      'compress',
+      'delaycompress',
+      'notifempty'
+    ],
+  }
+
+}</code></pre></div>
+  </div>
+</article></article></article></main></body></html>

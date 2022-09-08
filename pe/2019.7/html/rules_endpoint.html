@@ -1,0 +1,46 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the rules endpoint to translate a group’s rule condition into PuppetDB query syntax."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="rules_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Rules endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="rules_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1">Rules endpoint </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Use the rules endpoint to translate a group’s rule
+        condition into <span class="ph">PuppetDB</span> query syntax.</p></div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="post_v1_rules_translate">
+    <h2 class="title topictitle2" id="ariaid-title2">POST /v1/rules/translate </h2>
+    
+    <div class="body refbody"><p class="shortdesc">Translate a group's rule condition into <span class="ph">PuppetDB</span> query syntax.</p>
+        <section class="section" id="post_v1_rules_translate__request_format"><h3 class="title sectiontitle">Request
+                format </h3><p class="p">The request's body contains a rule condition as it would appear in the <code class="ph codeph">rule</code>
+                field of a group object. </p>
+            <p class="p">The endpoint supports an optional query parameter <code class="ph codeph">format</code>, which
+                defaults to <code class="ph codeph">nodes</code>. If specified as
+                    <code class="ph codeph">?format=inventory</code>, it allows you to get the classifier rules in
+                a compatible <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/v4/ast.html#dot-notation" target="_blank">dot notation</a> format instead of the
+                standard <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/v4/ast.html" target="_blank"><span class="ph">PuppetDB</span>
+                    AST</a>.</p></section>
+        <section class="section" id="post_v1_rules_translate__response_format"><h3 class="title sectiontitle">Response format </h3><p class="p">The response is a <span class="ph">PuppetDB</span> query string that can be used with <span class="ph">PuppetDB</span> nodes endpoint in order to see which nodes
+                would satisfy the rule condition (that is, which nodes would be classified into a
+                group with that rule).</p></section>
+        <section class="section" id="post_v1_rules_translate__error_responses"><h3 class="title sectiontitle">Error
+                responses </h3><p class="p">Rules that use structured or trusted facts
+                cannot be converted into <span class="ph">PuppetDB</span> queries, because
+                    <span class="ph">PuppetDB</span> does not yet support structured or
+                trusted facts. If the rule cannot be translated into a <span class="ph">PuppetDB</span> query, the server returns a 422
+                Unprocessable Entity response containing the usual JSON error object. The error
+                object has a <code class="ph codeph">kind</code> of
+                "untranslatable-rule", a <code class="ph codeph">msg</code> that
+                describes why the rule cannot be translated, and contains the received rule in
+                    <code class="ph codeph">details</code>.</p><p class="p">If the request does not contain a valid rule, the server returns a 400 Bad Request
+                response with the usual JSON error object. If the rule was not valid JSON, the
+                error's <code class="ph codeph">kind</code> is
+                "malformed-request", the <code class="ph codeph">msg</code> states
+                that the request's body could not be parsed as JSON, and the <code class="ph codeph">details</code> contain the request's body as received
+                by the server.</p><p class="p">If the rule does not conform to the rule
+                grammar, the <code class="ph codeph">kind</code> key is
+                "schema-violation", and the <code class="ph codeph">details</code>
+                key is an object with <code class="ph codeph">submitted</code>,
+                    <code class="ph codeph">schema</code>, and <code class="ph codeph">error</code> keys which respectively describe the
+                submitted object, the schema that object is expected to conform to, and how the
+                submitted object failed to conform to the schema.</p></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="groups_endpoint.html#get_v1_groups" title="Use the /v1/groups endpoint to retrieve a list of all node groups in the node classifier.">GET /v1/groups</a></li></ul></div></nav></article></article></article></main></body></html>

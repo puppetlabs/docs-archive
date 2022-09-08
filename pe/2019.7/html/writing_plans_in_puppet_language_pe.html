@@ -1,0 +1,899 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Plans allow you to run more than one task with a single command, compute values for the input to a task, process the results of tasks, or make decisions based on the result of running a task."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Logan Mantyla <logan.mantyla@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="writing_plans_in_puppet_language_pe"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Writing plans in Puppet Language</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="writing_plans_in_puppet_language_pe">
+ <h1 class="title topictitle1" id="ariaid-title1">Writing plans in <span class="ph">Puppet</span>
+  Language</h1>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">Plans allow you to run more than one task with a single
+  command, compute values for the input to a task, process the results of tasks, or make decisions
+  based on the result of running a task. </p>
+  <p class="p">Write plans in the <span class="ph">Puppet</span> language, giving
+   them a <code class="ph codeph">.pp</code> extension, and place
+   them in the module's <code class="ph codeph">/plans</code>
+   directory.</p>
+  <p class="p">Plans can use any combination of <span class="ph">Bolt</span>
+   functions or built in <span class="ph">Puppet</span>functions. </p>
+ </div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="naming_plans_pe">
+ <h2 class="title topictitle2" id="ariaid-title2">Naming plans</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">It is important to name plans correctly according to the
+  module name, file name, and path to ensure easy code readability.</p>
+  <div class="p">Place plan files in your module's <code class="ph codeph">./plans</code> directory, using these file extensions:<ul class="ul">
+    <li class="li">
+     <p class="p"><span class="ph">Puppet</span> plans — <code class="ph codeph">.pp</code>
+     </p>
+    </li>
+    <li class="li">
+     <p class="p">YAML plans — <code class="ph codeph">.yaml</code>, not
+       <code class="ph codeph">.yml</code></p>
+    </li>
+   </ul></div>
+  <p class="p">Plan names are composed of two or more name segments, indicating:</p>
+  <div class="p">
+   <ul class="ul">
+    <li class="li">
+     <p class="p">The name of the module the plan is located in.</p>
+    </li>
+    <li class="li">
+     <p class="p">The name of the plan file, without the extension.</p>
+    </li>
+    <li class="li">
+     <p class="p">The path within the module, if the plan is in a subdirectory of <code class="ph codeph">./plans</code>. </p>
+    </li>
+   </ul>
+  </div>
+  <p class="p">For example, given a module called <code class="ph codeph">mymodule</code> with a plan defined in <code class="ph codeph">./mymodule/plans/myplan.pp</code>, the plan name is <code class="ph codeph">mymodule::myplan</code>. </p>
+  <p class="p">A plan defined in <code class="ph codeph">./mymodule/plans/service/myplan.pp </code>would be <code class="ph codeph">mymodule::service::myplan</code>. This name is how you refer to the plan when
+   you run commands.</p>
+  <p class="p">The plan filename <code class="ph codeph">init</code> is special: the plan it defines is referenced using the module name only. For
+   example, in a module called <code class="ph codeph">mymodule</code>, the plan defined in <code class="ph codeph">init.pp</code> is the <code class="ph codeph">mymodule</code> plan. </p>
+  <p class="p"> Avoid giving plans the same names as constructs in the <span class="ph">Puppet</span> language. Although plans do not share their namespace with
+   other language constructs, giving plans these names makes your code difficult to read. </p>
+  <p class="p">Each plan name segment must begin with a lowercase letter and:</p>
+  <ul class="ul">
+   <li class="li">
+    <p class="p">May include lowercase letters.</p>
+   </li>
+   <li class="li">
+    <p class="p">May include digits.</p>
+   </li>
+   <li class="li">
+    <p class="p jean@puppet.com">May include underscores.</p>
+   </li>
+   <li class="li">
+    <p class="p">Must not be a <a class="xref" href="https://docs.puppet.com/puppet/5.3/lang_reserved.html" target="_blank">reserved
+      word</a>.</p>
+   </li>
+   <li class="li">
+    <p class="p">Must not have the same name as any <span class="ph">Puppet</span>
+     data types.</p>
+   </li>
+   <li class="li">
+    <p class="p">Namespace segments must match the following regular expression <code class="ph codeph">\A[a-z][a-z0-9_]*\Z</code></p>
+   </li>
+  </ul>
+ </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title3" id="rbac_writing_plans">
+  <h2 class="title topictitle2" id="ariaid-title3">RBAC considerations for writing plans</h2>
+  
+  
+  <div class="body conbody"><p class="shortdesc">Take user permissions into consideration when writing plans
+    by understanding how RBAC for plans works.</p>
+    <p class="p">RBAC for plans is separate from RBAC for individual tasks. This means that
+      a user can be excluded from running a certain task, but still have permission to run a plan
+      that contains that task. Setting one permission does not affect the other. </p>
+    <p class="p">This structure allows you to write plans with more robust, custom control
+      over task permissions. Instead of allowing a user free rein to run a task that can potentially
+      damage your infrastructure under the right conditions, you can wrap a task in a plan and only
+      allow them to run it under circumstances you can control. </p>
+    <p class="p">For example, say you are configuring permissions for a new user and allow
+      them to run the plan <code class="ph codeph">plan
+      infra::upgrade_git</code>:</p>
+    <div class="p">
+      <pre class="pre codeblock"><code>plan infra::upgrade_git (
+  TargetSpec $nodes,
+  Integer $version,
+) {
+  run_task(‘package’, $nodes, name =&gt; ’git’, action =&gt; ‘upgrade’, version =&gt; $version)
+}</code></pre>
+    </div>
+    <p class="p">Within this plan, they can run the <code class="ph codeph">package</code> task, but can only interact with the <code class="ph codeph">git</code> package. The plan does not allow them to use any other parameters for the
+        <code class="ph codeph">package</code> task. </p>
+    <p class="p">Even though they can run this plan, they do not have access to
+      individually run the <code class="ph codeph">package</code> task outside of
+      this plan unless you grant them permission to do so. In that case, they would have the option
+      to add any parameters they want to the task.</p>
+    <section class="section"><h3 class="title sectiontitle">Use parameter types to fine-tune access</h3>
+      
+      <p class="p">Writing parameter types into plan code provides even more control. In
+        the <code class="ph codeph">upgrade_git</code> example above, the plan
+        only provides access to the <code class="ph codeph">git</code> package,
+        but the user can choose whatever version of <code class="ph codeph">git</code> they want. </p>
+      <p class="p">Let's say there are known vulnerabilities in some versions of the
+          <code class="ph codeph">git</code> package and you are concerned with
+        your new user having the ability to use the versions you deem unsafe. You can use parameter
+        types like Enum to restrict the version parameter to versions that are safe enough for
+        deployment.</p>
+      <div class="p">In this example, the Enum restricts the <code class="ph codeph">$version</code> parameter to versions 1:2.17.0-1ubuntu1 and
+        1:2.17.1-1ubuntu0.4 only:
+        <pre class="pre codeblock"><code>plan infra::upgrade_git (
+  TargetSpec $nodes,
+  Enum['1:2.17.0-1ubuntu1', '1:2.17.1-1ubuntu0.4'] $version,
+) {
+  run_task(‘package’, $nodes, name =&gt; ‘git’, action =&gt; ‘upgrade’, version =&gt; $version)
+}</code></pre></div>
+      <p class="p">Any user attempting to run this plan must choose one of these versions
+        for the plan to run.</p>
+      <div class="p">You can also use <span class="ph">PuppetDB</span> queries to
+        select parameter types. Using the same example, let's say you need to restrict the nodes
+        that <code class="ph codeph">infra::upgrade_git</code> can run on. Use a
+          <span class="ph">PuppetDB</span> query to identify which nodes get selected for the
+        git upgrade. It should look something like
+        this:<pre class="pre codeblock"><code>plan infra::upgrade_git (
+   Enum['1:2.17.0-1ubuntu1', '1:2.17.1-1ubuntu0.4'] $version,
+) {
+  # Use puppetdb to find the nodes from the “other” team's web cluster
+  $query = [from, nodes, ['=', [fact, cluster], "other_team"]]
+  $selected_nodes = puppetdb_query($query).map() |$target| {
+    $target[certname]
+  }
+  run_task(‘package’, $selected_nodes, name =&gt; ‘git’, action =&gt; ‘upgrade’, version =&gt; $version)
+}</code></pre></div>
+      <p class="p">Using these ideas, you can write powerful plans that give users exactly
+        what they need without giving them the keys to the kingdom.</p>
+    </section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="defining_plan_parameters_pe">
+ <h2 class="title topictitle2" id="ariaid-title4">Defining plan parameters</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">Specify parameters within your plan.</p>
+  <p class="p">Specify each parameter in your plan with its data type. For example, you
+   might want parameters to specify which nodes to run different parts of your plan on. </p>
+  <p class="p">The following example shows node parameters specified as data type <code class="ph codeph">TargetSpec</code>. This allows this parameter
+   to be passed as a single URL, comma-separated URL list, Target data type, or Array of either. For
+   more information about these data types, see the common data types table in the related metadata
+   type topic.</p>
+  <p class="p">This allows the user to pass, for each parameter, either a node name or a
+   URI that describes the protocol to use, the hostname, username, and password.</p>
+  <p class="p">The plan then calls the <code class="ph codeph">run_task</code> function, specifying which nodes to run the tasks on. The
+    <code class="ph codeph">Target</code> names are collected and stored in
+    <code class="ph codeph">$webserver_names</code> by iterating over the list of
+    <code class="ph codeph">Target</code> objects returned by <code class="ph codeph">get_targets</code>. Task parameters are serialized to JSON format;
+   therefore, extracting the names into an array of strings ensures that the <code class="ph codeph">webservers</code> parameter is in a format that can be converted to
+   JSON.</p>
+  <pre class="pre codeblock"><code>plan mymodule::my_plan(
+  TargetSpec $load_balancer,
+  TargetSpec  $webservers,
+) {
+
+  # Extract the Target name from $webservers
+  $webserver_names = get_targets($webservers).map |$n| { $n.name }
+  
+  # process webservers
+  run_task('mymodule::lb_remove', $load_balancer, webservers =&gt; $webserver_names)
+  run_task('mymodule::update_frontend_app', $webservers, version =&gt; '1.2.3')
+  run_task('mymodule::lb_add', $load_balancer, webservers =&gt; $webserver_names)
+ }</code></pre>
+  <p class="p">To execute this plan from the command line, pass the parameters as <code class="ph codeph">parameter=value</code>. The <code class="ph codeph">Targetspec</code> accepts either an array as json or a
+   comma separated string of target names.</p>
+  <pre class="pre codeblock"><code>bolt plan run mymodule::myplan --modulepath ./PATH/TO/MODULES load_balancer=lb.myorg.com webservers='["kermit.myorg.com","gonzo.myorg.com"]'
+        </code></pre>
+  <p class="p">Parameters that are passed to the <code class="ph codeph">run_*</code> plan functions are serialized to JSON.</p>
+  <div class="p">To illustrate this concept, consider this
+   plan:<pre class="pre codeblock"><code>plan test::parameter_passing (
+  TargetSpec $nodes,
+  Optional[String[1]] $example_nul = undef,
+) {
+  return run_task('test::demo_undef_bash', $nodes, example_nul =&gt; $example_nul)
+     }</code></pre></div>
+  <div class="p">The default value of <code class="ph codeph">$example_nul</code> is <code class="ph codeph">undef</code>. The plan calls
+   the <code class="ph codeph">test::demo_undef_bash</code> with the <code class="ph codeph">example_nul</code> parameter. The implementation of the
+    <code class="ph codeph">demo_undef_bash.sh</code> task
+   is:<pre class="pre codeblock"><code>#!/bin/bash
+example_env=$PT_example_nul
+echo "Environment: $PT_example_nul"
+echo "Stdin:" 
+     cat -</code></pre></div>
+  <p class="p">By default, the task expects parameters passed as a JSON string on stdin to
+   be accessible in prefixed environment variables. </p>
+  <div class="p">Consider the output of running the plan against
+   localhost:<pre class="pre codeblock"><code>bolt@bolt: bolt plan run test::parameter_passing -n localhost
+Starting: plan test::parameter_passing
+Starting: task test::demo_undef_bash on localhost
+Finished: task test::demo_undef_bash with 0 failures in 0.0 sec
+Finished: plan test::parameter_passing in 0.01 sec
+Finished on localhost:
+  Environment: null
+  Stdin:
+  {"example_nul":null,"_task":"test::demo_undef_bash"}
+  {
+  }
+Successful on 1 node: localhost
+     Ran on 1 node</code></pre></div>
+  <p class="p">The parameters <code class="ph codeph">example_nul</code>
+   and <code class="ph codeph">_task</code> metadata are passed to the task as a
+   JSON string over stdin.</p>
+  <p class="p">Similarly, parameters are made available to the task as environment
+   variables where the name of the parameter is converted to an environment variable prefixed with
+    <code class="ph codeph">PT_</code>. The prefixed environment variable points
+   to the <code class="ph codeph">String</code> representation in <code class="ph codeph">JSON</code> format of the parameter value. So, the <code class="ph codeph">PT_example_nul</code> environment variable has the value of <code class="ph codeph">null</code> of type <code class="ph codeph">String</code>.</p>
+ </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title5" id="returning_results_from_plans_pe">
+ <h2 class="title topictitle2" id="ariaid-title5">Returning results from plans</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">Use plans to return results that you can use in other plans
+  or save for use outside of <span class="ph">Bolt</span></p>
+  <p class="p">Plans, unlike functions, are primarily run for side effects but they can
+   optionally return a result. To return a result from a plan use the <code class="ph codeph">return</code> function. Any plan that does not call the <code class="ph codeph">return</code> function returns <code class="ph codeph">undef</code>.</p>
+  <div class="p">
+   <pre class="pre codeblock"><code>plan return_result(
+  $nodes
+) {
+  return run_task('mytask', $nodes)
+}</code></pre>
+  </div>
+  <p class="p">The result of a plan must match the <code class="ph codeph">PlanResult</code> type alias. This roughly includes JSON types as well as the
+   Plan language types which have well defined JSON representations in <span class="ph">Bolt</span>.</p>
+  <div class="p">
+   <ul class="ul">
+    <li class="li">
+     <code class="ph codeph">Undef</code>
+    </li>
+    <li class="li">
+     <code class="ph codeph">String</code>
+    </li>
+    <li class="li">
+     <code class="ph codeph">Numeric</code>
+    </li>
+    <li class="li">
+     <code class="ph codeph">Boolean</code>
+    </li>
+    <li class="li">
+     <code class="ph codeph">Target</code>
+    </li>
+    <li class="li">
+     <code class="ph codeph">Result</code>
+    </li>
+    <li class="li">
+     <code class="ph codeph">ResultSet</code>
+    </li>
+    <li class="li">
+     <code class="ph codeph">Error</code>
+    </li>
+    <li class="li">
+     <code class="ph codeph">Array</code> with only <code class="ph codeph">PlanResult</code>
+    </li>
+    <li class="li">Hash with <code class="ph codeph">String</code> keys and <code class="ph codeph">PlanResult</code> values</li>
+   </ul>
+  </div>
+  <p class="p">or</p>
+  <pre class="pre codeblock"><code>Variant[Data, String, Numeric, Boolean, Error, Result, ResultSet, Target, Array[Boltlib::PlanResult], Hash[String, Boltlib::PlanResult]]</code></pre>
+ </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title6" id="returning_errors_in_plans_pe">
+  <h2 class="title topictitle2" id="ariaid-title6">Returning errors in plans </h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">To return an error if your plan fails, call the <code class="ph codeph">fail_plan</code> function.</p>
+    <p class="p">Specify parameters to provide details about the failure.</p>
+    <div class="p">For example, if called with <code class="ph codeph">run_plan('mymodule::myplan')</code>, this would return an error to the
+      caller.<pre class="pre codeblock"><code>plan mymodule::myplan {
+  Error(
+    message &nbsp;  =&gt; "Sorry, this plan does not work yet.",
+    kind &nbsp;     =&gt; 'mymodule/error',
+    issue_code =&gt; 'NOT_IMPLEMENTED'
+    )
+  }
+  fail_plan("Sorry, this plan does not work yet.", 'mymodule/error')
+}</code></pre></div>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title7" id="plan_success_and_failure_pe">
+  <h2 class="title topictitle2" id="ariaid-title7">Plan success and failure</h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">There are indicators that a plan has run successfully or
+    failed.</p>
+    <p class="p">Any plan that completes execution without an error is considered
+      successful. The <code class="ph codeph">bolt</code> command
+      exits 0 and any calling plans continue execution. If any calls to <code class="ph codeph">run_</code> functions fail <strong class="ph b">without</strong>
+      <code class="ph codeph">_catch_errors</code> then the plan
+      halts execution and is considered a failure. Any calling plans also halt until a <code class="ph codeph">run_plan</code> call with <code class="ph codeph">_catch_errors</code> or a <code class="ph codeph">catch_errors</code> block is reached. If one isn't reached,
+      the <code class="ph codeph">bolt</code> command performs an
+      exit 2. When writing a plan if you have reason to believe it has failed, you can fail the plan
+      with the <code class="ph codeph">fail_plan</code> function.
+      This causes the bolt command to exit 2 and prevents calling plans executing any further,
+      unless <code class="ph codeph">run_plan</code> was called
+      with <code class="ph codeph">_catch_errors</code> or in a
+        <code class="ph codeph">catch_errors</code> block.</p>
+    <section class="section"><h3 class="title sectiontitle">Failing plans</h3>
+      
+      <div class="p">If&nbsp;<code class="ph codeph">upload_file</code>,&nbsp;<code class="ph codeph">run_command</code>,&nbsp;<code class="ph codeph">run_script</code>, or&nbsp;<code class="ph codeph">run_task</code>&nbsp;are called without the&nbsp;<code class="ph codeph">_catch_errors</code>&nbsp;option and they fail on any nodes, the plan
+        itself fails. To fail a plan directly call the&nbsp;<code class="ph codeph">fail_plan</code>&nbsp;function. Create a new error with a message and
+        include the kind, details, or issue code, or pass an existing error to it.
+        <pre class="pre codeblock"><code>fail_plan('The plan is failing', 'mymodules/pear-shaped', {'failednodes' =&gt; $result.error_set.names})
+# or
+fail_plan($errorobject)</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Catching errors in plans</h3>
+      
+      <p class="p"><span class="ph">Bolt</span> includes a <code class="ph codeph">catch_errors</code> function that executes a block of code and returns the
+        error if an error is raised, or returns the result of the block if no errors are raised. You
+        might get an <code class="ph codeph">Error</code> object returned if you
+        call <code class="ph codeph">run_plan</code> with <code class="ph codeph">_catch_errors</code>, use a <code class="ph codeph">catch_errors</code> block, or call the <code class="ph codeph">Error</code> method on a result.</p>
+      <p class="p">The <code class="ph codeph">Error</code> data type includes:</p>
+      <ul class="ul">
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">msg</code>: The error message
+            string.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">kind</code>: A string that
+            defines the kind of error similar to an error class.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">details</code>: A hash with
+            details about the error from a task or from information about the state of a plan when
+            it fails, for example, <code class="ph codeph">exit_code</code> or <code class="ph codeph">stack_trace</code>. </p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">issue_code</code>: A unique
+            code for the message that can be used for translation.</p>
+        </li>
+      </ul>
+      <p class="p">Use the <code class="ph codeph">Error</code> data type in a case expression to match against different kind of errors.
+        To recover from certain errors, while failing on or ignoring others, set up your plan to
+        include conditionals based on errors that occur while your plan runs. For example, you can
+        set up a plan to retry a task when a timeout error occurs, but to fail when there is an
+        authentication error. </p>
+      <div class="p">Below, the first plan continues whether it succeeds or fails with
+          a<code class="ph codeph"> mymodule/not-serious
+        </code>error. Other errors cause the plan to fail.
+        <pre class="pre codeblock"><code>plan mymodule::handle_errors {
+  $result = run_plan('mymodule::myplan', '_catch_errors' =&gt; true)
+  case $result {
+    Error['mymodule/not-serious'] : {
+      notice("${result.message}")
+    }
+    Error : { fail_plan($result) } }
+  run_plan('mymodule::plan2')
+}</code></pre></div>
+      <p class="p">Using the <code class="ph codeph">catch errors</code>
+        function:</p>
+      <pre class="pre codeblock"><code>plan test (String[1] $role) {
+  $result_or_error = catch_errors(['bolt/puppetdb-error']) || {
+    puppetdb_query("inventory[certname] { app_role == ${role} }")
+  }
+  $targets = if $result_or_error =~ Error {
+    # If the PuppetDB query fails
+    warning("Could not fetch from puppet. Using defaults instead")
+    # TargetSpec string
+    "all"
+  } else {
+    $result_or_error
+  }
+}</code></pre>
+    </section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title8" id="puppet_ruby_functions_plans_pe">
+ <h2 class="title topictitle2" id="ariaid-title8">Puppet and Ruby functions in plans</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">You can define and call <span class="ph">Puppet</span>
+  language and <span class="ph">Ruby</span> functions in plans.</p>
+  <p class="p">This is useful for packaging common general logic in your plan. You can also
+   call the plan functions, such as <code class="ph codeph">run_task</code> or <code class="ph codeph">run_plan</code>,
+   from within a function.</p>
+  <p class="p">Not all <span class="ph">Puppet</span> language constructs are
+   allowed in plans. The following constructs are not allowed:</p>
+  <ul class="ul">
+   <li class="li">
+    <p class="p">Defined types.</p>
+   </li>
+   <li class="li">
+    <p class="p">Classes.</p>
+   </li>
+   <li class="li">
+    <p class="p">Resource expressions, such as <code class="ph codeph">file { title: mode =&gt; '0777' }</code>
+    </p>
+   </li>
+   <li class="li">
+    <p class="p">Resource default expressions, such as <code class="ph codeph">File { mode =&gt; '0666' }</code>
+    </p>
+   </li>
+   <li class="li">
+    <p class="p">Resource overrides, such as <code class="ph codeph">File['/tmp/foo'] { mode =&gt; '0444' }</code>
+    </p>
+   </li>
+   <li class="li">
+    <p class="p">Relationship operators: <code class="ph codeph">-&gt; &lt;- ~&gt; &lt;~</code>
+    </p>
+   </li>
+   <li class="li">
+    <p class="p">Functions that operate on a catalog: <code class="ph codeph">include</code>, <code class="ph codeph">require</code>, <code class="ph codeph">contain</code>,
+      <code class="ph codeph">create_resources</code>.</p>
+   </li>
+   <li class="li">
+    <p class="p">Collector expressions, such as <code class="ph codeph">SomeType &lt;| |&gt;</code>, <code class="ph codeph">SomeType &lt;&lt;| |&gt;&gt;</code>
+    </p>
+   </li>
+   <li class="li">
+    <p class="p">ERB templates are not supported. Use EPP instead.</p>
+   </li>
+  </ul>
+  <p class="p"> Be aware of a few other <span class="ph">Puppet</span> behaviors in
+   plans:</p>
+  <ul class="ul">
+   <li class="li">
+    <p class="p">The <code class="ph codeph">--strict_variables</code> option is on, so if you reference a variable that is not set, you
+     get an error.</p>
+   </li>
+   <li class="li">
+    <p class="p">
+     <code class="ph codeph">--strict=error</code> is always on, so
+     minor language issues generate errors. For example <code class="ph codeph">{ a =&gt; 10, a =&gt; 20 }</code> is an error because there is a duplicate
+     key in the hash.</p>
+   </li>
+   <li class="li">
+    <p class="p">Most <span class="ph">Puppet</span> settings are empty and
+     not-configurable when using <span class="ph">Bolt</span>. </p>
+   </li>
+   <li class="li">
+    <p class="p">Logs include "source location" (file, line) instead of resource type or
+     name.</p>
+   </li>
+  </ul>
+ </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title9" id="handling_plan_function_results_pe">
+  <h2 class="title topictitle2" id="ariaid-title9">Handling plan function results </h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc"></p>
+    <p class="p">Each execution function returns an object type <code class="ph codeph">ResultSet</code>. For each node that the execution takes
+      place on, this object contains a <code class="ph codeph">Result</code> object. The apply action returns a <code class="ph codeph">ResultSet</code> containing <code class="ph codeph">ApplyResult</code> objects.</p>
+    <p class="p">A <code class="ph codeph">ResultSet</code> has the following methods:</p>
+    <div class="p">
+      <ul class="ul">
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">names()</code>: The <code class="ph codeph">String</code> names (node URIs) of
+            all nodes in the set as an <code class="ph codeph">Array</code>.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">empty()</code>: Returns <code class="ph codeph">Boolean</code> if the execution
+            result set is empty.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">count()</code>: Returns an
+              <code class="ph codeph">Integer</code> count of
+            nodes.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">first()</code>: The first
+              <code class="ph codeph">Result</code> object, useful
+            to unwrap single results.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">find(String
+              $target_name)</code>: Look up the <code class="ph codeph">Result</code> for a specific target.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">error_set()</code>: A <code class="ph codeph">ResultSet </code>containing only the
+            results of failed nodes. </p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">ok_set()</code>: A <code class="ph codeph">ResultSet</code> containing only the
+            successful results. </p>
+        </li>
+        <li class="li">
+          <p class="p"><code class="ph codeph">filter_set(block)</code>: Filters a <code class="ph codeph">ResultSet</code> with the given block and returns a <code class="ph codeph">ResultSet</code> object (where the <a class="xref" href="https://puppet.com/docs/puppet/latest/function.html#filter" target="_blank">filter function</a> returns an array or hash).</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">targets()</code>: An array of
+            all the <code class="ph codeph">Target</code> objects
+            from every <code class="ph codeph">Result </code>in the
+            set.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">ok():</code>
+            <code class="ph codeph">Boolean</code> that is the same
+            as <code class="ph codeph">error_nodes.empty</code>.</p>
+        </li>
+        <li class="li">
+          <p class="p"><code class="ph codeph">to_data()</code>: An array
+            of hashes representing either <code class="ph codeph">Result</code> or
+              <code class="ph codeph">ApplyResults</code>.</p>
+        </li>
+      </ul>
+    </div>
+    <p class="p">A <code class="ph codeph">Result</code>
+      has the following methods:</p>
+    <div class="p">
+      <ul class="ul">
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">value()</code>: The hash
+            containing the value of the <code class="ph codeph">Result</code>.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">target()</code>: The <code class="ph codeph">Target</code> object that the <code class="ph codeph">Result</code> is from.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">error()</code>: An <code class="ph codeph">Error</code> object constructed from
+            the <code class="ph codeph">_error</code> in the
+            value.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">message()</code>: The <code class="ph codeph">_output</code> key from the
+            value.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">ok()</code>: Returns <code class="ph codeph">true</code> if the <code class="ph codeph">Result</code> was successful.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">[]</code>: Accesses the value
+            hash directly.</p>
+        </li>
+        <li class="li">
+          <p class="p"><code class="ph codeph">to_data()</code>: Hash
+            representation of <code class="ph codeph">Result</code>.</p>
+        </li>
+        <li class="li">
+          <p class="p"><code class="ph codeph">action()</code>: String
+            representation of result type (task, command, etc.).</p>
+        </li>
+      </ul>
+    </div>
+    <p class="p">An <code class="ph codeph">ApplyResult</code> has the following methods:</p>
+    <div class="p">
+      <ul class="ul">
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">report()</code>: The hash
+            containing the <span class="ph">Puppet</span> report from the application.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">target()</code>: The <code class="ph codeph">Target</code> object that the <code class="ph codeph">Result</code> is from.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">error()</code>: An <code class="ph codeph">Error</code> object constructed from
+            the <code class="ph codeph">_error</code> in the
+            value.</p>
+        </li>
+        <li class="li">
+          <p class="p">
+            <code class="ph codeph">ok()</code>: Returns <code class="ph codeph">true</code> if the <code class="ph codeph">Result</code> was successful.</p>
+        </li>
+        <li class="li">
+          <p class="p"><code class="ph codeph">to_data()</code>: Hash
+            representation of <code class="ph codeph">ApplyResult</code>.</p>
+        </li>
+        <li class="li">
+          <p class="p"><code class="ph codeph">action()</code>: String
+            representation of result type (apply).</p>
+        </li>
+      </ul>
+    </div>
+    <p class="p">An instance of <code class="ph codeph">ResultSet</code> is <code class="ph codeph">Iterable</code> as if it were an <code class="ph codeph">Array[Variant[Result, ApplyResult]]</code> so that iterative functions such as <code class="ph codeph">each</code>, <code class="ph codeph">map</code>, <code class="ph codeph">reduce</code>, or <code class="ph codeph">filter</code> work directly on the ResultSet returning each result. </p>
+    <p class="p">This example checks if a task ran correctly on all nodes. If it did not,
+      the check fails:</p>
+    <div class="p">
+      <pre class="pre codeblock"><code>$r = run_task('sometask', ..., '_catch_errors' =&gt; true)
+unless $r.ok {
+  fail("Running sometask failed on the nodes ${r.error_nodes.names}")
+}</code></pre>
+    </div>
+    <p class="p">You can do iteration and checking if the result is an Error. This example
+      outputs feedback about the result of a task:</p>
+    <div class="p">
+      <pre class="pre codeblock"><code>$r = run_task('sometask', ..., '_catch_errors' =&gt; true)
+$r.each |$result| {
+  $node = $result.target.name
+  if $result.ok {
+    notice("${node} returned a value: ${result.value}")
+  } else {
+    notice("${node} errored with a message: ${result.error.message}")
+  }
+}</code></pre>
+    </div>
+    <div class="p">Similarly, you can iterate over the array of hashes returned by calling
+        <code class="ph codeph">to_data</code> on a<code class="ph codeph">ResultSet</code> and access hash values. For example:
+      <pre class="pre codeblock"><code>$r = run_command('whoami', 'localhost,local://0.0.0.0')
+$r.to_data.each |$result_hash| { notice($result_hash['result']['stdout']) } </code></pre></div>
+    <div class="p">You can also use <code class="ph codeph">filter_set</code> to filter a <code class="ph codeph">ResultSet</code>
+      and apply a <code class="ph codeph">ResultSet</code> function such as
+        <code class="ph codeph">targets</code> to the output:
+      <pre class="pre codeblock"><code>$filtered = $result.filter_set |$r| {
+  $r['tag'] == "you're it"
+}.targets</code></pre></div>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title10" id="passing_sensitive_data_to_tasks_pe">
+ <h2 class="title topictitle2" id="ariaid-title10">Passing sensitive data to tasks</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">Task parameters defined as sensitive are masked when they
+  appear in plans.</p>
+  <p class="p">You define a task parameter as sensitive with the metadata property <code class="ph codeph">"sensitive": true</code>. When a task runs, the
+   values for these sensitive parameters are masked.</p>
+  <div class="p">
+   <pre class="pre codeblock"><code>run_task('task_with_secrets', ..., password =&gt; '$ecret!')</code></pre>
+  </div>
+  <section class="section"><h3 class="title sectiontitle">Working with the sensitive function</h3>
+   
+   <div class="p">In <span class="ph">Puppet</span> you use the <code class="ph codeph">Sensitive</code> function to mask data in output logs.
+    Because plans are written in <span class="ph">Puppet</span> DSL, you can use this type
+    freely. The <code class="ph codeph">run_task()</code>&nbsp;function does not allow parameters of <code class="ph codeph">Sensitive</code> function to be passed. When you need to pass a
+    sensitive value to a task, you must unwrap it prior to calling <code class="ph codeph">run_task()</code>.<pre class="pre codeblock"><code>$pass = Sensitive('$ecret!')
+run_task('task_with_secrets', ..., password =&gt; $pass.unwrap)
+</code></pre></div>
+  </section>
+ </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title11" id="target_objects_plans_pe">
+  <h2 class="title topictitle2" id="ariaid-title11">Target objects</h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">Target</code> object represents a node and its specific connection options. </p>
+    <p class="p">The state of a target is stored in the inventory for the duration of a
+      plan allowing you to collect facts or set vars for a target and retrieve them later. You can
+      get a printable representation via the <code class="ph codeph">name</code> function, as well as access components of the target: <code class="ph codeph">protocol, host, port, user, password</code>. </p>
+    <section class="section"><h3 class="title sectiontitle">TargetSpec</h3>
+      
+      <p class="p">The execution function takes a parameter with the type alias TargetSpec.
+        This alias accepts the pattern strings allowed by <code class="ph codeph">--nodes</code>, a single Target object, or an Array of Targets and node
+        patterns. Generally, use this type for plans that accept a set of targets as a parameter, to
+        ensure clean interaction with the CLI and other plans. To operate on individual nodes,
+        resolve it to a list via <code class="ph codeph">get_targets</code>. For example, to loop over each node in a plan accept a <code class="ph codeph">TargetSpec</code> argument, but call
+          <code class="ph codeph">get_targets</code> on it before
+        looping.</p>
+      <div class="p">
+        <pre class="pre codeblock"><code>plan loop(TargetSpec $nodes) {
+  get_targets($nodes).each |$target| {
+    run_task('my_task', $target)
+  }
+}</code></pre>
+      </div>
+      <p class="p">If your plan accepts a single <code class="ph codeph">TargetSpec</code> parameter you can call that parameter <code class="ph codeph">nodes</code> so that it can be specified with the
+          <code class="ph codeph">--nodes</code> flag from the
+        command line.</p>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Variables and facts on targets</h3>
+      
+      <p class="p">When <span class="ph">Bolt</span> runs, it loads transport config
+        values, variables, and facts from the inventory. These can be accessed with the <code class="ph codeph">$target.facts()</code> and <code class="ph codeph">$target.vars()</code> functions. During
+        the course of a plan, you can update the facts or variables for any target. Facts usually
+        come from running <code class="ph codeph">facter</code> or
+        another fact collection application on the target or from a fact store like <span class="ph">PuppetDB</span>. Variables are computed externally or assigned
+        directly.</p>
+      <p class="p">Set variables in a plan using <code class="ph codeph">$target.set_var</code>:</p>
+      <pre class="pre codeblock"><code>plan vars(String $host) {
+	$target = get_targets($host)[0]
+	$target.set_var('newly_provisioned', true)
+	$targetvars = $target.vars
+	run_command("echo 'Vars for ${host}: ${$targetvars}'", $host)
+}
+</code></pre>
+      <p class="p">Or set variables in the inventory file using the <code class="ph codeph">vars</code> key at the group level.</p>
+      <pre class="pre codeblock"><code>groups:
+  - name: my_nodes
+    nodes:
+      - localhost
+    vars:
+      operatingsystem: windows
+    config:
+      transport: ssh</code></pre>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Collect facts from the targets</h3>
+      
+      <p class="p">The facts plan connects to the target and discovers facts. It then
+        stores these facts on the targets in the inventory for later use. </p>
+      <p class="p">The methods used to collect facts: </p>
+      <ul class="ul">
+        <li class="li">On <code class="ph codeph">ssh</code> targets, it runs a Bash script.</li>
+        <li class="li">On <code class="ph codeph">winrm</code> targets, it runs a <span class="ph">PowerShell</span>
+          script.</li>
+        <li class="li">On <code class="ph codeph">pcp</code> or targets where the <span class="ph">Puppet</span> agent is
+          present, it runs <span class="ph">Facter</span>.</li>
+      </ul>
+      <div class="p">This example collects facts with the facts plan and then uses those
+        facts to decide which task to run on the
+        targets.<pre class="pre codeblock"><code>plan run_with_facts(TargetSpec $nodes) {
+  # This collects facts on nodes and update the inventory
+  run_plan(facts, nodes =&gt; $nodes)
+
+  $centos_nodes = get_targets($nodes).filter |$n| { $n.facts['os']['name'] == 'CentOS' }
+  $ubuntu_nodes = get_targets($nodes).filter |$n| { $n.facts['os']['name'] == 'Ubuntu' }
+  run_task(centos_task, $centos_nodes)
+  run_task(ubuntu_task, $ubuntu_nodes)
+}</code></pre></div>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Collect facts from <span class="ph">PuppetDB</span></h3>
+      
+      <p class="p">When targets are running a <span class="ph">Puppet</span> agent
+        and sending facts to <span class="ph">PuppetDB</span>, you can use the&nbsp;<code class="ph codeph">puppetdb_fact</code>&nbsp;plan to collect
+        facts for them. This example collects facts with the&nbsp;<code class="ph codeph">puppetdb_fact</code>&nbsp;plan, and then uses those facts
+        to decide which task to run on the targets. You must configure the <span class="ph">PuppetDB</span> client before you run it.</p>
+      <pre class="pre codeblock"><code>plan run_with_facts(TargetSpec $nodes) {
+  # This collects facts on nodes and update the inventory
+  run_plan(<strong class="ph b">puppetdb_fact</strong>, nodes =&gt; $nodes)
+
+  $centos_nodes = get_targets($nodes).filter |$n| { $n.facts['os']['name'] == 'CentOS' }
+  $ubuntu_nodes = get_targets($nodes).filter |$n| { $n.facts['os']['name'] == 'Ubuntu' }
+  run_task(centos_task, $centos_nodes)
+  run_task(ubuntu_task, $ubuntu_nodes)
+}</code></pre>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Collect general data from <span class="ph">PuppetDB</span></h3>
+      
+      <div class="p">You can use the <code class="ph codeph">puppetdb_query</code> function in plans to make direct queries to <span class="ph">PuppetDB</span>. For example you can discover nodes from <span class="ph">PuppetDB</span> and then run tasks on them. You'll have to configure
+        the PuppetDB client before running it. You can learn how to <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/tutorial-pql.html" target="_blank">structure pql queries here</a>, and find <a class="xref" href="https://puppet.com/docs/puppetdb/latest/api/query/v4/pql.html" target="_blank">pql reference and examples here</a>
+        <pre class="pre codeblock"><code>plan pdb_discover {
+  $result = puppetdb_query("inventory[certname] { app_role == 'web_server' }")
+  # extract the certnames into an array
+  $names = $result.map |$r| { $r["certname"] }
+  # wrap in url. You can skip this if the default transport is pcp
+  $nodes = $names.map |$n| { "pcp://${n}" }
+  run_task('my_task', $nodes)
+}</code></pre></div>
+    </section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title12" id="plan_logging_plans_pe">
+  <h2 class="title topictitle2" id="ariaid-title12">Plan logging</h2>
+  
+  
+
+  <div class="body conbody"><p class="shortdesc">Plan run information can be captured in log files or printed
+    to a terminal session using the following methods.</p>
+    <section class="section"><h3 class="title sectiontitle">Outputting section to the terminal</h3>
+      
+      <p class="p">Print message strings to <code class="ph codeph">STDOUT</code> using the plan function <code class="ph codeph">out::message</code>. This function always prints messages regardless of the log level
+        and doesn't log them to the log file.</p>
+    </section>
+    <section class="section"><h3 class="title sectiontitle"><span class="ph">Puppet</span> log functions</h3>
+      
+      <p class="p">To generate log messages from a plan, use the Puppet log function that
+        corresponds to the level you want to track: <code class="ph codeph">error</code>, <code class="ph codeph">warn</code>, <code class="ph codeph">notice</code>, <code class="ph codeph">info</code>, or <code class="ph codeph">debug</code>. Configure the
+        log level for both log files and console logging in <code class="ph codeph">bolt.yaml</code>. The default log level for the console is <code class="ph codeph">warn</code> and for log files is <code class="ph codeph">notice</code>. Use the <code class="ph codeph">--debug</code> flag to
+        set the console log level to <code class="ph codeph">debug</code> for a
+        single run.</p>
+    </section>
+    <section class="section"><h3 class="title sectiontitle">Default action logging</h3>
+      
+      <p class="p"><span class="ph">Bolt</span> logs actions that a plan takes on
+        targets through the &nbsp;<code class="ph codeph">upload_file</code>, &nbsp;<code class="ph codeph">run_command</code>, <code class="ph codeph">run_script</code>, or&nbsp;<code class="ph codeph">run_task</code>&nbsp; functions. By default it logs a&nbsp;notice&nbsp;level message
+        when an action starts and another when it completes. If you pass a description to the
+        function, that is used in place of the generic log message.</p>
+      <pre class="pre codeblock"><code>run_task(my_task, $targets, "Better description", param1 =&gt; "val")</code></pre>
+      <p class="p">If your plan contains many small actions you may want to suppress these
+        messages and use explicit calls to the <span class="ph">Puppet</span> log functions
+        instead. This can be accomplished by wrapping actions in a&nbsp;<code class="ph codeph">without_default_logging</code>&nbsp;block which causes the
+        action messages to be logged at&nbsp;info&nbsp;level instead of&nbsp;notice. For example to
+        loop over a series of nodes without logging each action.</p>
+      <pre class="pre codeblock"><code>plan deploy( TargetSpec $nodes) {
+  without_default_logging() || {
+    get_targets($nodes).each |$node| {
+      run_task(deploy, $node)
+    }
+  }
+}
+</code></pre>
+      <p class="p">To avoid complications with parser ambiguity, always call&nbsp;<code class="ph codeph">without_default_logging</code>&nbsp;with&nbsp;<code class="ph codeph">()</code>&nbsp;and empty block args&nbsp;<code class="ph codeph">||</code>.</p>
+      <pre class="pre codeblock"><code>without_default_logging() || { run_command('echo hi', $nodes) }</code></pre>
+      <p class="p">not</p>
+      <pre class="pre codeblock"><code>without_default_logging { run_command('echo hi', $nodes) }</code></pre>
+    </section>
+  </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title13" id="example_plans_pe">
+ <h2 class="title topictitle2" id="ariaid-title13">Example plans</h2>
+ 
+ 
+
+ <div class="body conbody"><p class="shortdesc">Check out some example plans for inspiration writing your
+  own.</p>
+  <div class="p">
+   <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+      <tr class="row">
+       <th class="entry" id="example_plans_pe__entry__1">Resource</th>
+       <th class="entry" id="example_plans_pe__entry__2">Description</th>
+       <th class="entry" id="example_plans_pe__entry__3">Level</th>
+      </tr>
+     </thead><tbody class="tbody">
+      <tr class="row">
+       <td class="entry" headers="example_plans_pe__entry__1">
+        <a class="xref" href="https://forge.puppet.com/puppetlabs/facts" target="_blank">facts module</a>
+       </td>
+       <td class="entry" headers="example_plans_pe__entry__2">Contains tasks and plans to discover facts about target
+        systems.</td>
+       <td class="entry" headers="example_plans_pe__entry__3">Getting started</td>
+      </tr>
+      <tr class="row">
+       <td class="entry" headers="example_plans_pe__entry__1">
+        <a class="xref" href="https://github.com/puppetlabs/puppetlabs-facts/blob/master/plans/init.pp" target="_blank">facts plan</a>
+       </td>
+       <td class="entry" headers="example_plans_pe__entry__2">Gathers facts using the facts task and sets the facts in
+        inventory. </td>
+       <td class="entry" headers="example_plans_pe__entry__3">Getting started</td>
+      </tr>
+      <tr class="row">
+       <td class="entry" headers="example_plans_pe__entry__1">
+        <a class="xref" href="https://github.com/puppetlabs/puppetlabs-facts/blob/master/plans/info.pp" target="_blank">facts::info plan</a>
+       </td>
+       <td class="entry" headers="example_plans_pe__entry__2">Uses the facts task to discover facts and map relevant fact
+        values to targets.</td>
+       <td class="entry" headers="example_plans_pe__entry__3">Getting started</td>
+      </tr>
+      <tr class="row">
+       <td class="entry" headers="example_plans_pe__entry__1">
+        <a class="xref" href="https://forge.puppet.com/puppetlabs/reboot" target="_blank">reboot module</a>
+       </td>
+       <td class="entry" headers="example_plans_pe__entry__2">Contains tasks and plans for managing system reboots.</td>
+       <td class="entry" headers="example_plans_pe__entry__3">Intermediate</td>
+      </tr>
+      <tr class="row">
+       <td class="entry" headers="example_plans_pe__entry__1">
+        <a class="xref" href="https://github.com/puppetlabs/puppetlabs-reboot/blob/master/plans/init.pp" target="_blank">reboot plan</a>
+       </td>
+       <td class="entry" headers="example_plans_pe__entry__2">Restarts a target system and waits for it to become available
+        again.</td>
+       <td class="entry" headers="example_plans_pe__entry__3">Intermediate</td>
+      </tr>
+      <tr class="row">
+       <td class="entry" headers="example_plans_pe__entry__1">
+        <a class="xref" href="https://puppet.com/blog/introducing-masterless-puppet-bolt" target="_blank">Introducing Masterless <span class="ph">Puppet</span> with <span class="ph">Bolt</span></a>
+       </td>
+       <td class="entry" headers="example_plans_pe__entry__2">Blog post explaining how plans can be used to deploy a
+        load-balanced web server.</td>
+       <td class="entry" headers="example_plans_pe__entry__3">Advanced</td>
+      </tr>
+      <tr class="row">
+       <td class="entry" headers="example_plans_pe__entry__1">
+        <a class="xref" href="https://puppetlabs.github.io/bolt/lab/11-apply-manifest-code/" target="_blank">profiles::nginx_install plan</a>
+       </td>
+       <td class="entry" headers="example_plans_pe__entry__2">Shows an example plan for deploying Nginx and HAProxy.</td>
+       <td class="entry" headers="example_plans_pe__entry__3">Advanced</td>
+      </tr>
+     </tbody></table>
+  </div>
+  <div class="p">
+   <ul class="ul">
+    <li class="li"><strong class="ph b">Getting started</strong> resources show simple
+     use cases such as running a task and manipulating the results.</li>
+    <li class="li"><strong class="ph b">Intermediate</strong> resources show more
+     advanced features in the plan language.</li>
+    <li class="li"><strong class="ph b">Advanced</strong> resources show more complex
+     use cases such as applying puppet code blocks and using external modules.</li>
+   </ul>
+  </div>
+ </div>
+</article></article></article></main></body></html>

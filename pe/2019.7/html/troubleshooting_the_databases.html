@@ -1,0 +1,87 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="If you have issues with the databases that support the console, make sure that the PostgreSQL database is not too large or using too much memory, that you don't have port conflicts, and that puppet apply is configured correctly."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="troubleshooting_the_databases"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Troubleshooting the databases</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="troubleshooting_the_databases">
+    <h1 class="title topictitle1" id="ariaid-title1">Troubleshooting the databases </h1>
+    
+    <div class="body conbody"><p class="shortdesc">If you have issues with the databases that support the
+        console, make sure that the <span class="ph">PostgreSQL</span> database is not too
+        large or using too much memory, that you don't have port conflicts, and that <code class="ph codeph">puppet apply</code> is configured correctly. </p>
+        <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> If you're using your own
+                instance of <span class="ph">PostgreSQL</span> for the console and <span class="ph">PuppetDB</span>, you must use version 9.1 or
+            higher.</div></div>
+    </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="postgresql_taking_up_too_much_space">
+    <h2 class="title topictitle2" id="ariaid-title2"><span class="ph">PostgreSQL</span> is taking up too much
+        space</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">The <span class="ph">PostgreSQL</span>
+        <code class="ph codeph">autovacuum=on</code> setting prevents the database
+        from growing too large and unwieldy. Routine vacuuming is turned on by default.</p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">Verify that <code class="ph codeph">autovacuum</code> is set to <code class="ph codeph">on</code>.</span>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="postgresql_buffer_memory_causes_installation_to_fail">
+        <h2 class="title topictitle2" id="ariaid-title3"><span class="ph">PostgreSQL</span> buffer memory causes
+                installation to fail</h2>
+        
+        
+        <div class="body taskbody"><p class="shortdesc">When installing <span class="ph">PE</span> on
+                machines with large amounts of RAM, the <span class="ph">PostgreSQL</span>
+                database might use more shared buffer memory than is available.</p>
+                <section class="section context">
+                        <div class="p">If this issue is present, <code class="ph codeph">/var/log/pe-postgresql/pgstartup.log</code>
+                                shows the
+                                error:<pre class="pre codeblock"><code>FATAL: could not create shared memory segment: No space left on device
+DETAIL: Failed system call was shmget(key=5432001, size=34427584512,03600).</code></pre></div>
+                </section>
+                <section><ol class="ol steps"><li class="li step stepexpand">
+                                <span class="ph cmd">On the master, set the <code class="ph codeph">shmmax</code>
+                                        kernel setting to approximately 50% of the total RAM.</span>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">Set the <code class="ph codeph">shmall</code> kernel setting to the
+                                        quotient of the new <code class="ph codeph">shmmax</code> setting divided by the page size.
+                                        You can confirm page size by running <code class="ph codeph">getconf
+                                        PAGE_SIZE</code>.</span>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">Set the new kernel settings:</span>
+                                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>sysctl -w kernel.shmmax=&lt;your shmmax calculation&gt;
+sysctl -w kernel.shmall=&lt;your shmall calculation&gt;</code></pre></div></div>
+                        </li></ol></section>
+        </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="default_port_for_puppetdb_conflicts_with_another_service_">
+    <h2 class="title topictitle2" id="ariaid-title4">The default port for <span class="ph">PuppetDB</span>
+        conflicts with another service </h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">By default, <span class="ph">PuppetDB</span>
+        communicates over port 8081. In some cases, this might conflict with existing services, for
+        example McAfee ePolicy Orchestrator.</p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">Install in text mode with a parameter in <code class="ph codeph">pe.conf</code> that specifies a different
+                    port using <code class="ph codeph">puppet_enterprise::puppetdb_port</code>.</span>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="puppet_resource_generates_ruby_errors">
+    <h2 class="title topictitle2" id="ariaid-title5"><code class="ph codeph">puppet resource</code>
+        generates <span class="ph">Ruby</span> errors after connecting <code class="ph codeph">puppet apply</code> to <span class="ph">PuppetDB</span></h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">If <span class="ph">Puppet</span> apply is
+        configured incorrectly, for example by modifying <code class="ph codeph">puppet.conf</code> to add the parameters <code class="ph codeph">storeconfigs_backend = puppetdb</code> and <code class="ph codeph">storeconfigs = true</code> in both the main and master sections, <code class="ph codeph">puppet resource</code> ceases to function and displays a <span class="ph">Ruby</span> run error.</p>
+        <section class="section context">
+            <p class="p"></p>
+        </section>
+        <section><div class="li step p">
+                <span class="ph cmd">Modify <code class="ph codeph">/etc/puppetlabs/puppet/routes.yaml</code> to correctly <a class="xref" href="https://docs.puppet.com/puppetdb/5.1/connect_puppet_apply.html" target="_blank">connect <span class="ph">Puppet</span> apply</a>
+                    without affecting other functions.</span>
+            </div></section>
+    </div>
+</article></article></article></main></body></html>

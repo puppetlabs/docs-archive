@@ -1,0 +1,99 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="In October 2018, the &#34;x.y.z&#34; version numbering system for Puppet Enterprise (PE) changed so that the first number (&#34;x&#34;) changes only when PE adopts a new major version of the Puppet Platform."><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="pe_and_osp_version_numbers"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>PE and open source version numbers</title></head><body id="pe_and_osp_version_numbers"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">PE</span> and open source version numbers </h1>
+    
+    <div class="body conbody"><p class="shortdesc">In October 2018, the "x.y.z" version numbering system for
+            <span class="ph">Puppet Enterprise (PE)</span> changed so that the first number ("x")
+        changes only when <span class="ph">PE</span> adopts a new major version of the <span class="ph">Puppet</span> Platform.</p>
+        <p class="p">We made this change to so that it's easier for you to determine
+            whether a release contains potentially high-impact breaking changes. Previously, the "x"
+            part of the version number incremented with each new calendar year, whether or not there
+            were breaking changes in the release.</p>
+        <p class="p">The "y" and "z" numbers continue to increment with minor and patch
+            releases, respectively. </p>
+        <table class="table"><caption></caption><colgroup><col><col><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="pe_and_osp_version_numbers__entry__1">Type of change</th>
+                        <th class="entry" id="pe_and_osp_version_numbers__entry__2">Major "x" releases</th>
+                        <th class="entry" id="pe_and_osp_version_numbers__entry__3">Minor "y" releases</th>
+                        <th class="entry" id="pe_and_osp_version_numbers__entry__4">Patch "z" releases</th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__1">Security updates</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__2">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__3">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__4">yes</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__1">Bug fixes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__2">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__3">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__4">yes</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__1">Minor improvements</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__2">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__3">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__4">yes</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__1">Major improvements</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__2">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__3">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__4">no</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__1">New features</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__2">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__3">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__4">no</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__1">Low-impact breaking changes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__2">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__3">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__4">no</td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__1">High-impact breaking changes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__2">yes</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__3">no</td>
+                        <td class="entry" headers="pe_and_osp_version_numbers__entry__4">no</td>
+                    </tr>
+                </tbody></table>
+        <p class="p">For example, if you are using <span class="ph">PE</span>
+            2018.1.3, then upgrading to <span class="ph">PE</span> 2019 likely introduces
+            changes that involve updating your <span class="ph">Puppet</span> code, depending
+            on what features you use and what we added. Upgrading to 2018.1.4 fixes bugs and
+            security problems, and might slightly adjust how a feature looks.</p>
+        <div class="p">
+            <div class="note note note_note"><span class="note__title">Note:</span> This version of documentation represents the latest update in this
+                release stream. There might be differences in features or functionality from
+                previous releases in this stream. To view documentation for superseded versions,
+                learn how to access <a class="xref" href="archived_pe_docs.html#archived_pe_docs" title="PE docs for recent end-of-life (EOL) or superseded product versions are archived in place, meaning that we continue to host them at their original URLs, but we limit their visibility on the main docs site and no longer update them. You can access archived-in-place docs using their original URLs, or from the links here.">archived PE
+                docs</a>.</div>
+        </div>
+        <p class="p">The first release to use the updated system is <span class="ph">Puppet Enterprise</span> 2019.0. Older release streams follow the previous
+            version numbering system.</p>
+        <p class="p">For information about active <span class="ph">PE</span>
+            releases, mainstream and extended support, and end of life dates, see <a class="xref" href="https://puppet.com/misc/puppet-enterprise-lifecycle" target="_blank">Puppet
+                Enterprise support lifecycle</a>. </p>
+        <section class="section"><h2 class="title sectiontitle">Open source version numbers</h2>
+            
+            <p class="p">All of our open source projects—including <span class="ph">Puppet</span>, <span class="ph">PuppetDB</span>, <span class="ph">Facter</span>, and <span class="ph">Hiera</span>—use
+                semantic versioning ("semver"). This means that in an x.y.z version number, the "y"
+                increases if new features are introduced and the "x" increases if existing features
+                change or get removed.</p>
+            <p class="p">Our semver refers to only the code within that project; it's
+                possible that packaging or interactions with other projects might cause new behavior
+                in a "z" upgrade of <span class="ph">Puppet</span>.</p>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> In <span class="ph">Puppet</span>
+                    versions prior to 3.0.0 and <span class="ph">Facter</span> versions prior
+                    to 1.7.0, we didn't use semver.</div>
+            </div>
+        </section>
+    </div>
+</article></main></body></html>

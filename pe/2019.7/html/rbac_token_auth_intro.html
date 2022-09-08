@@ -1,0 +1,424 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Authentication tokens allow a user to enter their credentials once, then receive an alphanumeric &#34;token&#34; to use to access different services or parts of the system infrastructure. Authentication tokens are tied to the permissions granted to the user through RBAC, and provide the user with the appropriate access to HTTP requests."><meta name="DC.relation" scheme="URI" content="installing_pe_client_tools.html#installing_pe_client_tools"><meta name="DC.relation" scheme="URI" content="rbac_permissions_intro.html#user_permissions"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="token_based_authentication"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Token-based authentication</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="token_based_authentication">
+   <h1 class="title topictitle1" id="ariaid-title1">Token-based authentication </h1>
+   
+   <div class="body conbody"><p class="shortdesc">Authentication tokens allow a user to enter their credentials once, then receive an
+      alphanumeric "token" to use to access different services or parts of the system
+      infrastructure. Authentication tokens are tied to the permissions granted to the user through
+      RBAC, and provide the user with the appropriate access to HTTP requests. </p>
+      <p class="p">You can generate authentication tokens using <code class="ph codeph">puppet-access</code> or the RBAC API
+         V2 endpoint. You can also generate one-off tokens that do not need to be saved, which are
+         typically used by a service. </p>
+      <p class="p">RBAC settings for authentication tokens can be managed in the console in the <span class="ph uicontrol">PE
+            Infrastructure</span> group. See <a class="xref" href="configuring_rbac.html" title="Tune RBAC and token-based authentication settings, like setting the number of failed attempts a user has before they are locked out of the console or changing the amount of time a token is valid for.">Configure RBAC and token-based authentication settings</a> for a list of
+         settings you can change.</p>
+      <p class="p">Authentication tokens manage access to the following <span class="ph">PE</span>
+         services:</p>
+      <ul class="ul">
+         <li class="li">Puppet orchestrator</li>
+         <li class="li">
+            <span class="ph">Code Manager</span>
+         </li>
+         <li class="li">Node classifier</li>
+         <li class="li">Role-based access control (RBAC)</li>
+         <li class="li">Activity service</li>
+         <li class="li">
+            <span class="ph">PuppetDB</span>
+         </li>
+      </ul>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="installing_pe_client_tools.html#installing_pe_client_tools" title="PE client tools are a set of command line tools that let you access Puppet Enterprise services from a workstation that might or might not be managed by Puppet.">Installing PE client tools</a></li><li class="linklist"><a class="link" href="rbac_permissions_intro.html#user_permissions" title="The table below lists the available object types and their permissions, as well as an explanation of the permission and how to use it.">User permissions</a></li></ul></div></nav><article class="topic concept nested1" aria-labelledby="ariaid-title2" id="configuring_puppet_access">
+   <h2 class="title topictitle2" id="ariaid-title2">Configure puppet-access </h2>
+   
+   <div class="body conbody"><p class="shortdesc">The <code class="ph codeph">puppet-access</code> command allows users to generate and manage
+      authentication tokens from the command line of any workstation (Puppet-managed or not),
+      without the need to SSH into the Puppet master. Ensure puppet-access is configured correctly
+      before using it to generate authentication tokens. </p>
+      <p class="p">The configuration file for <code class="ph codeph">puppet-access</code> allows you to generate tokens from the CLI without having to
+         pass additional flags.</p>
+      <p class="p">Whether you are running <code class="ph codeph">puppet-access</code> on a PE-managed server or installing it on a separate work
+         station, you need a global configuration file and a user-specified configuration file. </p>
+      <section class="section"><h3 class="title sectiontitle">Global configuration
+            file</h3><p class="p">The global configuration file is located at: </p><div class="p">
+            <ul class="ul">
+               <li class="li">
+                  <p class="p">
+                     <strong class="ph b">On *nix systems: </strong>
+                     <code class="ph codeph">/etc/puppetlabs/client-tools/puppet-access.conf</code>
+                  </p>
+               </li>
+               <li class="li">
+                  <strong class="ph b">On Windows systems: </strong>
+                  <code class="ph codeph">C:/ProgramData/PuppetLabs/client-tools/puppet-access.conf</code>
+               </li>
+            </ul>
+         </div><p class="p">On machines managed by <span class="ph">Puppet Enterprise</span>,
+            this global configuration file is created for you. The configuration file is formatted
+            in JSON. For
+            example:</p><pre class="pre codeblock JSON"><code>{
+    "service-url": "https://&lt;CONSOLE HOSTNAME&gt;:4433/rbac-api",
+    "token-file": "~/.puppetlabs/token",
+    "certificate-file": "/etc/puppetlabs/puppet/ssl/certs/ca.pem"
+}</code></pre><p class="p">
+            <span class="ph">PE</span> determines and adds the <code class="ph codeph">service-url</code> setting.</p><p class="p">If you're
+            running <code class="ph codeph">puppet-access</code> from a
+            workstation not managed by <span class="ph">PE</span>, you must create the global
+            file and populate it with the configuration file settings.</p></section>
+      <section class="section"><h3 class="title sectiontitle">User-specified configuration
+            file</h3><p class="p">The user-specified configuration file is located at
+               <code class="ph codeph">~/.puppetlabs/client-tools/puppet-access.conf</code> for both *nix and Windows
+            systems. You must create the user-specified file and populate it with the configuration
+            file settings. A list of configuration file settings is found in the next section.
+            </p><p class="p">The user-specified configuration file always takes precedence
+            over the global configuration file. For example, if the two files have contradictory
+            settings for the <code class="ph codeph">token-file</code>, the
+            user-specified settings prevail.</p><div class="p">
+            <div class="note important note_important"><span class="note__title">Important:</span> User-specified configuration files must be
+               in JSON format; HOCON and INI-style formatting are not supported.</div>
+         </div></section>
+   </div>
+<article class="topic reference nested2" aria-labelledby="ariaid-title3" id="configuration_file_settings_for_puppet_access">
+   <h3 class="title topictitle3" id="ariaid-title3">Configuration file settings for puppet-access </h3>
+   
+   <div class="body refbody"><p class="shortdesc">As needed, you can manually add configuration settings to
+      your user-specified or global <code class="ph codeph">puppet-access</code>
+      configuration file. </p>
+      <section class="section"><p class="p">The class that manages the global
+            configuration file is <code class="ph codeph">puppet_enterprise::profile::controller</code>.</p><p class="p">You can
+            also change configuration settings by specifying flags when using the <code class="ph codeph">puppet-access</code> command in the command line.
+         </p></section>
+      <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+               <tr class="row">
+                  <th class="entry" id="configuration_file_settings_for_puppet_access__entry__1">Setting </th>
+                  <th class="entry" id="configuration_file_settings_for_puppet_access__entry__2">Description </th>
+                  <th class="entry" id="configuration_file_settings_for_puppet_access__entry__3">Command line flag </th>
+               </tr>
+            </thead><tbody class="tbody">
+               <tr class="row">
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__1">
+                     <code class="ph codeph">token-file</code>
+                  </td>
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__2">The location for storing
+                     authentication tokens. Defaults to <code class="ph codeph">~/.puppetlabs/token</code>. </td>
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__3"><code class="ph codeph">-t</code>, <code class="ph codeph">--token-file</code></td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__1">
+                     <code class="ph codeph">certificate-file</code>
+                  </td>
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__2">The location of the CA that signed
+                     the console-services server's certificate. Defaults to the <span class="ph">PE</span> CA cert location, <code class="ph codeph">/etc/puppetlabs/puppet/ssl/certs/ca.pem</code>. </td>
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__3">
+                     <code class="ph codeph">--ca-cert</code>
+                  </td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__1">
+                     <code class="ph codeph">config-file</code>
+                  </td>
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__2">Changes the location of your
+                     configuration file. Defaults to <code class="ph codeph">~/.puppetlabs/client-tools/puppet-access.conf</code>. </td>
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__3"><code class="ph codeph">-c</code>, <code class="ph codeph">--config-file</code></td>
+               </tr>
+               <tr class="row">
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__1">
+                     <code class="ph codeph">service-url</code>
+                  </td>
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__2">The URL for your RBAC API. Defaults
+                     to the URL automatically determined during the client tools package
+                     installation process, generally <code class="ph codeph">https://&lt;CONSOLE HOSTNAME&gt;:4433/rbac-api</code>. You typically need
+                     to change this only if you are moving the console server. </td>
+                  <td class="entry" headers="configuration_file_settings_for_puppet_access__entry__3">
+                     <code class="ph codeph">--service-url </code>
+                  </td>
+               </tr>
+            </tbody></table>
+   </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="generate_a_token_using_puppet_access">
+    <h2 class="title topictitle2" id="ariaid-title4">Generate a token using puppet-access </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Use <code class="ph codeph">puppet-access</code> to generate an authentication tokens from the command line of
+        any workstation (Puppet-managed or not), without the need to SSH into the Puppet
+        master.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">Install the PE client
+                tools package and configure&nbsp;<code class="ph codeph">puppet-access</code>.</p></section>
+        <section class="section context"><p class="p"></p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Choose one of the following options, depending on
+                    how long you need your token to last:</span>
+                <div class="itemgroup info"><div class="p"><ul class="ul">
+                            <li class="li"><p class="p">To generate a token with the default one-hour lifetime, run <code class="ph codeph">puppet-access
+                                    login</code>.</p></li>
+                            <li class="li"><p class="p">To generate a token with a
+                                    specific lifetime, run <code class="ph codeph">puppet-access login --lifetime &lt;TIME
+                                    PERIOD&gt;</code>.</p><p class="p">For example,
+                                        <code class="ph codeph">puppet-access login
+                                        --lifetime 5h</code> generates a token that lasts five
+                                    hours.</p></li>
+                        </ul></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">When prompted, enter the same username and
+                    password that you use to log into the PE console.</span>
+                <div class="itemgroup info">The <code class="ph codeph">puppet-access</code> command contacts the token endpoint in the RBAC v1
+                    API. If your login credentials are correct, the RBAC service generates a
+                    token.</div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">The token is generated and stored in a file for later use. The default location
+                    for storing the token is <code class="ph codeph">~/.puppetlabs/token</code>. You can print the
+                    token at any time using&nbsp;<code class="ph codeph">puppet-access show</code>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">You can continue to use
+                this token until it expires, or until your access is revoked. The token has the
+                exact same set of permissions as the user that generated it.</p><div class="p"><div class="note caution note_caution"><span class="note__title">CAUTION:</span> If you run the login command with the <code class="ph codeph">--debug</code> flag, the client
+                    outputs the token, as well as the username and password. For security reasons,
+                    exercise caution when using the <code class="ph codeph">--debug</code> flag with the login
+                    command.</div></div>
+            <div class="note note note_note"><span class="note__title">Note:</span> If a remote user generates a token and then is deleted from your
+                external directory service, the deleted user cannot log into the console. However,
+                because the token has already been authenticated, the RBAC service does not contact
+                the external directory service again when the token is used in the future. To fully
+                remove the token's access, you need to manually revoke or delete the user from
+                PE.</div></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="rbac_token_auth_intro.html#setting_a_token_specific_lifetime" title="Tokens have a default lifetime of one hour, but you can set a different lifetime for your token when you generate it. This allows you to keep one token for multiple sessions.">Setting a token-specific lifetime</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="generate_a_token_using_the_api_endpoint">
+    <h2 class="title topictitle2" id="ariaid-title5">Generate a token using the API endpoint </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The RBAC v1 API includes a token endpoint, which allows
+        you to generate a token using curl commands.</p>
+        <section class="section context"><p class="p"></p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On the command line, post your RBAC user login
+                    credentials using the token endpoint.</span>
+                <div class="itemgroup stepxmp"><div class="p"><pre class="pre codeblock"><code>curl -k -X POST -H 'Content-Type: application/json' -d '{"login": "&lt;YOUR PE USER NAME&gt;", "password": "&lt;YOUR PE PASSWORD&gt;"}' https://$&lt;HOSTNAME&gt;:4433/rbac-api/v1/auth/token</code></pre></div></div>
+                <div class="itemgroup info"><div class="p">The command returns
+                        a JSON object containing the key <code class="ph codeph">token</code> and the token itself. <div class="note caution note_caution"><span class="note__title">CAUTION:</span> If you are using curl commands with the <code class="ph codeph">-k</code> insecure SSL connection option,
+                            keep in mind that you are vulnerable to a person-in-the-middle
+                            attack.</div></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Save the token. Depending on your workflow,
+                    either:</span>
+                <div class="itemgroup info"><div class="p"><ul class="ul">
+                            <li class="li"><p class="p">Copy the token to a text
+                                    file.</p></li>
+                            <li class="li"><p class="p">Save the token as an
+                                    environment variable using <code class="ph codeph">export TOKEN=&lt;PASTE THE TOKEN
+                                HERE&gt;</code>.</p></li>
+                        </ul></div></div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">You can continue to use
+                this token until it expires, or until your access is revoked. The token has the
+                exact same set of permissions as the user that generated it.</p>
+            <div class="p">
+                <div class="note note note_note"><span class="note__title">Note:</span> If a remote user generates a token and then is deleted from your
+                    external directory service, the deleted user cannot log into the console.
+                    However, because the token has already been authenticated, the RBAC service does
+                    not contact the external directory service again when the token is used in the
+                    future. To fully remove the token's access, you need to manually revoke or
+                    delete the user from PE.</div>
+            </div></section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title6" id="use_a_token_with_the_pe_api_endpoints">
+    <h3 class="title topictitle3" id="ariaid-title6">Use a token with the PE API endpoints </h3>
+    
+    <div class="body taskbody"><p class="shortdesc">The example below shows how to use a token in an API
+        request. In this example, you use the <code class="ph codeph">/users/current</code> endpoint of the RBAC v1 API to get information about the
+        current authenticated user. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>Generate a token and save it as an environment
+            variable using <code class="ph codeph">export TOKEN=&lt;PASTE THE TOKEN
+                HERE&gt;</code>.</section>
+        <section><div class="li step p">
+                <span class="ph cmd">Run the following command: <code class="ph codeph">curl -k -X GET
+                        https://&lt;HOSTNAME&gt;:4433/rbac-api/v1/users/current -H
+                        "X-Authentication:$TOKEN"</code>
+                </span>
+                <div class="itemgroup info"><p class="p">The command above
+                        uses the X-Authentication header to supply the token information. </p><p class="p">In some cases, such as GitHub webhooks, you might need to
+                        supply the token in a token parameter by specifying the request as follows:
+                            <code class="ph codeph">curl -k -X GET
+                            https://&lt;HOSTNAME&gt;:4433/rbac-api/v1/users/current?token=$TOKEN</code>
+                    </p><div class="p"><div class="note caution note_caution"><span class="note__title">CAUTION:</span> If you are
+                            using curl commands with the <code class="ph codeph">-k</code> insecure SSL connection option, keep in mind that you
+                            are vulnerable to a person-in-the-middle attack.</div></div></div>
+            </div></section>
+    </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title7" id="generate_a_token_for_use_by_a_service_using_puppet_access">
+                    <h2 class="title topictitle2" id="ariaid-title7">Generate a token for use by a service </h2>
+                    
+                    <div class="body taskbody"><p class="shortdesc">If you need to generate a token for use by
+                                        a service and the token doesn't need to be saved, use the
+                                                  <code class="ph codeph">--print</code> option. </p>
+                                        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">Install the PE client tools package and
+                                                  configure <code class="ph codeph">puppet-access</code>.</p></section>
+                                        <section><div class="li step p">
+                                                  <span class="ph cmd">Run <code class="ph codeph">puppet-access
+                                                  login [username] --print</code>.</span>
+                                                  <div class="itemgroup info"><p class="p">This command generates a token,
+                                                  and then displays the token content as stdout
+                                                  (standard output) rather than saving it to
+                                                  disk.</p></div>
+                                                  </div></section>
+                                        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><div class="p"><div class="note tip note_tip"><span class="note__title">Tip:</span> When generating a token for a service, consider
+                                                  specifying a longer token lifetime so that you
+                                                  don't have to regenerate the token too frequently.
+                                                  </div></div></section>
+                    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title8" id="change_the_token_s_default_lifetime">
+    <h2 class="title topictitle2" id="ariaid-title8">Change the token's default lifetime </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Tokens have a default authentication lifetime of one hour, but this default value can
+        be adjusted in the console. You can also change a token's maximum authentication lifetime,
+        which defaults to 10 years.</p>
+        <section class="section context"><p class="p"></p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Classification</span>. </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Open the <span class="ph uicontrol">PE Infrastructure</span> node group and click the
+                        <span class="ph uicontrol">PE Console</span> node
+                    group.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, find the
+                        <code class="ph codeph">puppet_enterprise::profile::console</code> class. </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">In the <span class="ph uicontrol">Parameter</span> field, select
+                        <code class="ph codeph">rbac_token_auth_lifetime</code> to change the default lifetime of
+                    all tokens, or <code class="ph codeph">rbac_token_maximum_lifetime</code> to adjust the
+                    maximum allowable lifetime for all tokens. </span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">In the <span class="ph uicontrol">Value</span> field, enter the new default authentication lifetime. </span>
+                <div class="itemgroup info">Specify a numeric value followed by "y" (years), "d" (days), "h" (hours), "m"
+                    (minutes), or "s" (seconds). For example, "12h" generates a token valid for 12
+                    hours. <p class="p">Do not add a space between the numeric value and the unit of
+                        measurement. If you do not specify a unit, it is assumed to be seconds.
+                        </p><p class="p">The <code class="ph codeph">rbac_token_auth_lifetime</code> cannot exceed the
+                            <code class="ph codeph">rbac_token_maximum_lifetime</code> value. </p></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add parameter</span>, and commit changes. </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title9" id="setting_a_token_specific_lifetime">
+    <h2 class="title topictitle2" id="ariaid-title9">Setting a token-specific lifetime </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Tokens have a default lifetime of one hour, but you can set a different lifetime for
+        your token when you generate it. This allows you to keep one token for multiple
+        sessions.</p>
+        <p class="p">Specify a numeric value followed by "y" (years), "d" (days), "h"
+            (hours), "m" (minutes), or "s" (seconds). For example, "12h" generates a token valid for
+            12 hours. </p>
+        <p class="p">Do not add a space between the numeric value and the unit of
+            measurement. If you do not specify a unit, it is assumed to be seconds. </p>
+        <p class="p">Use the <code class="ph codeph">--lifetime</code>
+            parameter if using <code class="ph codeph">puppet-access</code> to
+            generate your token. For example:&nbsp;<code class="ph codeph">puppet-access login --lifetime 1h</code>.</p>
+        <p class="p">Use the&nbsp;<code class="ph codeph">lifetime</code>&nbsp;value if using the RBAC v1 API to generate your token. For
+                example:&nbsp;<code class="ph codeph">{"login": "&lt;YOUR PE USER
+                NAME&gt;", "password": "&lt;YOUR PE PASSWORD&gt;", "lifetime": "1h"}</code>.</p>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title10" id="account_expiry_rbac">
+    <h2 class="title topictitle2" id="ariaid-title10">Change account expiration settings </h2>
+    
+    
+    <div class="body conbody"><p class="shortdesc">In addition to token lifetime defaults, you can also activate and change the user
+        account expiration and idle user settings.</p>
+        <section class="section"><h3 class="title sectiontitle">account-expiry-days</h3>
+            
+            <p class="p">This parameter is a positive integer that specifies the duration, in days, before an
+                inactive user account expires. The default value is undefined.  </p>
+            <p class="p">If a non-superuser hasn't logged into the console during this specified period, their
+                user status updates to revoked. After creating an account, if a non-superuser hasn't
+                logged in to the console during the specified period, their user status updates to
+                revoked. </p>
+            <div class="p">
+                <div class="note important note_important"><span class="note__title">Important:</span> If the <code class="ph codeph">account-expiry-days</code>
+                    parameter is not specified, or has a value of less than 1, the <code class="ph codeph">account-expiry-check-minutes</code> parameter is ignored.
+                </div>
+            </div>
+            <p class="p">To activate this setting in the console, add a value of 1 (day) or greater to the
+                    <code class="ph codeph">account_expiry_days</code> parameter in the
+                    <code class="ph codeph">puppet_enterprise::profile::console</code> class of the <span class="ph uicontrol">PE
+                    Infrastructure</span> group. </p>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">account-expiry-check-minutes</h3>
+            
+            <p class="p">This parameter is a positive integer that specifies how often, in minutes, the
+                application checks for idle user accounts. The default value is 60 minutes. </p>
+            <p class="p">To change this setting in the console, set a value (in minutes) for the
+                    <code class="ph codeph">account_expiry_check_minutes</code> parameter in the
+                    <code class="ph codeph">puppet_enterprise::profile::console</code> class of the <span class="ph uicontrol">PE
+                    Infrastructure</span> group.</p>
+            <p class="p">For more information on configuration options, or to use a different configuration
+                method for changing settings, see the <a class="xref" href="config_intro.html#config_intro" title="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances.">Methods for configuring Puppet Enterprise</a> docs.</p>
+        </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title11" id="set_a_token_specific_label">
+    <h2 class="title topictitle2" id="ariaid-title11">Set a token-specific label </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">You can affix a plain-text, user-specific label to tokens
+        you generate with the RBAC v1 API. Token labels allow you to more readily refer to your
+        token when working with RBAC API endpoints, or when revoking your own token.</p>
+        <section class="section context"><p class="p">Token labels are
+                assigned on a per-user basis: two users can each have a token labelled “my token”,
+                but a single user cannot have two tokens both labelled “my token.” You cannot use
+                labels to refer to other users’ tokens.</p></section>
+        <section><div class="li step p">
+                <span class="ph cmd">Generate a token using the <code class="ph codeph">token</code>&nbsp;endpoint of the RBAC API, using
+                        the&nbsp;<code class="ph codeph">label</code>&nbsp;value
+                    to specify the name of your token.</span>
+                <div class="itemgroup stepxmp"><p class="p"><code class="ph codeph">{"login": "&lt;YOUR PE USER NAME&gt;",
+                            "password": "&lt;YOUR PE PASSWORD&gt;", "label": "Ava's
+                        token"}</code></p></div>
+                <div class="itemgroup info">Labels must be no longer than 200
+                    characters, must not contain commas, and must contain something besides
+                    whitespace.</div>
+            </div></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title12" id="view_token_activity">
+    <h2 class="title topictitle2" id="ariaid-title12">View token activity </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Token activity is logged by the activity service. You can
+        see recent token activity on any user's account in the console. </p>
+        <section class="section context"><p class="p"></p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, click <span class="keyword wintitle">Access control</span> &gt; <span class="keyword wintitle">Users</span>. Click the full name
+                    of the user you are interested in.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click the <span class="ph uicontrol">Activity</span> tab. </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title13" id="revoking_a_token">
+    <h2 class="title topictitle2" id="ariaid-title13">Revoking a token </h2>
+    
+    <div class="body conbody"><p class="shortdesc">Revoke tokens by username, label, or full token through the <code class="ph codeph">token</code>
+        endpoint of the <a class="xref" href="rbac_api_v2_tokens_endpoints.html#delete_tokens" title="Use this endpoint to revoke one or more authentication tokens, ensuring the tokens can no longer be used with RBAC.">v2 RBAC
+        API</a>. All token revocation attempts are logged in the activity service, and can be
+        viewed on the user's <span class="ph uicontrol">Activity</span> tab in the console.</p>
+        <p class="p">You can revoke your own token by username, label, or full token. You
+            can also revoke any other full token you possess. Users with the permission to revoke
+            other users can also revoke those users' tokens, as the <code class="ph codeph">users:disable</code> permission includes token revocation. Revoking
+            a user's tokens does not revoke the user's PE account.</p>
+        <p class="p">If a user's account is revoked, all tokens associated with that user
+            account are also automatically revoked.</p>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title14" id="delete_a_token_file">
+    <h2 class="title topictitle2" id="ariaid-title14">Delete a token file </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">If you logged into <code class="ph codeph">puppet-access</code> to generate a token, you can remove the file that stores that
+        token simply by running the <code class="ph codeph">delete-token-file</code> command. This is useful if you are working on a server that
+        is used by other people. </p>
+        <section class="section context"><p class="p">Deleting the token file
+                prevents other users from using your authentication token, but does not actually
+                revoke the token. After the token has expired, there's no risk of obtaining the
+                contents of the token file.</p></section>
+        <section><div class="li step p">
+                <span class="ph cmd">From the command line, run one of the following
+                    commands, depending on the path to your token file:</span>
+                <div class="itemgroup info"><ul class="ul">
+                        <li class="li"><p class="p">If your token is at the
+                                default token file location, run <code class="ph codeph">puppet-access delete-token-file</code>.</p></li>
+                        <li class="li"><p class="p">If you used a different path
+                                to store your token file, run <code class="ph codeph">puppet-access delete-token-file --token-path &lt;YOUR TOKEN
+                                    PATH&gt;</code>.</p></li>
+                    </ul></div>
+            </div></section>
+    </div>
+</article></article></article></main></body></html>

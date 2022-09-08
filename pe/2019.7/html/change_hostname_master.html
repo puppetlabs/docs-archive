@@ -1,0 +1,52 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="task"><meta name="description" content="To change the hostnames assigned to your PE infrastructure nodes, you must update the corresponding PE certificate names. You might have to update your master hostname, for example, when migrating to a new PE installation, or after an organizational change such as a change in company name."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="Eamonn Smith <eamonn.smith@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="change-hostname-master"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Change the hostname of a master</title></head><body id="change-hostname-master"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Change the hostname of a master</h1>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">To change the hostnames assigned to your <span class="ph">PE</span>
+        infrastructure nodes, you must update the corresponding <span class="ph">PE</span>
+        certificate names. You might have to update your master hostname, for example, when
+        migrating to a new <span class="ph">PE</span> installation, or after an
+        organizational change such as a change in company name. </p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div><p class="p">Download and install the
+                    <a class="xref" href="https://forge.puppet.com/puppetlabs/support_tasks" target="_blank">puppetlabs-support_tasks</a> module.</p>
+            <p class="p">Make sure you are using the latest version of the support_tasks module.</p>
+            <p class="p">Set up RBAC permissions and token authentication for orchestrator tasks. See <a class="xref" href="configuring_puppet_orchestrator.html#setting_pe_rbac_permissions_and_token_authentication_for_puppet_orchestrator" title="Before you run any orchestrator jobs, you need to set the appropriate permissions in PE role-based access control (RBAC) and establish token-based authentication.">Setting PE RBAC permissions and token authentication for orchestrator</a> for more information. </p></section>
+        <section class="section context">
+            <p class="p">To update the hostname of your master:</p>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On the master, set the new hostname by running the
+                    following command:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>hostnamectl set-hostname newhostname.example.com</code></pre></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Make sure&nbsp;the <code class="ph codeph">hostname -f</code>&nbsp;command returns the
+                    new fully qualified hostname, and that it resolves to the same IP address as the
+                    old hostname, by adding an entry for the new hostname in&nbsp;<code class="ph codeph">/etc/hosts</code>:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>&lt;IP address&gt; &lt;newhostname.example.com&gt; &lt;oldhostname.example.com&gt; …</code></pre></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run a task for changing the host name against the
+                    old certificate name on the master, using one of the following methods:</span>
+                <ul class="ul choices">
+                    <li class="li choice">Using <span class="ph">Bolt</span>:<pre class="pre codeblock"><code>bolt task run support_tasks::st0263_rename_pe_master -n $(puppet config print certname) --modulepath="/etc/puppetlabs/code/environments/production/modules"</code></pre><div class="note note note_note"><span class="note__title">Note:</span> When running the task, <span class="ph">Bolt</span>
+                            must be using the default SSH transport, rather than the PCP protocol,
+                            to avoid errors when services are restarted.</div></li>
+                    <li class="li choice">Using the command
+                        line:<pre class="pre codeblock"><code>puppet task run support_tasks::st0263_rename_pe_master -n $(puppet config print certname)</code></pre></li>
+                </ul>
+                <div class="itemgroup stepresult"><div class="p">The
+                        task restarts all <span class="ph">Puppet</span> services, which
+                        causes a connection error. You can ignore the error while the task continues
+                        to run in the background. To check if the task is complete,
+                            tail&nbsp;<code class="ph codeph">/var/log/messages</code>. When the output from the&nbsp;<code class="ph codeph">puppet agent
+                        -t</code>&nbsp;command is displayed in the system log, the task is
+                        complete. For example:
+                        <pre class="pre codeblock"><code># tail /var/log/messages
+Aug 15 09:08:28 oldhostname systemd: Reloading pe-orchestration-services Service.
+Aug 15 09:08:29 oldhostname systemd: Reloaded pe-orchestration-services Service.
+Aug 15 09:08:29 oldhostname puppet-agent[4780]: (/Stage[main]/Puppet_enterprise::Profile::Orchestrator/Puppet_enterprise::Trapperkeeper::Pe_service[orchestration-services]/Service[pe-orchestration-services]) Triggered 'refresh' from 1 event
+Aug 15 09:08:34 oldhostname puppet-agent[4780]: Applied catalog in 19.16 seconds</code></pre></div></div>
+            </li></ol></section>
+    </div>
+</article></main></body></html>

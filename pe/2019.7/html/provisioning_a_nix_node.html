@@ -1,0 +1,633 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Provisioning deploys and installs your chosen operating system to target nodes."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="provisioning_a_nix_node"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Provisioning a *nix node</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="provisioning_a_nix_node">
+    <h1 class="title topictitle1" id="ariaid-title1">Provisioning a <span class="ph">*nix</span> node</h1>
+    <p class="shortdesc">Provisioning deploys and installs your chosen operating
+        system to target nodes.</p>
+    
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" lang="en-us" id="what_triggers_provisioning">
+   <h2 class="title topictitle2" id="ariaid-title2">What triggers provisioning</h2>
+   
+   
+   <div class="body conbody"><p class="shortdesc">There are four requirements for <span class="ph">Razor</span> to provision a node.</p>
+      <div class="p">
+         <ul class="ul">
+            <li class="li">
+               <p class="p">The node must boot with iPXE software.</p>
+            </li>
+            <li class="li">
+               <p class="p">The node's network must link to the <span class="ph">Razor</span> server through TFTP.</p>
+            </li>
+            <li class="li">
+               <p class="p">A <span class="ph">Razor</span> policy must match the
+                  node.</p>
+            </li>
+            <li class="li">
+               <p class="p">The node's <code class="ph codeph">installed</code> flag must be set to <code class="ph codeph">false</code>. </p>
+            </li>
+         </ul>
+      </div>
+      <p class="p">When these conditions are met, <span class="ph">Razor</span>
+         recognizes the node, applies the first matching policy in the policy table, and provisions
+         the node.</p>
+      <div class="p">With these requirements in mind, you can modify your <span class="ph">Razor</span> workflow to suit your goals, your environment, and your
+         familiarity with <span class="ph">Razor</span>. <ul class="ul">
+            <li class="li">
+               <p class="p">
+                  <a class="xref" href="provisioning_a_nix_node.html#provision-begin" title="This workflow enables you to learn about Razor and verify tags before provisioning nodes.">Provision for new users</a> enables you to
+                  learn about <span class="ph">Razor</span> and verify tags before
+                  provisioning nodes. </p>
+            </li>
+            <li class="li">
+               <p class="p">
+                  <a class="xref" href="provisioning_a_nix_node.html#provision-advanced" title="This workflow enables you to seamlessly provision nodes in an existing environment.">Provision for advanced users</a> enables you
+                  to seamlessly provision nodes in an existing environment. </p>
+            </li>
+         </ul></div>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="provision-begin">
+    <h2 class="title topictitle2" id="ariaid-title3">Provision for new users</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">This workflow enables you to learn about <span class="ph">Razor</span> and verify tags before provisioning nodes.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <div class="p">You're ready to provision a node after you configure: <ul class="ul">
+                    <li class="li"><p class="p">A&nbsp;DHCP/DNS/TFTP service with
+                            SELinux configured to enable PXE boot</p></li>
+                    <li class="li"><p class="p">
+                            <span class="ph">Puppet Enterprise</span>
+                        </p></li>
+                    <li class="li"><p class="p">The <span class="ph">Razor</span> server and client </p></li>
+                </ul>
+            </div>
+            <p class="p">To follow along with the examples in
+                these workflows, you must have a new node with at least 1GB (2GB recommended) of
+                memory. Don’t boot the node before you begin the provisioning process.</p>
+        </section>
+        <section class="section context">
+            <p class="p">In this workflow, you load iPXE software and
+                register nodes with the microkernel so you can view node details. Then you configure
+                    <span class="ph">Razor</span> objects, finishing with creating a policy.
+                Provisioning is triggered when you reinstall the node in order to remove
+                    the&nbsp;<code class="ph codeph">installed</code>&nbsp;flag.</p>
+            <p class="p">The
+                examples in this workflow demonstrate provisioning a sample node with <span class="ph">CentOS</span> 6.7. You can modify the settings and scale up
+                your workflow as needed for your environment.</p>
+        </section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title4" id="load-ipxe-begin">
+    <h3 class="title topictitle3" id="ariaid-title4">Load iPXE software</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Set your machines to PXE boot so that <span class="ph">Razor</span> can interact with the node and provision the operating
+        system. This process uses both the&nbsp;<code class="ph codeph">undionly.kpxe</code>&nbsp;file from the iPXE open source software stack and a <span class="ph">Razor</span><code class="ph codeph">bootstrap.ipxe</code>&nbsp;script.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Download the iPXE boot image <a class="xref" href="http://boot.ipxe.org/undionly.kpxe" target="_blank">http://boot.ipxe.org/undionly.kpxe</a> and copy the
+                    image to your TFTP server’s<code class="ph codeph">
+                        /var/lib/tftpboot</code> directory: </span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>`cp undionly.kpxe /var/lib/tftpboot`</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Download the iPXE bootstrap script from the <span class="ph">Razor</span> server and copy the script to your TFTP
+                        server’s<code class="ph codeph">
+                    /var/lib/tftpboot</code>&nbsp;directory:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>`wget   "https://$&lt;RAZOR_HOSTNAME&gt;:$&lt;HTTPS_PORT&gt;/api/microkernel/bootstrap?nic_max=1&amp;http_port=$&lt;HTTP_PORT&gt;" -O /var/lib/tftpboot/bootstrap.ipxe`</code></pre><div class="note note note_note"><span class="note__title">Note:</span> Don’t use&nbsp;<code class="ph codeph">localhost</code>&nbsp;as the name of the
+                                <span class="ph">Razor</span> host. The bootstrap script
+                            chain-loads the next iPXE script from the server, so it must contain the
+                            correct host name.</div></div></div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title5" id="register_a_node_with_the_microkernel">
+        <h3 class="title topictitle3" id="ariaid-title5">Register a node with the microkernel</h3>
+        
+        
+        <div class="body taskbody"><p class="shortdesc">Registering a node lets you learn about the node
+                before <span class="ph">Razor</span> provisions it. With registered nodes,
+                you can view facts about the node, add metadata to the node, and see which tags the
+                node matches.</p>
+                <section><ol class="ol steps"><li class="li step stepexpand">
+                                <span class="ph cmd">Boot the node. This can mean
+                                        physically pressing the power button, using IPMI to manage
+                                        the node’s power state, or, in the case of a VM, starting
+                                        the VM.</span>
+                                <div class="itemgroup stepresult"><p class="p">The node boots into the microkernel and
+                                                  <span class="ph">Razor</span> discovers the
+                                                node. After the initial PXE boot, the node downloads
+                                                the microkernel.</p></div>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">On the <span class="ph">Razor</span> server, view the
+                                        new node:&nbsp;<code class="ph codeph">razor
+                                                nodes</code></span>
+                                <div class="itemgroup stepxmp"><div class="p">The output displays the new node ID and name, for
+                                                example:<pre class="pre codeblock"><code> id: "http://localhost:8150/api/collections/node/node1"
+ name: "node1"
+ spec: "/razor/v1/collections/nodes/member"</code></pre></div></div>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">View the node’s
+                                                details:&nbsp;<code class="ph codeph">razor nodes &lt;NODE_NAME&gt;</code></span>
+                                <div class="itemgroup stepxmp"><div class="p">The output displays hardware and DHCP information,
+                                                the path to the log, and a placeholder for tags, for
+                                                example:<pre class="pre codeblock"><code> hw_info:
+         mac: ["08-00-27-8a-5e-5d"]
+      serial: "0"
+        uuid: "9a717dc3-2392-4853-89b9-27fec1aec7b2"
+ dhcp_mac: "08-00-27-8a-5e-5d"
+ log:
+         log =&gt; http://localhost:8150/api/collections/node/node1/log
+ tags: []</code></pre></div></div>
+                        </li><li class="li step stepexpand">
+                                <span class="ph cmd">When the microkernel is running on
+                                        the machine, view facts about the node:&nbsp;<code class="ph codeph">razor nodes
+                                                &lt;NODE_NAME&gt; facts</code></span>
+                                <div class="itemgroup info"><p class="p"><span class="ph">Facter</span> periodically
+                                                sends facts back to the server about the node,
+                                                including IP address, details about network cards,
+                                                and block devices.</p></div>
+                        </li></ol></section>
+                <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p"></p></section>
+        </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title6" id="create_a_repository">
+   <h3 class="title topictitle3" id="ariaid-title6">Create a repository</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Repositories contain – or point to – the operating system
+      to install on a node.</p>
+      <section class="section context">You can create three types of repositories
+         using specific attributes: <ul class="ul">
+            <li class="li">
+               <p class="p"><code class="ph codeph">url</code>&nbsp;–
+                  Points to content available on another server, for example, on a mirror that you
+                  maintain. </p>
+            </li>
+            <li class="li">
+               <p class="p"><code class="ph codeph">iso-url</code>&nbsp;–
+                  Downloads and unpacks an ISO on the <span class="ph">Razor</span> server.
+               </p>
+            </li>
+            <li class="li">
+               <p class="p"><code class="ph codeph">no_content</code>&nbsp;– Creates a stub directory on the <span class="ph">Razor</span> server that you can manually fill with
+                  content. </p>
+            </li>
+         </ul></section>
+      <section><div class="li step p">
+            <span class="ph cmd">To download a <span class="ph">CentOS</span>
+               6.7 ISO and create a repository from it:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code>razor create-repo --name centos-6.7 --task centos
+    --iso-url http://centos.sonn.com/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso
+</code></pre>
+               </div>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>The ISO is downloaded onto the <span class="ph">Razor</span> server, then extracted to the repository. This can take
+         some time to complete. To monitor progress, you can run&nbsp;<code class="ph codeph">razor commands</code>&nbsp;to view the task status or&nbsp;<code class="ph codeph">ls -al /tmp</code>&nbsp;to see the downloaded file
+         size.</section>
+   </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title7" id="create-tags">
+    <h3 class="title topictitle3" id="ariaid-title7">(Optional) Create tags</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Tags let you group nodes based on their characteristics.
+        You can then apply policies based on tags to install appropriate operating systems on tagged
+        nodes. If you don’t specify tags for a policy, the policy binds to any node.</p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">To create a tag called&nbsp;<kbd class="ph userinput">small</kbd> with a rule that matches
+                    machines that have less than 4GB of memory:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code> razor create-tag --name small
+   --rule '["&lt;", ["num", ["fact", "memorysize_mb"]], 4128]'</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) Inspect the tag on the
+                        server:&nbsp;<code class="ph codeph">razor tags
+                        &lt;TAG_NAME&gt;</code></span>
+                <div class="itemgroup stepxmp">
+                    <div class="p">For example,&nbsp;<code class="ph codeph">razor tags small</code>&nbsp;responds with:
+                        <pre class="pre codeblock"><code> From https://razor:8151/api/collections/tags/small:
+     name: small
+     rule: ["&lt;", ["num", ["fact", "memorysize_mb"]], 4128]
+    nodes: 1
+ policies: 0</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) Confirm that expected nodes now have
+                    the tag:&nbsp;<code class="ph codeph">razor tags
+                        &lt;TAG_NAME&gt; nodes</code></span>
+                <div class="itemgroup stepxmp">
+                    <p class="p">For example,&nbsp;<code class="ph codeph">razor tags small nodes</code>&nbsp;displays a table of registered
+                        nodes that have less than 4GB of memory.</p>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> To see details about the policies associated with
+                a tag, run&nbsp;<code class="ph codeph">razor tags &lt;TAG_NAME&gt;
+                    policies</code>. To see its rule, run&nbsp;<code class="ph codeph">razor tags &lt;TAG_NAME&gt; rule</code>.</div>
+        </section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title8" id="create-broker">
+    <h3 class="title topictitle3" id="ariaid-title8">(Optional) Create a broker</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Brokers hand off nodes to configuration management systems
+        like <span class="ph">Puppet Enterprise</span>.</p>
+        <section class="section context"></section>
+        <section><div class="li step p">
+                <span class="ph cmd">To hand off <span class="ph">Razor</span>
+                    nodes to a <span class="ph">Puppet</span> master at&nbsp;<code class="ph codeph">puppet-master.example.com</code>:</span>
+                <div class="itemgroup stepxmp">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>razor create-broker --name pe --broker-type puppet-pe
+  --configuration server=puppet-master.example.com</code></pre>
+                    </div>
+                </div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title9" id="add-perepo-class-to-pe-master-node-group">
+    <h3 class="title topictitle3" id="ariaid-title9">Add the <code class="ph codeph">pe_repo</code>
+        class to the <span class="ph uicontrol">PE Master</span> node
+        group</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">To manage a node handed off by the broker, the master must
+        include a class that matches the node’s architecture.</p>
+        <section class="section context">
+            <div class="note note note_note"><span class="note__title">Note:</span> Skip this step if the node you’re provisioning
+                has the same architecture as your master, or if the master already includes
+                    a&nbsp;<span class="ph uicontrol">pe_repo</span>&nbsp;class that matches the node’s architecture.</div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the <span class="ph uicontrol">PE Infrastructure</span> group, select the
+                        <span class="ph uicontrol">PE Master</span>
+                    group.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab in the <span class="ph uicontrol">Add new class</span> field, select <code class="ph codeph">pe_repo::platform::&lt;VERSION&gt;</code>.</span>
+                <div class="itemgroup stepxmp">
+                    <p class="p">For example, <code class="ph codeph">pe_repo::platform::el_7_x86_64</code>.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add class</span> and then commit changes.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master, run <span class="ph">Puppet</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title10" id="create_a_policy">
+    <h3 class="title topictitle3" id="ariaid-title10">Create a policy</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Policies tell <span class="ph">Razor</span> what
+        operating system to install on the provisioned node, where to get the OS software, how to
+        configure it, and how to communicate between the node and <span class="ph">Puppet Enterprise</span>.</p>
+        <section><div class="li step p">
+                <span class="ph cmd">To create a policy that installs <span class="ph">CentOS</span> on machines tagged with&nbsp;<code class="ph codeph">small</code>, then hands them off to <span class="ph">Puppet Enterprise</span> for management:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code> razor create-policy --name centos-for-small
+    --repo centos-6.7 --broker pe --tag small
+    --hostname 'host${id}.example.com' --root-password secret</code></pre></div></div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><div class="note note note_note"><span class="note__title">Note:</span> You can
+                view details of a specific policy by running&nbsp;<code class="ph codeph">razor policies &lt;POLICY_NAME&gt;</code>. You can view a table
+                of all policies by running&nbsp;<code class="ph codeph">razor
+                    policies</code>. The order in which policies are listed in the table is
+                important because Razor applies the first matching policy to a node.</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title11" id="reinstall_the_node">
+    <h3 class="title topictitle3" id="ariaid-title11">Reinstall the node</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">By default, <span class="ph">Razor</span> protects
+        existing nodes from reprovisioning by marking all existing nodes as&nbsp;installed. You must
+        specifically instruct the server to reinstall the node in order to trigger
+        provisioning.</p>
+        <section class="section context">You can skip this step if you change
+                the&nbsp;<code class="ph codeph">protect_new_nodes</code>&nbsp;option to&nbsp;<code class="ph codeph">false</code>, which allows <span class="ph">Razor</span> to provision a
+            node as soon as it PXE boots with a matching policy. Be sure you understand how the
+                <code class="ph codeph">protect_new_nodes</code>&nbsp;option works
+            before changing it, however. Failure to protect existing nodes can result in data
+            loss.</section>
+        <section><div class="li step p">
+                <span class="ph cmd">Reinstall the node:&nbsp;<code class="ph codeph">razor reinstall-node &lt;NODE_NAME&gt;</code></span>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><p class="p">When you reinstall the
+                node, <span class="ph">Razor</span> clears the&nbsp;<code class="ph codeph">installed</code>&nbsp;flag and the node restarts and boots into
+                the microkernel. The microkernel reports its facts, and <span class="ph">Razor</span> provisions the node by applying the first
+                applicable policy in the policy table.</p><p class="p">When provisioning is
+                complete, you can log into the node using the&nbsp;<code class="ph codeph">root_password</code>&nbsp;as specified by the node’s metadata,
+                or by the policy that the node is bound to. You can also see the node and its
+                details in the console, and manage it there as you would any other
+            node.</p></section>
+    </div>
+</article></article><article class="topic task nested1" aria-labelledby="ariaid-title12" id="provision-advanced">
+    <h2 class="title topictitle2" id="ariaid-title12">Provision for advanced users</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">This workflow enables you to seamlessly provision nodes in
+        an existing environment.</p>
+        <section class="section prereq"><div class="tasklabeltitle tasklabel">Before you begin</div>
+            <div class="p">You're ready to provision a node after you configure: <ul class="ul">
+                    <li class="li"><p class="p">A&nbsp;DHCP/DNS/TFTP service with
+                            SELinux configured to enable PXE boot</p></li>
+                    <li class="li"><p class="p">
+                            <span class="ph">Puppet Enterprise</span>
+                        </p></li>
+                    <li class="li"><p class="p">The <span class="ph">Razor</span> server and client </p></li>
+                </ul>
+            </div>
+            <p class="p">To follow along with the examples in
+                these workflows, you must have a new node with at least 1GB (2GB recommended) of
+                memory. Don’t boot the node before you begin the provisioning process.</p>
+        </section>
+        <section class="section context">
+            <p class="p">In this workflow, you configure <span class="ph">Razor</span> objects, register any existing nodes to prevent accidentally overwriting them,
+                and finally, load iPXE so that nodes boot through <span class="ph">Razor</span>. Provisioning is triggered when the node PXE boots with a matching policy in
+                place.</p>
+            <p class="p">The
+                examples in this workflow demonstrate provisioning a sample node with <span class="ph">CentOS</span> 6.7. You can modify the settings and scale up
+                your workflow as needed for your environment.</p>
+        </section>
+    </div>
+<article class="topic task nested2" aria-labelledby="ariaid-title13" id="unique_1898650142">
+   <h3 class="title topictitle3" id="ariaid-title13">Create a repository</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">Repositories contain – or point to – the operating system
+      to install on a node.</p>
+      <section class="section context">You can create three types of repositories
+         using specific attributes: <ul class="ul">
+            <li class="li">
+               <p class="p"><code class="ph codeph">url</code>&nbsp;–
+                  Points to content available on another server, for example, on a mirror that you
+                  maintain. </p>
+            </li>
+            <li class="li">
+               <p class="p"><code class="ph codeph">iso-url</code>&nbsp;–
+                  Downloads and unpacks an ISO on the <span class="ph">Razor</span> server.
+               </p>
+            </li>
+            <li class="li">
+               <p class="p"><code class="ph codeph">no_content</code>&nbsp;– Creates a stub directory on the <span class="ph">Razor</span> server that you can manually fill with
+                  content. </p>
+            </li>
+         </ul></section>
+      <section><div class="li step p">
+            <span class="ph cmd">To download a <span class="ph">CentOS</span>
+               6.7 ISO and create a repository from it:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code>razor create-repo --name centos-6.7 --task centos
+    --iso-url http://centos.sonn.com/6.7/isos/x86_64/CentOS-6.7-x86_64-bin-DVD1.iso
+</code></pre>
+               </div>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>The ISO is downloaded onto the <span class="ph">Razor</span> server, then extracted to the repository. This can take
+         some time to complete. To monitor progress, you can run&nbsp;<code class="ph codeph">razor commands</code>&nbsp;to view the task status or&nbsp;<code class="ph codeph">ls -al /tmp</code>&nbsp;to see the downloaded file
+         size.</section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="repositories.html" title="A repository is where you store all of the actual bits used by Razor to install a node. Or, in some cases, the external location of bits that you link to. A repo is identified by a unique name.">Repositories</a></li><li class="linklist"><a class="link" href="using_the_razor_client.html#repository-commands" title="Repository commands enable you to create and delete specified repositories from the Razor database and specify the task that installs the contents of a repository.">Repository commands</a></li><li class="linklist"><a class="link" href="api_reference.html#repositories_api" title="These commands enable you to create a new repository or delete a repository from the internal Razor database. You can also ensure that a specified repository uses a specified task.">Repositories API</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title14" id="unique_304345379">
+    <h3 class="title topictitle3" id="ariaid-title14">(Optional) Create tags</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Tags let you group nodes based on their characteristics.
+        You can then apply policies based on tags to install appropriate operating systems on tagged
+        nodes. If you don’t specify tags for a policy, the policy binds to any node.</p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">To create a tag called&nbsp;<kbd class="ph userinput">small</kbd> with a rule that matches
+                    machines that have less than 4GB of memory:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code> razor create-tag --name small
+   --rule '["&lt;", ["num", ["fact", "memorysize_mb"]], 4128]'</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) Inspect the tag on the
+                        server:&nbsp;<code class="ph codeph">razor tags
+                        &lt;TAG_NAME&gt;</code></span>
+                <div class="itemgroup stepxmp">
+                    <div class="p">For example,&nbsp;<code class="ph codeph">razor tags small</code>&nbsp;responds with:
+                        <pre class="pre codeblock"><code> From https://razor:8151/api/collections/tags/small:
+     name: small
+     rule: ["&lt;", ["num", ["fact", "memorysize_mb"]], 4128]
+    nodes: 1
+ policies: 0</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">(Optional) Confirm that expected nodes now have
+                    the tag:&nbsp;<code class="ph codeph">razor tags
+                        &lt;TAG_NAME&gt; nodes</code></span>
+                <div class="itemgroup stepxmp">
+                    <p class="p">For example,&nbsp;<code class="ph codeph">razor tags small nodes</code>&nbsp;displays a table of registered
+                        nodes that have less than 4GB of memory.</p>
+                </div>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> To see details about the policies associated with
+                a tag, run&nbsp;<code class="ph codeph">razor tags &lt;TAG_NAME&gt;
+                    policies</code>. To see its rule, run&nbsp;<code class="ph codeph">razor tags &lt;TAG_NAME&gt; rule</code>.</div>
+        </section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title15" id="unique_784427827">
+    <h3 class="title topictitle3" id="ariaid-title15">(Optional) Create a broker</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Brokers hand off nodes to configuration management systems
+        like <span class="ph">Puppet Enterprise</span>.</p>
+        <section class="section context"></section>
+        <section><div class="li step p">
+                <span class="ph cmd">To hand off <span class="ph">Razor</span>
+                    nodes to a <span class="ph">Puppet</span> master at&nbsp;<code class="ph codeph">puppet-master.example.com</code>:</span>
+                <div class="itemgroup stepxmp">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>razor create-broker --name pe --broker-type puppet-pe
+  --configuration server=puppet-master.example.com</code></pre>
+                    </div>
+                </div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title16" id="unique_37862828">
+    <h3 class="title topictitle3" id="ariaid-title16">Add the <code class="ph codeph">pe_repo</code>
+        class to the <span class="ph uicontrol">PE Master</span> node
+        group</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">To manage a node handed off by the broker, the master must
+        include a class that matches the node’s architecture.</p>
+        <section class="section context">
+            <div class="note note note_note"><span class="note__title">Note:</span> Skip this step if the node you’re provisioning
+                has the same architecture as your master, or if the master already includes
+                    a&nbsp;<span class="ph uicontrol">pe_repo</span>&nbsp;class that matches the node’s architecture.</div>
+        </section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and in the <span class="ph uicontrol">PE Infrastructure</span> group, select the
+                        <span class="ph uicontrol">PE Master</span>
+                    group.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab in the <span class="ph uicontrol">Add new class</span> field, select <code class="ph codeph">pe_repo::platform::&lt;VERSION&gt;</code>.</span>
+                <div class="itemgroup stepxmp">
+                    <p class="p">For example, <code class="ph codeph">pe_repo::platform::el_7_x86_64</code>.</p>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add class</span> and then commit changes.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the master, run <span class="ph">Puppet</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title17" id="unique_1039813762">
+    <h3 class="title topictitle3" id="ariaid-title17">Create a policy</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Policies tell <span class="ph">Razor</span> what
+        operating system to install on the provisioned node, where to get the OS software, how to
+        configure it, and how to communicate between the node and <span class="ph">Puppet Enterprise</span>.</p>
+        <section><div class="li step p">
+                <span class="ph cmd">To create a policy that installs <span class="ph">CentOS</span> on machines tagged with&nbsp;<code class="ph codeph">small</code>, then hands them off to <span class="ph">Puppet Enterprise</span> for management:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code> razor create-policy --name centos-for-small
+    --repo centos-6.7 --broker pe --tag small
+    --hostname 'host${id}.example.com' --root-password secret</code></pre></div></div>
+            </div></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div><div class="note note note_note"><span class="note__title">Note:</span> You can
+                view details of a specific policy by running&nbsp;<code class="ph codeph">razor policies &lt;POLICY_NAME&gt;</code>. You can view a table
+                of all policies by running&nbsp;<code class="ph codeph">razor
+                    policies</code>. The order in which policies are listed in the table is
+                important because Razor applies the first matching policy to a node.</div></section>
+    </div>
+</article><article class="topic task nested2" aria-labelledby="ariaid-title18" id="register_existing_nodes_manually">
+   <h3 class="title topictitle3" id="ariaid-title18">Register existing nodes manually</h3>
+   
+   
+   <div class="body taskbody"><p class="shortdesc">If you’re provisioning in an environment with existing
+      nodes already installed, register the nodes to prevent <span class="ph">Razor</span>
+      from re-provisioning them.</p>
+      <section class="section context">You must provide enough&nbsp;<code class="ph codeph">hw-info</code>&nbsp;details so that nodes can be identified
+         when <span class="ph">Razor</span> detects them.</section>
+      <section><div class="li step p">
+            <span class="ph cmd">To register an existing node, and indicate with
+                  the&nbsp;<code class="ph codeph">installed</code>&nbsp;attribute
+               that the node isn’t eligible for provisioning:</span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <pre class="pre codeblock"><code>razor register-node --hw-info net0=78:31:c1:be:c8:00 \
+    --hw-info net1=72:00:01:f2:13:f0 \
+    --hw-info net2=72:00:01:f2:13:f1 \
+    --hw-info serial=xxxxxxxxxxx \
+    --hw-info asset=Asset-1234567890 \
+    --hw-info uuid="Not Settable" \
+    --installed</code></pre>
+               </div>
+            </div>
+         </div></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="protecting_existing_nodes.html#protecting_existing_nodes" title="In&nbsp;brownfield environments&nbsp;– those in which you already have machines installed that PXE boot against the Razor server – you must take extra precautions to protect existing nodes. Failure to adequately protect existing nodes can result in data loss.">Protecting existing nodes</a></li><li class="linklist"><a class="link" href="using_the_razor_client.html#node_commands" title="Nodes are created either through the node boot endpoint, when the node initiates its first web request to the Razor server, or through the&nbsp;register-node&nbsp;command.">Node commands</a></li><li class="linklist"><a class="link" href="api_reference.html#nodes_api" title="These commands enable you to register a node, set a node's hardware information, remove a single node, or remove a node's associate with any policies and clear its installed flag.">Nodes API</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title19" id="change-protect-new-nodes-default">
+    <h3 class="title topictitle3" id="ariaid-title19">Change the <code class="ph codeph">protect_new_nodes</code> default</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Because you’ve already registered existing nodes to
+        protect them from reprovisioning, it’s now safe to change the&nbsp;<code class="ph codeph">protect_new_nodes</code>&nbsp;default to&nbsp;<code class="ph codeph">false</code>. This removes the&nbsp;<code class="ph codeph">installed</code>&nbsp;flag from unregistered nodes so that <span class="ph">Razor</span> can provision them.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, select <span class="ph menucascade"><span class="ph uicontrol">Nodes</span><abbr title="and then"> &gt; </abbr><span class="ph uicontrol">Classification</span></span>, then click the <span class="ph">Razor</span> server node
+                    group.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, select the <span class="ph uicontrol">protect_new_nodes</span> parameter, then in the
+                        <span class="ph uicontrol">Value</span> field, enter
+                        <kbd class="ph userinput">false.</kbd></span>
+            </li><li class="li step">
+                <span class="ph cmd">Commit changes, run <span class="ph">Puppet</span>, and then restart the <code class="ph codeph">pe-razor-server</code> service.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo" lang="en-us"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="run_puppet_on_nodes.html#run_puppet_on_nodes" title="Puppet automatically attempts to run on each of your nodes every 30 minutes. To trigger a Puppet run outside of the default 30-minute interval, you can manually run Puppet.">Running Puppet on nodes</a></li></ul></div></nav></article><article class="topic task nested2" aria-labelledby="ariaid-title20" id="load-ipxe-advanced">
+    <h3 class="title topictitle3" id="ariaid-title20">Load iPXE software</h3>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Set your machines to PXE boot so that <span class="ph">Razor</span> can interact with the node and provision the operating
+        system. This process uses both the&nbsp;<code class="ph codeph">undionly.kpxe</code>&nbsp;file from the iPXE open source software stack and a
+            Razor-specific&nbsp;<code class="ph codeph">bootstrap.ipxe</code>&nbsp;script.</p>
+        <section class="section context"></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Download the iPXE boot image <a class="xref" href="http://boot.ipxe.org/undionly.kpxe" target="_blank">http://boot.ipxe.org/undionly.kpxe</a> and copy the
+                    image to your TFTP server’s<code class="ph codeph">
+                        /var/lib/tftpboot</code> directory: </span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>`cp undionly.kpxe /var/lib/tftpboot`</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Download the iPXE bootstrap script from the <span class="ph">Razor</span> server and copy the script to your TFTP
+                        server’s<code class="ph codeph">
+                    /var/lib/tftpboot</code>&nbsp;directory:</span>
+                <div class="itemgroup info"><div class="p"><pre class="pre codeblock"><code>`wget   "https://$&lt;RAZOR_HOSTNAME&gt;:$&lt;HTTPS_PORT&gt;/api/microkernel/bootstrap?nic_max=1&amp;http_port=$&lt;HTTP_PORT&gt;" -O /var/lib/tftpboot/bootstrap.ipxe`</code></pre><div class="note note note_note"><span class="note__title">Note:</span> Don’t use&nbsp;<code class="ph codeph">localhost</code>&nbsp;as the name of the
+                                <span class="ph">Razor</span> host. The bootstrap script
+                            chain-loads the next iPXE script from the server, so it must contain the
+                            correct host name.</div></div></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Boot the node. This can mean physically pressing
+                    the power button, using IPMI to manage the node’s power state, or, in the case
+                    of a VM, starting the VM.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>
+            <p class="p">When the node PXE boots with a policy in place, <span class="ph">Razor</span> detects the node and provisions it by applying
+                the first applicable policy in the policy table.</p>
+            <p class="p">When provisioning is complete, you can log into the node using
+                    the&nbsp;<code class="ph codeph">root_password</code>&nbsp;as
+                specified by the node’s metadata, or by the policy that the node is bound to. You
+                can also see the node and its details in the console, and manage it there as you
+                would any other node.</p>
+        </section>
+    </div>
+</article></article><article class="topic concept nested1" aria-labelledby="ariaid-title21" lang="en-us" id="viewing_information_about_nodes">
+   <h2 class="title topictitle2" id="ariaid-title21">Viewing information about nodes</h2>
+   
+   
+   <div class="body conbody"><p class="shortdesc">Use these commands to view details about nodes in your
+      environment.</p>
+      <section class="section"><div class="p">
+            <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                     <tr class="row">
+                        <th class="entry" id="viewing_information_about_nodes__entry__1">Command</th>
+                        <th class="entry" id="viewing_information_about_nodes__entry__2">Result</th>
+                     </tr>
+                  </thead><tbody class="tbody">
+                     <tr class="row">
+                        <td class="entry" headers="viewing_information_about_nodes__entry__1">
+                           <code class="ph codeph">razor nodes</code>
+                        </td>
+                        <td class="entry" headers="viewing_information_about_nodes__entry__2">Displays a list of nodes that <span class="ph">Razor</span> knows about.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="viewing_information_about_nodes__entry__1">
+                           <code class="ph codeph">razor nodes</code>
+                           <code class="ph codeph">&lt;NODE_NAME&gt;</code>
+                        </td>
+                        <td class="entry" headers="viewing_information_about_nodes__entry__2">Displays details about the specified
+                           node.</td>
+                     </tr>
+                     <tr class="row">
+                        <td class="entry" headers="viewing_information_about_nodes__entry__1">
+                           <code class="ph codeph">razor nodes</code>
+                           <code class="ph codeph">&lt;NODE_NAME&gt;</code>
+                           <code class="ph codeph">log</code>
+                        </td>
+                        <td class="entry" headers="viewing_information_about_nodes__entry__2">Displays a log that includes the timing and
+                           status of installation events, as well as downloads of kickstart files
+                           and post-install scripts.</td>
+                     </tr>
+                  </tbody></table>
+         </div></section>
+   </div>
+</article></article></article></main></body></html>

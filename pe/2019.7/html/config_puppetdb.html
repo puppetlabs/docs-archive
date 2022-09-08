@@ -1,0 +1,158 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="After you've installed Puppet Enterprise, optimize it for your environment by configuring and tuning PuppetDB configuration as needed."><meta name="DC.relation" scheme="URI" content="config_intro.html#config_intro"><meta name="DC.relation" scheme="URI" content="tuning_standard.html#tuning_standard"><meta name="DC.relation" scheme="URI" content="config_intro.html#configure_settings_with_hiera"><meta name="DC.relation" scheme="URI" content="config_ulimit.html#config_ulimit_for_pe_services"><meta name="DC.relation" scheme="URI" content="config_java_args.html#increase_the_java_heap_size_for_pe_java_services"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="configuring_and_tuning_puppetdb"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Configuring and tuning PuppetDB</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="configuring_and_tuning_puppetdb">
+    <h1 class="title topictitle1" id="ariaid-title1">Configuring and tuning <span class="ph">PuppetDB</span>
+    </h1>
+    
+    <div class="body conbody"><p class="shortdesc">After you've installed <span class="ph">Puppet Enterprise</span>, optimize it for your environment by configuring and
+        tuning <span class="ph">PuppetDB</span> configuration as needed.</p>
+        <p class="p">This page covers a few key topics, but additional settings and
+            information about configuring <span class="ph">PuppetDB</span> is available in
+            the
+                <a class="xref" href="https://docs.puppet.com/puppetdb/latest/configure.html" target="_blank">PuppetDB configuration documentation</a>. Be sure to check
+            that the <span class="ph">PuppetDB</span> docs version you're looking at matches
+            the one version of <span class="ph">PuppetDB</span> in your <span class="ph">PE</span>.</p>
+        <p class="p"></p>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="config_intro.html#config_intro" title="After you've installed Puppet Enterprise (PE), optimize it for your environment by configuring and tuning settings as needed. For example, you might want to add your own certificate to the whitelist, increase the max-threads setting for http and https requests, or configure the number of JRuby instances.">Methods for configuring Puppet Enterprise</a></li><li class="linklist"><a class="link" href="tuning_standard.html#tuning_standard" title="Use these guidelines to configure your installation to maximize its use of available system (CPU and RAM) resources.">Tuning standard installations</a></li><li class="linklist"><a class="link" href="config_intro.html#configure_settings_with_hiera" title="Hiera is a hierarchy-based method of configuration management that relies on a “defaults, with overrides” system. When you add a parameter or setting to your Hiera data, Hiera searches through the data in the order it was written to find the value you want to change. Once found, it overrides the default value with the new parameter or setting. You can use Hiera to manage your PE configuration settings.">Configure settings with Hiera</a></li><li class="linklist"><a class="link" href="config_ulimit.html#config_ulimit_for_pe_services" title="The various services in PE require up to one file handle per connected client. On most operating system configurations, the defaults are not adequate for more than a couple hundred clients. To support more clients, you need to increase the number of allowed file handles.">Configure ulimit for PE services</a></li><li class="linklist"><a class="link" href="config_java_args.html#increase_the_java_heap_size_for_pe_java_services" title="The Java heap size is the Java Virtual Machine (JVM) memory allocated to Java services in Puppet Enterprise (PE). You can use any configuration method you choose. We will use the console to change the Java heap size for console services, Puppet Server, orchestration services, or PuppetDB in the examples below.">Increase the Java heap size for PE Java services</a></li></ul></div></nav><article class="topic task nested1" aria-labelledby="ariaid-title2" id="configure_agent_run_reports_in_hiera">
+    <h2 class="title topictitle2" id="ariaid-title2">Configure agent run reports</h2>
+    
+    <div class="body taskbody"><p class="shortdesc">By default, every time <span class="ph">Puppet</span> runs, the master generates agent run reports and submits them to <span class="ph">PuppetDB</span>. You can enable or disable this as
+        needed.</p>
+        <section class="section context"><p class="p">To enable or disable
+                agent run reports using the console: </p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Classification</span>, and in the <span class="ph uicontrol">PE Infrastructure</span> group, select the <span class="ph uicontrol">PE Master</span> group.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, add the <code class="ph codeph">puppet_enterprise::profile::master::puppetdb</code> class,
+                    select the <code class="ph codeph">report_processor_ensure</code> parameter, and enter the value <code class="ph codeph">present</code> to enable agent run reports
+                    or <code class="ph codeph">absent</code> to disable agent run
+                    reports.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add parameter</span> and commit changes.</span>
+            </li><li class="li step">
+                <span class="ph cmd">On the nodes hosting the master and console, run
+                        <span class="ph">Puppet</span>.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="configure_command_processing_threads">
+    <h2 class="title topictitle2" id="ariaid-title3">Configure command processing threads </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The <code class="ph codeph">command_processing_threads</code> setting defines how many command processing threads
+            <span class="ph">PuppetDB</span> uses to sort incoming data. Each thread can
+        process a single command at a time. The setting defaults to half the number of
+        cores
+        in your system.</p>
+        <section class="section context"><p class="p">To set the number of
+                threads using <code class="ph codeph">pe.conf</code>:</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Add the following code to your <code class="ph codeph">pe.conf</code> file on your master and set your new
+                    parameter.</span>
+                <div class="itemgroup info"><pre class="pre codeblock"><code>puppet_enterprise::puppetdb::command_processing_threads: &lt;number of threads&gt;</code></pre></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run <code class="ph codeph">puppet
+                        agent -t </code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="configure_node_purge_ttl">
+    <h2 class="title topictitle2" id="ariaid-title4">Configure
+        how long before <span class="ph">PE</span> stops managing deactivated nodes
+        
+    </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Use the <code class="ph codeph">node-purge-ttl</code> parameter to set the
+        "length
+        of time" value before <span class="ph">PE</span> automatically
+        removes nodes that have been deactivated or expired. This also removes all facts, catalogs,
+        and reports for the relevant nodes.</p>
+        <section class="section context"><p class="p">To change the amount of
+                time before nodes are purged using the console:</p></section>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Classification</span>, and in the PE Infrastructure group, select the
+                    PE Database group.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab, find the <code class="ph codeph">puppet_enterprise::profile::puppetdb</code> class, find the
+                        <code class="ph codeph">node_purge_ttl</code> parameter,
+                    and change its value to the desired amount of time.</span>
+                <div class="itemgroup info"><p class="p">To change the unit
+                        of
+                        time,
+                        use the following suffixes:</p><ul class="ul">
+                        <li class="li"><p class="p">
+                                <code class="ph codeph">d</code> - days</p></li>
+                        <li class="li"><p class="p">
+                                <code class="ph codeph">h</code> - hours</p></li>
+                        <li class="li"><p class="p">
+                                <code class="ph codeph">m</code> -
+                            minutes</p></li>
+                        <li class="li"><p class="p">
+                                <code class="ph codeph">s</code> -
+                            seconds</p></li>
+                        <li class="li"><p class="p">
+                                <code class="ph codeph">ms</code> -
+                                milliseconds
+                            </p><p class="p">For example, to set the purge time to 14
+                                days:</p></li>
+                    </ul></div>
+                <div class="itemgroup info"><pre class="pre codeblock"><code>puppet_enterprise::profile::puppetdb::node_purge_ttl: '14d'</code></pre></div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Click <span class="ph uicontrol">Add parameter</span> and commit changes.</span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">On the nodes hosting the master and console, run
+                        <span class="ph">Puppet</span>.</span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="change_the_puppetdb_user_password">
+    <h2 class="title topictitle2" id="ariaid-title5">Change the <span class="ph">PuppetDB</span> user password </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">The console uses a database user account to access its <span class="ph">PostgreSQL</span> database. Change it if it is compromised or to
+        comply with security guidelines.</p>
+        <section class="section context"><p class="p">To change the
+                password:</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Stop the <code class="ph codeph">pe-puppetdb</code>
+                    <code class="ph codeph">puppet</code> service by
+                        running&nbsp;<code class="ph codeph">puppet resource service
+                        pe-puppetdb ensure=stopped</code>
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">On the database server (which might or might not
+                    be the same as <span class="ph">PuppetDB</span>, depending on your
+                    deployment's architecture), use the <span class="ph">PostgreSQL</span>
+                    administration tool of your choice to change the user's password. With the
+                    standard <span class="ph">PostgreSQL</span> client, you can do this by
+                    running <code class="ph codeph">ALTER USER console PASSWORD
+                        '&lt;new password&gt;';</code>
+                </span>
+            </li><li class="li step">
+                <span class="ph cmd">Edit <code class="ph codeph">/etc/puppetlabs/puppetdb/conf.d/database.ini</code> on the <span class="ph">PuppetDB</span> server and change the&nbsp;<code class="ph codeph">password:</code> line under&nbsp;<code class="ph codeph">common</code>&nbsp;or&nbsp;<code class="ph codeph">production</code>
+                    <strong class="ph b">,</strong>&nbsp;depending on your configuration, to
+                    contain the new password.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Start the&nbsp;<code class="ph codeph">pe-puppetdb</code>&nbsp;service on the console server by
+                        running&nbsp;<code class="ph codeph">puppet resource service
+                        pe-puppetdb ensure=running</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="config_blacklisted_facts">
+    <h2 class="title topictitle2" id="ariaid-title6">Configure
+        excluded facts</h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Use the <code class="ph codeph">facts_blacklist</code> parameter exclude facts from being stored in the
+            <span class="ph">PuppetDB</span> database.</p>
+        <section class="section context"><p class="p">To specify which facts
+                you want to exclude using Hiera:</p></section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Add the following to you default <code class="ph codeph">.yaml</code> file and list the facts you want to
+                    exclude. For example, to exclude the facts <code class="ph codeph">system_uptime_example</code> and <code class="ph codeph">mountpoints_example</code>:</span>
+            </li></ol><div class="li stepsection"><pre class="pre codeblock"><code>puppet_enterprise::puppetdb::database_ini::facts_blacklist:
+- 'system_uptime_example'
+- 'mountpoints_example'</code></pre></div><ol class="ol steps" start="2"><li class="li step">
+                <span class="ph cmd">To compile changes, run <code class="ph codeph">puppet agent -t</code>
+                </span>
+            </li></ol></section>
+    </div>
+</article></article></article></main></body></html>

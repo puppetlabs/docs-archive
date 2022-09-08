@@ -1,0 +1,191 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="The Events page in the console shows a summary of activity in your infrastructure. You can analyze the details of important changes, and investigate common causes behind related events. You can also examine specific class, node, and resource events, and find out what caused them to fail, change, or run as no-op."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="analyze_changes_across_puppet_runs"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Analyzing changes across Puppet runs</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="analyze_changes_across_puppet_runs">
+    <h1 class="title topictitle1" id="ariaid-title1">Analyzing changes across Puppet runs </h1>
+    
+    <div class="body conbody"><p class="shortdesc">The <span class="keyword wintitle">Events</span> page in the console shows a summary of activity in your
+        infrastructure. You can analyze the details of important changes, and investigate common
+        causes behind related events. You can also examine specific class, node, and resource
+        events, and find out what caused them to fail, change, or run as no-op.</p></div>
+<article class="topic concept nested1" aria-labelledby="ariaid-title2" id="what_is_an_event">
+    <h2 class="title topictitle2" id="ariaid-title2">What is an event? </h2>
+    
+    <div class="body conbody"><p class="shortdesc">An event occurs whenever PE attempts to modify an
+        individual property of a given resource. Reviewing events lets you see detailed information
+        about what has changed on your system, or what isn't working properly. </p>
+        <p class="p">During a Puppet run, Puppet compares the current state of each
+            property on each resource to the desired state for that property, as defined by the
+            node's catalog. If Puppet successfully compares the states and the property is already
+            in sync (in other words, if the current state is the desired state), Puppet moves on to
+            the next resource without noting anything. Otherwise, it attempts some action and
+            records an event, which appears in the report it sends to the Puppet master at the end
+            of the run. These reports provide the data presented on the <span class="keyword wintitle">Events</span> page in the console.</p>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="event_types">
+    <h2 class="title topictitle2" id="ariaid-title3">Event types </h2>
+    
+    <div class="body refbody"><p class="shortdesc">There are six types of event that can occur when Puppet
+        reviews each property in your system and attempts to make any needed changes. If a property
+        is already in sync with its catalog, no event is recorded: no news is good news in the world
+        of events. </p>
+        <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+                    <tr class="row">
+                        <th class="entry" id="event_types__entry__1">Event </th>
+                        <th class="entry" id="event_types__entry__2">Description </th>
+                    </tr>
+                </thead><tbody class="tbody">
+                    <tr class="row">
+                        <td class="entry" headers="event_types__entry__1">Failure </td>
+                        <td class="entry" headers="event_types__entry__2">A property was out of sync;
+                            Puppet tried to make changes, but was unsuccessful. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="event_types__entry__1">Corrective change </td>
+                        <td class="entry" headers="event_types__entry__2">Puppet found an inconsistency
+                            between the last applied catalog and a property's configuration, and
+                            corrected the property to match the catalog. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="event_types__entry__1">Intentional change </td>
+                        <td class="entry" headers="event_types__entry__2">Puppet applied catalog changes
+                            to a property. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="event_types__entry__1">Corrective no-op </td>
+                        <td class="entry" headers="event_types__entry__2">Puppet found an inconsistency
+                            between the last applied catalog and a property's configuration, but
+                            Puppet was instructed to not make changes on this resource, via either
+                            the <code class="ph codeph">--noop</code> command-line
+                            option, the <code class="ph codeph">noop</code>
+                            setting, or the <code class="ph codeph">noop =&gt;
+                                true</code> metaparameter. Instead of making a corrective change,
+                            Puppet logs a corrective no-op event and reports the change it would
+                            have made. </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="event_types__entry__1">Intentional no-op </td>
+                        <td class="entry" headers="event_types__entry__2">Puppet would have applied
+                            catalog changes to a property., but Puppet was instructed to not make
+                            changes on this resource, via either the <code class="ph codeph">--noop</code> command-line option, the <code class="ph codeph">noop</code> setting, or the
+                                <code class="ph codeph">noop =&gt; true</code>
+                            metaparameter. Instead of making an intentional change, Puppet logs an
+                            intentional no-op event and reports the change it would have made.
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td class="entry" headers="event_types__entry__1">Skip </td>
+                        <td class="entry" headers="event_types__entry__2"><p class="p">A
+                                prerequisite for this resource was not met, so Puppet did not
+                                compare its current state to the desired state. This prerequisite is
+                                either one of the resource's dependencies or a timing limitation set
+                                with the <code class="ph codeph">schedule</code>
+                                metaparameter. The resource might be in sync or out of sync; Puppet
+                                doesn't know yet.. </p><p class="p">If the <code class="ph codeph">schedule</code> metaparameter is set
+                                for a given resource, and the scheduled time hasn't arrived when the
+                                run happens, that resource logs a skip event on the <span class="keyword wintitle">Events</span> page.
+                                This is true for a user-defined <code class="ph codeph">schedule</code>, but does not apply to built-in
+                                scheduled tasks that happen weekly, daily, or at other
+                                intervals.</p></td>
+                    </tr>
+                </tbody></table>
+    </div>
+</article><article class="topic concept nested1" aria-labelledby="ariaid-title4" id="working_with_the_events_page">
+   <h2 class="title topictitle2" id="ariaid-title4">Working with the <span class="keyword wintitle">Events</span> page </h2>
+   
+   <div class="body conbody"><p class="shortdesc">During times when your deployment is in a state of
+      stability, with no changes being made and everything functioning optimally, the <span class="keyword wintitle">Events</span> page reports little activity, and
+      might not seem terribly interesting. But when change occurs—when packages require upgrades,
+      when security concerns threaten, or when systems fail—the <span class="keyword wintitle">Events</span> page helps you understand what's happening and where so
+      you can react quickly. </p>
+      <p class="p">The <span class="keyword wintitle">Events</span>
+         page fetches data when loading, and does not refresh—even if there's a Puppet run while
+         you're on the page—until you close or reload the page. This ensures that shifting data
+         won't disrupt an investigation. </p>
+      <p class="p">You can see how recent the shown data is by checking the timestamp at
+         the top of the page. Reload the page to update the data to the most recent events.</p>
+      <div class="p">
+         <div class="note tip note_tip"><span class="note__title">Tip:</span> Keeping time synchronized by running NTP across your
+            deployment helps the <span class="keyword wintitle">Events</span>
+            page produce accurate information. NTP is easily managed with <span class="ph">PE</span>, and setting it up is an excellent way to learn Puppet
+            workflows.</div>
+      </div>
+      <section class="section" id="working_with_the_events_page__monitoring_infrastructure_with_the_events_summary"><h3 class="title sectiontitle">Monitoring infrastructure with the <span class="keyword wintitle">Events</span> summary pane</h3><p class="p">The <span class="keyword wintitle">Events</span> page
+            displays all events from the latest report of every responsive node in the deployment.
+            </p><div class="p">
+            <div class="note tip note_tip"><span class="note__title">Tip:</span> By default, <span class="ph">PE</span>
+               considers a node unresponsive after one hour, but you can configure this setting to
+               meet your needs by adjusting the <code class="ph codeph">puppet_enterprise::console_services::no_longer_reporting_cutoff</code>
+               parameter.</div>
+         </div><p class="p">On the left side of the screen, the <span class="keyword wintitle">Events</span> summary pane shows an overview of
+            Puppet activity across your infrastructure. This data can help you rapidly assess the
+            magnitude of any issue.</p><p class="p">The <span class="keyword wintitle">Events</span> summary pane is split into three categories—the
+               <span class="keyword wintitle">Classes</span> summary,
+               <span class="keyword wintitle">Nodes</span> summary, and
+               <span class="keyword wintitle">Resources</span> summary—to help
+            you investigate how a change or failure event impacts your entire deployment.
+         </p></section>
+      <section class="section" id="working_with_the_events_page__gaining_insight_with_the_detail_view"><h3 class="title sectiontitle">Gaining insight with the <span class="keyword wintitle">Events</span> detail pane </h3><p class="p">Clicking an item in the
+               <span class="keyword wintitle">Events</span> summary pane loads
+            its details (and any sub-items) in the <span class="keyword wintitle">Events</span> detail pane on the right of the screen. The summary pane on the
+            left always shows the list of items from which the one in the detail pane on the right
+            was chosen, to let you easily view similar items and compare their states.</p><p class="p">Click any item in the the <span class="keyword wintitle">Classes</span> summary, <span class="keyword wintitle">Nodes</span> summary, or <span class="keyword wintitle">Resources</span> summary to load more specific info into the
+            detail pane and begin looking for the causes of notable events. Switch between
+            perspectives to find the common threads among a group of failures or corrective changes,
+            and follow them to a root cause. </p></section>
+      <section class="section" id="working_with_the_events_page__analyzing_changes_and_failures"><h3 class="title sectiontitle">Analyzing changes and failures </h3><p class="p">You can use
+            the <span class="keyword wintitle">Events</span> page to analyze
+            the root causes of events resulting from a Puppet run. For example, to understand the
+            cause of a failure after a Puppet run, select the class, node, or resource with a
+            failure in the <span class="keyword wintitle">Events</span>
+            summary pane, and then review the details of the failure in the <span class="keyword wintitle">Events</span> detail pane. </p><p class="p">You can view additional details by clicking on the failed item in the in the <span class="keyword wintitle">Events</span> detail pane. </p><p class="p">Use the <span class="keyword wintitle">Classes</span>
+            summary, <span class="keyword wintitle">Nodes</span> summary, and
+               <span class="keyword wintitle">Resources</span> summary to
+            focus on the information you need. For example, if you’re concerned about a failed
+            service, say Apache or MongoDB, you can start by looking into failed resources or
+            classes. If you’re experiencing a geographic outage, you might start by drilling into
+            failed node events.</p></section>
+      <section class="section" id="working_with_the_events_page__understanding_event_display_issues"><h3 class="title sectiontitle">Understanding event display issues </h3><p class="p">In some
+            special cases, events are not displayed as expected on the <span class="keyword wintitle">Events</span> page. These cases are often caused by
+            the way that the console receives data from other parts of <span class="ph">Puppet Enterprise</span>, but sometimes are due to the way your Puppet code
+            is interpreted. </p><div class="p">
+            <dl class="dl">
+               
+                  <dt class="dt dlterm">Runs that restart PuppetDB are not displayed</dt>
+                  <dd class="dd">If a given Puppet run restarts <span class="ph">PuppetDB</span>, Puppet is not able to submit a run
+                     report from that run to <span class="ph">PuppetDB</span> because <span class="ph">PuppetDB</span> is not available. Because the <span class="keyword wintitle">Events</span> page relies on data
+                     from <span class="ph">PuppetDB</span>, and <span class="ph">PuppetDB</span> reports are not queued, the <span class="keyword wintitle">Events</span> page does not
+                     display any events from that run. Note that in such cases, a run report <em class="ph i">is</em> available on the <span class="keyword wintitle">Reports</span> page. Having a Puppet run
+                     restart <span class="ph">PuppetDB</span> is an unlikely scenario, but
+                     one that could arise in cases where some change to, say, a parameter in the
+                        <code class="ph codeph">puppetdb</code> class causes the
+                        <code class="ph codeph">pe-puppetdb</code> service to
+                     restart. </dd>
+               
+               
+                  <dt class="dt dlterm">Runs without a compiled catalog are not displayed</dt>
+                  <dd class="dd">If a run encounters a catastrophic failure where an error
+                     prevents a catalog from compiling, the <span class="keyword wintitle">Events</span> page does not display any failures. This
+                     is because no events occurred. </dd>
+               
+               
+                  <dt class="dt dlterm">Simplified display for some resource types</dt>
+                  <dd class="dd">For resource types that take the <code class="ph codeph">ensure</code> property, such as user or file resource types,
+                     the <span class="keyword wintitle">Events</span> page
+                     displays a single event when the resource is first created. This is because
+                     Puppet has changed only one property (<code class="ph codeph">ensure</code>), which sets all the baseline properties of that resource
+                     at the same time. For example, all of the properties of a given user are
+                     created when the user is added, just as if the user was added manually. If a
+                     later Puppet run changes properties of that user resource, each individual
+                     property change is shown as a separate event.</dd>
+               
+               
+                  <dt class="dt dlterm">Updated modes display without leading zeros</dt>
+                  <dd class="dd">When the <code class="ph codeph">mode</code> attribute for a <code class="ph codeph">file</code> resource is updated, and numeric notation is used, leading
+                     zeros are omitted in the <span class="ph uicontrol">New
+                        Value</span> field on the <span class="ph uicontrol">Events</span> page. For example, <code class="ph codeph">0660</code> is shown as <code class="ph codeph">660</code> and <code class="ph codeph">0000</code> is
+                     shown as <code class="ph codeph">0</code>. </dd>
+               
+            </dl>
+         </div></section>
+   </div>
+</article></article></article></main></body></html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Installing PE sets up a standard installation, which you can use to try out PE with up to 10 nodes or to manage up to 4,000 nodes."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="install_pe_getting_started"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Install PE</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="install_pe_getting_started">
+      <h1 class="title topictitle1" id="ariaid-title1">Install <span class="ph">PE</span></h1>
+      
+      <div class="body conbody"><p class="shortdesc">Installing PE sets up a standard installation, which you can use to try out <span class="ph">PE</span> with up to 10 nodes or to manage up to 4,000
+            nodes.</p>
+            <p class="p">Ensure your system capacity can manage a <span class="ph">PE</span>
+                  installation by reviewing the <a class="xref" href="hardware_requirements.html#hardware_requirements_standard" title="In standard installations, hardware requirements differ depending on the number of nodes you're managing. To take advantage of progressively larger hardware, you must configure your environment to use additional resources.">hardware requirements for standard installations</a>.</p>
+            <p class="p">A standard <span class="ph">PE</span> installation consists of these
+                  components installed on a single node:</p>
+            <ul class="ul">
+                  <li class="li">The master: the central hub of activity, where <span class="ph">Puppet</span> code is compiled to create agent
+                        catalogs, and where SSL certificates are verified and signed.</li>
+                  <li class="li">The console: the graphical web interface, which features  configuration and
+                        reporting tools.</li>
+                  <li class="li">
+                        <span class="ph">PuppetDB</span>: the data store for data generated
+                        throughout your <span class="ph">Puppet</span> infrastructure.</li>
+            </ul>
+            <div class="p">
+                  <div class="note important note_important"><span class="note__title">Important:</span> The <span class="ph">Puppet</span> master runs only
+                        on <span class="ph">*nix</span> machines. <span class="ph">Windows</span> machines
+                        can run as <span class="ph">Puppet</span> agents, and you can manage
+                        them with your <span class="ph">*nix</span>
+                        <span class="ph">Puppet</span> master. If you want to operate a <span class="ph">*nix</span> master
+                        remotely from a <span class="ph">Windows</span> machine,
+                        before installing <span class="ph">PE</span>, configure an SSH
+                        client, such as <a class="xref" href="https://putty.org/" target="_blank">PuTTY</a>,  with the hostname or IP address and
+                        port of the <span class="ph">*nix</span>
+                        machine that you want to install as your master. When you open an SSH
+                        session to install the <span class="ph">*nix</span>  master, log
+                        in as the <code class="ph codeph">root</code> user.</div>
+            </div>
+      </div>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="install_pe">
+    <h2 class="title topictitle2" id="ariaid-title2">Install <span class="ph">PE</span></h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">Installation uses default settings to install all of the <span class="ph">PE</span> infrastructure components on a single node. After
+        installing, you can scale or customize your installation as needed. </p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+                <span class="ph cmd">On your master, log in as root and <a class="xref" href="https://puppet.com/try-puppet/puppet-enterprise/download/" target="_blank">download</a> the tarball appropriate to
+                    your operating system and architecture.</span>
+                <div class="itemgroup info">
+                    <div class="note tip note_tip"><span class="note__title">Tip:</span> To download packages from the command line, run <code class="ph codeph">wget
+                            --content-disposition &lt;URL&gt;</code> or <code class="ph codeph">curl -JLO
+                            &lt;URL&gt;</code>, using the URL for the tarball you want to download.
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Unpack the installation tarball:</span>
+                <div class="itemgroup info"><div class="p">
+                        <pre class="pre codeblock"><code>tar -xf &lt;TARBALL_FILENAME&gt;              </code></pre>
+                    </div></div>
+            </li><li class="li step stepexpand" id="install_pe__step-1502484349300">
+                <span class="ph cmd">From the installer directory, run the
+                    installer:</span>
+                <div class="itemgroup info">
+                    <div class="p">
+                        <pre class="pre codeblock"><code>sudo ./puppet-enterprise-installer</code></pre>
+                    </div>
+                </div>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">When prompted, specify a console administrator password:  <code class="ph codeph">puppet
+                        infrastructure console_password --password=&lt;MY_PASSWORD&gt;</code></span>
+            </li><li class="li step stepexpand">
+                <span class="ph cmd">Run <span class="ph">Puppet</span> twice: <code class="ph codeph">puppet
+                        agent -t</code>.</span>
+            </li></ol></section>
+        <section class="section postreq"><div class="tasklabeltitle tasklabel">What to do next:</div>
+            <p class="p">You must restart the shell before you can use client tool commands.</p>
+        </section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="complete_install_log_in">
+   <h2 class="title topictitle2" id="ariaid-title3">Log into the <span class="ph">PE</span> console </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">The console is a graphical interface where you can manage your  infrastructure without
+      relying on the command line.</p>
+      <section class="section context">
+         <p class="p">To log in for the first time:</p>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">Open the console by entering the URL &lt;master_certname&gt; into your browser, where
+               master_certname is the trusted certificate name of your master.</span>
+            <div class="itemgroup info">
+               <div class="note note note_note"><span class="note__title">Note:</span> You'll receive a browser warning about an untrusted certificate because you
+                  were the signing authority for the console's certificate, and your <span class="ph">Puppet Enterprise</span> deployment is not known to your browser as a
+                  valid signing authority. Ignore the warning and accept the certificate.</div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">On the login page for the console, log in with the user
+               name <code class="ph codeph">admin</code> and the password you
+               created when installing. Keep track of this login as you will use it later.</span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>Next, check the status of your <span class="ph">PE</span> master.</section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="check_the_status_in_the_console">
+    <h2 class="title topictitle2" id="ariaid-title4">Check the status of your master </h2>
+    
+    
+    <div class="body taskbody"><p class="shortdesc">You can run a task to check the status of your master in the console. </p>
+        <section class="section context">A <dfn class="term">task</dfn> is a single action that allows you to do ad-hoc things like
+            upgrade packages and restart services on target machines. <span class="ph">PE</span> comes with a few tasks installed, such as
+                <code class="ph codeph">package</code>, <code class="ph codeph">service</code>, and
+            <code class="ph codeph">puppet_conf</code>, and you can download more tasks from the <span class="ph">Forge</span> or write your own.</section>
+        <section><ol class="ol steps"><li class="li step">
+                <span class="ph cmd">In the console, in the <span class="keyword wintitle">Run</span> section, click
+                        <span class="ph uicontrol">Task</span>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">In the <span class="ph uicontrol">Task</span> field, select  <code class="ph codeph">service</code>
+                    because you are checking the status of the master service.</span>
+            </li><li class="li step"><strong>Optional: </strong>
+            <span class="ph cmd">In the <span class="ph uicontrol">Job description</span> field, provide a description. The
+               text you enter here appears on the job list and job details pages.</span>
+         </li><li class="li step">
+                <span class="ph cmd">Set parameters and values for the task. The <code class="ph codeph">service</code> task has two required parameters. For
+                        <span class="ph uicontrol">action</span>, choose <code class="ph codeph">status</code>. For <span class="ph uicontrol">name</span>, enter
+                        <kbd class="ph userinput">puppet</kbd>.</span>
+            </li><li class="li step">
+                <span class="ph cmd">Under <span class="ph uicontrol">Select targets</span>, choose <span class="ph uicontrol">Node
+                        list</span>.</span>
+                <ol type="a" class="ol substeps">
+                    <li class="li substep">
+                        <span class="ph cmd">In the <span class="ph uicontrol">Inventory nodes</span> field, add the hostname
+                            of your master and select it.</span>
+                    </li>
+                </ol>
+            </li><li class="li step">
+                <span class="ph cmd">Click <span class="ph uicontrol">Run job</span>.</span>
+            </li></ol></section>
+        <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div>View the task status and output in the <span class="ph uicontrol">Jobs</span> page when it is
+            finished running. <p class="p">The status of your master should be “running” and “enabled”. To
+                learn more about tasks, including how to install them from the <span class="ph">Forge</span> or how to write your own, visit the <a class="xref" href="installing_tasks.html#installing_tasks" title="Puppet Enterprise comes with some pre-installed tasks, but you must install all plans or any other tasks you want to use.">Installing tasks</a> and <a class="xref" href="writing_tasks.html#writing_tasks" title="Bolt tasks are similar to scripts, but they are kept in modules and can have metadata. This allows you to reuse and share them.">Writing tasks</a> sections of the docs.</p><p class="p">Next,
+                use the console to add nodes to your inventory.</p></section>
+    </div>
+</article></article></article></main></body></html>

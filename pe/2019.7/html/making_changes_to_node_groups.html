@@ -1,0 +1,138 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="You can edit or remove node groups, remove nodes or classes from node groups, and edit or remove parameters and variables."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="making_changes_to_node_groups"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Making changes to node groups</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="making_changes_to_node_groups">
+    <h1 class="title topictitle1" id="ariaid-title1">Making changes to node groups</h1>
+    <p class="shortdesc"> You can edit or remove node groups, remove nodes or
+        classes from node groups, and edit or remove parameters and variables. </p>
+<article class="topic task nested1" aria-labelledby="ariaid-title2" id="edit_node_groups">
+   <h2 class="title topictitle2" id="ariaid-title2">Edit or remove node groups </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">You can change the name, description, parent, environment,
+      or environment group setting for node groups, or you can delete node groups that have no
+      children.</p>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and select a node group.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">At the top right of the page, select an option. </span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <ul class="ul">
+                     <li class="li">
+                        <p class="p">
+                           <span class="ph uicontrol">Edit node group
+                              metadata</span> — Enables edit mode so you can modify the node
+                           group's metadata as needed.</p>
+                     </li>
+                     <li class="li">
+                        <p class="p">
+                           <span class="ph uicontrol">Remove node
+                              group</span> — Removes the node group. You're prompted to confirm
+                           the removal.</p>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Commit changes.</span>
+         </li></ol></section>
+      <section class="section result"><div class="tasklabeltitle tasklabel">Result:</div></section>
+   </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title3" id="remove_dynamically_assigned_nodes_from_a_node_group">
+   <h2 class="title topictitle2" id="ariaid-title3">Remove nodes from a node group </h2>
+   
+   <div class="body taskbody"><p class="shortdesc">To remove dynamically-assigned nodes from a node group,
+      edit or delete the applicable rule. To remove statically-assigned nodes from a node group,
+      unpin them from the group.</p>
+      <section class="section context">
+         <div class="p"><div class="note note note_note"><span class="note__title">Note:</span> When a node no longer matches
+               the rules of a node group, it is no longer classified with the classes assigned in
+               that node group. However, the resources that were installed by those classes are not
+               removed from the node. For example, if a node group has the <code class="ph codeph">apache</code> class that installs the Apache package on matching
+               nodes, the Apache package is not removed from the node even when the node no longer
+               matches the node group rules.</div></div>
+      </section>
+      <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and select a node group.</span>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">On the <span class="ph uicontrol">Rules</span> tab, select the option appropriate for the type of node. </span>
+            <div class="itemgroup info">
+               <div class="p">
+                  <ul class="ul">
+                     <li class="li">
+                        <p class="p"><strong class="ph b">Dynamically-assigned
+                              nodes</strong> — In the <span class="ph uicontrol">Fact</span> table, click <span class="ph uicontrol">Remove</span>&nbsp;to remove an individual rule,
+                           or click <span class="ph uicontrol">Remove all
+                              rules</span> to delete all rules for the node group.</p>
+                     </li>
+                     <li class="li">
+                        <div class="p"><strong class="ph b">Statically-assigned
+                              nodes</strong> — In the <span class="ph uicontrol">Certname</span> table, click <span class="ph uicontrol">Unpin</span> to unpin an individual node, or
+                           click <span class="ph uicontrol">Unpin all pinned
+                              nodes</span> to unpin all nodes from the node group.<div class="note tip note_tip"><span class="note__title">Tip:</span> To unpin a node from all groups it’s
+                              pinned to, use the <code class="ph codeph">unpin-from-all</code> command endpoint.</div></div>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </li><li class="li step stepexpand">
+            <span class="ph cmd">Commit changes.</span>
+         </li></ol></section>
+   </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="commands_endpoint.html#post_v1_commands_unpin_from_all" title="Use the /v1/commands/unpin-from-all to unpin specified nodes from all groups they’re pinned to. Nodes that are dynamically classified using rules aren't affected.">POST /v1/commands/unpin-from-all</a></li></ul></div></nav></article><article class="topic task nested1" aria-labelledby="ariaid-title4" id="remove_classes_from_a_node_group">
+    <h2 class="title topictitle2" id="ariaid-title4">Remove classes from a node group </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Make changes to your node group by removing classes. </p>
+        <section class="section context"><div class="p"><div class="note note note_note"><span class="note__title">Note:</span> If a class appears in a node group list but is crossed
+                    out, the class has been deleted from <span class="ph">Puppet</span>.</div></div></section>
+        <section><ol class="ol steps"><li class="li step">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and select a node group.</span>
+         </li><li class="li step">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab in the <span class="ph uicontrol">Classes</span> section, click <span class="ph uicontrol">Remove this class</span> to remove an
+                    individual class, or click <span class="ph uicontrol">Remove
+                        all classes</span> to remove all classes from the node group. </span>
+            </li><li class="li step">
+            <span class="ph cmd">Commit changes.</span>
+         </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title5" id="edit_parameters">
+    <h2 class="title topictitle2" id="ariaid-title5">Edit or remove parameters </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Make changes to your node group by editing or deleting the
+        parameters of a class.</p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and select a node group.</span>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Configuration</span> tab in the <span class="ph uicontrol">Classes</span> section, for the class and parameter
+                    that you want to edit, select an option.</span>
+                <div class="itemgroup info"><div class="p"><ul class="ul">
+                            <li class="li"><p class="p"><span class="ph uicontrol">Edit</span> — Enables edit
+                                    mode so you can modify the parameter as needed.&nbsp;</p></li>
+                            <li class="li"><p class="p"><span class="ph uicontrol">Remove</span> — Removes the
+                                    parameter.</p></li>
+                        </ul></div></div>
+            </li><li class="li step stepexpand">
+            <span class="ph cmd">Commit changes.</span>
+         </li></ol></section>
+    </div>
+</article><article class="topic task nested1" aria-labelledby="ariaid-title6" id="edit_variables">
+    <h2 class="title topictitle2" id="ariaid-title6">Edit or remove variables </h2>
+    
+    <div class="body taskbody"><p class="shortdesc">Make changes to your node group by editing or removing
+        variables. </p>
+        <section><ol class="ol steps"><li class="li step stepexpand">
+            <span class="ph cmd">In the console, click <span class="ph uicontrol">Classification</span>, and select a node group.</span>
+         </li><li class="li step stepexpand">
+                <span class="ph cmd">On the <span class="ph uicontrol">Variables</span> tab, select an option.</span>
+                <div class="itemgroup info"><div class="p"><ul class="ul">
+                            <li class="li"><p class="p"><span class="ph uicontrol">Edit</span> — Enables edit
+                                    mode so you can modify the variable as needed.&nbsp;</p></li>
+                            <li class="li"><p class="p"><span class="ph uicontrol">Remove</span> — Removes the
+                                    variable.</p></li>
+                            <li class="li"><p class="p"><span class="ph uicontrol">Remove all variables</span> —
+                                    Removes all variables from the node group.</p></li>
+                        </ul></div></div>
+            </li><li class="li step stepexpand">
+            <span class="ph cmd">Commit changes.</span>
+         </li></ol></section>
+    </div>
+</article></article></article></main></body></html>

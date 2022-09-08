@@ -1,0 +1,201 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the nodes endpoint to retrieve historical information about nodes that have checked into the node classifier."><meta name="DC.relation" scheme="URI" content="grouping_and_classifying_nodes.html#set-configuration-data"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="nodes_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Nodes check-in history endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="nodes_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1">Nodes check-in history endpoint </h1>
+    
+    <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">nodes</code> endpoint to retrieve historical information about nodes that have
+        checked into the node classifier.</p>
+        <section class="section"><h2 class="title sectiontitle">Enable check-in storage to use this endpoint</h2>
+            
+            <p class="p">Node check-in storage is disabled by default because it can place
+                excessive loads on larger deployments. You must enable node check-in storage before
+                using the check-in history endpoint. If node check-in storage is not enabled, the
+                endpoint returns an empty array. </p>
+            <p class="p">To enable node check-in storage, set the <code class="ph codeph">classifier_node_check_in_storage</code> parameter in the <code class="ph codeph">puppet_enterprise::profile::console</code>
+                class to <code class="ph codeph">true</code>. </p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="grouping_and_classifying_nodes.html#set-configuration-data" title="Configuration data set in the console is used for automatic parameter lookup, the same way that Hiera data is used. Console configuration data takes precedence over Hiera data, but you can combine data from both sources to configure nodes.">Set configuration data</a></li></ul></div></nav><article class="topic reference nested1" aria-labelledby="ariaid-title2" id="get_v1_nodes">
+  <h2 class="title topictitle2" id="ariaid-title2">GET /v1/nodes </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/nodes</code> endpoint to retrieve a list of all nodes that have checked in with the
+    node classifier, each with their check-in history.</p>
+    <section class="section"><h3 class="title sectiontitle">Query Parameters</h3>
+      
+      <dl class="dl">
+        
+          <dt class="dt dlterm">limit</dt>
+          <dd class="dd">Controls the maximum number of nodes returned. <code class="ph codeph">limit=10</code> returns 10 nodes.</dd>
+        
+        
+          <dt class="dt dlterm">offset</dt>
+          <dd class="dd">Specifies how many nodes to skip before the first returned node.
+              <code class="ph codeph">offset=20</code> skips the first 20
+            nodes.</dd>
+        
+      </dl>
+      <div class="note caution note_caution"><span class="note__title">CAUTION:</span> In deployments with large numbers of nodes, a large
+        or unspecified <code class="ph codeph">limit</code> might cause the
+        console-services process to run out of memory and crash.</div>
+    </section>
+    <section class="section" id="get_v1_nodes__response_format"><h3 class="title sectiontitle">Response format </h3>
+      
+      <p class="p">The response is a JSON array of node objects. Each node object contains
+        these two keys:</p>
+      <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="get_v1_nodes__response_format__entry__1">Key </th>
+              <th class="entry" id="get_v1_nodes__response_format__entry__2">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="get_v1_nodes__response_format__entry__1"><code class="ph codeph">name</code>
+              </td>
+              <td class="entry" headers="get_v1_nodes__response_format__entry__2">The name of the node according to <span class="ph">Puppet</span> (a string).</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_v1_nodes__response_format__entry__1"><code class="ph codeph">check_ins</code>
+              </td>
+              <td class="entry" headers="get_v1_nodes__response_format__entry__2">An array of check-in objects (described
+                below).</td>
+            </tr>
+          </tbody></table>
+      <p class="p">Each check-in object describes a single check-in of the node. The
+        check-in objects have the following keys:</p>
+      <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="get_v1_nodes__response_format__entry__7">Key </th>
+              <th class="entry" id="get_v1_nodes__response_format__entry__8">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="get_v1_nodes__response_format__entry__7"><code class="ph codeph">time</code>
+              </td>
+              <td class="entry" headers="get_v1_nodes__response_format__entry__8">The time of the check-in as a string in
+                ISO 8601 format (with timezone).</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_v1_nodes__response_format__entry__7"><code class="ph codeph">explanation</code>
+              </td>
+              <td class="entry" headers="get_v1_nodes__response_format__entry__8">An object mapping between IDs of groups
+                that the node was classified into and explained condition objects that describe why
+                the node matched this group's rule.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_v1_nodes__response_format__entry__7"><code class="ph codeph">transaction_uuid</code>
+              </td>
+              <td class="entry" headers="get_v1_nodes__response_format__entry__8">A uuid representing a particular <span class="ph">Puppet</span> transaction that is submitted by <span class="ph">Puppet</span> at classification time. This makes it possible
+                to identify the check-in involved in generating a specific catalog and
+                report.</td>
+            </tr>
+          </tbody></table>
+      <p class="p">The explained condition objects are the node group's rule condition
+        marked up with the node's value and the result of evaluation. Each form in the rule (that
+        is, each array in the JSON representation of the rule condition) is replaced with an object
+        that has two keys:</p>
+      <table class="table"><caption></caption><colgroup><col><col></colgroup><thead class="thead">
+            <tr class="row">
+              <th class="entry" id="get_v1_nodes__response_format__entry__15">Key </th>
+              <th class="entry" id="get_v1_nodes__response_format__entry__16">Definition</th>
+            </tr>
+          </thead><tbody class="tbody">
+            <tr class="row">
+              <td class="entry" headers="get_v1_nodes__response_format__entry__15"><code class="ph codeph">value</code>
+              </td>
+              <td class="entry" headers="get_v1_nodes__response_format__entry__16">A Boolean that is the result of
+                evaluating this form. At the top level, this is the result of the entire rule
+                condition, but because each sub-condition is marked up with its value, you can use
+                this to understand, say, which parts of an <code class="ph codeph">or</code> condition were true.</td>
+            </tr>
+            <tr class="row">
+              <td class="entry" headers="get_v1_nodes__response_format__entry__15"><code class="ph codeph">form</code></td>
+              <td class="entry" headers="get_v1_nodes__response_format__entry__16">The condition form, with all sub-forms as
+                further explained condition objects.</td>
+            </tr>
+          </tbody></table>
+      <p class="p">Besides the condition markup, the comparison operations of the rule
+        condition have their first argument (the fact path) replaced with an object that has both
+        the fact path and the value that was found in the node at that path.</p>
+      <p class="p">The following example shows the format of an explained condition.</p>
+      <p class="p">Start with a node group with the following rule:</p>
+      <pre class="pre codeblock javascript"><code>["and", ["&gt;=", ["fact", "pressure hulls"], "1"],
+        ["=", ["fact", "warp cores"], "0"],
+        ["&gt;=", ["fact", "docking ports"], "10"]]</code></pre>
+      <p class="p">The following node checks into the classifier:</p>
+      <pre class="pre codeblock javascript"><code>{
+  "name": "Deep Space 9",
+  "fact": {
+    "pressure hulls": "10",
+    "docking ports": "18",
+    "docking pylons": "3",
+    "warp cores": "0",
+    "bars": "1"
+  }
+}</code></pre>
+      <p class="p">When the node checks in for classification, it matches the above rule,
+        so that check-in's explanation object has an entry for the node group that the rule came
+        from. The value of this entry is this explained condition object:</p>
+      <pre class="pre codeblock javascript"><code>{
+  "value": true,
+  "form": [
+    "and",
+    {
+      "value": true,
+      "form": ["&gt;=", {"path": ["fact", "pressure hulls"], "value": "3"}, "1"]
+    },
+    {
+      "value": true,
+      "form": ["=", {"path": ["fact", "warp cores"], "value": "0"}, "0"]
+    },
+    {
+      "value": true,
+      "form": ["&gt;" {"path": ["fact", "docking ports"], "value": "18"}, "9"]
+    }
+  ]
+}</code></pre>
+    </section>
+  </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="get_v1_nodes_node">
+  <h2 class="title topictitle2" id="ariaid-title3">GET /v1/nodes/&lt;node&gt; </h2>
+  
+  <div class="body refbody"><p class="shortdesc">Use the <code class="ph codeph">/v1/nodes/&lt;node&gt;</code> endpoint to retrieve the check-in history for only the
+    specified node.</p>
+    <section class="section"></section>
+    <section class="section" id="get_v1_nodes_node__response_format"><h3 class="title sectiontitle">Response
+        format </h3><p class="p">The response is one node object as described above in
+        the GET /v1/nodes documentation, for the specified node. The following example shows a node
+        object:</p><pre class="pre codeblock javascript"><code>{
+  "name": "Deep Space 9",
+  "check_ins": [
+    {
+      "time": "2369-01-04T03:00:00Z",
+      "explanation": {
+        "53029cf7-2070-4539-87f5-9fc754a0f041": {
+          "value": true,
+          "form": [
+            "and",
+            {
+              "value": true,
+              "form": ["&gt;=", {"path": ["fact", "pressure hulls"], "value": "3"}, "1"]
+            },
+            {
+              "value": true,
+              "form": ["=", {"path": ["fact", "warp cores"], "value": "0"}, "0"]
+            },
+            {
+              "value": true,
+              "form": ["&gt;" {"path": ["fact", "docking ports"], "value": "18"}, "9"]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "transaction_uuid": "d3653a4a-4ebe-426e-a04d-dbebec00e97f"
+}</code></pre></section>
+    <section class="section" id="get_v1_nodes_node__error_responses"><h3 class="title sectiontitle">Error
+        responses </h3><p class="p">If the specified node has not checked in, the
+        service returns a <code class="ph codeph">404: Not Found</code> response,
+        with the usual JSON error response in its body.</p></section>
+  </div>
+</article></article></article></main></body></html>

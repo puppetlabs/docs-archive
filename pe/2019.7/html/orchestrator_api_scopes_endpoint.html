@@ -1,0 +1,223 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Use the scopes endpoint to retrieve resources for task constraints."><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="orchestrator_api_scopes_endpoint"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Puppet orchestrator API: scopes endpoint</title></head><body><main role="main"><article role="article" aria-labelledby="ariaid-title1"><article class="nested0" aria-labelledby="ariaid-title1" id="orchestrator_api_scopes_endpoint">
+    <h1 class="title topictitle1" id="ariaid-title1">Puppet orchestrator API: scopes endpoint</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">Use the <code class="ph codeph">scopes</code> endpoint to retrieve resources for task
+        constraints.</p>
+        <p class="p"></p>
+    </div>
+<article class="topic reference nested1" aria-labelledby="ariaid-title2" id="orchestrator_api_get_scopes_task_targets">
+    <h2 class="title topictitle2" id="ariaid-title2">GET /scopes/task_targets</h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc">List all the known task targets (set of tasks + set of nodes + set of node groups)
+        stored in orchestrator.</p>
+        <section class="section"><h3 class="title sectiontitle">Response format </h3>
+            
+            <div class="p">The response is a JSON object that lists the known task targets and uses the
+                following keys:<table class="table frame-all"><caption></caption><colgroup><col style="width:32.467532467532465%"><col style="width:67.53246753246754%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="orchestrator_api_get_scopes_task_targets__entry__1">Key</th>
+                                <th class="entry colsep-1 rowsep-1" id="orchestrator_api_get_scopes_task_targets__entry__2">Definition</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__1"><code class="ph codeph">items</code>
+                                </td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__2">Contains an array of all the known task targets.</td>
+                            </tr>
+                        </tbody></table></div>
+            <div class="p">The following keys are included under <code class="ph codeph">items</code>:<table class="table frame-all"><caption></caption><colgroup><col style="width:33.003300330033%"><col style="width:66.996699669967%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="orchestrator_api_get_scopes_task_targets__entry__5">Key</th>
+                                <th class="entry colsep-1 rowsep-1" id="orchestrator_api_get_scopes_task_targets__entry__6">Definition</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__5"><code class="ph codeph">id</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__6">An absolute URL to retrieve the individual task
+                                    target.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__5"><code class="ph codeph">name</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__6">A string that is a unique identifier for the task
+                                    target.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__5"><code class="ph codeph">display_name</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__6">An optional string value that can be used to describe the
+                                    task target.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__5"><code class="ph codeph">tasks</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__6">An optional array of tasks that this task target corresponds
+                                    to. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__5"><code class="ph codeph">all_tasks</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__6">An optional boolean to determine if all tasks can be run on
+                                    designated targets. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__5"><code class="ph codeph">nodes</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__6">An array of certnames that this task target corresponds to.
+                                    The array can be empty.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__5"><code class="ph codeph">node_groups</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__6">An array of node group ids that this task target corresponds
+                                    to. The array can be empty.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__5"><code class="ph codeph">pql_query</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets__entry__6">(optional) A string that is a single PQL query that the task
+                                    target corresponds to.</td>
+                            </tr>
+                        </tbody></table></div>
+            <div class="p">For example:
+                <pre class="pre codeblock"><code>{
+ "items": [
+    {
+      "id": "https://orchestrator.example.com:8143/orchestrator/v1/scopes/task_targets/1",
+      "name": "1",
+      "tasks": [
+        "package::install",
+        "exec"
+      ],
+      "all_tasks": "false",
+      "nodes": [
+        "wss6c3w9wngpycg",
+        "jjj2h5w8gpycgwn"
+      ],
+      "node_groups":[
+        "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+        "4932bfe7-69c4-412f-b15c-ac0a7c2883f1"
+      ],
+      "pql_query": "nodes[certname] { catalog_environment = \"production\" }"
+    },
+    {
+      "id": "https://orchestrator.example.com:8143/orchestrator/v1/scopes/task_targets/2",
+      "name": "2",
+      "tasks": [
+        "imaginary::task"
+      ],
+      "all_tasks": "false",
+      "nodes": [
+        "mynode"
+      ],
+      "node_groups":[
+      ]
+    },
+    {
+      "id": "https://orchestrator.example.com:8143/orchestrator/v1/scopes/task_targets/3",
+      "name": "3",
+      "all_tasks": true,
+      "nodes": [
+        "xxx6c3w9wngpycg",
+        "bbb2h5w8gpycgwn"
+      ],
+      "node_groups":[
+        "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+        "4932bfe7-69c4-412f-b15c-ac0a7c2883f1"
+      ]
+    }
+  ]
+}</code></pre></div>
+        </section>
+    </div>
+</article><article class="topic reference nested1" aria-labelledby="ariaid-title3" id="orchestrator_api_get_scopes_task_targets_id">
+    <h2 class="title topictitle2" id="ariaid-title3">GET /scopes/task_targets/:id</h2>
+    
+    
+    <div class="body refbody"><p class="shortdesc">Get information about a specific task_target.</p>
+        <section class="section"><h3 class="title sectiontitle">Response format </h3>
+            
+            <div class="p">The response is a JSON object that provides the details about the task_target and
+                uses the following keys:<table class="table frame-all"><caption></caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="orchestrator_api_get_scopes_task_targets_id__entry__1">Keys</th>
+                                <th class="entry colsep-1 rowsep-1" id="orchestrator_api_get_scopes_task_targets_id__entry__2">Definitions</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__1"><code class="ph codeph">id</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__2">An absolute URL to retrieve the individual
+                                    task_target.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__1"><code class="ph codeph">name</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__2">A string that is a unique identifier for the
+                                    task_target.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__1"><code class="ph codeph">display_name</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__2">An optional string value that can be used to describe the
+                                    task_target.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__1"><code class="ph codeph">tasks</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__2">An optional array of tasks that this task_target corresponds
+                                    to.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__1"><code class="ph codeph">all_tasks</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__2">An optional boolean to determine if all tasks can be run on
+                                    designated targets.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__1"><code class="ph codeph">nodes</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__2">An array of certnames that this task_target corresponds to.
+                                    The array can be empty.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__1"><code class="ph codeph">node_groups</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__2">An array of node group ids that this task_target corresponds
+                                    to. The array can be empty.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__1"><code class="ph codeph">pql_query</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__2">(optional) A string that is a single PQL query that the
+                                    task_target corresponds to.</td>
+                            </tr>
+                        </tbody></table></div>
+            <div class="p">For example:
+                <pre class="pre codeblock"><code>{
+  "id": "https://orchestrator.example.com:8143/orchestrator/v1/scopes/task_targets/1",
+  "name": "1",
+  "tasks": [
+    "package::install",
+    "exec"
+  ],
+  "all_tasks": "false",
+  "nodes": [
+    "wss6c3w9wngpycg",
+    "jjj2h5w8gpycgwn"
+  ],
+  "node_groups":[
+    "3c4df64f-7609-4d31-9c2d-acfa52ed66ec",
+    "4932bfe7-69c4-412f-b15c-ac0a7c2883f1"
+  ],
+  "pql_query": "nodes[certname] { catalog_environment = \"production\" }"
+}</code></pre></div>
+        </section>
+        <section class="section"><h3 class="title sectiontitle">Error responses </h3>
+            
+            <div class="p">For this endpoint, the <code class="ph codeph">kind</code> key of the error displays the conflict.
+                See the <a class="xref" href="orchestrator_api_error_responses.html" title="From time to time, you might encounter an error using the orchestrator API. In such cases, you receive an error response.">Puppet orchestrator API: error responses</a> documentation for the
+                general format of error responses.<table class="table frame-all"><caption></caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry colsep-1 rowsep-1" id="orchestrator_api_get_scopes_task_targets_id__entry__19">Key</th>
+                                <th class="entry colsep-1 rowsep-1" id="orchestrator_api_get_scopes_task_targets_id__entry__20">Definition</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__19"><code class="ph codeph">:puppetlabs.orchestrator/unknown-task-target</code></td>
+                                <td class="entry colsep-1 rowsep-1" headers="orchestrator_api_get_scopes_task_targets_id__entry__20">If the specified <code class="ph codeph">id</code> doesn't exist, the
+                                    server returns a <code class="ph codeph">404</code> response.</td>
+                            </tr>
+                        </tbody></table></div>
+        </section>
+    </div>
+</article></article></article></main></body></html>

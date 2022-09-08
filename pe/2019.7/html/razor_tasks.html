@@ -1,0 +1,250 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="copyright" content="(C) Copyright 2020"><meta name="DC.rights.owner" content="(C) Copyright 2020"><meta name="DC.type" content="concept"><meta name="description" content="Razor tasks describe a process or collection of actions that are performed when Razor provisions machines. Tasks can be used to designate an operating system or other software to install, where to get it, and the configuration details for the installation."><meta name="DC.relation" scheme="URI" content="using_the_razor_client.html#task-commands"><meta name="DC.relation" scheme="URI" content="api_reference.html#tasks-api"><meta name="prodname" content="pe"><meta name="version" content="2019.7"><meta name="DC.creator" content="melissa amos <melissa.amos@puppet.com&gt;"><meta name="DC.format" content="HTML5"><meta name="DC.identifier" content="razor-tasks"><meta name="DC.language" content="en-us"><link rel="stylesheet" type="text/css" href="commonltr.css"><title>Razor tasks</title></head><body id="razor-tasks"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1"><span class="ph">Razor</span> tasks</h1>
+    
+    
+    <div class="body conbody"><p class="shortdesc">
+        <span class="ph">Razor</span> tasks describe a process or collection of actions that
+        are performed when <span class="ph">Razor</span> provisions machines. Tasks can be
+        used to designate an operating system or other software to install, where to get it, and the
+        configuration details for the installation.</p>
+        <div class="p">
+            <div class="note important note_important"><span class="note__title">Important:</span> 
+                    <span class="ph">Razor</span> tasks differ from <span class="ph">Puppet</span> tasks, which let you run arbitrary scripts
+                    and commands using <span class="ph">Puppet</span>. See the orchestrator
+                    documentation for information about <span class="ph">Puppet</span>
+                    tasks.</div>Tasks consist
+            of a YAML metadata file and any number of ERB templates. Templates are used to generate
+            things like the iPXE script that boots a node into the installer, and automated
+            installation files like kickstart, preseed, or unattended files. </div>
+        <p class="p">You specify the tasks you want to run in <dfn class="term">policies</dfn>. </p>
+        <div class="p">You can use several sources for tasks: <ul class="ul">
+                <li class="li">
+                    <p class="p">Supported tasks that are included with <span class="ph">Razor</span>
+                    </p>
+                </li>
+                <li class="li">
+                    <p class="p">Copies of supported tasks that you customize as needed</p>
+                </li>
+                <li class="li">
+                    <p class="p">Tasks that you create from scratch</p>
+                </li>
+            </ul>
+        </div>
+        <section class="section"><h2 class="title sectiontitle">Supported tasks</h2>
+            
+            <div class="p">
+                <span class="ph">Razor</span> includes these supported tasks. <table class="table"><caption></caption><colgroup><col><col><col></colgroup><thead class="thead">
+                            <tr class="row">
+                                <th class="entry" id="razor-tasks__entry__1">Task </th>
+                                <th class="entry" id="razor-tasks__entry__2">Version </th>
+                                <th class="entry align-left" id="razor-tasks__entry__3">Notes</th>
+                            </tr>
+                        </thead><tbody class="tbody">
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">
+                                    <span class="ph">CentOS</span>
+                                </td>
+                                <td class="entry" headers="razor-tasks__entry__2">6, 7</td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">coreOS </td>
+                                <td class="entry" headers="razor-tasks__entry__2">1</td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3">Enables
+                                    deployment of clusters.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">
+                                    <span class="ph">Debian</span>
+                                </td>
+                                <td class="entry" headers="razor-tasks__entry__2">wheezy </td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">microkernel</td>
+                                <td class="entry" headers="razor-tasks__entry__2"></td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3">System
+                                    task. Boots the <span class="ph">Razor</span>
+                                    microkernel. </td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">noop </td>
+                                <td class="entry" headers="razor-tasks__entry__2"></td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3">System
+                                    task. Boots a system locally.</td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">
+                                    <span class="ph">Red Hat</span>
+                                </td>
+                                <td class="entry" headers="razor-tasks__entry__2">6, 7</td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">
+                                    <span class="ph">SUSE Linux Enterprise Server</span>
+                                </td>
+                                <td class="entry" headers="razor-tasks__entry__2">11, 12</td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">
+                                    <span class="ph">Ubuntu</span>
+                                </td>
+                                <td class="entry" headers="razor-tasks__entry__2">16.04</td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">
+                                    <span class="ph">VMware</span> ESXi </td>
+                                <td class="entry" headers="razor-tasks__entry__2">5.5, 6</td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3"></td>
+                            </tr>
+                            <tr class="row">
+                                <td class="entry" headers="razor-tasks__entry__1">
+                                    <span class="ph">Windows</span>
+                                </td>
+                                <td class="entry" headers="razor-tasks__entry__2">2008 R2, 2012 R2, 8
+                                    Pro, 2016</td>
+                                <td class="entry align-left" headers="razor-tasks__entry__3"></td>
+                            </tr>
+                        </tbody></table>
+            </div>
+            <div class="p">
+                <div class="note important note_important"><span class="note__title">Important:</span> Don't modify supported tasks in place.
+                    If you want to customize a supported task, copy the task from the default task
+                    directory (<code class="ph codeph">/opt/puppetlabs/server/apps/razor-server/share/razor-server/tasks</code>)
+                    to the custom task directory (<code class="ph codeph">/etc/puppetlabs/razor-server/tasks</code>) before modifying the
+                    task.</div>
+            </div>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">Storage directories</h2>
+            
+            <p class="p">Tasks are stored in the file system. The <code class="ph codeph">task_path</code> class parameter of the <code class="ph codeph">pe_razor</code> module determines where <span class="ph">Razor</span> looks for tasks. </p>
+            <p class="p">The parameter can include a colon-separated list of paths.
+                Relative paths in that list are taken to be relative to the top-level <span class="ph">Razor</span> directory. For example, setting <code class="ph codeph">task_path</code> to <code class="ph codeph">/opt/puppet/share/razor-server/tasks:/home/me/task:tasks</code>
+                makes <span class="ph">Razor</span> search for tasks in these three
+                directories in order.</p>
+            <p class="p">By default, there are two directories that store tasks:</p>
+            <ul class="ul">
+                <li class="li">
+                    <code class="ph codeph">/opt/puppetlabs/server/apps/razor-server/share/razor-server/tasks</code>
+                    stores default tasks shipped with the product.</li>
+                <li class="li">
+                    <code class="ph codeph">/etc/puppetlabs/razor-server/tasks</code> stores custom tasks.</li>
+            </ul>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">Task metadata</h2>
+            
+            <p class="p">Tasks can include the following metadata in the task's YAML file.
+                This file is called <code class="ph codeph">metadata.yaml</code>
+                and exists in <code class="ph codeph">tasks/&lt;NAME&gt;.task</code> where <code class="ph codeph">NAME</code> is the task name. Therefore, the task name looks like this:
+                    <code class="ph codeph">tasks/&lt;NAME&gt;.task/metadata.yaml</code>.</p>
+            <div class="p">
+                <pre class="pre codeblock"><code>---
+description: HUMAN READABLE DESCRIPTION
+os: OS NAME
+os_version: OS_VERSION_NUMBER
+base: TASK_NAME
+boot_sequence:
+  1: boot_templ1
+  2: boot_templ2
+  default: boot_local</code></pre>
+            </div>
+            <p class="p">Only <code class="ph codeph">os_version</code>
+                and <code class="ph codeph">boot_sequence</code> are required. The
+                    <code class="ph codeph">base</code> key allows you to derive
+                one task from another by reusing some of the <code class="ph codeph">base</code> metadata and templates. If the derived task has metadata that's
+                different from the metadata in <code class="ph codeph">base</code>, the derived metadata overrides the base task's metadata.</p>
+            <p class="p">The <code class="ph codeph">boot_sequence</code>
+                hash indicates which templates to use when a node using this task boots. In the
+                example above, a node first boots using <code class="ph codeph">boot_templ1</code>, then using <code class="ph codeph">boot_templ2</code>. For every subsequent boot, the node uses <code class="ph codeph">boot_local</code>.</p>
+        </section>
+        <section class="section"><h2 class="title sectiontitle">Task templates</h2>
+            
+            <p class="p">Task templates are ERB templates and are searched in all the
+                directories in the <code class="ph codeph">task_path</code>
+                configuration setting. </p>
+            <div class="p">Templates are searched in the subdirectories in this order: <ol class="ol">
+                    <li class="li">
+                        <code class="ph codeph">name.task</code>
+                    </li>
+                    <li class="li">
+                        <code class="ph codeph">base.task</code> if present </li>
+                    <li class="li">
+                        <code class="ph codeph">common</code>
+                    </li>
+                </ol>
+            </div>
+            <p class="p">
+                <strong class="ph b">Template helpers</strong>
+            </p>
+            <p class="p">Templates can use the following helpers to generate URLs that
+                point back to the server; all of the URLs respond to a <code class="ph codeph">GET</code> request, even the ones that make changes on the
+                server.</p>
+            <div class="p">
+                <ul class="ul">
+                    <li class="li">
+                        <code class="ph codeph">task</code>: Includes attributes
+                        such as <code class="ph codeph">name</code>, <code class="ph codeph">os</code>, <code class="ph codeph">os_version</code>, <code class="ph codeph">boot_seq</code>, <code class="ph codeph">label</code>, <code class="ph codeph">description</code>, <code class="ph codeph">base</code>, and <code class="ph codeph">architecture</code>.</li>
+                    <li class="li">
+                        <code class="ph codeph">node</code>: Includes attributes
+                        such as <code class="ph codeph">name</code>, <code class="ph codeph">metadata</code>, and <code class="ph codeph">facts</code>. <div class="note tip note_tip"><span class="note__title">Tip:</span> You can use<code class="ph codeph">node.hw_hash['fact_boot_type'] == "efi"</code> to
+                            evaluate whether a node booted via UEFI.</div>
+                    </li>
+                    <li class="li">
+                        <code class="ph codeph">repo</code>: Includes attributes
+                        such as <code class="ph codeph">name</code>, <code class="ph codeph">iso_url</code>, <code class="ph codeph">url</code>.</li>
+                    <li class="li">
+                        <code class="ph codeph">file_url(TEMPLATE, RAW)</code>:
+                        The URL that retrieves <code class="ph codeph">TEMPLATE.erb</code> (after evaluation) from the current node's task.
+                        By default, the file is interpolated (<code class="ph codeph">RAW=false</code>). If the file doesn't need to be
+                        interpolated, specify <code class="ph codeph">RAW=true</code>.</li>
+                    <li class="li">
+                        <code class="ph codeph">repo_url(PATH)</code>: The URL to
+                        the file at <code class="ph codeph">PATH</code> in the
+                        current repo.</li>
+                    <li class="li">
+                        <code class="ph codeph">repo_file_contents(PATH)</code>:
+                        The contents of the file at <code class="ph codeph">PATH</code> inside the repo. This is an empty string if the file does
+                        not exist.</li>
+                    <li class="li">
+                        <code class="ph codeph">repo_file?(PATH)</code>: Whether a
+                        file exists at the given path. This is <code class="ph codeph">nil</code> if the file does not exist.</li>
+                    <li class="li">
+                        <code class="ph codeph">log_url(MESSAGE, SEVERITY)</code>:
+                        The URL that logs <code class="ph codeph">MESSAGE</code>
+                        in the current node's log.</li>
+                    <li class="li">
+                        <code class="ph codeph">node_url</code>: The URL for the
+                        current node.</li>
+                    <li class="li">
+                        <code class="ph codeph">store_url(VARS)</code>: The URL
+                        that stores the values in the hash <code class="ph codeph">VARS</code> in the node. Currently only changing the node's IP
+                        address is supported. Use <code class="ph codeph">store_url("ip" =&gt; "192.168.0.1")</code> for that.</li>
+                    <li class="li">
+                        <code class="ph codeph">stage_done_url</code>: The URL
+                        that tells the server that this stage of the boot sequence is finished, and
+                        that the next boot sequence should begin upon reboot.</li>
+                    <li class="li">
+                        <code class="ph codeph">broker_install_url</code>: A URL
+                        from which the install script for the node's broker can be retrieved. You
+                        can see an example in the script, <a class="xref" href="https://github.com/puppetlabs/razor-server/blob/master/tasks/common/os_complete.erb" target="_blank">os_complete.erb</a>, which is used by most tasks.
+                    </li>
+                </ul>
+            </div>
+            <p class="p">Each boot (except for the default boot) must culminate in
+                something akin to <code class="ph codeph">curl &lt;%= stage_done_url
+                    %&gt;</code> before the node reboots. Omitting this causes the node to reboot
+                with the same boot template over and over again.</p>
+            <p class="p">The task must indicate to the <span class="ph">Razor</span>
+                server that it has successfully completed by doing a <code class="ph codeph">GET</code> request against <code class="ph codeph">stage_done_url("finished")</code>, for example using <code class="ph codeph">curl</code> or <code class="ph codeph">wget</code>. This marks the node <code class="ph codeph">installed</code> in the <span class="ph">Razor</span> database.</p>
+            <p class="p">You use these helpers by causing your script to perform an <code class="ph codeph">HTTP GET</code> against the generated URL.
+                This might mean that you pass an argument like <code class="ph codeph">ks=&lt;%= file_url("kickstart")%&gt;</code> when booting a kernel, or that
+                you put <code class="ph codeph">curl &lt;%= log_url("Things work
+                    great") %&gt;</code> in a shell script.</p>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="linklist relinfo"><strong>Related information</strong><br><ul class="linklist"><li class="linklist"><a class="link" href="using_the_razor_client.html#task-commands" title="Use task commands to create tasks in the Razor database.">Task commands</a></li><li class="linklist"><a class="link" href="api_reference.html#tasks-api" title="This commands enables you to create a task in the Razor database.">Tasks API</a></li></ul></div></nav></article></main></body></html>

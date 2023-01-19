@@ -256,3 +256,81 @@
 
 [Manage the installation and configuration of metrics dashboards using the puppetlabs-puppet_metrics_dashboard module for Puppet Enterprise 2016.4 to 2019.1](360006641414.md)
 
+## Managing nodes
+
+[Agent runs fail on a FIPS enabled master in Puppet Enterprise 2018.1 to 2019.1](360020976173.md)
+
+["Pe_repo" error during Puppet runs after installing Bolt on a primary server in Puppet Enterprise ](360019217074.md)
+
+[Puppet agent runs fail with a "Could not find catalog" error in Puppet Enterprise 2018.1.3](360007942294.md)
+
+[Remove unnecessary packages installed on infrastructure nodes and compile masters during Puppet runs in Puppet Enterprise 2016.4, 2017.3, 2018.1, and 2019.2](115003517173.md)
+
+[Razor server unavailable workaround for Puppet Enterprise](216904347.md)
+
+## Configuring
+
+[Using the Puppet Enterprise console to work with classes and configuration in Puppet Enterprise 2019.8.0](360054951474.md)
+
+[Puppet Server "Error Reported" and Orchestrator Service "Unreachable" in the console in Puppet Enterprise: Directory corrupted when restoring](360047691333.md)
+
+[Resolve SSL errors when connecting to GitHub using the r10k shellgit provider in Puppet Enterprise](360001205033.md)
+
+[Use Code Manager to deploy code from a repository with a self-signed certificate for Puppet Enterprise 2016.1 to 2016.4, 2017.1, 2017.3, and 2018.1.7](115005418487.md)
+
+## SSL and certificates
+
+[Resolve a duplicate declaration error when adding a hostname to the certificate authority whitelist in the console for Puppet Enterprise 2016.2 to 2019.2.2 and 2019.5](115000107754.md)
+
+[Enable protocol security in Razor with a custom certificate authority in Puppet Enterprise](218442458.md)
+
+## Monitoring and reporting
+
+[Manage the installation and configuration of metrics dashboards using the puppetlabs-puppet_metrics_dashboard module for Puppet Enterprise 2016.4 to 2019.1](360006641414.md)
+
+## Continuous Delivery for Puppet Enterprise
+
+[Change the log level in Continuous Delivery for Puppet Enterprise 3.2.0 and later 3.x](360046267073.md)
+
+## Remediate™
+
+[Windows nodes “Inaccessible” and discovery fails in Remediate](360055719754.md)
+
+[LDAP users not syncing with a "Synchronization ignored as it’s already in progress" message in Puppet Remediate](360048569873.md)
+
+["Network response was not okay" error when uploading a module in Puppet Remediate 1.0.1](360026239934.md)
+
+[Unresponsive UI after uploading a module with many tasks in Puppet Remediate 1.0.1](360026145954.md)
+
+## Orchestrating runs, tasks, and plans
+
+[Set SSL ciphers for the Active MQ broker in Puppet Enterprise 2018.1](360022589153.md)
+
+[Disable the scheduled "refresh-mcollective-metadata" task on agent nodes in Puppet Enterprise](115004858473.md)
+
+## Installing
+
+[Puppet Plug-in v3.0 and 3.1 for vRealize Automation: adding a Puppet master fails in Puppet Enterprise 2016.4.x to 2018.1.x](360000839814.md)
+
+## Upgrading
+
+["fast_gettext" error in Puppet Enterprise when upgrading from Puppet agent 5.3.3 (PE 2017.3.2) and earlier to 5.3.4 (PE 2017.3.4) and later](360009968114.md)
+
+[Puppet Enterprise console Events page displays "Filter by node name:" field incorrectly in Internet Explorer 11](360003017794.md)
+
+## Maintain code with Puppet
+
+[Fix an “ERROR -> Unable to connect to https://forgeapi.puppetlabs.com” when authenticating with the Forge in Puppet Enterprise](360048119014.md)
+
+## News
+
+[Upgrade to Puppet Enterprise 2019.8: Free on-demand webinars](360051138853.md)
+
+[Recommended reading: New to using Puppet Enterprise? Quickly find the best content to start your automation journey.](360034435014.md)
+
+[Recommended reading: Introducing the new device manager module for agentless automation](360009742973.md)
+
+[Introduction to testing Puppet modules](221459187.md)
+
+[Join Puppet Test Pilots](217556568.md)
+

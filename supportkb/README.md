@@ -334,3 +334,9 @@
 
 [Join Puppet Test Pilots](217556568.md)
 
+## Remediate™
+
+[Remediate may fail to start in offline mode](1500008025962.md)
+
+[Get support for Puppet Remediate](360033330614.md)
+

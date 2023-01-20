@@ -340,3 +340,31 @@
 
 [Get support for Puppet Remediate](360033330614.md)
 
+## Managing nodes
+
+[Resolve Puppet run failures with "(SystemStackError) stack level too deep" errors for Puppet Enterprise 3.8 to 2019.1](218763948.md)
+
+## Configuring
+
+[Console LDAP authentication is broken after upgrading to Puppet Enterprise 2018.1 and later](360006626754.md)
+
+[Removed classes or parameters in the console in PE 2016.2, 2016.4, and 2017.1 to 2019.0](235179588.md)
+
+[Removing nodes: Understanding "puppet node purge", "node-ttl", and "node-purge-ttl" in Puppet Enterprise 2015.2 to 2019.2](228635208.md)
+
+## Withdrawn articles
+
+[Withdrawn: Confirm that your Puppet Enterprise installation is ready for an upgrade](360040916014.md)
+
+## Installing
+
+[Expired GPG Key causes node installation to fail in Puppet Enterprise 2016.4.0 to 2019.8.4](222646307.md)
+
+## Managing access
+
+[Console password reset for Puppet Enterprise 2019.0.0 and 2019.0.1](360054899294.md)
+
+## Working with Support
+
+[Run the support script for Puppet Enterprise 2016.2 to 2019.7](9222744296215.md)
+

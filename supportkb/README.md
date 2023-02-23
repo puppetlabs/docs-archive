@@ -368,3 +368,15 @@
 
 [Run the support script for Puppet Enterprise 2016.2 to 2019.7](9222744296215.md)
 
+## Managing nodes
+
+[Duplicate declaration error when managing /usr/local in Puppet Enterprise 3.8 to 2019.1](218765028.md)
+
+## Upgrading
+
+[Resolve an “ERROR: deadlock detected” error message in PuppetDB when upgrading to Puppet Enterprise 2019.8 or later from a previous version](9359717498263.md)
+
+## Maintain code with Puppet
+
+[Create a trusted fact, verify it, and then reference it in Hiera in Puppet Enterprise 2016.4 to 2018.1](231727127.md)
+

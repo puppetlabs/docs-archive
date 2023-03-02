@@ -380,3 +380,15 @@
 
 [Create a trusted fact, verify it, and then reference it in Hiera in Puppet Enterprise 2016.4 to 2018.1](231727127.md)
 
+## Managing nodes
+
+[AIX agent runs fail with facter errors in Puppet Enterprise 2016.4 to 2018.1](360000275413.md)
+
+## Configuring
+
+[PostgreSQL logs filling up in Puppet Enterprise 2018.1.0](360005248994.md)
+
+## SSL and certificates
+
+[Resolve a "header too long" error when using "puppet cert" or "puppet node" commands in Puppet Enterprise 3.2 to 2016.2 and 2017.1 to 2018.1](227400408.md)
+
